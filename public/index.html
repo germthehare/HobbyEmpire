@@ -3,434 +3,405 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hobby Empire — Break Prep</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Break Builder — Hobby Empire</title>
 <style>
-  :root {
-    --gold: #B8942A;
-    --gold2: #D4AD47;
-    --gold3: #F0CC6A;
-    --dark: #080808;
-    --dark2: #111111;
-    --dark3: #1A1A1A;
-    --dark4: #242424;
-    --text: #EAE6DF;
-    --text2: #A89F94;
-    --text3: #5C5650;
-    --red: #C94040;
-    --green: #3A8C5C;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
-
-  .header { background: var(--dark2); border-bottom: 1px solid #1e1e1e; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-  .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--gold3); }
-  .logo-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: -2px; }
-
-  .lang-toggle { display: flex; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; }
-  .lang-btn { padding: 5px 11px; font-size: 11px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; color: var(--text3); cursor: pointer; border: none; background: transparent; transition: all 0.15s; }
-  .lang-btn.active { background: var(--gold); color: #000; }
-
-  .tabs { display: flex; background: var(--dark2); border-bottom: 1px solid #1a1a1a; }
-  .tab { flex: 1; padding: 14px 0; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
-  .tab.active { color: var(--gold3); border-bottom-color: var(--gold); }
-
-  .main { padding: 20px 16px; max-width: 700px; margin: 0 auto; }
-  .section-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
-
-  .product-row { display: flex; gap: 8px; margin-bottom: 8px; }
-  .product-row input { flex: 1; background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 13px 16px; color: var(--text); font-size: 15px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; }
-  .product-row input:focus { border-color: var(--gold); }
-  .product-row input::placeholder { color: var(--text3); }
-  .remove-btn { width: 44px; height: 44px; background: var(--dark3); border: 1px solid #222; border-radius: 8px; color: var(--text3); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
-  .remove-btn:hover { border-color: var(--red); color: var(--red); }
-
-  .add-btn { width: 100%; background: transparent; border: 1px dashed #262626; border-radius: 8px; color: var(--text3); font-size: 13px; font-family: 'Barlow', sans-serif; padding: 12px; cursor: pointer; margin-bottom: 14px; transition: all 0.15s; }
-  .add-btn:hover { border-color: #3a3a3a; color: var(--text2); }
-  .gen-btn { width: 100%; background: var(--gold); border: none; border-radius: 8px; color: #000; font-size: 12px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; text-transform: uppercase; padding: 15px; cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
-  .gen-btn:hover { background: var(--gold3); }
-  .gen-btn:disabled { background: #222; color: #3a3a3a; cursor: not-allowed; }
-
-  .live-row { display: flex; gap: 8px; margin-bottom: 16px; }
-  .live-row input { flex: 1; background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 13px 16px; color: var(--text); font-size: 15px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; }
-  .live-row input:focus { border-color: var(--gold); }
-  .live-row input::placeholder { color: var(--text3); }
-  .live-btn { background: var(--gold); border: none; border-radius: 8px; color: #000; font-size: 11px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; padding: 0 18px; cursor: pointer; white-space: nowrap; }
-  .live-btn:disabled { background: #222; color: #3a3a3a; }
-
-  .hint { background: var(--dark3); border: 1px solid #1e1e1e; border-radius: 8px; padding: 14px 16px; font-size: 13px; color: var(--text3); line-height: 1.7; }
-  .loading { text-align: center; padding: 48px 20px; color: var(--text3); }
-  .spinner { width: 26px; height: 26px; border: 1px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 14px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; letter-spacing: 0.5px; font-family: 'Barlow Condensed', sans-serif; }
-  .error-box { background: #110606; border: 1px solid #2a1010; border-radius: 8px; padding: 14px 16px; font-size: 13px; color: #b06060; margin-bottom: 16px; }
-
-  .product-card { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
-
-  /* HERO */
-  .card-hero { position: relative; height: 100px; background: #0A0A09; border-bottom: 1px solid #1a1a1a; overflow: hidden; display: flex; align-items: flex-end; padding: 16px; }
-  .hero-accent { position: absolute; top: 0; left: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--gold), transparent); }
-  .hero-players { position: absolute; right: 0; top: 0; bottom: 0; display: flex; }
-  .hero-player-img { width: 65px; height: 100%; object-fit: cover; object-position: top center; opacity: 0.3; filter: grayscale(20%); mask-image: linear-gradient(to left, rgba(0,0,0,0.5) 0%, transparent 100%); -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.5) 0%, transparent 100%); }
-  .hero-text { position: relative; z-index: 2; }
-  .hero-name { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--gold3); line-height: 1; margin-bottom: 3px; }
-  .hero-meta { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
-
-  /* STATS BAR */
-  .stats-bar { display: flex; border-bottom: 1px solid #141414; }
-  .stat-cell { padding: 11px 14px; text-align: center; border-right: 1px solid #141414; }
-  .stat-cell:last-child { border-right: none; }
-  .stat-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
-  .stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
-
-  .summary-text { padding: 11px 16px; font-size: 13px; color: var(--text2); line-height: 1.6; border-bottom: 1px solid #111; }
-
-  .sect { border-bottom: 1px solid #111; }
-  .sect:last-child { border-bottom: none; }
-  .sect-lbl { padding: 9px 16px 0; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); }
-
-  .card-row { display: flex; align-items: center; padding: 8px 16px; border-bottom: 1px solid #0e0e0e; gap: 10px; }
-  .card-row:last-child { border-bottom: none; }
-  .row-num { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--text3); width: 16px; flex-shrink: 0; text-align: right; }
-
-  .player-thumb { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--dark4); flex-shrink: 0; border: 1px solid #252525; }
-  .player-init { width: 32px; height: 32px; border-radius: 50%; background: var(--dark4); border: 1px solid #252525; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; color: var(--text3); }
-
-  .row-info { flex: 1; min-width: 0; }
-  .row-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .row-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text3); letter-spacing: 0.5px; margin-top: 1px; }
-  .row-price { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--green); white-space: nowrap; flex-shrink: 0; }
-
-  .tag { display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 1px; padding: 1px 5px; border-radius: 3px; margin-left: 5px; vertical-align: middle; text-transform: uppercase; }
-  .tag-rookie { background: rgba(58,140,92,0.12); color: #5aad72; border: 1px solid rgba(58,140,92,0.25); }
-  .tag-hot { background: rgba(201,64,64,0.12); color: #c97070; border: 1px solid rgba(201,64,64,0.25); }
-  .tag-rare { background: rgba(184,148,42,0.12); color: #c9a84c; border: 1px solid rgba(184,148,42,0.25); }
-  .tag-auto { background: rgba(58,106,156,0.12); color: #6a8ec9; border: 1px solid rgba(58,106,156,0.25); }
-  .tag-legend { background: rgba(122,74,156,0.12); color: #9a7ac9; border: 1px solid rgba(122,74,156,0.25); }
-
-  .players-grid { display: flex; flex-wrap: wrap; gap: 7px; padding: 9px 16px 13px; }
-  .player-chip { display: flex; align-items: center; gap: 6px; background: var(--dark3); border: 1px solid #1e1e1e; border-radius: 20px; padding: 4px 11px 4px 4px; }
-  .chip-img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--dark4); }
-  .chip-init { width: 22px; height: 22px; border-radius: 50%; background: var(--dark4); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; color: var(--text3); }
-  .chip-name { font-size: 12px; font-weight: 500; color: var(--text2); }
-
-  .facts-list { padding: 8px 16px 12px; }
-  .fact-row { display: flex; gap: 9px; padding: 5px 0; font-size: 13px; color: var(--text2); line-height: 1.55; border-bottom: 1px solid #0e0e0e; }
-  .fact-row:last-child { border-bottom: none; }
-  .fact-dash { color: var(--gold2); flex-shrink: 0; font-weight: 700; }
-
-  .compare-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .compare-tbl th { text-align: left; padding: 8px 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid #1a1a1a; font-weight: 700; }
-  .compare-tbl td { padding: 8px 14px; border-bottom: 1px solid #0e0e0e; color: var(--text); font-size: 12px; }
-  .compare-tbl tr:last-child td { border-bottom: none; }
-
-  /* LIVE */
-  .live-card { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 12px; overflow: hidden; }
-  .live-hero { background: #0A0A09; padding: 16px; border-bottom: 1px solid #1a1a1a; display: flex; gap: 14px; align-items: center; }
-  .live-player-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; object-position: top; background: var(--dark4); border: 1px solid #222; flex-shrink: 0; }
-  .live-card-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--gold3); line-height: 1.2; margin-bottom: 5px; }
-  .trend-row { display: flex; align-items: center; gap: 7px; }
-  .trend-up { color: #5aad72; font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
-  .trend-down { color: #c97070; font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
-  .trend-stable { color: var(--text3); font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed', sans-serif; }
-  .trend-note { font-size: 12px; color: var(--text3); }
-  .live-prices { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid #111; }
-  .price-cell { padding: 11px 14px; text-align: center; border-right: 1px solid #111; }
-  .price-cell:last-child { border-right: none; }
-  .price-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
-  .price-val { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--green); }
-  .live-fact { padding: 12px 16px; font-size: 13px; color: var(--text2); line-height: 1.6; }
-
-  .empty { text-align: center; padding: 48px 20px; color: var(--text3); }
-  .empty-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--text2); margin-bottom: 8px; }
-  .empty-sub { font-size: 13px; line-height: 1.6; }
-  .footer { text-align: center; padding: 22px 16px; font-size: 10px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); border-top: 1px solid #111; margin-top: 20px; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#f5f5f5;color:#1a1a1a;padding:1rem;}
+.container{max-width:680px;margin:0 auto;background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+h1{font-size:18px;font-weight:500;margin-bottom:1.25rem;color:#1a1a1a;}
+.tab-bar{display:flex;gap:4px;margin-bottom:1rem;}
+.tab{font-size:13px;padding:6px 12px;border-radius:8px;border:0.5px solid #ddd;cursor:pointer;color:#666;background:none;}
+.tab.active{background:#1a1a1a;color:white;border-color:transparent;font-weight:500;}
+.section{margin-bottom:1.25rem;}
+.section-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+.card{background:white;border:0.5px solid #e0e0e0;border-radius:12px;padding:1rem 1.25rem;margin-bottom:8px;}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
+.row:last-child{margin-bottom:0;}
+.row label{font-size:12px;color:#888;min-width:100px;}
+input[type=text],input[type=number],input[type=date],input[type=time],select{flex:1;min-width:70px;border:0.5px solid #ddd;border-radius:8px;padding:7px 10px;font-size:13px;font-family:Arial,sans-serif;background:white;color:#1a1a1a;}
+input:focus,select:focus{outline:none;border-color:#888;}
+.remove-btn{background:none;border:none;color:#aaa;font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
+.remove-btn:hover{color:#1a1a1a;}
+.add-btn{font-size:13px;cursor:pointer;color:#888;background:none;border:0.5px dashed #ccc;border-radius:8px;padding:8px 14px;width:100%;margin-top:4px;}
+.add-btn:hover{background:#f5f5f5;}
+.action-btn{font-size:13px;cursor:pointer;padding:9px 16px;border-radius:8px;border:0.5px solid #ccc;background:white;color:#1a1a1a;}
+.action-btn:hover{background:#f5f5f5;}
+.action-btn.primary{background:#1a1a1a;color:white;border-color:transparent;}
+.action-btn.primary:hover{opacity:.85;}
+.action-btn.save-btn{background:#1D9E75;color:white;border-color:transparent;font-weight:500;font-size:14px;padding:11px 20px;}
+.action-btn.save-btn:hover{background:#0F6E56;}
+.action-btn.save-btn:disabled{background:#9FE1CB;cursor:not-allowed;}
+.divider{border:none;border-top:0.5px solid #eee;margin:.75rem 0;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media(max-width:480px){.two-col{grid-template-columns:1fr;}}
+.price-box{border-radius:12px;padding:14px 16px;border:0.5px solid #eee;}
+.price-box.internal{background:#FAEEDA;}
+.price-box.vendor{background:#E1F5EE;}
+.price-box-title{font-size:11px;font-weight:500;margin-bottom:6px;}
+.price-box-title.internal{color:#633806;}
+.price-box-title.vendor{color:#085041;}
+.price-big{font-size:30px;font-weight:500;line-height:1;}
+.price-big.internal{color:#633806;}
+.price-big.vendor{color:#0F6E56;}
+.price-sub{font-size:11px;margin-top:5px;}
+.price-sub.internal{color:#854F0B;}
+.price-sub.vendor{color:#0F6E56;}
+.summary-block{border-radius:12px;padding:14px 16px;border:0.5px solid #eee;margin-bottom:8px;}
+.summary-block.internal{background:#FAEEDA;}
+.summary-block.vendor{background:#E1F5EE;}
+.summary-block-title{font-size:12px;font-weight:500;margin-bottom:10px;}
+.summary-block-title.internal{color:#633806;}
+.summary-block-title.vendor{color:#085041;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.summary-row.total{border-top:0.5px solid rgba(0,0,0,0.08);padding-top:6px;margin-top:4px;margin-bottom:0;}
+.summary-row-label{font-size:12px;}
+.summary-row-label.internal{color:#854F0B;}
+.summary-row-label.vendor{color:#0F6E56;}
+.summary-row-value{font-size:13px;font-weight:500;}
+.summary-row-value.internal{color:#633806;}
+.summary-row-value.vendor{color:#085041;}
+.summary-row-value.green{color:#1D9E75;}
+.summary-row-value.red{color:#D85A30;}
+.protection-bar{border-radius:8px;padding:12px 14px;margin-top:8px;display:flex;align-items:center;gap:10px;}
+.protection-bar.good{background:#E1F5EE;border:0.5px solid #9FE1CB;}
+.protection-bar.none{background:#FAEEDA;border:0.5px solid #FAC775;}
+.tracker-box{background:#E1F5EE;border:0.5px solid #9FE1CB;border-radius:12px;padding:1rem 1.25rem;margin-top:1rem;}
+.tracker-title{font-size:12px;font-weight:500;color:#085041;margin-bottom:10px;}
+.tracker-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;}
+.tracker-row:last-child{margin-bottom:0;}
+.tracker-row label{font-size:12px;color:#085041;min-width:100px;}
+.tracker-row input,.tracker-row select{flex:1;min-width:70px;background:white;border:0.5px solid #9FE1CB;}
+.status-msg{font-size:12px;margin-top:8px;padding:8px 12px;border-radius:8px;display:none;}
+.status-msg.success{background:#E1F5EE;color:#085041;border:0.5px solid #9FE1CB;}
+.status-msg.error{background:#FCEBEB;color:#791F1F;border:0.5px solid #F7C1C1;}
+.status-msg.sending{background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4;}
+.export-card{font-size:12px;line-height:1.9;white-space:pre-wrap;font-family:monospace;color:#1a1a1a;background:#f9f9f9;border:0.5px solid #eee;border-radius:8px;padding:1rem;}
 </style>
 </head>
 <body>
+<div class="container">
+<h1>Break Builder — Hobby Empire</h1>
 
-<div class="header">
-  <div>
-    <div class="logo">Hobby Empire</div>
-    <div class="logo-sub">Break Prep</div>
-  </div>
-  <div class="lang-toggle">
-    <button class="lang-btn active" id="lang-fr" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
-  </div>
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab('config',this)">Configuration</button>
+  <button class="tab" onclick="switchTab('export',this)">Résumé</button>
 </div>
 
-<div class="tabs">
-  <div class="tab active" id="tab-prep" onclick="setMode('prep')">Avant le live</div>
-  <div class="tab" id="tab-live" onclick="setMode('live')">Pendant le live</div>
-</div>
+<div id="tab-config">
+  <div class="section">
+    <div class="section-title">Informations du break</div>
+    <div class="card">
+      <div class="row"><label>Nom</label><input type="text" id="break-name" placeholder="Ex: Topps Chrome Hobby Mix"/></div>
+      <div class="row"><label>Type</label>
+        <select id="break-type">
+          <option value="random">Random (spots numérotés)</option>
+          <option value="mixer">Mixer / multi-box</option>
+        </select>
+      </div>
+      <div class="row"><label>Nombre de spots</label><input type="number" id="nb-spots" value="30" min="1" max="200" oninput="recalc()" style="max-width:80px;"/></div>
+    </div>
+  </div>
 
-<div class="main">
-  <div id="mode-prep">
-    <div class="section-head" id="lbl-products">Produits à breaker</div>
-    <div id="product-list"></div>
-    <button class="add-btn" id="btn-add" onclick="addProduct()">+ Ajouter un produit</button>
-    <button class="gen-btn" id="gen-btn" onclick="generatePrep()">Générer les fiches</button>
-    <div id="prep-result">
-      <div class="empty">
-        <div class="empty-title" id="empty-title">Tes fiches apparaîtront ici</div>
-        <div class="empty-sub" id="empty-sub">Ajoute tes produits et génère les fiches de préparation pour ton live.</div>
+  <div class="section">
+    <div class="section-title">Produits</div>
+    <div id="products-list"></div>
+    <button class="add-btn" onclick="addProduct()">+ Ajouter un produit</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Marge line réel 🔒</div>
+    <div class="card">
+      <div class="row">
+        <label>Marge cible</label>
+        <input type="number" id="margin-real" value="20" min="0" max="100" step="1" oninput="syncSlider('real');recalc()" style="max-width:60px;"/>
+        <span style="font-size:12px;color:#888;">%</span>
+        <input type="range" id="slider-real" min="0" max="60" step="1" value="20" oninput="syncInput('real',this.value)" style="flex:2;"/>
       </div>
     </div>
   </div>
 
-  <div id="mode-live" style="display:none">
-    <div class="section-head" id="lbl-card">Chercher une carte</div>
-    <div class="live-row">
-      <input type="text" id="card-input" placeholder="Ex: Cale Makar 2019 The Cup RPA..." />
-      <button class="live-btn" id="live-btn" onclick="lookupCard()">Valeur</button>
+  <div class="section">
+    <div class="section-title">Marge line vendeur (plus élevée = plus de protection)</div>
+    <div class="card">
+      <div class="row">
+        <label>Marge cible</label>
+        <input type="number" id="margin-vendor" value="35" min="0" max="100" step="1" oninput="syncSlider('vendor');recalc()" style="max-width:60px;"/>
+        <span style="font-size:12px;color:#888;">%</span>
+        <input type="range" id="slider-vendor" min="0" max="60" step="1" value="35" oninput="syncInput('vendor',this.value)" style="flex:2;"/>
+      </div>
     </div>
-    <div id="live-result">
-      <div class="hint" id="live-hint">Entre le nom d'une carte pour voir sa valeur Raw / PSA 9 / PSA 10 et la tendance du marché.</div>
+  </div>
+
+  <div class="two-col" style="margin-bottom:10px;">
+    <div class="price-box internal">
+      <div class="price-box-title internal">Line réel / spot 🔒</div>
+      <div class="price-big internal" id="price-real">$0.00</div>
+      <div class="price-sub internal" id="margin-real-display">marge réelle 0%</div>
+    </div>
+    <div class="price-box vendor">
+      <div class="price-box-title vendor">Line vendeur / spot</div>
+      <div class="price-big vendor" id="price-vendor">$0.00</div>
+      <div class="price-sub vendor" id="margin-vendor-display">objectif vendeur 0%</div>
+    </div>
+  </div>
+
+  <div id="protection-bar" class="protection-bar good">
+    <span id="protection-label" style="font-size:12px;flex:1;color:#085041;">Protection si vendeur atteint son objectif</span>
+    <span id="protection-amount" style="font-size:16px;font-weight:500;color:#0F6E56;">+$0.00</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Résumé financier</div>
+    <div class="summary-block internal">
+      <div class="summary-block-title internal">Line réel 🔒</div>
+      <div class="summary-row"><span class="summary-row-label internal">Coût total</span><span class="summary-row-value internal" id="s-cost">$0.00</span></div>
+      <div class="summary-row"><span class="summary-row-label internal">Prix / spot</span><span class="summary-row-value internal" id="s-price-real">$0.00</span></div>
+      <div class="summary-row"><span class="summary-row-label internal">Revenu si break complet</span><span class="summary-row-value internal" id="s-rev-real">$0.00</span></div>
+      <div class="summary-row total"><span class="summary-row-label internal">Profit</span><span class="summary-row-value green" id="s-profit">$0.00</span></div>
+    </div>
+    <div class="summary-block vendor">
+      <div class="summary-block-title vendor">Line vendeur</div>
+      <div class="summary-row"><span class="summary-row-label vendor">Coût total</span><span class="summary-row-value vendor" id="s-cost-v">$0.00</span></div>
+      <div class="summary-row"><span class="summary-row-label vendor">Prix / spot</span><span class="summary-row-value vendor" id="s-price-vendor">$0.00</span></div>
+      <div class="summary-row"><span class="summary-row-label vendor">Revenu si break complet</span><span class="summary-row-value vendor" id="s-rev-vendor">$0.00</span></div>
+      <div class="summary-row total"><span class="summary-row-label vendor">Profit si vendeur atteint objectif</span><span class="summary-row-value green" id="s-profit-vendor">$0.00</span></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-title">Enregistrer dans le tracker</div>
+    <div class="tracker-box">
+      <div class="tracker-title">Données après le stream — à remplir une fois terminé</div>
+      <div class="tracker-row"><label>Vendeur</label>
+        <select id="t-vendeur">
+          <option value="">Sélectionner...</option>
+          <option>Sacha</option><option>Chuck</option><option>Phobe</option><option>Charles</option><option>Jeremi</option><option>Manu</option>
+        </select>
+      </div>
+      <div class="tracker-row"><label>Type produit</label>
+        <select id="t-produit">
+          <option value="">Sélectionner...</option>
+          <option>Hockey</option><option>Football</option><option>Multi sports</option><option>Pokemon</option>
+        </select>
+      </div>
+      <div class="tracker-row"><label>Date</label><input type="date" id="t-date"/></div>
+      <div class="tracker-row"><label>Heure début</label><input type="time" id="t-debut"/></div>
+      <div class="tracker-row"><label>Heure fin</label><input type="time" id="t-fin"/></div>
+      <div class="tracker-row"><label>Revenu réel ($)</label><input type="number" id="t-revenu" min="0" step="0.01" placeholder="0.00"/></div>
+      <div style="margin-top:12px;">
+        <button class="action-btn save-btn" id="save-btn" onclick="saveToTracker()">Enregistrer dans Google Sheets</button>
+      </div>
+      <div class="status-msg" id="status-msg"></div>
     </div>
   </div>
 </div>
 
-<div class="footer" id="footer-text">Hobby Empire Break Prep — Propulsé par Claude AI</div>
+<div id="tab-export" style="display:none;">
+  <div style="display:flex;gap:8px;margin-bottom:10px;">
+    <button class="action-btn" id="export-mode-btn" onclick="toggleExportMode()">Vue: interne 🔒</button>
+  </div>
+  <div class="export-card" id="export-card"></div>
+  <button class="action-btn primary" onclick="copyExport()" style="margin-top:1rem;">Copier le résumé</button>
+  <span id="copy-msg" style="font-size:12px;color:#1D9E75;margin-left:10px;display:none;">Copié!</span>
+</div>
+
+</div>
 
 <script>
-let lang = 'fr';
-let productCount = 0;
+const WEBHOOK='https://hooks.zapier.com/hooks/catch/27446095/uvqxcy4/';
+let products=[],exportInternal=true;
 
-const T = {
-  fr: {
-    products:'Produits à breaker', addProduct:'+ Ajouter un produit', genBtn:'Générer les fiches',
-    generating:'Analyse en cours...', cardLabel:'Chercher une carte', cardBtn:'Valeur',
-    liveHint:"Entre le nom d'une carte pour voir sa valeur Raw / PSA 9 / PSA 10 et la tendance du marché.",
-    emptyTitle:'Tes fiches apparaîtront ici', emptySub:'Ajoute tes produits et génère les fiches de préparation.',
-    tabPrep:'Avant le live', tabLive:'Pendant le live', footer:'Hobby Empire Break Prep — Propulsé par Claude AI',
-    topCards:'Cartes à surveiller', rookies:'Top Rookies', legends:'Légendes', hotPlayers:'Joueurs en feu',
-    facts:'Faits pour ton chat', compare:'Comparatif', price:'Prix boîte', hits:'Hits', format:'Format',
-    raw:'Raw', up:'En hausse', down:'En baisse', stable:'Stable',
-    placeholder:'Ex: 2023 The Cup Hockey...', cardPlaceholder:'Ex: Cale Makar 2019 The Cup RPA...',
-    analyzing:'Analyse des checklists...', lookingUp:'Recherche en cours...', error:'Erreur', rookie1:'Rookie #1'
-  },
-  en: {
-    products:'Products to break', addProduct:'+ Add a product', genBtn:'Generate prep sheets',
-    generating:'Analyzing...', cardLabel:'Look up a card', cardBtn:'Value',
-    liveHint:'Enter a card name to see its Raw / PSA 9 / PSA 10 value and market trend.',
-    emptyTitle:'Your prep sheets will appear here', emptySub:'Add your products and generate break prep sheets.',
-    tabPrep:'Before the live', tabLive:'During the live', footer:'Hobby Empire Break Prep — Powered by Claude AI',
-    topCards:'Cards to watch', rookies:'Top Rookies', legends:'Legends', hotPlayers:'Hot players',
-    facts:'Chat facts', compare:'Comparison', price:'Box price', hits:'Hits', format:'Format',
-    raw:'Raw', up:'Trending up', down:'Trending down', stable:'Stable',
-    placeholder:'Ex: 2023 The Cup Hockey...', cardPlaceholder:'Ex: Cale Makar 2019 The Cup RPA...',
-    analyzing:'Analyzing checklists...', lookingUp:'Looking up...', error:'Error', rookie1:'Rookie #1'
+function addProduct(){products.push({name:'',cost:0,qty:1});renderProducts();recalc();}
+function removeProduct(i){products.splice(i,1);renderProducts();recalc();}
+function renderProducts(){
+  const el=document.getElementById('products-list');
+  if(products.length===0){el.innerHTML='<div style="font-size:12px;color:#888;padding:4px 0;">Aucun produit ajouté</div>';return;}
+  el.innerHTML=products.map((p,i)=>`
+    <div class="card" style="margin-bottom:6px;">
+      <div class="row">
+        <input type="text" placeholder="Nom du produit" value="${p.name}" oninput="products[${i}].name=this.value" style="flex:3;"/>
+        <button class="remove-btn" onclick="removeProduct(${i})">×</button>
+      </div>
+      <div class="row">
+        <label>Coût</label>
+        <input type="number" value="${p.cost}" min="0" step="1" oninput="products[${i}].cost=parseFloat(this.value)||0;recalc()" style="max-width:80px;"/>
+        <span style="font-size:11px;color:#888;">$</span>
+        <label style="margin-left:6px;">Qté</label>
+        <input type="number" value="${p.qty}" min="1" step="1" oninput="products[${i}].qty=parseInt(this.value)||1;recalc()" style="max-width:55px;"/>
+        <span style="font-size:11px;color:#888;">boîte(s)</span>
+      </div>
+    </div>
+  `).join('');
+}
+function totalCost(){return products.reduce((s,p)=>s+(p.cost*p.qty),0);}
+function fmt(n){return '$'+n.toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+function recalc(){
+  const cost=totalCost();
+  const nbSpots=parseInt(document.getElementById('nb-spots').value)||1;
+  const mReal=parseFloat(document.getElementById('margin-real').value)||0;
+  const mVendor=parseFloat(document.getElementById('margin-vendor').value)||0;
+  const priceReal=cost/(1-mReal/100)/nbSpots;
+  const priceVendor=cost/(1-mVendor/100)/nbSpots;
+  const revReal=priceReal*nbSpots;
+  const revVendor=priceVendor*nbSpots;
+  const profitReal=revReal-cost;
+  const profitVendor=revVendor-cost;
+  const protection=revVendor-revReal;
+
+  document.getElementById('price-real').textContent=fmt(priceReal);
+  document.getElementById('price-vendor').textContent=fmt(priceVendor);
+  document.getElementById('margin-real-display').textContent='marge réelle '+mReal.toFixed(1)+'%';
+  document.getElementById('margin-vendor-display').textContent='objectif vendeur '+mVendor.toFixed(1)+'%';
+  document.getElementById('s-cost').textContent=fmt(cost);
+  document.getElementById('s-price-real').textContent=fmt(priceReal);
+  document.getElementById('s-rev-real').textContent=fmt(revReal);
+  document.getElementById('s-profit').textContent=fmt(profitReal);
+  document.getElementById('s-profit').className='summary-row-value '+(profitReal>=0?'green':'red');
+  document.getElementById('s-cost-v').textContent=fmt(cost);
+  document.getElementById('s-price-vendor').textContent=fmt(priceVendor);
+  document.getElementById('s-rev-vendor').textContent=fmt(revVendor);
+  document.getElementById('s-profit-vendor').textContent=fmt(profitVendor);
+  document.getElementById('s-profit-vendor').className='summary-row-value '+(profitVendor>=0?'green':'red');
+
+  const pbar=document.getElementById('protection-bar');
+  const plabel=document.getElementById('protection-label');
+  const pamount=document.getElementById('protection-amount');
+  if(mVendor>mReal){
+    pbar.className='protection-bar good';
+    plabel.style.color='#085041';pamount.style.color='#0F6E56';
+    plabel.textContent='Protection si vendeur atteint son objectif';
+    pamount.textContent='+'+fmt(protection);
+  } else if(mVendor===mReal){
+    pbar.className='protection-bar none';
+    plabel.style.color='#854F0B';pamount.style.color='#BA7517';
+    plabel.textContent='Aucune protection — line vendeur = line réel';
+    pamount.textContent='$0.00';
+  } else {
+    pbar.className='protection-bar none';
+    plabel.style.color='#854F0B';pamount.style.color='#BA7517';
+    plabel.textContent='Attention — line vendeur sous ta marge réelle';
+    pamount.textContent=fmt(protection);
   }
-};
-function t(k) { return T[lang][k] || k; }
-
-function setLang(l) {
-  lang = l;
-  document.getElementById('lang-fr').classList.toggle('active', l==='fr');
-  document.getElementById('lang-en').classList.toggle('active', l==='en');
-  document.getElementById('tab-prep').textContent = t('tabPrep');
-  document.getElementById('tab-live').textContent = t('tabLive');
-  document.getElementById('lbl-products').textContent = t('products');
-  document.getElementById('btn-add').textContent = t('addProduct');
-  document.getElementById('gen-btn').textContent = t('genBtn');
-  document.getElementById('lbl-card').textContent = t('cardLabel');
-  document.getElementById('live-btn').textContent = t('cardBtn');
-  document.getElementById('live-hint').textContent = t('liveHint');
-  document.getElementById('footer-text').textContent = t('footer');
-  document.getElementById('card-input').placeholder = t('cardPlaceholder');
-  const et = document.getElementById('empty-title'); if(et) et.textContent = t('emptyTitle');
-  const es = document.getElementById('empty-sub'); if(es) es.textContent = t('emptySub');
-  document.querySelectorAll('.product-row input').forEach(i => i.placeholder = t('placeholder'));
+  buildExport();
 }
 
-function setMode(m) {
-  document.getElementById('mode-prep').style.display = m==='prep'?'block':'none';
-  document.getElementById('mode-live').style.display = m==='live'?'block':'none';
-  document.getElementById('tab-prep').classList.toggle('active', m==='prep');
-  document.getElementById('tab-live').classList.toggle('active', m==='live');
+function syncSlider(type){document.getElementById('slider-'+type).value=parseFloat(document.getElementById('margin-'+type).value)||0;}
+function syncInput(type,val){document.getElementById('margin-'+type).value=val;recalc();}
+
+async function saveToTracker(){
+  const vendeur=document.getElementById('t-vendeur').value;
+  const produit=document.getElementById('t-produit').value;
+  const date=document.getElementById('t-date').value;
+  const debut=document.getElementById('t-debut').value;
+  const fin=document.getElementById('t-fin').value;
+  const revenu=parseFloat(document.getElementById('t-revenu').value)||0;
+  if(!vendeur||!produit||!date||!debut||!fin||!revenu){
+    showStatus('Remplis tous les champs avant d\'enregistrer.','error');return;
+  }
+  const cost=totalCost();
+  const nbSpots=parseInt(document.getElementById('nb-spots').value)||1;
+  const mReal=parseFloat(document.getElementById('margin-real').value)||0;
+  const mVendor=parseFloat(document.getElementById('margin-vendor').value)||0;
+  const priceReal=cost/(1-mReal/100)/nbSpots;
+  const priceVendor=cost/(1-mVendor/100)/nbSpots;
+  const payload={
+    nom_break:document.getElementById('break-name').value||'Break sans nom',
+    date:date,vendeur:vendeur,type_produit:produit,
+    heure_debut:debut,heure_fin:fin,revenu_reel:revenu,
+    nb_spots:nbSpots,
+    prix_reel_spot:parseFloat(priceReal.toFixed(2)),
+    prix_vendeur_spot:parseFloat(priceVendor.toFixed(2)),
+    cout_total:parseFloat(cost.toFixed(2))
+  };
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true;
+  showStatus('Envoi en cours...','sending');
+  try{
+    await fetch(WEBHOOK, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), mode:'no-cors'});
+    showStatus('Enregistré dans Google Sheets !','success');
+    btn.disabled=false;
+  }catch(e){
+    showStatus('Erreur de connexion. Vérifie ton internet.','error');
+    btn.disabled=false;
+  }
 }
 
-function addProduct(v) {
-  productCount++;
-  const id = 'prod-'+productCount;
-  const div = document.createElement('div');
-  div.className = 'product-row';
-  div.id = 'row-'+id;
-  div.innerHTML = `<input type="text" id="${id}" placeholder="${t('placeholder')}" value="${v||''}" /><button class="remove-btn" onclick="document.getElementById('row-${id}').remove()">×</button>`;
-  div.querySelector('input').addEventListener('keydown', e => { if(e.key==='Enter') generatePrep(); });
-  document.getElementById('product-list').appendChild(div);
+function showStatus(msg,type){
+  const el=document.getElementById('status-msg');
+  el.textContent=msg;el.className='status-msg '+type;el.style.display='block';
+  if(type==='success')setTimeout(()=>{el.style.display='none';},4000);
 }
 
-function initials(name) {
-  return (name||'').split(' ').map(w=>w[0]).filter(Boolean).slice(0,2).join('').toUpperCase() || '?';
+function buildExport(){
+  const name=document.getElementById('break-name').value||'Break sans nom';
+  const type=document.getElementById('break-type').value==='random'?'Random numéroté':'Mixer / multi-box';
+  const cost=totalCost();
+  const nbSpots=parseInt(document.getElementById('nb-spots').value)||1;
+  const mReal=parseFloat(document.getElementById('margin-real').value)||0;
+  const mVendor=parseFloat(document.getElementById('margin-vendor').value)||0;
+  const priceReal=cost/(1-mReal/100)/nbSpots;
+  const priceVendor=cost/(1-mVendor/100)/nbSpots;
+  const revReal=priceReal*nbSpots;
+  const revVendor=priceVendor*nbSpots;
+  const protection=revVendor-revReal;
+  let lines=['=== '+name.toUpperCase()+' ===','Type: '+type,'Spots: '+nbSpots,''];
+  if(products.length>0){lines.push('PRODUITS:');products.forEach(p=>lines.push('  '+(p.name||'Produit')+' x'+p.qty+' — '+fmt(p.cost*p.qty)));lines.push('');}
+  if(exportInternal){
+    lines.push('LINE RÉEL 🔒');
+    lines.push('  Prix / spot:              '+fmt(priceReal));
+    lines.push('  Revenu si break complet:  '+fmt(revReal));
+    lines.push('  Profit:                   '+fmt(revReal-cost));
+    lines.push('  Marge:                    '+mReal.toFixed(1)+'%');
+    lines.push('');
+    lines.push('LINE VENDEUR');
+    lines.push('  Prix / spot:              '+fmt(priceVendor));
+    lines.push('  Revenu si break complet:  '+fmt(revVendor));
+    lines.push('  Profit:                   '+fmt(revVendor-cost));
+    lines.push('  Marge:                    '+mVendor.toFixed(1)+'%');
+    lines.push('');
+    lines.push('PROTECTION:                 +'+fmt(protection));
+  } else {
+    lines.push('LINE VENDEUR');
+    lines.push('  Prix cible / spot:        '+fmt(priceVendor));
+    lines.push('  Spots à vendre:           '+nbSpots);
+    lines.push('  Revenu cible:             '+fmt(revVendor));
+    lines.push('  Marge cible:              '+mVendor.toFixed(1)+'%');
+  }
+  document.getElementById('export-card').textContent=lines.join('\n');
 }
 
-async function getPlayerImg(name, sport) {
-  try {
-    const r = await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchplayers.php?p=${encodeURIComponent(name)}`);
-    const d = await r.json();
-    if (d.player && d.player[0]) return d.player[0].strThumb || d.player[0].strCutout || null;
-  } catch(e) {}
-  return null;
+function toggleExportMode(){
+  exportInternal=!exportInternal;
+  document.getElementById('export-mode-btn').textContent='Vue: '+(exportInternal?'interne 🔒':'vendeur');
+  buildExport();
 }
 
-function thumb(img, name, cls='player-thumb') {
-  if (img) return `<img src="${img}" class="${cls}" onerror="this.outerHTML=\`<div class='player-init'>${initials(name)}</div>\`" />`;
-  return `<div class="player-init">${initials(name)}</div>`;
-}
-
-async function callClaude(msg, sys) {
-  const r = await fetch('/api/claude', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:4000, system:sys, messages:[{role:'user',content:msg}] })
+function copyExport(){
+  const text=document.getElementById('export-card').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const msg=document.getElementById('copy-msg');
+    msg.style.display='inline';
+    setTimeout(()=>{msg.style.display='none';},2000);
   });
-  if (!r.ok) { const e = await r.json().catch(()=>{}); throw new Error(e?.error?.message||'API Error '+r.status); }
-  const d = await r.json();
-  const raw = d.content.filter(b=>b.type==='text').map(b=>b.text).join('');
-  const m = raw.match(/\{[\s\S]*\}/);
-  if (!m) throw new Error('Invalid response');
-  return JSON.parse(m[0]);
 }
 
-async function generatePrep() {
-  const inputs = document.querySelectorAll('#product-list input');
-  const products = Array.from(inputs).map(i=>i.value.trim()).filter(Boolean);
-  if (!products.length) return;
-  const btn = document.getElementById('gen-btn');
-  btn.disabled = true; btn.textContent = t('generating');
-  document.getElementById('prep-result').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">${t('analyzing')}</div></div>`;
-  try {
-    const results = [];
-    for (const p of products) {
-      const langNote = lang==='fr' ? 'Réponds en français.' : 'Respond in English.';
-      const d = await callClaude(
-        `Generate a complete accurate prep sheet for: "${p}". Use the real official checklist. ${langNote}`,
-        `Trading card expert. JSON ONLY, no markdown, no backticks:
-{"name":"Full set name","brand":"Brand","year":"Year","sport":"Sport","format":"Box format","priceBox":"CAD price","hitsPerBox":"Hits per box","summary":"1-2 sentence description","topCards":[{"name":"Player - Card type","value":"$XX-$XXX","tag":"rookie|hot|rare|auto|legend","player":"First Last"}],"rookies":[{"rank":1,"name":"Full name","team":"Team","position":"POS","value":"$XX-$XXX"}],"legends":[{"name":"Full name","cardType":"Insert type","value":"$XX-$XXX"}],"hotPlayers":["Name1","Name2","Name3","Name4","Name5"],"hypeFacts":["Fact1","Fact2","Fact3"]}
-CRITICAL: rookies must be REAL rookies from THIS set's specific season only. Include 10-15 real checklist rookies.`
-      );
-      results.push(d);
-    }
-    await renderPrep(results);
-  } catch(e) {
-    document.getElementById('prep-result').innerHTML = `<div class="error-box">${t('error')}: ${e.message}</div>`;
-  }
-  btn.disabled = false; btn.textContent = t('genBtn');
+function switchTab(tab,btnEl){
+  document.getElementById('tab-config').style.display=tab==='config'?'block':'none';
+  document.getElementById('tab-export').style.display=tab==='export'?'block':'none';
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  if(btnEl)btnEl.classList.add('active');
+  if(tab==='export')buildExport();
 }
 
-const tagLabel = () => ({ rookie:'RC', hot:lang==='fr'?'En feu':'Hot', rare:'Rare', auto:'Auto', legend:lang==='fr'?'Légende':'Legend' });
-const tagClass = { rookie:'tag-rookie', hot:'tag-hot', rare:'tag-rare', auto:'tag-auto', legend:'tag-legend' };
-
-async function renderPrep(results) {
-  let html = '';
-  for (const d of results) {
-    const sport = d.sport || 'Hockey';
-    // Hero images
-    const heroNames = (d.hotPlayers||[]).slice(0,2);
-    const heroImgs = await Promise.all(heroNames.map(n => getPlayerImg(n, sport)));
-    const heroHtml = heroImgs.filter(Boolean).map(src =>
-      `<img src="${src}" class="hero-player-img" onerror="this.style.display='none'" />`).join('');
-
-    // Top cards
-    const tl = tagLabel();
-    const topCardsHtml = await Promise.all((d.topCards||[]).map(async c => {
-      const pname = c.player || (c.name||'').split(' - ')[0];
-      const img = await getPlayerImg(pname, sport);
-      return `<div class="card-row">${thumb(img,pname)}<div class="row-info"><div class="row-name">${c.name}<span class="tag ${tagClass[c.tag]||'tag-rookie'}">${tl[c.tag]||c.tag}</span></div></div><div class="row-price">${c.value}</div></div>`;
-    }));
-
-    // Rookies
-    const rookiesHtml = await Promise.all((d.rookies||[]).map(async (r,i) => {
-      const img = await getPlayerImg(r.name, sport);
-      return `<div class="card-row"><div class="row-num">${i+1}</div>${thumb(img,r.name)}<div class="row-info"><div class="row-name">${r.name}</div><div class="row-sub">${r.team} &middot; ${r.position}</div></div><div class="row-price">${r.value}</div></div>`;
-    }));
-
-    // Legends
-    const legendsHtml = await Promise.all((d.legends||[]).map(async l => {
-      const img = await getPlayerImg(l.name, sport);
-      return `<div class="card-row">${thumb(img,l.name)}<div class="row-info"><div class="row-name">${l.name}<span class="tag tag-legend">${l.cardType}</span></div></div><div class="row-price">${l.value}</div></div>`;
-    }));
-
-    // Hot players chips
-    const chipsHtml = await Promise.all((d.hotPlayers||[]).map(async p => {
-      const img = await getPlayerImg(p, sport);
-      const av = img ? `<img src="${img}" class="chip-img" onerror="this.outerHTML=\`<div class='chip-init'>${initials(p)}</div>\`" />` : `<div class="chip-init">${initials(p)}</div>`;
-      return `<div class="player-chip">${av}<span class="chip-name">${p}</span></div>`;
-    }));
-
-    const factsHtml = (d.hypeFacts||[]).map(f => `<div class="fact-row"><span class="fact-dash">—</span><span>${f}</span></div>`).join('');
-
-    html += `<div class="product-card">
-      <div class="card-hero">
-        <div class="hero-accent"></div>
-        <div class="hero-players">${heroHtml}</div>
-        <div class="hero-text"><div class="hero-name">${d.name||''}</div><div class="hero-meta">${d.brand||''} &middot; ${d.year||''} &middot; ${sport}</div></div>
-      </div>
-      <div class="stats-bar">
-        <div class="stat-cell"><div class="stat-lbl">${t('hits')}</div><div class="stat-num">${d.hitsPerBox||'-'}</div></div>
-      </div>
-      <div class="summary-text">${d.summary||''}</div>
-      ${topCardsHtml.length?`<div class="sect"><div class="sect-lbl">${t('topCards')}</div>${topCardsHtml.join('')}</div>`:''}
-      ${rookiesHtml.length?`<div class="sect"><div class="sect-lbl">${t('rookies')}</div>${rookiesHtml.join('')}</div>`:''}
-      ${legendsHtml.length?`<div class="sect"><div class="sect-lbl">${t('legends')}</div>${legendsHtml.join('')}</div>`:''}
-      ${chipsHtml.length?`<div class="sect"><div class="sect-lbl" style="padding-bottom:2px">${t('hotPlayers')}</div><div class="players-grid">${chipsHtml.join('')}</div></div>`:''}
-      ${factsHtml?`<div class="sect"><div class="sect-lbl" style="padding-bottom:2px">${t('facts')}</div><div class="facts-list">${factsHtml}</div></div>`:''}
-    </div>`;
-  }
-
-  if (results.length > 1) {
-    html += `<div class="product-card">
-      <div class="sect"><div class="sect-lbl" style="padding-bottom:6px">${t('compare')}</div>
-        <table class="compare-tbl">
-          <thead><tr><th>${lang==='fr'?'Produit':'Product'}</th><th>${t('hits')}</th><th>${t('rookie1')}</th></tr></thead>
-          <tbody>${results.map(d=>`<tr><td><strong>${d.name||d.brand}</strong></td><td>${d.hitsPerBox||'-'}</td><td>${(d.rookies||[])[0]?.name||'-'}</td></tr>`).join('')}</tbody>
-        </table>
-      </div>
-    </div>`;
-  }
-  document.getElementById('prep-result').innerHTML = html;
-}
-
-async function lookupCard() {
-  const card = document.getElementById('card-input').value.trim();
-  if (!card) return;
-  const btn = document.getElementById('live-btn');
-  btn.disabled = true; btn.textContent = '...';
-  document.getElementById('live-result').innerHTML = `<div class="loading"><div class="spinner"></div><div class="loading-text">${t('lookingUp')}</div></div>`;
-  try {
-    const langNote = lang==='fr'?'Réponds en français.':'Respond in English.';
-    const d = await callClaude(
-      `Market value for this card: "${card}". ${langNote}`,
-      `Trading card expert. JSON ONLY no markdown:
-{"cardName":"Full official name","playerName":"First Last","rawValue":"$XX-$XX","psa9Value":"$XXX","psa10Value":"$XXX","trend":"up|down|stable","trendNote":"Short note","funFact":"Interesting fact to engage chat","sport":"Hockey|Football|Basketball|Baseball"}`
-    );
-    const img = await getPlayerImg(d.playerName||d.cardName, d.sport||'Hockey');
-    const playerHtml = img ? `<img src="${img}" class="live-player-img" onerror="this.style.display='none'" />` : '';
-    const tc = d.trend==='up'?'trend-up':d.trend==='down'?'trend-down':'trend-stable';
-    const ti = d.trend==='up'?'↑':d.trend==='down'?'↓':'—';
-    const tl = d.trend==='up'?t('up'):d.trend==='down'?t('down'):t('stable');
-    document.getElementById('live-result').innerHTML = `
-      <div class="live-card">
-        <div class="live-hero">
-          ${playerHtml}
-          <div><div class="live-card-name">${d.cardName}</div><div class="trend-row"><span class="${tc}">${ti} ${tl}</span><span class="trend-note">— ${d.trendNote}</span></div></div>
-        </div>
-        <div class="live-prices">
-          <div class="price-cell"><div class="price-lbl">${t('raw')}</div><div class="price-val">${d.rawValue}</div></div>
-          <div class="price-cell"><div class="price-lbl">PSA 9</div><div class="price-val">${d.psa9Value}</div></div>
-          <div class="price-cell"><div class="price-lbl">PSA 10</div><div class="price-val">${d.psa10Value}</div></div>
-        </div>
-        <div class="live-fact">${d.funFact}</div>
-      </div>`;
-  } catch(e) {
-    document.getElementById('live-result').innerHTML = `<div class="error-box">${t('error')}: ${e.message}</div>`;
-  }
-  btn.disabled = false; btn.textContent = t('cardBtn');
-}
-
-document.getElementById('card-input').addEventListener('keydown', e => { if(e.key==='Enter') lookupCard(); });
-addProduct(); addProduct();
+document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
+renderProducts();recalc();
 </script>
 </body>
 </html>
