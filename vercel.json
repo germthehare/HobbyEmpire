@@ -2,13 +2,5 @@
   "outputDirectory": "public",
   "rewrites": [
     { "source": "/api/claude", "destination": "/api/claude" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
-    }
   ]
 }
