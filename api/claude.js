@@ -12,7 +12,8 @@ export default async function handler(req) {
   }
   try {
     const body = await req.json();
-    delete body.tools;
+    body.tools = [{"type": "web_search_20250305", "name": "web_search"}];
+    body.max_tokens = 4000;
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
