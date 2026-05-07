@@ -12,7 +12,9 @@ export default async function handler(req) {
   }
   try {
     const body = await req.json();
+    body.model = 'claude-sonnet-4-6';
     delete body.tools;
+    delete body.tool_choice;
     body.max_tokens = 4000;
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
