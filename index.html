@@ -283,7 +283,7 @@ function thumb(img, name, cls='player-thumb') {
 async function callClaude(msg, sys) {
   const r = await fetch('/api/claude', {
     method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:4000, system:sys, messages:[{role:'user',content:msg}] })
+    body: JSON.stringify({ model:'claude-sonnet-4-5-20251001', max_tokens:4000, system:sys, messages:[{role:'user',content:msg}] })
   });
   if (!r.ok) { const e = await r.json().catch(()=>{}); throw new Error(e?.error?.message||'API Error '+r.status); }
   const d = await r.json();
