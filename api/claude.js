@@ -12,9 +12,9 @@ export default async function handler(req) {
   }
   try {
     const body = await req.json();
-    body.tools = [{"type": "web_search_20250305", "name": "web_search"}];
+   delete body.tools;
     body.max_tokens = 4000;
-    body.stream = true;
+    body.stream = false;
 
     const upstream = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -22,7 +22,7 @@ export default async function handler(req) {
         'Content-Type': 'application/json',
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
-        'anthropic-beta': 'interleaved-thinking-2025-05-14'
+    
       },
       body: JSON.stringify(body)
     });
