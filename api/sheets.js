@@ -4,9 +4,10 @@ export const config = { maxDuration: 30 };
 function fixDate(val) {
   if (!val) return '';
   if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}/)) return val;
-  if (typeof val === 'number') {
-    // Google Sheets epoch: Dec 30, 1899
-    const d = new Date((val - 25569) * 86400 * 1000);
+  const num = Number(val);
+  if (!isNaN(num) && num > 40000) {
+    // Google Sheets epoch: Dec 30, 1899 → convert to Unix
+    const d = new Date((num - 25569) * 86400 * 1000);
     const y = d.getUTCFullYear();
     const m = String(d.getUTCMonth() + 1).padStart(2, '0');
     const day = String(d.getUTCDate()).padStart(2, '0');
