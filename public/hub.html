@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub — Hobby Empire</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --gold: #B8942A; --gold2: #D4AD47; --gold3: #F0CC6A;
+    --dark: #080808; --dark2: #111111; --dark3: #1A1A1A; --dark4: #242424;
+    --text: #EAE6DF; --text2: #A89F94; --text3: #5C5650;
+    --red: #C94040; --green: #3A8C5C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+
+  .header { background: var(--dark2); border-bottom: 1px solid #1e1e1e; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold3); }
+  .logo-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: -2px; }
+  .header-nav { display: flex; gap: 6px; }
+  .nav-link { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 7px 13px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: var(--text2); border-color: #2a2a2a; }
+  .nav-link.active { color: var(--gold3); border-color: #2a2010; background: rgba(184,148,42,0.06); }
+
+  .page-head { padding: 32px 24px 24px; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); }
+  .refresh-btn { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); background: var(--dark2); border: 1px solid #222; border-radius: 8px; padding: 9px 16px; cursor: pointer; transition: all 0.15s; }
+  .refresh-btn:hover { color: var(--text2); border-color: #333; }
+
+  .main { padding: 0 24px 60px; max-width: 1100px; margin: 0 auto; }
+
+  /* KPI STRIP */
+  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  @media (max-width: 700px) { .kpi-strip { grid-template-columns: repeat(2,1fr); } }
+  .kpi { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 12px; padding: 18px 20px; }
+  .kpi-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .kpi-val { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--gold3); }
+  .kpi-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text3); margin-top: 4px; letter-spacing: 0.5px; }
+
+  /* SECTIONS */
+  .section { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 14px; margin-bottom: 16px; overflow: hidden; }
+  .section-head { padding: 16px 20px; border-bottom: 1px solid #141414; }
+  .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); }
+  .section-body { padding: 20px; }
+
+  /* TABLE */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { text-align: left; padding: 8px 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid #1a1a1a; font-weight: 700; white-space: nowrap; }
+  .data-table td { padding: 10px 12px; border-bottom: 1px solid #0e0e0e; color: var(--text); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td.num { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; }
+  .data-table td.green { color: #5aad72; }
+  .data-table td.gold { color: var(--gold3); }
+  .data-table td.dim { color: var(--text3); }
+
+  /* CHART */
+  .chart-wrap { position: relative; height: 220px; }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 48px 20px; color: var(--text3); }
+  .spinner { width: 26px; height: 26px; border: 1px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 14px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 13px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px; }
+
+  .config-banner { background: var(--dark3); border: 1px solid #252525; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; font-size: 13px; color: var(--text3); line-height: 1.7; }
+  .config-banner strong { color: var(--gold2); }
+  .config-banner code { background: var(--dark4); border: 1px solid #2a2a2a; border-radius: 4px; padding: 1px 6px; font-size: 12px; color: var(--text2); }
+
+  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); border-top: 1px solid #111; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo-wrap" href="/">
+    <div>
+      <div class="logo">Hobby Empire</div>
+      <div class="logo-sub">Hub</div>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a class="nav-link" href="/">Home</a>
+    <a class="nav-link" href="/break-builder.html">Break Builder</a>
+    <a class="nav-link active" href="/hub.html">Hub</a>
+    <a class="nav-link" href="/break-prep.html">Break Prep</a>
+  </nav>
+</div>
+
+<div class="page-head">
+  <h1 class="page-title">Hub — Stats</h1>
+  <button class="refresh-btn" onclick="loadData()">↻ Actualiser</button>
+</div>
+
+<div class="main">
+
+  <div id="config-banner" class="config-banner" style="display:none">
+    <strong>Configuration requise</strong><br>
+    Pour connecter le Hub à votre Google Sheets, ajoutez l'URL de votre Apps Script Web App dans <code>window.SHEETS_READ_URL</code>.<br>
+    En attendant, les données de démonstration sont affichées.
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-lbl">Revenu total</div>
+      <div class="kpi-val" id="kpi-revenu">—</div>
+      <div class="kpi-sub" id="kpi-revenu-sub">chargement...</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Bénéfice net</div>
+      <div class="kpi-val" id="kpi-benefice">—</div>
+      <div class="kpi-sub" id="kpi-benefice-sub">chargement...</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Nb breaks</div>
+      <div class="kpi-val" id="kpi-breaks">—</div>
+      <div class="kpi-sub" id="kpi-breaks-sub">chargement...</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Marge moy.</div>
+      <div class="kpi-val" id="kpi-marge">—</div>
+      <div class="kpi-sub" id="kpi-marge-sub">chargement...</div>
+    </div>
+  </div>
+
+  <!-- CHART + PAR PLAGE -->
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><span class="section-label">Revenu par jour</span></div>
+      <div class="section-body">
+        <div class="chart-wrap"><canvas id="chart-jours"></canvas></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><span class="section-label">Par plage horaire</span></div>
+      <div class="section-body">
+        <table class="data-table">
+          <thead><tr><th>Plage</th><th>Heure</th><th>Breaks</th><th>Revenu</th><th>Bénéfice</th></tr></thead>
+          <tbody id="table-horaire">
+            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAR JOUR DE LA SEMAINE -->
+  <div class="section" style="margin-bottom:16px">
+    <div class="section-head"><span class="section-label">Par jour de la semaine</span></div>
+    <div class="section-body">
+      <table class="data-table">
+        <thead><tr><th>Jour</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Bén. moyen</th><th>Rev / heure moy.</th><th>Marge moy.</th><th>Meilleur vendeur</th></tr></thead>
+        <tbody id="table-jours">
+          <tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAR MOIS -->
+  <div class="section" style="margin-bottom:16px">
+    <div class="section-head"><span class="section-label">Par mois</span></div>
+    <div class="section-body">
+      <table class="data-table">
+        <thead><tr><th>Mois</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Bén. moyen</th><th>Marge moy.</th></tr></thead>
+        <tbody id="table-mois">
+          <tr><td colspan="6" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PAR CATÉGORIE + PAR SPORT -->
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><span class="section-label">Par catégorie</span></div>
+      <div class="section-body">
+        <table class="data-table">
+          <thead><tr><th>Catégorie</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Marge</th></tr></thead>
+          <tbody id="table-cat">
+            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><span class="section-label">Par sport / licence</span></div>
+      <div class="section-body">
+        <table class="data-table">
+          <thead><tr><th>Sport</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Marge</th></tr></thead>
+          <tbody id="table-sport">
+            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Hobby Empire &mdash; Hub &copy; 2026</div>
+
+<script>
+const JOURS_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const JOURS_FR = { Monday:'Lundi', Tuesday:'Mardi', Wednesday:'Mercredi', Thursday:'Jeudi', Friday:'Vendredi', Saturday:'Samedi', Sunday:'Dimanche' };
+const MOIS_FR = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+function fmt(n) { return '$' + (n||0).toLocaleString('fr-CA', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function pct(n) { return (n||0).toFixed(1) + '%'; }
+
+// Demo data (used when no Sheets URL configured)
+const DEMO = {
+  breaks: [
+    { date:'2026-05-04', vendeur:'Jeremi', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Hockey', nomBreak:'LIVE BREAK AM', duree:277, revHeure:1297.55, pctWN:0, ventesBrutes:5987, revenuReel:5987, beneficeNet:1632, jour:'Monday', mois:5, annee:2026, semaine:19 },
+    { date:'2026-05-05', vendeur:'Phobe', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Hockey', nomBreak:'Live Lundi Soir', duree:260, revHeure:2905.62, pctWN:0, ventesBrutes:12591, revenuReel:12591, beneficeNet:2107, jour:'Tuesday', mois:5, annee:2026, semaine:19 },
+    { date:'2026-05-05', vendeur:'Jeremi', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Hockey', nomBreak:'MARDI AM', duree:339, revHeure:630.97, pctWN:0, ventesBrutes:3565, revenuReel:3565, beneficeNet:320, jour:'Tuesday', mois:5, annee:2026, semaine:19 },
+    { date:'2026-05-06', vendeur:'Chuck', helper:'Phobe', categorie:'Repacks', sport:'Hockey', typeBreak:'Hockey', nomBreak:'Repacks', duree:255, revHeure:3787.06, pctWN:0, ventesBrutes:16095, revenuReel:16095, beneficeNet:4224, jour:'Wednesday', mois:5, annee:2026, semaine:19 },
+  ]
+};
+
+let chartJours = null;
+
+async function loadData() {
+  const url = window.SHEETS_READ_URL || '';
+  let data;
+
+  if (!url) {
+    document.getElementById('config-banner').style.display = 'block';
+    data = DEMO.breaks;
+  } else {
+    document.getElementById('config-banner').style.display = 'none';
+    try {
+      const res = await fetch(url);
+      data = await res.json();
+    } catch(e) {
+      document.getElementById('config-banner').style.display = 'block';
+      data = DEMO.breaks;
+    }
+  }
+
+  renderAll(data);
+}
+
+function renderAll(breaks) {
+  const total = breaks.length;
+  const totalRevenu = breaks.reduce((s,b) => s + (+b.revenuReel||0), 0);
+  const totalBenefice = breaks.reduce((s,b) => s + (+b.beneficeNet||0), 0);
+  const margeMoy = totalRevenu > 0 ? (totalBenefice / totalRevenu * 100) : 0;
+
+  document.getElementById('kpi-revenu').textContent = fmt(totalRevenu);
+  document.getElementById('kpi-revenu-sub').textContent = total + ' breaks au total';
+  document.getElementById('kpi-benefice').textContent = fmt(totalBenefice);
+  document.getElementById('kpi-benefice-sub').textContent = pct(margeMoy) + ' de marge';
+  document.getElementById('kpi-breaks').textContent = total;
+  document.getElementById('kpi-breaks-sub').textContent = 'breaks enregistrés';
+  document.getElementById('kpi-marge').textContent = pct(margeMoy);
+  document.getElementById('kpi-marge-sub').textContent = 'marge moyenne';
+
+  renderChartJours(breaks);
+  renderHoraire(breaks);
+  renderJours(breaks);
+  renderMois(breaks);
+  renderCat(breaks);
+  renderSport(breaks);
+}
+
+function renderChartJours(breaks) {
+  const byJour = {};
+  JOURS_ORDER.forEach(j => byJour[j] = 0);
+  breaks.forEach(b => { if (byJour[b.jour] !== undefined) byJour[b.jour] += (+b.revenuReel||0); });
+
+  const labels = JOURS_ORDER.map(j => JOURS_FR[j]);
+  const vals = JOURS_ORDER.map(j => byJour[j]);
+
+  if (chartJours) chartJours.destroy();
+  const ctx = document.getElementById('chart-jours').getContext('2d');
+  chartJours = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        data: vals,
+        backgroundColor: vals.map(v => v > 0 ? 'rgba(184,148,42,0.7)' : 'rgba(60,56,50,0.4)'),
+        borderColor: vals.map(v => v > 0 ? '#B8942A' : '#2a2a2a'),
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#111' }, ticks: { color: '#5C5650', font: { family: 'Barlow Condensed', size: 10 } } },
+        y: { grid: { color: '#111' }, ticks: { color: '#5C5650', font: { family: 'Barlow Condensed', size: 10 }, callback: v => '$' + v.toLocaleString() } }
+      }
+    }
+  });
+}
+
+function renderHoraire(breaks) {
+  const plages = [
+    { label: 'Matin', start: 6, end: 12 },
+    { label: 'Après-midi', start: 12, end: 17 },
+    { label: 'Soir', start: 17, end: 24 },
+  ];
+  const horaireLabel = ['6h → 12h', '12h → 17h', '17h → 00h'];
+
+  // For demo, assign breaks based on name keywords
+  function guessHeure(b) {
+    const n = (b.nomBreak||'').toLowerCase();
+    if (n.includes('am') || n.includes('matin')) return 9;
+    if (n.includes('soir') || n.includes('pm')) return 19;
+    return 19;
+  }
+
+  const rows = plages.map((p, i) => {
+    const filtered = breaks.filter(b => {
+      const h = guessHeure(b);
+      return h >= p.start && h < p.end;
+    });
+    const rev = filtered.reduce((s,b) => s+(+b.revenuReel||0), 0);
+    const ben = filtered.reduce((s,b) => s+(+b.beneficeNet||0), 0);
+    return { label: p.label, heure: horaireLabel[i], n: filtered.length, rev, ben };
+  });
+
+  document.getElementById('table-horaire').innerHTML = rows.map(r =>
+    `<tr>
+      <td>${r.label}</td>
+      <td class="dim">${r.heure}</td>
+      <td class="num">${r.n}</td>
+      <td class="num gold">${fmt(r.rev)}</td>
+      <td class="num green">${fmt(r.ben)}</td>
+    </tr>`
+  ).join('');
+}
+
+function renderJours(breaks) {
+  const byJour = {};
+  breaks.forEach(b => {
+    const j = b.jour || 'Unknown';
+    if (!byJour[j]) byJour[j] = { n:0, rev:0, ben:0, vendeurs:{} };
+    byJour[j].n++;
+    byJour[j].rev += (+b.revenuReel||0);
+    byJour[j].ben += (+b.beneficeNet||0);
+    if (b.vendeur) byJour[j].vendeurs[b.vendeur] = (byJour[j].vendeurs[b.vendeur]||0)+1;
+  });
+
+  const rows = JOURS_ORDER.filter(j => byJour[j]).map(j => {
+    const d = byJour[j];
+    const bestV = Object.entries(d.vendeurs).sort((a,b)=>b[1]-a[1])[0];
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    const revHMoy = d.rev / (breaks.filter(b=>b.jour===j).reduce((s,b)=>s+(+b.duree||0),0)/60||1);
+    return `<tr>
+      <td>${JOURS_FR[j]||j}</td>
+      <td class="num">${d.n}</td>
+      <td class="num gold">${fmt(d.rev)}</td>
+      <td class="num green">${fmt(d.ben)}</td>
+      <td class="num green">${fmt(d.ben/d.n)}</td>
+      <td class="num">${fmt(revHMoy)}</td>
+      <td class="num dim">${pct(marge)}</td>
+      <td class="dim">${bestV ? bestV[0] : '—'}</td>
+    </tr>`;
+  });
+
+  document.getElementById('table-jours').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+}
+
+function renderMois(breaks) {
+  const byMois = {};
+  breaks.forEach(b => {
+    const k = (b.annee||2026) + '-' + String(b.mois||1).padStart(2,'0');
+    if (!byMois[k]) byMois[k] = { mois:b.mois, annee:b.annee, n:0, rev:0, ben:0 };
+    byMois[k].n++;
+    byMois[k].rev += (+b.revenuReel||0);
+    byMois[k].ben += (+b.beneficeNet||0);
+  });
+
+  const rows = Object.keys(byMois).sort().map(k => {
+    const d = byMois[k];
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    return `<tr>
+      <td>${MOIS_FR[d.mois]||d.mois} ${d.annee}</td>
+      <td class="num">${d.n}</td>
+      <td class="num gold">${fmt(d.rev)}</td>
+      <td class="num green">${fmt(d.ben)}</td>
+      <td class="num green">${fmt(d.ben/d.n)}</td>
+      <td class="num dim">${pct(marge)}</td>
+    </tr>`;
+  });
+
+  document.getElementById('table-mois').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="6" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+}
+
+function renderCat(breaks) {
+  const byCat = {};
+  breaks.forEach(b => {
+    const k = b.categorie || 'Autre';
+    if (!byCat[k]) byCat[k] = { n:0, rev:0, ben:0 };
+    byCat[k].n++; byCat[k].rev += (+b.revenuReel||0); byCat[k].ben += (+b.beneficeNet||0);
+  });
+  const rows = Object.entries(byCat).sort((a,b)=>b[1].rev-a[1].rev).map(([k,d]) => {
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    return `<tr><td>${k}</td><td class="num">${d.n}</td><td class="num gold">${fmt(d.rev)}</td><td class="num green">${fmt(d.ben)}</td><td class="num dim">${pct(marge)}</td></tr>`;
+  });
+  document.getElementById('table-cat').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+}
+
+function renderSport(breaks) {
+  const bySport = {};
+  breaks.forEach(b => {
+    const k = b.sport || 'Autre';
+    if (!bySport[k]) bySport[k] = { n:0, rev:0, ben:0 };
+    bySport[k].n++; bySport[k].rev += (+b.revenuReel||0); bySport[k].ben += (+b.beneficeNet||0);
+  });
+  const rows = Object.entries(bySport).sort((a,b)=>b[1].rev-a[1].rev).map(([k,d]) => {
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    return `<tr><td>${k}</td><td class="num">${d.n}</td><td class="num gold">${fmt(d.rev)}</td><td class="num green">${fmt(d.ben)}</td><td class="num dim">${pct(marge)}</td></tr>`;
+  });
+  document.getElementById('table-sport').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+}
+
+// Load on startup
+loadData();
+</script>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Break Builder — Hobby Empire</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #B8942A; --gold2: #D4AD47; --gold3: #F0CC6A;
+    --dark: #080808; --dark2: #111111; --dark3: #1A1A1A; --dark4: #242424;
+    --text: #EAE6DF; --text2: #A89F94; --text3: #5C5650;
+    --red: #C94040; --green: #3A8C5C;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+
+  .header { background: var(--dark2); border-bottom: 1px solid #1e1e1e; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold3); }
+  .logo-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: -2px; }
+  .header-nav { display: flex; gap: 6px; }
+  .nav-link { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 7px 13px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: var(--text2); border-color: #2a2a2a; }
+  .nav-link.active { color: var(--gold3); border-color: #2a2010; background: rgba(184,148,42,0.06); }
+
+  .page-head { padding: 32px 24px 24px; max-width: 760px; margin: 0 auto; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .page-sub { font-size: 13px; color: var(--text3); }
+
+  .main { padding: 0 24px 60px; max-width: 760px; margin: 0 auto; }
+
+  .section { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 14px; margin-bottom: 16px; overflow: hidden; }
+  .section-head { padding: 16px 20px; border-bottom: 1px solid #141414; display: flex; align-items: center; gap: 10px; }
+  .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); }
+  .section-body { padding: 20px; }
+
+  .field-grid { display: grid; gap: 12px; }
+  .field-grid-2 { grid-template-columns: 1fr 1fr; }
+  .field-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 500px) { .field-grid-2, .field-grid-3 { grid-template-columns: 1fr; } }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+  .field input, .field select { background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 12px 14px; color: var(--text); font-size: 14px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; width: 100%; }
+  .field input:focus, .field select:focus { border-color: var(--gold); }
+  .field input::placeholder { color: var(--text3); }
+  .field select option { background: var(--dark3); }
+  .field input.readonly { color: var(--text3); cursor: default; }
+
+  .calc-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .calc-cell { background: var(--dark3); border: 1px solid #1a1a1a; border-radius: 8px; padding: 14px; text-align: center; }
+  .calc-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+  .calc-val { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--gold3); }
+  .calc-val.green { color: #5aad72; }
+  .calc-val.red { color: #c97070; }
+
+  .submit-btn { width: 100%; background: var(--gold); border: none; border-radius: 10px; color: #000; font-size: 12px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; text-transform: uppercase; padding: 17px; cursor: pointer; transition: all 0.15s; margin-top: 8px; }
+  .submit-btn:hover { background: var(--gold3); }
+  .submit-btn:disabled { background: #222; color: #3a3a3a; cursor: not-allowed; }
+
+  .success-box { background: rgba(58,140,92,0.08); border: 1px solid rgba(58,140,92,0.25); border-radius: 10px; padding: 16px 20px; color: #5aad72; font-size: 14px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.5px; margin-top: 12px; display: none; text-align: center; }
+  .error-box { background: #110606; border: 1px solid #2a1010; border-radius: 10px; padding: 16px 20px; color: #b06060; font-size: 13px; margin-top: 12px; display: none; }
+
+  .config-note { background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 12px 16px; font-size: 12px; color: var(--text3); line-height: 1.6; margin-bottom: 16px; }
+  .config-note strong { color: var(--gold2); }
+
+  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); border-top: 1px solid #111; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a class="logo-wrap" href="/">
+    <div>
+      <div class="logo">Hobby Empire</div>
+      <div class="logo-sub">Break Builder</div>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a class="nav-link" href="/">Home</a>
+    <a class="nav-link active" href="/break-builder.html">Break Builder</a>
+    <a class="nav-link" href="/hub.html">Hub</a>
+    <a class="nav-link" href="/break-prep.html">Break Prep</a>
+  </nav>
+</div>
+
+<div class="page-head">
+  <h1 class="page-title">Break Builder</h1>
+  <p class="page-sub">Entrez les informations de votre break — les calculs se font automatiquement.</p>
+</div>
+
+<div class="main">
+
+  <!-- Section: Identification -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-label">Identification du break</span>
+    </div>
+    <div class="section-body">
+      <div class="field-grid field-grid-2">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="date" />
+        </div>
+        <div class="field">
+          <label>Nom du break</label>
+          <input type="text" id="nom-break" placeholder="Ex: Live Lundi Soir" />
+        </div>
+        <div class="field">
+          <label>Vendeur</label>
+          <select id="vendeur">
+            <option value="">Sélectionner...</option>
+            <option>Jeremi</option>
+            <option>Phobe</option>
+            <option>Chuck</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Helper</label>
+          <select id="helper">
+            <option value="">Aucun</option>
+            <option>Phobe</option>
+            <option>Jeremi</option>
+            <option>Chuck</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Catégorie -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-label">Catégorie</span>
+    </div>
+    <div class="section-body">
+      <div class="field-grid field-grid-3">
+        <div class="field">
+          <label>Catégorie</label>
+          <select id="categorie">
+            <option value="">Sélectionner...</option>
+            <option>Wax</option>
+            <option>Repacks</option>
+            <option>Mix (Wax x Repacks)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Sport / Licence</label>
+          <select id="sport">
+            <option value="">Sélectionner...</option>
+            <option>Hockey</option>
+            <option>Football</option>
+            <option>Multi sports</option>
+            <option>Pokémon</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Type break</label>
+          <select id="type-break">
+            <option value="">Sélectionner...</option>
+            <option>Hockey</option>
+            <option>Football</option>
+            <option>Multi sports</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section: Finances -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-label">Finances</span>
+    </div>
+    <div class="section-body">
+      <div class="field-grid field-grid-3" style="margin-bottom: 16px;">
+        <div class="field">
+          <label>Durée (min)</label>
+          <input type="number" id="duree" placeholder="Ex: 260" min="0" oninput="calculate()" />
+        </div>
+        <div class="field">
+          <label>Rev / heure ($)</label>
+          <input type="number" id="rev-heure" placeholder="Ex: 2905" min="0" step="0.01" oninput="calculate()" />
+        </div>
+        <div class="field">
+          <label>% WN (coût)</label>
+          <input type="number" id="pct-wn" placeholder="0.0" min="0" max="100" step="0.1" value="0" oninput="calculate()" />
+        </div>
+      </div>
+
+      <div class="calc-row">
+        <div class="calc-cell">
+          <div class="calc-lbl">Ventes brutes</div>
+          <div class="calc-val" id="ventes-brutes">$0.00</div>
+        </div>
+        <div class="calc-cell">
+          <div class="calc-lbl">Revenu réel</div>
+          <div class="calc-val green" id="revenu-reel">$0.00</div>
+        </div>
+        <div class="calc-cell">
+          <div class="calc-lbl">Bénéfice net</div>
+          <div class="calc-val green" id="benefice-net">$0.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <button class="submit-btn" id="submit-btn" onclick="submitBreak()">Enregistrer le break</button>
+  <div class="success-box" id="success-box">✓ Break enregistré avec succès dans Google Sheets</div>
+  <div class="error-box" id="error-box"></div>
+
+</div>
+
+<div class="footer">Hobby Empire &mdash; Break Builder</div>
+
+<script>
+// Set today's date by default
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
+
+function fmt(n) {
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function calculate() {
+  const duree = parseFloat(document.getElementById('duree').value) || 0;
+  const revHeure = parseFloat(document.getElementById('rev-heure').value) || 0;
+  const pctWN = parseFloat(document.getElementById('pct-wn').value) || 0;
+
+  const ventesBrutes = (duree / 60) * revHeure;
+  const revenuReel = ventesBrutes * (1 - pctWN / 100);
+  // Bénéfice net: revenu réel - coûts (simplified: marge de 13% par défaut)
+  const beneficeNet = revenuReel * 0.13;
+
+  document.getElementById('ventes-brutes').textContent = fmt(ventesBrutes);
+  document.getElementById('revenu-reel').textContent = fmt(revenuReel);
+  document.getElementById('benefice-net').textContent = fmt(beneficeNet);
+
+  // Color based on value
+  const bn = document.getElementById('benefice-net');
+  bn.className = 'calc-val ' + (beneficeNet > 0 ? 'green' : beneficeNet < 0 ? 'red' : '');
+}
+
+async function submitBreak() {
+  const btn = document.getElementById('submit-btn');
+  const successBox = document.getElementById('success-box');
+  const errorBox = document.getElementById('error-box');
+
+  // Gather data
+  const date = document.getElementById('date').value;
+  const nomBreak = document.getElementById('nom-break').value.trim();
+  const vendeur = document.getElementById('vendeur').value;
+  const helper = document.getElementById('helper').value;
+  const categorie = document.getElementById('categorie').value;
+  const sport = document.getElementById('sport').value;
+  const typeBreak = document.getElementById('type-break').value;
+  const duree = parseFloat(document.getElementById('duree').value) || 0;
+  const revHeure = parseFloat(document.getElementById('rev-heure').value) || 0;
+  const pctWN = parseFloat(document.getElementById('pct-wn').value) || 0;
+
+  // Validation
+  if (!date || !nomBreak || !vendeur || !categorie || !sport || !typeBreak || !duree || !revHeure) {
+    errorBox.textContent = 'Veuillez remplir tous les champs obligatoires.';
+    errorBox.style.display = 'block';
+    successBox.style.display = 'none';
+    return;
+  }
+
+  const ventesBrutes = (duree / 60) * revHeure;
+  const revenuReel = ventesBrutes * (1 - pctWN / 100);
+  const beneficeNet = revenuReel * 0.13;
+
+  // Date parsing
+  const d = new Date(date + 'T12:00:00');
+  const jours = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const jour = jours[d.getDay()];
+  const semaine = getWeekNumber(d);
+  const mois = d.getMonth() + 1;
+  const annee = d.getFullYear();
+
+  const payload = {
+    date, vendeur, helper, categorie, sport,
+    typeBreak, nomBreak, duree, revHeure, pctWN,
+    semaine, mois, annee, jour,
+    ventesBrutes: ventesBrutes.toFixed(2),
+    revenuReel: revenuReel.toFixed(2),
+    beneficeNet: beneficeNet.toFixed(2)
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Enregistrement...';
+  errorBox.style.display = 'none';
+  successBox.style.display = 'none';
+
+  try {
+    const SHEETS_URL = window.SHEETS_WEBHOOK_URL || '';
+    if (!SHEETS_URL) {
+      throw new Error('Google Sheets non configuré. Contactez l\'administrateur.');
+    }
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Erreur serveur: ' + res.status);
+
+    successBox.style.display = 'block';
+    // Reset form
+    document.getElementById('nom-break').value = '';
+    document.getElementById('duree').value = '';
+    document.getElementById('rev-heure').value = '';
+    document.getElementById('pct-wn').value = '0';
+    calculate();
+  } catch(e) {
+    errorBox.textContent = e.message;
+    errorBox.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Enregistrer le break';
+}
+
+function getWeekNumber(d) {
+  const onejan = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+}
+</script>
+</body>
+</html>
