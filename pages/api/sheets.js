@@ -1,6 +1,6 @@
 export const config = { maxDuration: 30 };
 
-const SHEETS_URL = process.env.SHEETS_WEBAPP_URL;
+const SHEETS_URL = process.env.SHEETS_WEBAPP_URL || 'https://script.google.com/macros/s/AKfycbwt0_dG5WStIUXNjN0_hqSRk8nLEsJ6qQ3aaORvPK7OKSbwmIugwIcaFcn-Fr6j6X1Lrw/exec';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
