@@ -179,12 +179,12 @@
     <div class="section-body">
       <div class="field-grid field-grid-3" style="margin-bottom: 16px;">
         <div class="field">
-          <label>Durée (min)</label>
-          <input type="number" id="duree" placeholder="Ex: 260" min="0" oninput="calculate()" />
+          <label>Ventes brutes ($)</label>
+          <input type="number" id="ventes-brutes" placeholder="Ex: 12500" min="0" step="0.01" oninput="calculate()" />
         </div>
         <div class="field">
-          <label>Rev / heure ($)</label>
-          <input type="number" id="rev-heure" placeholder="Ex: 2905" min="0" step="0.01" oninput="calculate()" />
+          <label>Durée (min)</label>
+          <input type="number" id="duree" placeholder="Ex: 260" min="0" oninput="calculate()" />
         </div>
         <div class="field">
           <label>% WN (frais plateforme)</label>
@@ -203,14 +203,10 @@
         </div>
       </div>
 
-      <div class="calc-row" style="grid-template-columns: repeat(4, 1fr);">
-        <div class="calc-cell">
-          <div class="calc-lbl">Ventes brutes</div>
-          <div class="calc-val" id="ventes-brutes">$0.00</div>
-        </div>
+      <div class="calc-row" style="grid-template-columns: repeat(3, 1fr);">
         <div class="calc-cell">
           <div class="calc-lbl">Revenu réel</div>
-          <div class="calc-val gold" id="revenu-reel">$0.00</div>
+          <div class="calc-val" id="revenu-reel">$0.00</div>
         </div>
         <div class="calc-cell">
           <div class="calc-lbl">Bénéfice net</div>
@@ -242,17 +238,14 @@ function fmt(n) {
 }
 
 function calculate() {
-  const duree = parseFloat(document.getElementById('duree').value) || 0;
-  const revHeure = parseFloat(document.getElementById('rev-heure').value) || 0;
+  const ventesBrutes = parseFloat(document.getElementById('ventes-brutes').value) || 0;
   const pctWN = parseFloat(document.getElementById('pct-wn').value) || 0;
   const coutProduits = parseFloat(document.getElementById('cout-produits').value) || 0;
 
-  const ventesBrutes = (duree / 60) * revHeure;
   const revenuReel = ventesBrutes * (1 - pctWN / 100);
   const beneficeNet = revenuReel - coutProduits;
   const marge = revenuReel > 0 ? (beneficeNet / revenuReel * 100) : 0;
 
-  document.getElementById('ventes-brutes').textContent = fmt(ventesBrutes);
   document.getElementById('revenu-reel').textContent = fmt(revenuReel);
   document.getElementById('benefice-net').textContent = fmt(beneficeNet);
   document.getElementById('marge-calc').textContent = marge.toFixed(1) + '%';
@@ -277,11 +270,11 @@ async function submitBreak() {
   const sport = document.getElementById('sport').value;
   const typeBreak = document.getElementById('type-break').value;
   const duree = parseFloat(document.getElementById('duree').value) || 0;
-  const revHeure = parseFloat(document.getElementById('rev-heure').value) || 0;
+  const ventesBrutes = parseFloat(document.getElementById('ventes-brutes').value) || 0;
   const pctWN = parseFloat(document.getElementById('pct-wn').value) || 0;
 
   // Validation
-  if (!date || !nomBreak || !vendeur || !categorie || !sport || !typeBreak || !duree || !revHeure) {
+  if (!date || !nomBreak || !vendeur || !categorie || !sport || !typeBreak || !duree || !ventesBrutes) {
     errorBox.textContent = 'Veuillez remplir tous les champs obligatoires.';
     errorBox.style.display = 'block';
     successBox.style.display = 'none';
@@ -290,7 +283,8 @@ async function submitBreak() {
 
   const coutProduits = parseFloat(document.getElementById('cout-produits').value) || 0;
   const heureDebut = document.getElementById('heure-debut').value || '';
-  const ventesBrutes = (duree / 60) * revHeure;
+  // Back-calculate rev/heure for Hub stats
+  const revHeure = duree > 0 ? (ventesBrutes / (duree / 60)) : 0;
   const revenuReel = ventesBrutes * (1 - pctWN / 100);
   const beneficeNet = revenuReel - coutProduits;
   const marge = revenuReel > 0 ? (beneficeNet / revenuReel * 100) : 0;
@@ -336,8 +330,8 @@ async function submitBreak() {
     successBox.style.display = 'block';
     // Reset form
     document.getElementById('nom-break').value = '';
+    document.getElementById('ventes-brutes').value = '';
     document.getElementById('duree').value = '';
-    document.getElementById('rev-heure').value = '';
     document.getElementById('pct-wn').value = '0';
     document.getElementById('cout-produits').value = '';
     document.getElementById('heure-debut').value = '';
