@@ -160,9 +160,11 @@
           <label>Type break</label>
           <select id="type-break">
             <option value="">Sélectionner...</option>
-            <option>Hockey</option>
-            <option>Football</option>
-            <option>Multi sports</option>
+            <option>Team Random</option>
+            <option>Hybrid</option>
+            <option>Player Random</option>
+            <option>Numeral</option>
+            <option>Wheel</option>
           </select>
         </div>
       </div>
@@ -185,23 +187,38 @@
           <input type="number" id="rev-heure" placeholder="Ex: 2905" min="0" step="0.01" oninput="calculate()" />
         </div>
         <div class="field">
-          <label>% WN (coût)</label>
+          <label>% WN (frais plateforme)</label>
           <input type="number" id="pct-wn" placeholder="0.0" min="0" max="100" step="0.1" value="0" oninput="calculate()" />
         </div>
       </div>
 
-      <div class="calc-row">
+      <div class="field-grid field-grid-2" style="margin-bottom: 16px;">
+        <div class="field">
+          <label>Coût des produits ($)</label>
+          <input type="number" id="cout-produits" placeholder="Ex: 8500" min="0" step="0.01" oninput="calculate()" />
+        </div>
+        <div class="field">
+          <label>Heure de début</label>
+          <input type="time" id="heure-debut" />
+        </div>
+      </div>
+
+      <div class="calc-row" style="grid-template-columns: repeat(4, 1fr);">
         <div class="calc-cell">
           <div class="calc-lbl">Ventes brutes</div>
           <div class="calc-val" id="ventes-brutes">$0.00</div>
         </div>
         <div class="calc-cell">
           <div class="calc-lbl">Revenu réel</div>
-          <div class="calc-val green" id="revenu-reel">$0.00</div>
+          <div class="calc-val gold" id="revenu-reel">$0.00</div>
         </div>
         <div class="calc-cell">
           <div class="calc-lbl">Bénéfice net</div>
           <div class="calc-val green" id="benefice-net">$0.00</div>
+        </div>
+        <div class="calc-cell">
+          <div class="calc-lbl">Marge</div>
+          <div class="calc-val green" id="marge-calc">0.0%</div>
         </div>
       </div>
     </div>
@@ -228,19 +245,22 @@ function calculate() {
   const duree = parseFloat(document.getElementById('duree').value) || 0;
   const revHeure = parseFloat(document.getElementById('rev-heure').value) || 0;
   const pctWN = parseFloat(document.getElementById('pct-wn').value) || 0;
+  const coutProduits = parseFloat(document.getElementById('cout-produits').value) || 0;
 
   const ventesBrutes = (duree / 60) * revHeure;
   const revenuReel = ventesBrutes * (1 - pctWN / 100);
-  // Bénéfice net: revenu réel - coûts (simplified: marge de 13% par défaut)
-  const beneficeNet = revenuReel * 0.13;
+  const beneficeNet = revenuReel - coutProduits;
+  const marge = revenuReel > 0 ? (beneficeNet / revenuReel * 100) : 0;
 
   document.getElementById('ventes-brutes').textContent = fmt(ventesBrutes);
   document.getElementById('revenu-reel').textContent = fmt(revenuReel);
   document.getElementById('benefice-net').textContent = fmt(beneficeNet);
+  document.getElementById('marge-calc').textContent = marge.toFixed(1) + '%';
 
-  // Color based on value
   const bn = document.getElementById('benefice-net');
   bn.className = 'calc-val ' + (beneficeNet > 0 ? 'green' : beneficeNet < 0 ? 'red' : '');
+  const mc = document.getElementById('marge-calc');
+  mc.className = 'calc-val ' + (marge > 0 ? 'green' : marge < 0 ? 'red' : '');
 }
 
 async function submitBreak() {
@@ -268,9 +288,12 @@ async function submitBreak() {
     return;
   }
 
+  const coutProduits = parseFloat(document.getElementById('cout-produits').value) || 0;
+  const heureDebut = document.getElementById('heure-debut').value || '';
   const ventesBrutes = (duree / 60) * revHeure;
   const revenuReel = ventesBrutes * (1 - pctWN / 100);
-  const beneficeNet = revenuReel * 0.13;
+  const beneficeNet = revenuReel - coutProduits;
+  const marge = revenuReel > 0 ? (beneficeNet / revenuReel * 100) : 0;
 
   // Date parsing
   const d = new Date(date + 'T12:00:00');
@@ -283,10 +306,12 @@ async function submitBreak() {
   const payload = {
     date, vendeur, helper, categorie, sport,
     typeBreak, nomBreak, duree, revHeure, pctWN,
+    coutProduits, heureDebut,
     semaine, mois, annee, jour,
     ventesBrutes: ventesBrutes.toFixed(2),
     revenuReel: revenuReel.toFixed(2),
-    beneficeNet: beneficeNet.toFixed(2)
+    beneficeNet: beneficeNet.toFixed(2),
+    marge: marge.toFixed(2)
   };
 
   btn.disabled = true;
@@ -314,6 +339,8 @@ async function submitBreak() {
     document.getElementById('duree').value = '';
     document.getElementById('rev-heure').value = '';
     document.getElementById('pct-wn').value = '0';
+    document.getElementById('cout-produits').value = '';
+    document.getElementById('heure-debut').value = '';
     calculate();
   } catch(e) {
     errorBox.textContent = e.message;

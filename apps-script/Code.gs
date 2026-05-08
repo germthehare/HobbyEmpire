@@ -13,6 +13,7 @@ const DATA_START_ROW = 4; // Les données commencent à la ligne 4 (après titre
 // J: Rev/heure ($) | K: Semaine | L: Mois | M: Année | N: Jour
 // O: Ventes brutes ($) | P: % WN | Q: Revenu réel ($) | R: Bénéfice net ($)
 // S: Bonus vendeur ($) | T: Bonus helper ($) | U: Bonus total ($) | V: Marge réelle (%)
+// W: Coût des produits ($) | X: Heure de début
 
 function doGet(e) {
   try {
@@ -25,34 +26,36 @@ function doGet(e) {
     }
 
     const numRows = lastRow - DATA_START_ROW + 1;
-    const range = sheet.getRange(DATA_START_ROW, 1, numRows, 22);
+    const range = sheet.getRange(DATA_START_ROW, 1, numRows, 24);
     const values = range.getValues();
 
     const breaks = values
       .filter(row => row[0] !== '' && row[1] !== '') // Filtre lignes vides
       .map(row => ({
-        streamId:     row[0],
-        date:         formatDate(row[1]),
-        vendeur:      row[2],
-        helper:       row[3],
-        categorie:    row[4],
-        sport:        row[5],
-        typeBreak:    row[6],
-        nomBreak:     row[7],
-        duree:        row[8],
-        revHeure:     row[9],
-        semaine:      row[10],
-        mois:         row[11],
-        annee:        row[12],
-        jour:         row[13],
-        ventesBrutes: row[14],
-        pctWN:        row[15],
-        revenuReel:   row[16],
-        beneficeNet:  row[17],
-        bonusVendeur: row[18],
-        bonusHelper:  row[19],
-        bonusTotal:   row[20],
-        marge:        row[21]
+        streamId:      row[0],
+        date:          formatDate(row[1]),
+        vendeur:       row[2],
+        helper:        row[3],
+        categorie:     row[4],
+        sport:         row[5],
+        typeBreak:     row[6],
+        nomBreak:      row[7],
+        duree:         row[8],
+        revHeure:      row[9],
+        semaine:       row[10],
+        mois:          row[11],
+        annee:         row[12],
+        jour:          row[13],
+        ventesBrutes:  row[14],
+        pctWN:         row[15],
+        revenuReel:    row[16],
+        beneficeNet:   row[17],
+        bonusVendeur:  row[18],
+        bonusHelper:   row[19],
+        bonusTotal:    row[20],
+        marge:         row[21],
+        coutProduits:  row[22] || 0,
+        heureDebut:    row[23] || ''
       }));
 
     return jsonResponse(breaks);
@@ -74,9 +77,10 @@ function doPost(e) {
     const duree = parseFloat(data.duree) || 0;
     const revHeure = parseFloat(data.revHeure) || 0;
     const pctWN = parseFloat(data.pctWN) || 0;
+    const coutProduits = parseFloat(data.coutProduits) || 0;
     const ventesBrutes = (duree / 60) * revHeure;
     const revenuReel = ventesBrutes * (1 - pctWN / 100);
-    const beneficeNet = parseFloat(data.beneficeNet) || (revenuReel * 0.13);
+    const beneficeNet = revenuReel - coutProduits;
     const marge = revenuReel > 0 ? (beneficeNet / revenuReel * 100) : 0;
 
     // Date parsing
@@ -89,28 +93,30 @@ function doPost(e) {
 
     // Nouvelle ligne
     const newRow = [
-      streamId,           // A: Stream ID
-      data.date,          // B: Date
-      data.vendeur,       // C: Vendeur
-      data.helper || '',  // D: Helper
-      data.categorie,     // E: Catégorie
-      data.sport,         // F: Sport/Licence
-      data.typeBreak,     // G: Type break
-      data.nomBreak,      // H: Nom break
-      duree,              // I: Durée (min)
-      revHeure,           // J: Rev/heure ($)
-      semaine,            // K: Semaine
-      mois,               // L: Mois
-      annee,              // M: Année
-      jour,               // N: Jour
-      ventesBrutes,       // O: Ventes brutes ($)
-      pctWN / 100,        // P: % WN (en décimal)
-      revenuReel,         // Q: Revenu réel ($)
-      beneficeNet,        // R: Bénéfice net ($)
-      0,                  // S: Bonus vendeur
-      0,                  // T: Bonus helper
-      0,                  // U: Bonus total
-      marge / 100         // V: Marge réelle (en décimal)
+      streamId,                  // A: Stream ID
+      data.date,                 // B: Date
+      data.vendeur,              // C: Vendeur
+      data.helper || '',         // D: Helper
+      data.categorie,            // E: Catégorie
+      data.sport,                // F: Sport/Licence
+      data.typeBreak,            // G: Type break
+      data.nomBreak,             // H: Nom break
+      duree,                     // I: Durée (min)
+      revHeure,                  // J: Rev/heure ($)
+      semaine,                   // K: Semaine
+      mois,                      // L: Mois
+      annee,                     // M: Année
+      jour,                      // N: Jour
+      ventesBrutes,              // O: Ventes brutes ($)
+      pctWN / 100,               // P: % WN (en décimal)
+      revenuReel,                // Q: Revenu réel ($)
+      beneficeNet,               // R: Bénéfice net ($)
+      0,                         // S: Bonus vendeur
+      0,                         // T: Bonus helper
+      0,                         // U: Bonus total
+      marge / 100,               // V: Marge réelle (en décimal)
+      coutProduits,              // W: Coût des produits ($)
+      data.heureDebut || ''      // X: Heure de début
     ];
 
     sheet.appendRow(newRow);

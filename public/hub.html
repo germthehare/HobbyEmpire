@@ -216,6 +216,19 @@
     </div>
   </div>
 
+  <!-- PAR TYPE DE BREAK -->
+  <div class="section" style="margin-bottom:16px">
+    <div class="section-head"><span class="section-label">Par type de break</span></div>
+    <div class="section-body">
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Bén. moyen</th><th>Rev / heure moy.</th><th>Marge moy.</th></tr></thead>
+        <tbody id="table-typebreak">
+          <tr><td colspan="7" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- PAR CATÉGORIE + PAR SPORT -->
   <div class="two-col">
     <div class="section">
@@ -304,6 +317,7 @@ function renderAll(breaks) {
   renderVendeurs(breaks);
   renderHelpers(breaks);
   renderDuos(breaks);
+  renderTypeBreak(breaks);
   renderCat(breaks);
   renderSport(breaks);
 }
@@ -506,6 +520,57 @@ function renderMois(breaks) {
   });
 
   document.getElementById('table-mois').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="6" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+}
+
+function renderTypeBreak(breaks) {
+  const TYPES = ['Team Random','Hybrid','Player Random','Numeral','Wheel'];
+  const byType = {};
+  TYPES.forEach(t => byType[t] = { n:0, rev:0, ben:0, duree:0 });
+
+  breaks.forEach(b => {
+    const t = b.typeBreak || 'Autre';
+    if (!byType[t]) byType[t] = { n:0, rev:0, ben:0, duree:0 };
+    byType[t].n++;
+    byType[t].rev += (+b.revenuReel||0);
+    byType[t].ben += (+b.beneficeNet||0);
+    byType[t].duree += (+b.duree||0);
+  });
+
+  const rows = Object.entries(byType)
+    .filter(([,d]) => d.n > 0)
+    .sort((a,b) => b[1].rev - a[1].rev)
+    .map(([type, d]) => {
+      const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+      const revH = d.duree > 0 ? (d.rev/(d.duree/60)) : 0;
+      return `<tr>
+        <td><strong>${type}</strong></td>
+        <td class="num">${d.n}</td>
+        <td class="num gold">${fmt(d.rev)}</td>
+        <td class="num green">${fmt(d.ben)}</td>
+        <td class="num green">${fmt(d.n > 0 ? d.ben/d.n : 0)}</td>
+        <td class="num">${fmt(revH)}</td>
+        <td class="num dim">${pct(marge)}</td>
+      </tr>`;
+    });
+
+  // Show all 5 types even with 0 breaks
+  const allRows = TYPES.map(type => {
+    const d = byType[type];
+    if (d.n === 0) return `<tr><td>${type}</td><td class="num dim">0</td><td class="num dim">—</td><td class="num dim">—</td><td class="num dim">—</td><td class="num dim">—</td><td class="num dim">—</td></tr>`;
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    const revH = d.duree > 0 ? (d.rev/(d.duree/60)) : 0;
+    return `<tr>
+      <td><strong>${type}</strong></td>
+      <td class="num">${d.n}</td>
+      <td class="num gold">${fmt(d.rev)}</td>
+      <td class="num green">${fmt(d.ben)}</td>
+      <td class="num green">${fmt(d.n > 0 ? d.ben/d.n : 0)}</td>
+      <td class="num">${fmt(revH)}</td>
+      <td class="num dim">${pct(marge)}</td>
+    </tr>`;
+  });
+
+  document.getElementById('table-typebreak').innerHTML = allRows.join('');
 }
 
 function renderCat(breaks) {
