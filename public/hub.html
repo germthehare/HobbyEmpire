@@ -228,21 +228,16 @@ const DEMO = {
 let chartJours = null;
 
 async function loadData() {
-  const url = window.SHEETS_READ_URL || '';
   let data;
-
-  if (!url) {
+  try {
+    const res = await fetch('/api/sheets');
+    if (!res.ok) throw new Error('not configured');
+    data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) throw new Error('empty');
+    document.getElementById('config-banner').style.display = 'none';
+  } catch(e) {
     document.getElementById('config-banner').style.display = 'block';
     data = DEMO.breaks;
-  } else {
-    document.getElementById('config-banner').style.display = 'none';
-    try {
-      const res = await fetch(url);
-      data = await res.json();
-    } catch(e) {
-      document.getElementById('config-banner').style.display = 'block';
-      data = DEMO.breaks;
-    }
   }
 
   renderAll(data);

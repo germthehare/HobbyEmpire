@@ -294,16 +294,18 @@ async function submitBreak() {
   successBox.style.display = 'none';
 
   try {
-    const SHEETS_URL = window.SHEETS_WEBHOOK_URL || '';
-    if (!SHEETS_URL) {
-      throw new Error('Google Sheets non configuré. Contactez l\'administrateur.');
-    }
-    const res = await fetch(SHEETS_URL, {
+    const res = await fetch('/api/sheets', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error('Erreur serveur: ' + res.status);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      if (err.error === 'SHEETS_WEBAPP_URL not configured') {
+        throw new Error('Google Sheets non encore configuré — break non enregistré.');
+      }
+      throw new Error('Erreur serveur: ' + res.status);
+    }
 
     successBox.style.display = 'block';
     // Reset form
