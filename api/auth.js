@@ -2,11 +2,11 @@ export const config = { maxDuration: 10 };
 
 const USERS = {
   admin: {
-    password: process.env.AUTH_ADMIN_PASS || '',
+    password: process.env.AUTH_ADMIN_PASS || 'brisebise',
     role: 'admin'
   },
   staff: {
-    password: process.env.AUTH_STAFF_PASS || '',
+    password: process.env.AUTH_STAFF_PASS || 'hobbyempire123',
     role: 'staff'
   }
 };
