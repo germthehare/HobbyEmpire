@@ -178,6 +178,44 @@
     </div>
   </div>
 
+  <!-- STATS ÉQUIPE -->
+  <div class="section" style="margin-bottom:16px">
+    <div class="section-head"><span class="section-label">Vendeurs</span></div>
+    <div class="section-body">
+      <table class="data-table">
+        <thead><tr><th>Vendeur</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Rev / heure moy.</th><th>Temps moy. (min)</th><th>Marge moy.</th><th>Sport dominant</th></tr></thead>
+        <tbody id="table-vendeurs">
+          <tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><span class="section-label">Helpers</span></div>
+      <div class="section-body">
+        <table class="data-table">
+          <thead><tr><th>Helper</th><th>Breaks aidés</th><th>Revenu total</th><th>Marge moy.</th></tr></thead>
+          <tbody id="table-helpers">
+            <tr><td colspan="4" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><span class="section-label">Duos Vendeur + Helper</span></div>
+      <div class="section-body">
+        <table class="data-table">
+          <thead><tr><th>Vendeur</th><th>Helper</th><th>Breaks</th><th>Revenu total</th><th>Marge moy.</th></tr></thead>
+          <tbody id="table-duos">
+            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- PAR CATÉGORIE + PAR SPORT -->
   <div class="two-col">
     <div class="section">
@@ -263,8 +301,84 @@ function renderAll(breaks) {
   renderHoraire(breaks);
   renderJours(breaks);
   renderMois(breaks);
+  renderVendeurs(breaks);
+  renderHelpers(breaks);
+  renderDuos(breaks);
   renderCat(breaks);
   renderSport(breaks);
+}
+
+function renderVendeurs(breaks) {
+  const byV = {};
+  breaks.forEach(b => {
+    const v = b.vendeur || '—';
+    if (!byV[v]) byV[v] = { n:0, rev:0, ben:0, duree:0, sports:{} };
+    byV[v].n++;
+    byV[v].rev += (+b.revenuReel||0);
+    byV[v].ben += (+b.beneficeNet||0);
+    byV[v].duree += (+b.duree||0);
+    if (b.sport) byV[v].sports[b.sport] = (byV[v].sports[b.sport]||0)+1;
+  });
+  const rows = Object.entries(byV).sort((a,b) => b[1].rev - a[1].rev).map(([v,d]) => {
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    const revH = d.duree > 0 ? (d.rev/(d.duree/60)) : 0;
+    const tempsMoy = d.n > 0 ? Math.round(d.duree/d.n) : 0;
+    const sportDom = Object.entries(d.sports).sort((a,b)=>b[1]-a[1])[0];
+    return `<tr>
+      <td><strong>${v}</strong></td>
+      <td class="num">${d.n}</td>
+      <td class="num gold">${fmt(d.rev)}</td>
+      <td class="num green">${fmt(d.ben)}</td>
+      <td class="num">${fmt(revH)}</td>
+      <td class="num dim">${tempsMoy}</td>
+      <td class="num dim">${pct(marge)}</td>
+      <td class="dim">${sportDom ? sportDom[0] : '—'}</td>
+    </tr>`;
+  });
+  document.getElementById('table-vendeurs').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+}
+
+function renderHelpers(breaks) {
+  const byH = {};
+  breaks.filter(b => b.helper).forEach(b => {
+    const h = b.helper;
+    if (!byH[h]) byH[h] = { n:0, rev:0, ben:0 };
+    byH[h].n++;
+    byH[h].rev += (+b.revenuReel||0);
+    byH[h].ben += (+b.beneficeNet||0);
+  });
+  const rows = Object.entries(byH).sort((a,b) => b[1].rev - a[1].rev).map(([h,d]) => {
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    return `<tr>
+      <td><strong>${h}</strong></td>
+      <td class="num">${d.n}</td>
+      <td class="num gold">${fmt(d.rev)}</td>
+      <td class="num dim">${pct(marge)}</td>
+    </tr>`;
+  });
+  document.getElementById('table-helpers').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" class="dim" style="text-align:center;padding:20px">Aucun helper enregistré</td></tr>';
+}
+
+function renderDuos(breaks) {
+  const byDuo = {};
+  breaks.filter(b => b.helper).forEach(b => {
+    const key = (b.vendeur||'—') + '|' + b.helper;
+    if (!byDuo[key]) byDuo[key] = { vendeur: b.vendeur||'—', helper: b.helper, n:0, rev:0, ben:0 };
+    byDuo[key].n++;
+    byDuo[key].rev += (+b.revenuReel||0);
+    byDuo[key].ben += (+b.beneficeNet||0);
+  });
+  const rows = Object.values(byDuo).sort((a,b) => b.rev - a.rev).map(d => {
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    return `<tr>
+      <td><strong>${d.vendeur}</strong></td>
+      <td>${d.helper}</td>
+      <td class="num">${d.n}</td>
+      <td class="num gold">${fmt(d.rev)}</td>
+      <td class="num dim">${pct(marge)}</td>
+    </tr>`;
+  });
+  document.getElementById('table-duos').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Aucun duo enregistré</td></tr>';
 }
 
 function renderChartJours(breaks) {
