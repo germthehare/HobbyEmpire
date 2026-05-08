@@ -15,10 +15,15 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
-  .header { background: var(--dark2); border-bottom: 1px solid #1e1e1e; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-  .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--gold3); }
+  .header { background: var(--dark2); border-bottom: 1px solid #1e1e1e; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold3); }
   .logo-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: -2px; }
-  .lang-toggle { display: flex; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; }
+  .header-nav { display: flex; gap: 6px; align-items: center; }
+  .nav-link { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 7px 13px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: var(--text2); border-color: #2a2a2a; }
+  .nav-link.active { color: var(--gold3); border-color: #2a2010; background: rgba(184,148,42,0.06); }
+  .lang-toggle { display: flex; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; margin-left: 6px; }
   .lang-btn { padding: 5px 11px; font-size: 11px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; color: var(--text3); cursor: pointer; border: none; background: transparent; transition: all 0.15s; }
   .lang-btn.active { background: var(--gold); color: #000; }
   .tabs { display: flex; background: var(--dark2); border-bottom: 1px solid #1a1a1a; }
@@ -117,11 +122,22 @@
 </head>
 <body>
 <div class="header">
-  <div><div class="logo">Hobby Empire</div><div class="logo-sub">Break Prep</div></div>
-  <div class="lang-toggle">
-    <button class="lang-btn active" id="lang-fr" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
-  </div>
+  <a class="logo-wrap" href="/">
+    <div>
+      <div class="logo">Hobby Empire</div>
+      <div class="logo-sub">Break Prep</div>
+    </div>
+  </a>
+  <nav class="header-nav" id="header-nav-links">
+    <a class="nav-link" href="/" id="nav-home">Home</a>
+    <a class="nav-link" href="/break-builder.html" id="nav-builder">Break Builder</a>
+    <a class="nav-link" href="/hub.html" id="nav-hub">Hub</a>
+    <a class="nav-link active" href="/break-prep.html">Break Prep</a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="lang-fr" onclick="setLang('fr')">FR</button>
+      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+    </div>
+  </nav>
 </div>
 <div class="tabs">
   <div class="tab active" id="tab-prep" onclick="setMode('prep')">Avant le live</div>
@@ -351,6 +367,15 @@ async function lookupCard() {
 
 document.getElementById('card-input').addEventListener('keydown', e => { if(e.key==='Enter') lookupCard(); });
 addProduct(); addProduct();
+
+// Hide admin-only nav links for staff users
+document.addEventListener('DOMContentLoaded', function() {
+  const role = localStorage.getItem('he_role');
+  if (role !== 'admin') {
+    const adminLinks = document.querySelectorAll('#nav-home, #nav-builder, #nav-hub');
+    adminLinks.forEach(el => el.style.display = 'none');
+  }
+});
 </script>
 </body>
 </html>
