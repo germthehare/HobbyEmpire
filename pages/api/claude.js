@@ -2,16 +2,50 @@ import checklists from '../../data/checklists.json' assert { type: 'json' };
 
 export const config = { maxDuration: 60 };
 
+const ALIASES = {
+  'opc': 'o-pee-chee',
+  'o-pee-chee': 'o-pee-chee',
+  'ud': 'upper deck',
+  'spx': 'spx',
+  'sp auth': 'sp authentic',
+  'spa': 'sp authentic',
+  'metal': 'skybox metal universe',
+  'skybox': 'skybox metal universe',
+  'star rookies': 'nhl star rookies',
+};
+
+const YEAR_VARIANTS = {
+  '2025': ['2025-26', '2025-2026'],
+  '2026': ['2025-26', '2025-2026'],
+  '2024': ['2024-25', '2024-2025'],
+  '2023': ['2023-24', '2023-2024'],
+  '2022': ['2022-23', '2022-2023'],
+};
+
+function normalize(text) {
+  let t = text.toLowerCase().trim();
+  // Expand year abbreviations (2025 → 2025-26)
+  for (const [short, variants] of Object.entries(YEAR_VARIANTS)) {
+    t = t.replace(new RegExp(`\\b${short}\\b`), variants[0]);
+  }
+  // Expand aliases (opc → o-pee-chee)
+  for (const [alias, full] of Object.entries(ALIASES)) {
+    t = t.replace(new RegExp(`\\b${alias}\\b`, 'g'), full);
+  }
+  return t;
+}
+
 function findChecklist(productName) {
-  const query = productName.toLowerCase();
+  const query = normalize(productName);
   for (const [key, value] of Object.entries(checklists)) {
-    if (key.toLowerCase().includes(query) || query.includes(key.toLowerCase())) {
+    const keyNorm = normalize(key);
+    // Exact inclusion match
+    if (keyNorm.includes(query) || query.includes(keyNorm)) {
       return { key, data: value };
     }
-    // Fuzzy match: check if most words from the query appear in the key
+    // Fuzzy match: 60% of query words must appear in the key
     const queryWords = query.split(/\s+/).filter(w => w.length > 2);
-    const keyLower = key.toLowerCase();
-    const matches = queryWords.filter(w => keyLower.includes(w));
+    const matches = queryWords.filter(w => keyNorm.includes(w));
     if (matches.length >= Math.ceil(queryWords.length * 0.6)) {
       return { key, data: value };
     }
