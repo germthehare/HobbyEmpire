@@ -3034,5 +3034,1568 @@
       "Design épuré avec parallèles glacés distinctifs en bleu, violet et or",
       "Ice Premieres est le set d'autographes vedettes pour les stars établies"
     ]
+  },
+  "2023-24 Upper Deck Series 1 Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 2,
+    "format": "Hobby Box",
+    "summary": "Le produit phare annuel d'Upper Deck avec le sous-ensemble Young Guns. La saison 2023-24 est dominée par Connor Bedard, le 1er choix overall de la draft 2023, considéré comme la prochaine grande star du hockey.",
+    "rookies": [
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Simon Nemec",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Ridly Greig",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Devon Levi",
+        "team": "Buffalo Sabres",
+        "position": "G"
+      },
+      {
+        "name": "Tyson Foerster",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Tye Kartye",
+        "team": "Seattle Kraken",
+        "position": "LW"
+      },
+      {
+        "name": "Matt Savoie",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Fraser Minten",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Luke Evangelista",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Will Cuylle",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Dustin Wolf",
+        "team": "Calgary Flames",
+        "position": "G"
+      },
+      {
+        "name": "Simon Edvinsson",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Jakob Pelletier",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Danil Gushchin",
+        "team": "San Jose Sharks",
+        "position": "RW"
+      },
+      {
+        "name": "William Dufour",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Tyler Kleven",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Sean Farrell",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Matt Murray",
+        "team": "Dallas Stars",
+        "position": "D"
+      },
+      {
+        "name": "Arnaud Durandeau",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Samuel Bolduc",
+        "team": "New York Islanders",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor Bedard - Young Guns Canvas",
+        "tag": "rookie"
+      },
+      {
+        "name": "Logan Cooley - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Adam Fantilli - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Luke Hughes - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - UD Canvas Signatures",
+        "tag": "auto/legend"
+      },
+      {
+        "name": "Wayne Gretzky - UD Portraits",
+        "tag": "legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "UD Canvas Signatures"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "UD Portraits"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "UD Canvas"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Brock Faber"
+    ],
+    "hypeFacts": [
+      "Connor Bedard est le 1er choix de la draft 2023 — sa Young Guns est la carte recrue la plus attendue depuis McDavid en 2015-16",
+      "Génération exceptionnelle : Bedard, Fantilli, Cooley, Hughes et Carlsson tous dans le même set",
+      "Chaque boîte hobby contient en moyenne 1 Young Guns — les rookies de haut rang se négocient à prime élevée"
+    ]
+  },
+  "2023-24 NHL O-Pee-Chee Platinum Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "O-Pee-Chee Platinum 2023-24 propose 100 Marquee Rookies chromium (cartes 201-300) avec en tête Connor Bedard. Un des sets les plus populaires de la saison grâce à la profondeur et à la qualité des parallèles.",
+    "rookies": [
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Arnaud Durandeau",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Egor Afanasyev",
+        "team": "Nashville Predators",
+        "position": "LW"
+      },
+      {
+        "name": "Jake Livingstone",
+        "team": "Nashville Predators",
+        "position": "D"
+      },
+      {
+        "name": "Stanislav Svozil",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Ridly Greig",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Hunter McKown",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Will Cuylle",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Devon Levi",
+        "team": "Buffalo Sabres",
+        "position": "G"
+      },
+      {
+        "name": "Elliot Desnoyers",
+        "team": "Philadelphia Flyers",
+        "position": "LW"
+      },
+      {
+        "name": "Tye Kartye",
+        "team": "Seattle Kraken",
+        "position": "LW"
+      },
+      {
+        "name": "Tyler Kleven",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Tyson Foerster",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Simon Nemec",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Simon Edvinsson",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Danil Gushchin",
+        "team": "San Jose Sharks",
+        "position": "RW"
+      },
+      {
+        "name": "Fraser Minten",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Matt Savoie",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Jakob Pelletier",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Luke Evangelista",
+        "team": "Nashville Predators",
+        "position": "RW"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Marquee Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Logan Cooley - Marquee Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Adam Fantilli - Marquee Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Luke Hughes - Marquee Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Connor McDavid - Base Set",
+        "tag": "legend"
+      },
+      {
+        "name": "Connor Bedard - Cosmic Parallel /25",
+        "tag": "rookie"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Base Set"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Base Set"
+      },
+      {
+        "name": "Nathan MacKinnon",
+        "cardType": "Base Set"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Leo Carlsson"
+    ],
+    "hypeFacts": [
+      "La carte Connor Bedard Marquee Rookies Auto est l'une des cartes recrue les plus recherchées de la décennie",
+      "100 Marquee Rookies chromium avec parallèles numérotés jusqu'au /10 Cosmic",
+      "Génération de draft record 2023 : 5 top picks dans le même set"
+    ]
+  },
+  "2023-24 SkyBox Metal Universe Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 5,
+    "format": "Hobby Box",
+    "summary": "SkyBox Metal Universe 2023-24 présente un design chromé futuriste iconique avec 257 recrues au checklist, notamment Connor Bedard en tête. Les parallèles Precious Metal Gems sont les cartes les plus convoitées du produit.",
+    "rookies": [
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      },
+      {
+        "name": "Tyson Foerster",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Jakob Pelletier",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Sean Farrell",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Luke Evangelista",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Will Cuylle",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Ridly Greig",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Tye Kartye",
+        "team": "Seattle Kraken",
+        "position": "LW"
+      },
+      {
+        "name": "Adam Ginning",
+        "team": "Philadelphia Flyers",
+        "position": "D"
+      },
+      {
+        "name": "Fraser Minten",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Danil Gushchin",
+        "team": "San Jose Sharks",
+        "position": "RW"
+      },
+      {
+        "name": "Connor Zary",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Devon Levi",
+        "team": "Buffalo Sabres",
+        "position": "G"
+      },
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Simon Nemec",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Simon Edvinsson",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Dustin Wolf",
+        "team": "Calgary Flames",
+        "position": "G"
+      },
+      {
+        "name": "Matt Savoie",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "William Dufour",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Elliot Desnoyers",
+        "team": "Philadelphia Flyers",
+        "position": "LW"
+      },
+      {
+        "name": "Arnaud Durandeau",
+        "team": "New York Islanders",
+        "position": "RW"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Precious Metal Gems Green Auto",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Connor Bedard - Precious Metal Gems Red /150",
+        "tag": "rookie"
+      },
+      {
+        "name": "Logan Cooley - PMG Green Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Adam Fantilli - PMG Red /150",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Precious Metal Gems",
+        "tag": "legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Precious Metal Gems"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Precious Metal Gems"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Precious Metal Gems"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Leo Carlsson"
+    ],
+    "hypeFacts": [
+      "Les Precious Metal Gems Red (/150) et Green (/10) sont les parallèles les plus iconiques de tout le hobby",
+      "257 recrues dans le checklist complet avec autographes auto parallèles numérotés",
+      "Design métallique futuriste distinctif popularisé dans les années 1990s — très apprécié des nostalgiques"
+    ]
+  },
+  "2023-24 Clear Cut Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "Clear Cut Hockey 2023-24 offre des cartes acétate transparentes avec 212 recrues au checklist. Connor Bedard domine les autos, accompagné d'une forte classe de recrues 2023.",
+    "rookies": [
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Adam Ginning",
+        "team": "Philadelphia Flyers",
+        "position": "D"
+      },
+      {
+        "name": "Akito Hirose",
+        "team": "Vancouver Canucks",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Bolduc",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Bobby McMann",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Cole Guttman",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Vincent Desharnais",
+        "team": "Edmonton Oilers",
+        "position": "D"
+      },
+      {
+        "name": "William Dufour",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Dustin Wolf",
+        "team": "Calgary Flames",
+        "position": "G"
+      },
+      {
+        "name": "Elliot Desnoyers",
+        "team": "Philadelphia Flyers",
+        "position": "LW"
+      },
+      {
+        "name": "Simon Edvinsson",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Fraser Minten",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Jonathan Gruden",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Jet Greaves",
+        "team": "Columbus Blue Jackets",
+        "position": "G"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Luke Evangelista",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Clear Cut Rookie Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Logan Cooley - Clear Cut Rookie Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Adam Fantilli - Clear Cut Rookie Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Luke Hughes - Clear Cut Rookie Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Connor McDavid - Clear Cut Signatures",
+        "tag": "auto/legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Clear Cut Signatures"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Clear Cut Legends"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Clear Cut Renditions"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Leo Carlsson"
+    ],
+    "hypeFacts": [
+      "Technologie acétate transparente sur cartes recrues — un look premium unique dans le hobby",
+      "212 recrues dans le checklist complet avec autographes numérotés",
+      "La classe de recrues 2023 est l'une des plus profondes en termes de talents depuis la classe 2015"
+    ]
+  },
+  "2023-24 UD Premier Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "UD Premier est un produit premium mid-haut de gamme avec 451 recrues dans son checklist, proposant des autographes et patches en abondance. Centré sur la classe record 2023 avec Bedard en tête.",
+    "rookies": [
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Vincent Iorio",
+        "team": "Washington Capitals",
+        "position": "D"
+      },
+      {
+        "name": "Tye Kartye",
+        "team": "Seattle Kraken",
+        "position": "LW"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "William Dufour",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Danil Gushchin",
+        "team": "San Jose Sharks",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Joona Koppanen",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Simon Nemec",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matt Savoie",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Luke Evangelista",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      },
+      {
+        "name": "Ridly Greig",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Devon Levi",
+        "team": "Buffalo Sabres",
+        "position": "G"
+      },
+      {
+        "name": "Dustin Wolf",
+        "team": "Calgary Flames",
+        "position": "G"
+      },
+      {
+        "name": "Fraser Minten",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Simon Edvinsson",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Tyson Foerster",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Premier Rookie Auto Patch",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Logan Cooley - Premier Rookie Auto Patch",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Adam Fantilli - Premier Rookie Auto Patch",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Luke Hughes - Premier Rookie Auto Patch",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Connor McDavid - Premier Signatures",
+        "tag": "auto/legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Premier Signatures"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Premier Legends Auto"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Premier Signatures"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Brock Faber"
+    ],
+    "hypeFacts": [
+      "451 recrues dans le checklist — l'un des plus profonds de la saison 2023-24",
+      "Les Rookie Auto Patch sont les cartes phares du produit avec des morceaux de jersey game-used",
+      "Produit premium avec parallèles numérotés offrant une chasse aux séries courtes très appréciée"
+    ]
+  },
+  "2023-24 Upper Deck Ice Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 3,
+    "format": "Hobby Box",
+    "summary": "Upper Deck Ice 2023-24 présente un design épuré avec effets glacés et 645 recrues dans son checklist — le plus fourni de la saison. Un produit mid-range très populaire avec des autographes sur cartes.",
+    "rookies": [
+      {
+        "name": "Dustin Wolf",
+        "team": "Calgary Flames",
+        "position": "G"
+      },
+      {
+        "name": "Stanislav Svozil",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Olle Eriksson Ek",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Akito Hirose",
+        "team": "Vancouver Canucks",
+        "position": "D"
+      },
+      {
+        "name": "Arnaud Durandeau",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Tyson Foerster",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Luke Evangelista",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Jakob Pelletier",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "William Dufour",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Simon Nemec",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Devon Levi",
+        "team": "Buffalo Sabres",
+        "position": "G"
+      },
+      {
+        "name": "Ridly Greig",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Tye Kartye",
+        "team": "Seattle Kraken",
+        "position": "LW"
+      },
+      {
+        "name": "Matt Savoie",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Fraser Minten",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Simon Edvinsson",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Will Cuylle",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Danil Gushchin",
+        "team": "San Jose Sharks",
+        "position": "RW"
+      },
+      {
+        "name": "Tyler Kleven",
+        "team": "Ottawa Senators",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Ice Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Logan Cooley - Ice Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Adam Fantilli - Ice Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Luke Hughes - Ice Rookies Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Connor McDavid - Ice Auto",
+        "tag": "auto/legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Ice Premieres"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Ice Legends"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Ice Auto"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Dustin Wolf"
+    ],
+    "hypeFacts": [
+      "645 recrues dans le checklist — le plus fourni de toute la saison 2023-24",
+      "Design distinctif avec effets glacés bleu-blanc très apprécié des collectionneurs",
+      "Produit mid-range idéal pour builder des sets recrues et chasser les autographes"
+    ]
+  },
+  "2023-24 The Cup Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 6,
+    "format": "Hobby Box",
+    "summary": "The Cup est le produit premium ultra-haut de gamme d'Upper Deck — chaque boîte contient des Rookie Auto Patch, des autographes de légendes et des coupes de jersey en format booklet. C'est le Graal des collectionneurs.",
+    "rookies": [
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Cole McWard",
+        "team": "Vancouver Canucks",
+        "position": "D"
+      },
+      {
+        "name": "Bobby McMann",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Henry Thrun",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Tyler Kleven",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Hunter McKown",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Nikita Nesterenko",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Devon Levi",
+        "team": "Buffalo Sabres",
+        "position": "G"
+      },
+      {
+        "name": "Danil Gushchin",
+        "team": "San Jose Sharks",
+        "position": "RW"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Ridly Greig",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Tye Kartye",
+        "team": "Seattle Kraken",
+        "position": "LW"
+      },
+      {
+        "name": "Yaroslav Askarov",
+        "team": "Nashville Predators",
+        "position": "G"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      },
+      {
+        "name": "Simon Nemec",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Walker Duehr",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Tyson Foerster",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Rookie Auto Patch /99",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Connor Bedard - Rookie Auto Patch Gold /25",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Logan Cooley - Rookie Auto Patch",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Adam Fantilli - Rookie Auto Patch",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Luke Hughes - Rookie Auto Patch",
+        "tag": "rookie/auto/patch"
+      },
+      {
+        "name": "Wayne Gretzky - Autographed Pro Gear",
+        "tag": "auto/legend"
+      },
+      {
+        "name": "Connor McDavid - Cup Signatures",
+        "tag": "auto/legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Autographed Pro Gear"
+      },
+      {
+        "name": "Connor McDavid",
+        "cardType": "Cup Signatures"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Cup Foundations"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "Cup Signatures"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Yaroslav Askarov"
+    ],
+    "hypeFacts": [
+      "Le produit le plus premium d'Upper Deck — chaque boîte contient des Rookie Auto Patch numérotés /99 ou moins",
+      "Booklets multi-patches avec jusqu'à 6 morceaux de jersey game-used dans une seule carte",
+      "Les cartes Cut Signatures de légendes décédées (Gretzky, Lemieux, etc.) sont parmi les plus rares du hobby"
+    ]
+  },
+  "2023-24 Ultimate Collection Hockey": {
+    "brand": "Upper Deck",
+    "year": "2023-24",
+    "sport": "Hockey",
+    "hitsPerBox": 5,
+    "format": "Hobby Box",
+    "summary": "Ultimate Collection est un produit haut de gamme avec des autographes Ultimate Rookies et des patches premium. Chaque boîte est garantie avec des hits significatifs incluant des autos et morceaux de jersey.",
+    "rookies": [
+      {
+        "name": "Connor Bedard",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Logan Cooley",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Adam Fantilli",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Luke Hughes",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Leo Carlsson",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Marco Kasper",
+        "team": "Detroit Red Wings",
+        "position": "C"
+      },
+      {
+        "name": "Brock Faber",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Simon Nemec",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Poitras",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Devon Levi",
+        "team": "Buffalo Sabres",
+        "position": "G"
+      },
+      {
+        "name": "Ridly Greig",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Tye Kartye",
+        "team": "Seattle Kraken",
+        "position": "LW"
+      },
+      {
+        "name": "Matt Savoie",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Coronato",
+        "team": "Calgary Flames",
+        "position": "RW"
+      },
+      {
+        "name": "Fraser Minten",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Owen Beck",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Luke Evangelista",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Knies",
+        "team": "Toronto Maple Leafs",
+        "position": "LW"
+      },
+      {
+        "name": "Will Cuylle",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Dustin Wolf",
+        "team": "Calgary Flames",
+        "position": "G"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Connor Bedard - Ultimate Rookie Auto /99",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Logan Cooley - Ultimate Rookie Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Adam Fantilli - Ultimate Rookie Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Luke Hughes - Ultimate Rookie Auto",
+        "tag": "rookie/auto"
+      },
+      {
+        "name": "Connor McDavid - Ultimate Signatures",
+        "tag": "auto/legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Ultimate Signatures"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Ultimate Legends"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Ultimate Signatures"
+      }
+    ],
+    "hotPlayers": [
+      "Connor Bedard",
+      "Logan Cooley",
+      "Adam Fantilli",
+      "Luke Hughes",
+      "Brock Faber"
+    ],
+    "hypeFacts": [
+      "Ultimate Rookie Autos de Bedard numérotés /99 ou moins — pièces de collection premium",
+      "5 hits par boîte incluant des autos et des patches de qualité supérieure",
+      "Design haut de gamme avec matériaux de jersey authentiques dans les patch cards"
+    ]
   }
 }
