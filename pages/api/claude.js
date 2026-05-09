@@ -15,18 +15,18 @@ const ALIASES = {
 };
 
 // Single year X → season ending in X (e.g. 2026 → 2025-2026)
-// Short form X-Y → long form (e.g. 2025-26 → 2025-2026)
-const YEAR_VARIANTS = {
-  '2026': '2025-2026',
-  '2025': '2024-2025',
-  '2024': '2023-2024',
-  '2023': '2022-2023',
-  '2022': '2021-2022',
-  '2025-26': '2025-2026',
-  '2024-25': '2024-2025',
-  '2023-24': '2023-2024',
-  '2022-23': '2022-2023',
-};
+// Short form X-YY → long form (e.g. 2025-26 → 2025-2026)
+const YEAR_VARIANTS = (() => {
+  const map = {};
+  for (let y = 2011; y <= 2030; y++) {
+    const prev = y - 1;
+    const full = `${prev}-${y}`;
+    const short = `${prev}-${String(y).slice(2)}`;
+    map[String(y)] = full;   // "2026" → "2025-2026"
+    map[short] = full;        // "2025-26" → "2025-2026"
+  }
+  return map;
+})();
 
 function normalize(text) {
   let t = text.toLowerCase().trim();
