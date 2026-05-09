@@ -4597,5 +4597,1668 @@
       "5 hits par boîte incluant des autos et des patches de qualité supérieure",
       "Design haut de gamme avec matériaux de jersey authentiques dans les patch cards"
     ]
+  },
+  "2022-23 Upper Deck O-Pee-Chee Platinum Hockey": {
+    "brand": "Upper Deck",
+    "year": "2022-23",
+    "sport": "Hockey",
+    "hitsPerBox": 3,
+    "format": "Hobby Box",
+    "summary": "OPC Platinum features 100 Marquee Rookies on chromium stock with vibrant colored parallels. The 2022-23 class is headlined by Owen Power, Matty Beniers, and Juraj Slafkovsky.",
+    "rookies": [
+      {
+        "name": "Owen Power",
+        "team": "Buffalo Sabres",
+        "position": "D"
+      },
+      {
+        "name": "Matty Beniers",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Matt Boldy",
+        "team": "Minnesota Wild",
+        "position": "LW"
+      },
+      {
+        "name": "Jack Quinn",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Kent Johnson",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Dylan Holloway",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Marco Rossi",
+        "team": "Minnesota Wild",
+        "position": "C"
+      },
+      {
+        "name": "Lukas Reichel",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Brandt Clarke",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "David Jiricek",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Dylan Guenther",
+        "team": "Arizona Coyotes",
+        "position": "RW"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Nick Abruzzese",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Shane Wright",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Jake Sanderson",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Jordan Harris",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Kirill Marchenko",
+        "team": "Columbus Blue Jackets",
+        "position": "RW"
+      },
+      {
+        "name": "Matias Maccelli",
+        "team": "Arizona Coyotes",
+        "position": "LW"
+      },
+      {
+        "name": "Pyotr Kochetkov",
+        "team": "Carolina Hurricanes",
+        "position": "G"
+      },
+      {
+        "name": "Jonatan Berggren",
+        "team": "Detroit Red Wings",
+        "position": "RW"
+      },
+      {
+        "name": "Bobby Brink",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Dostal",
+        "team": "Anaheim Ducks",
+        "position": "G"
+      },
+      {
+        "name": "Braden Schneider",
+        "team": "New York Rangers",
+        "position": "D"
+      },
+      {
+        "name": "Dylan Samberg",
+        "team": "Winnipeg Jets",
+        "position": "D"
+      },
+      {
+        "name": "Jacob Perreault",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      },
+      {
+        "name": "Jake Christiansen",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Elmer Soderblom",
+        "team": "Detroit Red Wings",
+        "position": "LW"
+      },
+      {
+        "name": "Simon Holmstrom",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Mads Sogaard",
+        "team": "Ottawa Senators",
+        "position": "G"
+      },
+      {
+        "name": "Oskar Olausson",
+        "team": "Colorado Avalanche",
+        "position": "RW"
+      },
+      {
+        "name": "Aatu Raty",
+        "team": "New York Islanders",
+        "position": "C"
+      },
+      {
+        "name": "Jordan Spence",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Fagemo",
+        "team": "Los Angeles Kings",
+        "position": "LW"
+      },
+      {
+        "name": "Noah Cates",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Cole Koepke",
+        "team": "Tampa Bay Lightning",
+        "position": "RW"
+      },
+      {
+        "name": "Thomas Bordeleau",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Mark Kastelic",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Jack McBain",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Kaedan Korczak",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Reilly Walsh",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Poulin",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Pontus Holmberg",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Nick Perbix",
+        "team": "Tampa Bay Lightning",
+        "position": "D"
+      },
+      {
+        "name": "Nikita Okhotiuk",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Alex Vlasic",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Pavol Regenda",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Owen Power - Marquee Rookies",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matty Beniers - Marquee Rookies",
+        "tag": "rookie"
+      },
+      {
+        "name": "Juraj Slafkovsky - Marquee Rookies",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Ruby Parallel",
+        "tag": "parallel"
+      },
+      {
+        "name": "Dylan Guenther - Marquee Rookies",
+        "tag": "rookie"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Legends Insert"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "Legends Insert"
+      },
+      {
+        "name": "Bobby Orr",
+        "cardType": "Legends Insert"
+      }
+    ],
+    "hotPlayers": [
+      "Owen Power",
+      "Matty Beniers",
+      "Juraj Slafkovsky",
+      "Matt Boldy",
+      "Dylan Guenther"
+    ],
+    "hypeFacts": [
+      "100 Marquee Rookie cards on chromium stock with multiple colored parallels including Ruby, Emerald, and Gold",
+      "Features the deep 2022 NHL Entry Draft class with picks like Slafkovsky (#1), Wright (#4), and Jiricek (#6)",
+      "Each hobby box delivers approximately 3 autograph or memorabilia hits across base, parallels, and exclusive insert sets"
+    ]
+  },
+  "2022-23 SP Authentic Hockey": {
+    "brand": "Upper Deck",
+    "year": "2022-23",
+    "sport": "Hockey",
+    "hitsPerBox": 3,
+    "format": "Hobby Box",
+    "summary": "SP Authentic is the premier autograph-driven product of the year, highlighted by the legendary Future Watch Autographs subset featuring the top rookies of the class signed on-card.",
+    "rookies": [
+      {
+        "name": "Owen Power",
+        "team": "Buffalo Sabres",
+        "position": "D"
+      },
+      {
+        "name": "Matty Beniers",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Matt Boldy",
+        "team": "Minnesota Wild",
+        "position": "LW"
+      },
+      {
+        "name": "Marco Rossi",
+        "team": "Minnesota Wild",
+        "position": "C"
+      },
+      {
+        "name": "Kent Johnson",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Dylan Holloway",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Lukas Reichel",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Jack Quinn",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Brandt Clarke",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "David Jiricek",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Dylan Guenther",
+        "team": "Arizona Coyotes",
+        "position": "RW"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Shane Wright",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Jake Sanderson",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Jordan Harris",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Kirill Marchenko",
+        "team": "Columbus Blue Jackets",
+        "position": "RW"
+      },
+      {
+        "name": "Matias Maccelli",
+        "team": "Arizona Coyotes",
+        "position": "LW"
+      },
+      {
+        "name": "Pyotr Kochetkov",
+        "team": "Carolina Hurricanes",
+        "position": "G"
+      },
+      {
+        "name": "Jonatan Berggren",
+        "team": "Detroit Red Wings",
+        "position": "RW"
+      },
+      {
+        "name": "Bobby Brink",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Dostal",
+        "team": "Anaheim Ducks",
+        "position": "G"
+      },
+      {
+        "name": "Braden Schneider",
+        "team": "New York Rangers",
+        "position": "D"
+      },
+      {
+        "name": "Nick Abruzzese",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Elmer Soderblom",
+        "team": "Detroit Red Wings",
+        "position": "LW"
+      },
+      {
+        "name": "Simon Holmstrom",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Mads Sogaard",
+        "team": "Ottawa Senators",
+        "position": "G"
+      },
+      {
+        "name": "Oskar Olausson",
+        "team": "Colorado Avalanche",
+        "position": "RW"
+      },
+      {
+        "name": "Aatu Raty",
+        "team": "New York Islanders",
+        "position": "C"
+      },
+      {
+        "name": "Jordan Spence",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Fagemo",
+        "team": "Los Angeles Kings",
+        "position": "LW"
+      },
+      {
+        "name": "Noah Cates",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Cole Koepke",
+        "team": "Tampa Bay Lightning",
+        "position": "RW"
+      },
+      {
+        "name": "Thomas Bordeleau",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Mark Kastelic",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Jack McBain",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Kaedan Korczak",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Poulin",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Pontus Holmberg",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Reilly Walsh",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Nikita Okhotiuk",
+        "team": "New Jersey Devils",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Owen Power - Future Watch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Matty Beniers - Future Watch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Matt Boldy - Future Watch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Juraj Slafkovsky - Future Watch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Marco Rossi - Future Watch Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "SP Legends"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "SP Legends"
+      }
+    ],
+    "hotPlayers": [
+      "Owen Power",
+      "Matty Beniers",
+      "Matt Boldy",
+      "Juraj Slafkovsky",
+      "Kent Johnson"
+    ],
+    "hypeFacts": [
+      "Future Watch Autographs are the most sought-after rookie autos of the year, signed on-card with limited print runs",
+      "SP Authentic has been the go-to rookie auto product since the 1990s and remains one of the most collected hockey products annually",
+      "Includes Future Watch Auto Patch cards numbered to 99 or less for the top rookies of the class"
+    ]
+  },
+  "2022-23 The Cup Hockey": {
+    "brand": "Upper Deck",
+    "year": "2022-23",
+    "sport": "Hockey",
+    "hitsPerBox": 6,
+    "format": "Hobby Box (1 pack per box)",
+    "summary": "The Cup is Upper Deck's ultra-premium product, featuring multi-colored patch autos, booklets, and the iconic Rookie Patch Autographs (RPAs) all numbered to 99 or less.",
+    "rookies": [
+      {
+        "name": "Owen Power",
+        "team": "Buffalo Sabres",
+        "position": "D"
+      },
+      {
+        "name": "Matty Beniers",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Matt Boldy",
+        "team": "Minnesota Wild",
+        "position": "LW"
+      },
+      {
+        "name": "Jack Quinn",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Kent Johnson",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Marco Rossi",
+        "team": "Minnesota Wild",
+        "position": "C"
+      },
+      {
+        "name": "Brandt Clarke",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "David Jiricek",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Dylan Guenther",
+        "team": "Arizona Coyotes",
+        "position": "RW"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Shane Wright",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Jake Sanderson",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Dylan Holloway",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Lukas Reichel",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Matias Maccelli",
+        "team": "Arizona Coyotes",
+        "position": "LW"
+      },
+      {
+        "name": "Elmer Soderblom",
+        "team": "Detroit Red Wings",
+        "position": "LW"
+      },
+      {
+        "name": "Jake Christiansen",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Jordan Harris",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Lukas Dostal",
+        "team": "Anaheim Ducks",
+        "position": "G"
+      },
+      {
+        "name": "Pyotr Kochetkov",
+        "team": "Carolina Hurricanes",
+        "position": "G"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Owen Power - Rookie Patch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Matty Beniers - Rookie Patch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Juraj Slafkovsky - Rookie Patch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Connor McDavid - Honorable Numbers Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Jack Quinn - Rookie Patch Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Cup Legends Auto"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "Cup Legends Auto"
+      },
+      {
+        "name": "Bobby Orr",
+        "cardType": "Cup Legends Auto"
+      },
+      {
+        "name": "Gordie Howe",
+        "cardType": "Cup Foundations"
+      }
+    ],
+    "hotPlayers": [
+      "Owen Power",
+      "Matty Beniers",
+      "Juraj Slafkovsky",
+      "Connor McDavid",
+      "Nathan MacKinnon"
+    ],
+    "hypeFacts": [
+      "Every box guarantees 6 hits including Rookie Patch Autos (RPAs) numbered to 99 or less",
+      "Cup Foundations booklet cards feature patch swatches alongside legends and star players",
+      "One of the most expensive single boxes in the hobby, consistently producing high-value pulls from the top rookie class"
+    ]
+  },
+  "2022-23 Upper Deck Clear Cut Hockey": {
+    "brand": "Upper Deck",
+    "year": "2022-23",
+    "sport": "Hockey",
+    "hitsPerBox": 3,
+    "format": "Hobby Box",
+    "summary": "Clear Cut is a premium acetate-based product featuring Crystal Clear Rookie Autos and iconic veteran content on a fully transparent card design.",
+    "rookies": [
+      {
+        "name": "Nick Abruzzese",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Brandt Clarke",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "Matty Beniers",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Bobby Brink",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Matt Boldy",
+        "team": "Minnesota Wild",
+        "position": "LW"
+      },
+      {
+        "name": "Dylan Holloway",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "David Jiricek",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Dylan Guenther",
+        "team": "Arizona Coyotes",
+        "position": "RW"
+      },
+      {
+        "name": "Owen Power",
+        "team": "Buffalo Sabres",
+        "position": "D"
+      },
+      {
+        "name": "Jack Quinn",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Reichel",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Jake Sanderson",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Marco Rossi",
+        "team": "Minnesota Wild",
+        "position": "C"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Matias Maccelli",
+        "team": "Arizona Coyotes",
+        "position": "LW"
+      },
+      {
+        "name": "Jonatan Berggren",
+        "team": "Detroit Red Wings",
+        "position": "RW"
+      },
+      {
+        "name": "Jordan Harris",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Elmer Soderblom",
+        "team": "Detroit Red Wings",
+        "position": "LW"
+      },
+      {
+        "name": "Shane Wright",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Kent Johnson",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Owen Power - Crystal Clear Rookie Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Matty Beniers - Crystal Clear Rookie Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Juraj Slafkovsky - Crystal Clear Rookie Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Connor McDavid - Crystal Clear Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Dylan Guenther - Crystal Clear Rookie Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Clear Cut Legends"
+      },
+      {
+        "name": "Bobby Orr",
+        "cardType": "Clear Cut Legends"
+      }
+    ],
+    "hotPlayers": [
+      "Owen Power",
+      "Matty Beniers",
+      "Juraj Slafkovsky",
+      "Andrei Kuzmenko",
+      "Matt Boldy"
+    ],
+    "hypeFacts": [
+      "All cards are printed on fully transparent acetate stock giving them a unique crystal-clear appearance",
+      "Crystal Clear Rookie Autos are among the most visually distinctive rookie cards in the hobby",
+      "Features multi-player booklet cards combining legends and current stars on acetate stock"
+    ]
+  },
+  "2022-23 Upper Deck Credentials Hockey": {
+    "brand": "Upper Deck",
+    "year": "2022-23",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "Credentials delivers a deep rookie checklist with autograph-focused content including Debut Ticket Autos, Exquisite Rookie Patch Autos, and a massive base rookie set.",
+    "rookies": [
+      {
+        "name": "Nikita Okhotiuk",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Kaedan Korczak",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Vladislav Kolyachonok",
+        "team": "Arizona Coyotes",
+        "position": "D"
+      },
+      {
+        "name": "Jack McBain",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Owen Power",
+        "team": "Buffalo Sabres",
+        "position": "D"
+      },
+      {
+        "name": "Matty Beniers",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Matt Boldy",
+        "team": "Minnesota Wild",
+        "position": "LW"
+      },
+      {
+        "name": "Jack Quinn",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Kent Johnson",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Dylan Holloway",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Marco Rossi",
+        "team": "Minnesota Wild",
+        "position": "C"
+      },
+      {
+        "name": "Lukas Reichel",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Brandt Clarke",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "David Jiricek",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Dylan Guenther",
+        "team": "Arizona Coyotes",
+        "position": "RW"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Shane Wright",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Jake Sanderson",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Kirill Marchenko",
+        "team": "Columbus Blue Jackets",
+        "position": "RW"
+      },
+      {
+        "name": "Matias Maccelli",
+        "team": "Arizona Coyotes",
+        "position": "LW"
+      },
+      {
+        "name": "Jonatan Berggren",
+        "team": "Detroit Red Wings",
+        "position": "RW"
+      },
+      {
+        "name": "Elmer Soderblom",
+        "team": "Detroit Red Wings",
+        "position": "LW"
+      },
+      {
+        "name": "Jordan Harris",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Lukas Dostal",
+        "team": "Anaheim Ducks",
+        "position": "G"
+      },
+      {
+        "name": "Pyotr Kochetkov",
+        "team": "Carolina Hurricanes",
+        "position": "G"
+      },
+      {
+        "name": "Braden Schneider",
+        "team": "New York Rangers",
+        "position": "D"
+      },
+      {
+        "name": "Nick Abruzzese",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Dylan Samberg",
+        "team": "Winnipeg Jets",
+        "position": "D"
+      },
+      {
+        "name": "Reilly Walsh",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Poulin",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Bobby Brink",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Mads Sogaard",
+        "team": "Ottawa Senators",
+        "position": "G"
+      },
+      {
+        "name": "Marc McLaughlin",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Nick Blankenburg",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Owen Power - Debut Ticket Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Matty Beniers - Debut Ticket Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Juraj Slafkovsky - Debut Ticket Patch Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Shane Wright - Debut Ticket Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Dylan Guenther - Debut Ticket Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Credential Legends Auto"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "Credential Legends Auto"
+      }
+    ],
+    "hotPlayers": [
+      "Owen Power",
+      "Matty Beniers",
+      "Juraj Slafkovsky",
+      "Kent Johnson",
+      "Wyatt Johnston"
+    ],
+    "hypeFacts": [
+      "Debut Ticket Autos feature a ticket stub design and are among the most unique auto sets in the 2022-23 product lineup",
+      "One of the deepest rookie checklists in the entire 2022-23 Upper Deck lineup with over 400 distinct rookie entries",
+      "Exquisite Rookie Patch Autos are embedded in foil-pack wrappers and numbered to 99 or lower"
+    ]
+  },
+  "2022-23 Upper Deck Premier Hockey": {
+    "brand": "Upper Deck",
+    "year": "2022-23",
+    "sport": "Hockey",
+    "hitsPerBox": 8,
+    "format": "Hobby Box (1 pack per box)",
+    "summary": "Premier is an ultra-premium product guaranteeing 8 hits per box including Rookie Auto Patches, Legends Autos, and stunning Acetate Rookie Auto Patches with numbered parallels.",
+    "rookies": [
+      {
+        "name": "Jonatan Berggren",
+        "team": "Detroit Red Wings",
+        "position": "RW"
+      },
+      {
+        "name": "Matty Beniers",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Jordan Spence",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "Elmer Soderblom",
+        "team": "Detroit Red Wings",
+        "position": "LW"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Pyotr Kochetkov",
+        "team": "Carolina Hurricanes",
+        "position": "G"
+      },
+      {
+        "name": "Dylan Holloway",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Filip Roos",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Cole Koepke",
+        "team": "Tampa Bay Lightning",
+        "position": "RW"
+      },
+      {
+        "name": "Owen Power",
+        "team": "Buffalo Sabres",
+        "position": "D"
+      },
+      {
+        "name": "Jean-Luc Foudy",
+        "team": "Colorado Avalanche",
+        "position": "C"
+      },
+      {
+        "name": "Bobby Brink",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Dostal",
+        "team": "Anaheim Ducks",
+        "position": "G"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Juuso Parssinen",
+        "team": "Nashville Predators",
+        "position": "C"
+      },
+      {
+        "name": "Thomas Bordeleau",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Pavol Regenda",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      },
+      {
+        "name": "Noah Cates",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Braden Schneider",
+        "team": "New York Rangers",
+        "position": "D"
+      },
+      {
+        "name": "Brayden Tracey",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Johnathan Kovacevic",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Jack Quinn",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Reichel",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Matias Maccelli",
+        "team": "Arizona Coyotes",
+        "position": "LW"
+      },
+      {
+        "name": "Kirill Marchenko",
+        "team": "Columbus Blue Jackets",
+        "position": "RW"
+      },
+      {
+        "name": "Matt Boldy",
+        "team": "Minnesota Wild",
+        "position": "LW"
+      },
+      {
+        "name": "Dylan Guenther",
+        "team": "Arizona Coyotes",
+        "position": "RW"
+      },
+      {
+        "name": "Reilly Walsh",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Kent Johnson",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Shane Wright",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Pontus Holmberg",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Mads Sogaard",
+        "team": "Ottawa Senators",
+        "position": "G"
+      },
+      {
+        "name": "David Jiricek",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Aatu Raty",
+        "team": "New York Islanders",
+        "position": "C"
+      },
+      {
+        "name": "Brandt Clarke",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Poulin",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Dylan Samberg",
+        "team": "Winnipeg Jets",
+        "position": "D"
+      },
+      {
+        "name": "Marco Rossi",
+        "team": "Minnesota Wild",
+        "position": "C"
+      },
+      {
+        "name": "Marc McLaughlin",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Simon Holmstrom",
+        "team": "New York Islanders",
+        "position": "RW"
+      },
+      {
+        "name": "Oskar Olausson",
+        "team": "Colorado Avalanche",
+        "position": "RW"
+      },
+      {
+        "name": "Nick Perbix",
+        "team": "Tampa Bay Lightning",
+        "position": "D"
+      },
+      {
+        "name": "Jake Sanderson",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Nick Abruzzese",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Samuel Fagemo",
+        "team": "Los Angeles Kings",
+        "position": "LW"
+      },
+      {
+        "name": "Jakub Lauko",
+        "team": "Boston Bruins",
+        "position": "LW"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Owen Power - Acetate Rookie Auto Patch",
+        "tag": "auto"
+      },
+      {
+        "name": "Matty Beniers - Acetate Rookie Auto Patch",
+        "tag": "auto"
+      },
+      {
+        "name": "Juraj Slafkovsky - Acetate Rookie Auto Patch",
+        "tag": "auto"
+      },
+      {
+        "name": "Connor McDavid - Auto Parallel",
+        "tag": "auto"
+      },
+      {
+        "name": "Dylan Guenther - Rookie Auto Patch",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Legends Auto"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "Legends Auto"
+      },
+      {
+        "name": "Bobby Orr",
+        "cardType": "Legends Auto"
+      }
+    ],
+    "hotPlayers": [
+      "Owen Power",
+      "Matty Beniers",
+      "Juraj Slafkovsky",
+      "Connor McDavid",
+      "Matt Boldy"
+    ],
+    "hypeFacts": [
+      "Every box contains 8 guaranteed hits including Rookie Auto Patches numbered to 299 or less",
+      "Acetate Rookie Auto Patch cards feature transparent stock with on-card signatures and premium jersey swatches",
+      "Legends Autos bring retired greats back into the 2022-23 product with rare on-card signatures"
+    ]
+  },
+  "2022-23 Upper Deck Ultimate Collection Hockey": {
+    "brand": "Upper Deck",
+    "year": "2022-23",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "Ultimate Collection is Upper Deck's mid-tier premium product featuring Ultimate Rookies Autos on foil stock, Jumbo Patch parallels, and Shield Patch cards numbered to 1.",
+    "rookies": [
+      {
+        "name": "Pontus Holmberg",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Oskar Olausson",
+        "team": "Colorado Avalanche",
+        "position": "RW"
+      },
+      {
+        "name": "Samuel Ersson",
+        "team": "Philadelphia Flyers",
+        "position": "G"
+      },
+      {
+        "name": "Mads Sogaard",
+        "team": "Ottawa Senators",
+        "position": "G"
+      },
+      {
+        "name": "Brayden Pachal",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Mitchell Chaffee",
+        "team": "Minnesota Wild",
+        "position": "RW"
+      },
+      {
+        "name": "Mac Hollowell",
+        "team": "Toronto Maple Leafs",
+        "position": "D"
+      },
+      {
+        "name": "Kaiden Guhle",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Owen Power",
+        "team": "Buffalo Sabres",
+        "position": "D"
+      },
+      {
+        "name": "Matty Beniers",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Matt Boldy",
+        "team": "Minnesota Wild",
+        "position": "LW"
+      },
+      {
+        "name": "Jack Quinn",
+        "team": "Buffalo Sabres",
+        "position": "RW"
+      },
+      {
+        "name": "Kent Johnson",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Dylan Guenther",
+        "team": "Arizona Coyotes",
+        "position": "RW"
+      },
+      {
+        "name": "Juraj Slafkovsky",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Shane Wright",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Wyatt Johnston",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Jake Sanderson",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Marco Rossi",
+        "team": "Minnesota Wild",
+        "position": "C"
+      },
+      {
+        "name": "Brandt Clarke",
+        "team": "Los Angeles Kings",
+        "position": "D"
+      },
+      {
+        "name": "David Jiricek",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Andrei Kuzmenko",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Arber Xhekaj",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Jordan Harris",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Owen Power - Ultimate Rookie Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Matty Beniers - Ultimate Rookie Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Juraj Slafkovsky - Ultimate Rookie Auto",
+        "tag": "auto"
+      },
+      {
+        "name": "Connor McDavid - Ultimate Signatures",
+        "tag": "auto"
+      },
+      {
+        "name": "Wyatt Johnston - Ultimate Rookie Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Ultimate Legends"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "Ultimate Legends"
+      },
+      {
+        "name": "Bobby Orr",
+        "cardType": "Ultimate Signatures"
+      }
+    ],
+    "hotPlayers": [
+      "Owen Power",
+      "Matty Beniers",
+      "Juraj Slafkovsky",
+      "Matt Boldy",
+      "Wyatt Johnston"
+    ],
+    "hypeFacts": [
+      "Ultimate Rookies Autos are signed on-card and numbered to 299 or less — some parallels go as low as /10",
+      "Shield Patch cards (numbered 1/1) are the crown jewel of the product featuring the Captain's 'C' or 'A' patch",
+      "Jumbo Patch parallels offer oversized game-used jersey pieces in a premium foil-bordered design"
+    ]
   }
 }
