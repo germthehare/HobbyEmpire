@@ -7,87 +7,353 @@
     "format": "Hobby Box",
     "summary": "O-Pee-Chee Platinum returns with a 200-card base set plus 100 Marquee Rookies (cards 201-300), loaded with chromium parallels and on-card autos. Each hobby box delivers 4 hits on average.",
     "rookies": [
-      { "name": "Tim Washe", "team": "Anaheim Ducks", "position": "D" },
-      { "name": "Ian Moore", "team": "Anaheim Ducks", "position": "D" },
-      { "name": "Michael Callahan", "team": "Boston Bruins", "position": "LW" },
-      { "name": "John Farinacci", "team": "Boston Bruins", "position": "C" },
-      { "name": "Riley Duran", "team": "Boston Bruins", "position": "D" },
-      { "name": "Frederic Brunet", "team": "Boston Bruins", "position": "D" },
-      { "name": "Noah Ostlund", "team": "Buffalo Sabres", "position": "C" },
-      { "name": "Rory Kerins", "team": "Calgary Flames", "position": "C" },
-      { "name": "Zayne Parekh", "team": "Calgary Flames", "position": "D" },
-      { "name": "Sam Morton", "team": "Calgary Flames", "position": "C" },
-      { "name": "Aydar Suniev", "team": "Calgary Flames", "position": "LW" },
-      { "name": "Hunter Brzustewicz", "team": "Calgary Flames", "position": "D" },
-      { "name": "Alexander Nikishin", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Justin Robidas", "team": "Carolina Hurricanes", "position": "C" },
-      { "name": "Ryan Suzuki", "team": "Carolina Hurricanes", "position": "C" },
-      { "name": "Skyler Brind'Amour", "team": "Carolina Hurricanes", "position": "C" },
-      { "name": "Domenick Fensore", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Artyom Levshunov", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Sam Rinzel", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Colton Dach", "team": "Chicago Blackhawks", "position": "LW" },
-      { "name": "Zakhar Bardakov", "team": "Colorado Avalanche", "position": "C" },
-      { "name": "Jack Williams", "team": "Columbus Blue Jackets", "position": "RW" },
-      { "name": "Oskar Back", "team": "Dallas Stars", "position": "C" },
-      { "name": "Axel Sandin-Pellikka", "team": "Detroit Red Wings", "position": "D" },
-      { "name": "Carter Mazur", "team": "Detroit Red Wings", "position": "RW" },
-      { "name": "Isaac Howard", "team": "Edmonton Oilers", "position": "LW" },
-      { "name": "Uvis Balinskis", "team": "Florida Panthers", "position": "D" },
-      { "name": "Devin Kaplan", "team": "Philadelphia Flyers", "position": "RW" },
-      { "name": "Taylor Ward", "team": "Los Angeles Kings", "position": "RW" },
-      { "name": "Danila Yurov", "team": "Minnesota Wild", "position": "RW" },
-      { "name": "Zeev Buium", "team": "Minnesota Wild", "position": "D" },
-      { "name": "Oliver Kapanen", "team": "Montreal Canadiens", "position": "C" },
-      { "name": "Ivan Demidov", "team": "Montreal Canadiens", "position": "RW" },
-      { "name": "Brady Martin", "team": "Nashville Predators", "position": "C" },
-      { "name": "Joakim Kemell", "team": "Nashville Predators", "position": "RW" },
-      { "name": "Ozzy Wiesblatt", "team": "Nashville Predators", "position": "RW" },
-      { "name": "Arseny Gritsyuk", "team": "New Jersey Devils", "position": "LW" },
-      { "name": "Matthew Schaefer", "team": "New York Islanders", "position": "D" },
-      { "name": "Noah Laba", "team": "New York Rangers", "position": "C" },
-      { "name": "Gabe Perreault", "team": "New York Rangers", "position": "LW" },
-      { "name": "Donovan Sebrango", "team": "Ottawa Senators", "position": "D" },
-      { "name": "Matvei Gridin", "team": "Ottawa Senators", "position": "RW" },
-      { "name": "Tyson Foerster", "team": "Philadelphia Flyers", "position": "RW" },
-      { "name": "Ben Kindel", "team": "Pittsburgh Penguins", "position": "C" },
-      { "name": "Cam Lund", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Michael Misa", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Sam Dickinson", "team": "San Jose Sharks", "position": "D" },
-      { "name": "Berkly Catton", "team": "Seattle Kraken", "position": "C" },
-      { "name": "Jimmy Snuggerud", "team": "St. Louis Blues", "position": "RW" },
-      { "name": "Dalibor Dvorsky", "team": "St. Louis Blues", "position": "C" },
-      { "name": "Nikita Grebenkin", "team": "Tampa Bay Lightning", "position": "RW" },
-      { "name": "Jack Finley", "team": "Tampa Bay Lightning", "position": "C" },
-      { "name": "Easton Cowan", "team": "Toronto Maple Leafs", "position": "C" },
-      { "name": "Dmitri Simashev", "team": "Utah Mammoth", "position": "D" },
-      { "name": "Elias Pettersson", "team": "Vancouver Canucks", "position": "D" },
-      { "name": "Ryan Leonard", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Ethen Frank", "team": "Washington Capitals", "position": "LW" }
+      {
+        "name": "Tim Washe",
+        "team": "Anaheim Ducks",
+        "position": "D"
+      },
+      {
+        "name": "Ian Moore",
+        "team": "Anaheim Ducks",
+        "position": "D"
+      },
+      {
+        "name": "Michael Callahan",
+        "team": "Boston Bruins",
+        "position": "LW"
+      },
+      {
+        "name": "John Farinacci",
+        "team": "Boston Bruins",
+        "position": "C"
+      },
+      {
+        "name": "Riley Duran",
+        "team": "Boston Bruins",
+        "position": "D"
+      },
+      {
+        "name": "Frederic Brunet",
+        "team": "Boston Bruins",
+        "position": "D"
+      },
+      {
+        "name": "Noah Ostlund",
+        "team": "Buffalo Sabres",
+        "position": "C"
+      },
+      {
+        "name": "Rory Kerins",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Zayne Parekh",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Sam Morton",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Aydar Suniev",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Hunter Brzustewicz",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Justin Robidas",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Ryan Suzuki",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Skyler Brind'Amour",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Domenick Fensore",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Sam Rinzel",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Colton Dach",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Zakhar Bardakov",
+        "team": "Colorado Avalanche",
+        "position": "C"
+      },
+      {
+        "name": "Jack Williams",
+        "team": "Columbus Blue Jackets",
+        "position": "RW"
+      },
+      {
+        "name": "Oskar Back",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Axel Sandin-Pellikka",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Carter Mazur",
+        "team": "Detroit Red Wings",
+        "position": "RW"
+      },
+      {
+        "name": "Isaac Howard",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Uvis Balinskis",
+        "team": "Florida Panthers",
+        "position": "D"
+      },
+      {
+        "name": "Devin Kaplan",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Taylor Ward",
+        "team": "Los Angeles Kings",
+        "position": "RW"
+      },
+      {
+        "name": "Danila Yurov",
+        "team": "Minnesota Wild",
+        "position": "RW"
+      },
+      {
+        "name": "Zeev Buium",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Oliver Kapanen",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Ivan Demidov",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Brady Martin",
+        "team": "Nashville Predators",
+        "position": "C"
+      },
+      {
+        "name": "Joakim Kemell",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Ozzy Wiesblatt",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Arseny Gritsyuk",
+        "team": "New Jersey Devils",
+        "position": "LW"
+      },
+      {
+        "name": "Matthew Schaefer",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Noah Laba",
+        "team": "New York Rangers",
+        "position": "C"
+      },
+      {
+        "name": "Gabe Perreault",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Donovan Sebrango",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Matvei Gridin",
+        "team": "Ottawa Senators",
+        "position": "RW"
+      },
+      {
+        "name": "Tyson Foerster",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Ben Kindel",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Cam Lund",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Michael Misa",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Sam Dickinson",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Berkly Catton",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "team": "St. Louis Blues",
+        "position": "RW"
+      },
+      {
+        "name": "Dalibor Dvorsky",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Nikita Grebenkin",
+        "team": "Tampa Bay Lightning",
+        "position": "RW"
+      },
+      {
+        "name": "Jack Finley",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Easton Cowan",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Dmitri Simashev",
+        "team": "Utah Mammoth",
+        "position": "D"
+      },
+      {
+        "name": "Elias Pettersson",
+        "team": "Vancouver Canucks",
+        "position": "D"
+      },
+      {
+        "name": "Ryan Leonard",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Ethen Frank",
+        "team": "Washington Capitals",
+        "position": "LW"
+      }
     ],
     "topCards": [
-      { "name": "Ivan Demidov - Marquee Rookies Auto", "tag": "rookie" },
-      { "name": "Matthew Schaefer - Marquee Rookies Auto", "tag": "rookie" },
-      { "name": "Artyom Levshunov - Marquee Rookies Auto", "tag": "rookie" },
-      { "name": "Zayne Parekh - Marquee Rookies Auto", "tag": "rookie" },
-      { "name": "Beckett Sennecke - Marquee Rookies Auto", "tag": "rookie" },
-      { "name": "Connor McDavid - Base Set", "tag": "legend" },
-      { "name": "Sidney Crosby - Base Set", "tag": "legend" }
+      {
+        "name": "Ivan Demidov - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matthew Schaefer - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Artyom Levshunov - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Zayne Parekh - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Beckett Sennecke - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Base Set",
+        "tag": "legend"
+      },
+      {
+        "name": "Sidney Crosby - Base Set",
+        "tag": "legend"
+      }
     ],
     "legends": [
-      { "name": "Connor McDavid", "cardType": "Base Set" },
-      { "name": "Sidney Crosby", "cardType": "Base Set" },
-      { "name": "Nathan MacKinnon", "cardType": "Base Set" },
-      { "name": "Cale Makar", "cardType": "Base Set" }
+      {
+        "name": "Connor McDavid",
+        "cardType": "Base Set"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Base Set"
+      },
+      {
+        "name": "Nathan MacKinnon",
+        "cardType": "Base Set"
+      },
+      {
+        "name": "Cale Makar",
+        "cardType": "Base Set"
+      }
     ],
-    "hotPlayers": ["Ivan Demidov", "Artyom Levshunov", "Zayne Parekh", "Matthew Schaefer", "Beckett Sennecke"],
+    "hotPlayers": [
+      "Ivan Demidov",
+      "Artyom Levshunov",
+      "Zayne Parekh",
+      "Matthew Schaefer",
+      "Beckett Sennecke"
+    ],
     "hypeFacts": [
       "100 Marquee Rookies dans le checklist (cartes 201-300) — un des plus profonds de l'année",
       "Multiples niveaux de parallèles chromium incluant Cosmic, Bioluminescence et Golden Treasures",
       "Parallèles d'autographes on-card pour les top rookies en plusieurs niveaux numérotés"
     ]
   },
-
   "2025-2026 SPx Hockey": {
     "brand": "Upper Deck",
     "year": "2025-26",
@@ -96,59 +362,214 @@
     "format": "Hobby Box",
     "summary": "SPx returns with its iconic holoview technology, featuring 65 base rookies plus hologram rookie parallels and premium auto patch inserts.",
     "rookies": [
-      { "name": "Ozzy Wiesblatt", "team": "Nashville Predators", "position": "RW" },
-      { "name": "Colton Dach", "team": "Chicago Blackhawks", "position": "LW" },
-      { "name": "Ben Kindel", "team": "Pittsburgh Penguins", "position": "C" },
-      { "name": "Dmitri Simashev", "team": "Utah Mammoth", "position": "D" },
-      { "name": "Jack Finley", "team": "Tampa Bay Lightning", "position": "C" },
-      { "name": "Beckett Sennecke", "team": "Anaheim Ducks", "position": "RW" },
-      { "name": "Zeev Buium", "team": "Minnesota Wild", "position": "D" },
-      { "name": "Donovan Sebrango", "team": "Ottawa Senators", "position": "D" },
-      { "name": "Matthew Schaefer", "team": "New York Islanders", "position": "D" },
-      { "name": "Elias Pettersson", "team": "Vancouver Canucks", "position": "D" },
-      { "name": "Ryan Suzuki", "team": "Carolina Hurricanes", "position": "C" },
-      { "name": "Jakub Skarek", "team": "New York Islanders", "position": "G" },
-      { "name": "Joakim Kemell", "team": "Nashville Predators", "position": "RW" },
-      { "name": "Brady Martin", "team": "Nashville Predators", "position": "C" },
-      { "name": "Nikke Kokko", "team": "Seattle Kraken", "position": "G" },
-      { "name": "Michael Misa", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Carter Mazur", "team": "Detroit Red Wings", "position": "RW" },
-      { "name": "Artyom Levshunov", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Jani Nyman", "team": "Seattle Kraken", "position": "RW" },
-      { "name": "Ivan Demidov", "team": "Montreal Canadiens", "position": "RW" },
-      { "name": "Gabe Perreault", "team": "New York Rangers", "position": "LW" },
-      { "name": "Ryan Leonard", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Easton Cowan", "team": "Toronto Maple Leafs", "position": "C" },
-      { "name": "Zayne Parekh", "team": "Calgary Flames", "position": "D" },
-      { "name": "Sam Dickinson", "team": "San Jose Sharks", "position": "D" },
-      { "name": "Berkly Catton", "team": "Seattle Kraken", "position": "C" },
-      { "name": "Noah Ostlund", "team": "Buffalo Sabres", "position": "C" },
-      { "name": "Alexander Nikishin", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Dalibor Dvorsky", "team": "St. Louis Blues", "position": "C" },
-      { "name": "Jimmy Snuggerud", "team": "St. Louis Blues", "position": "RW" }
+      {
+        "name": "Ozzy Wiesblatt",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Colton Dach",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Ben Kindel",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Dmitri Simashev",
+        "team": "Utah Mammoth",
+        "position": "D"
+      },
+      {
+        "name": "Jack Finley",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Beckett Sennecke",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      },
+      {
+        "name": "Zeev Buium",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Donovan Sebrango",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Schaefer",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Elias Pettersson",
+        "team": "Vancouver Canucks",
+        "position": "D"
+      },
+      {
+        "name": "Ryan Suzuki",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Jakub Skarek",
+        "team": "New York Islanders",
+        "position": "G"
+      },
+      {
+        "name": "Joakim Kemell",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Brady Martin",
+        "team": "Nashville Predators",
+        "position": "C"
+      },
+      {
+        "name": "Nikke Kokko",
+        "team": "Seattle Kraken",
+        "position": "G"
+      },
+      {
+        "name": "Michael Misa",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Carter Mazur",
+        "team": "Detroit Red Wings",
+        "position": "RW"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Jani Nyman",
+        "team": "Seattle Kraken",
+        "position": "RW"
+      },
+      {
+        "name": "Ivan Demidov",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Gabe Perreault",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Ryan Leonard",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Easton Cowan",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Zayne Parekh",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Sam Dickinson",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Berkly Catton",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Noah Ostlund",
+        "team": "Buffalo Sabres",
+        "position": "C"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Dalibor Dvorsky",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "team": "St. Louis Blues",
+        "position": "RW"
+      }
     ],
     "topCards": [
-      { "name": "Ivan Demidov - Rookie SuperScripts Auto", "tag": "rookie" },
-      { "name": "Artyom Levshunov - Rookie SuperScripts Auto", "tag": "rookie" },
-      { "name": "Matthew Schaefer - Cold Steel Signatures", "tag": "rookie" },
-      { "name": "Zayne Parekh - SuperScripts Auto", "tag": "rookie" },
-      { "name": "Beckett Sennecke - Debut Game Film Auto", "tag": "rookie" },
-      { "name": "Connor McDavid - All-Time Holoview", "tag": "legend" },
-      { "name": "Sidney Crosby - SuperScripts Auto", "tag": "auto" }
+      {
+        "name": "Ivan Demidov - Rookie SuperScripts Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Artyom Levshunov - Rookie SuperScripts Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matthew Schaefer - Cold Steel Signatures",
+        "tag": "rookie"
+      },
+      {
+        "name": "Zayne Parekh - SuperScripts Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Beckett Sennecke - Debut Game Film Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - All-Time Holoview",
+        "tag": "legend"
+      },
+      {
+        "name": "Sidney Crosby - SuperScripts Auto",
+        "tag": "auto"
+      }
     ],
     "legends": [
-      { "name": "Connor McDavid", "cardType": "All-Time Holoview" },
-      { "name": "Sidney Crosby", "cardType": "SuperScripts" },
-      { "name": "Wayne Gretzky", "cardType": "Holoview F/X" }
+      {
+        "name": "Connor McDavid",
+        "cardType": "All-Time Holoview"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "SuperScripts"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Holoview F/X"
+      }
     ],
-    "hotPlayers": ["Ivan Demidov", "Artyom Levshunov", "Zayne Parekh", "Matthew Schaefer", "Beckett Sennecke"],
+    "hotPlayers": [
+      "Ivan Demidov",
+      "Artyom Levshunov",
+      "Zayne Parekh",
+      "Matthew Schaefer",
+      "Beckett Sennecke"
+    ],
     "hypeFacts": [
       "La technologie Holoview iconic de SPx revient avec des parallèles hologramme pour les rookies",
       "Rookie SuperScripts et Cold Steel Signatures sont parmi les sets d'autos les plus recherchés",
       "L'insert 34.5 LBs met en vedette les meilleurs vétérans en format numéroté premium"
     ]
   },
-
   "2025-2026 Credentials Hockey": {
     "brand": "Upper Deck",
     "year": "2025-26",
@@ -157,48 +578,168 @@
     "format": "Hobby Box",
     "summary": "Credentials Hockey focuses heavily on rookies via the Debut Ticket Access subset, with autographed rookie tickets being the marquee chase. A sleek modern design with premium acetate inserts.",
     "rookies": [
-      { "name": "Devin Kaplan", "team": "Philadelphia Flyers", "position": "RW" },
-      { "name": "Beckett Sennecke", "team": "Anaheim Ducks", "position": "RW" },
-      { "name": "Noah Ostlund", "team": "Buffalo Sabres", "position": "C" },
-      { "name": "Zayne Parekh", "team": "Calgary Flames", "position": "D" },
-      { "name": "Alexander Nikishin", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Artyom Levshunov", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Colton Dach", "team": "Chicago Blackhawks", "position": "LW" },
-      { "name": "Ivan Demidov", "team": "Montreal Canadiens", "position": "RW" },
-      { "name": "Matthew Schaefer", "team": "New York Islanders", "position": "D" },
-      { "name": "Gabe Perreault", "team": "New York Rangers", "position": "LW" },
-      { "name": "Zeev Buium", "team": "Minnesota Wild", "position": "D" },
-      { "name": "Michael Misa", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Sam Dickinson", "team": "San Jose Sharks", "position": "D" },
-      { "name": "Berkly Catton", "team": "Seattle Kraken", "position": "C" },
-      { "name": "Jimmy Snuggerud", "team": "St. Louis Blues", "position": "RW" },
-      { "name": "Dalibor Dvorsky", "team": "St. Louis Blues", "position": "C" },
-      { "name": "Easton Cowan", "team": "Toronto Maple Leafs", "position": "C" },
-      { "name": "Ryan Leonard", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Dmitri Simashev", "team": "Utah Mammoth", "position": "D" },
-      { "name": "Brady Martin", "team": "Nashville Predators", "position": "C" },
-      { "name": "Ben Kindel", "team": "Pittsburgh Penguins", "position": "C" },
-      { "name": "Axel Sandin-Pellikka", "team": "Detroit Red Wings", "position": "D" },
-      { "name": "Isaac Howard", "team": "Edmonton Oilers", "position": "LW" },
-      { "name": "Danila Yurov", "team": "Minnesota Wild", "position": "RW" },
-      { "name": "Jack Finley", "team": "Tampa Bay Lightning", "position": "C" }
+      {
+        "name": "Devin Kaplan",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Beckett Sennecke",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      },
+      {
+        "name": "Noah Ostlund",
+        "team": "Buffalo Sabres",
+        "position": "C"
+      },
+      {
+        "name": "Zayne Parekh",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Colton Dach",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Ivan Demidov",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Matthew Schaefer",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Gabe Perreault",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Zeev Buium",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Michael Misa",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Sam Dickinson",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Berkly Catton",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "team": "St. Louis Blues",
+        "position": "RW"
+      },
+      {
+        "name": "Dalibor Dvorsky",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Easton Cowan",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Ryan Leonard",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Dmitri Simashev",
+        "team": "Utah Mammoth",
+        "position": "D"
+      },
+      {
+        "name": "Brady Martin",
+        "team": "Nashville Predators",
+        "position": "C"
+      },
+      {
+        "name": "Ben Kindel",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Axel Sandin-Pellikka",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Isaac Howard",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Danila Yurov",
+        "team": "Minnesota Wild",
+        "position": "RW"
+      },
+      {
+        "name": "Jack Finley",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      }
     ],
     "topCards": [
-      { "name": "Ivan Demidov - Debut Ticket Access Autograph", "tag": "rookie" },
-      { "name": "Artyom Levshunov - Debut Ticket Access Autograph", "tag": "rookie" },
-      { "name": "Matthew Schaefer - Debut Ticket Access Autograph", "tag": "rookie" },
-      { "name": "Zayne Parekh - Acetate Debut Ticket Access Auto", "tag": "rookie" },
-      { "name": "Beckett Sennecke - Acetate Debut Ticket Access", "tag": "rookie" }
+      {
+        "name": "Ivan Demidov - Debut Ticket Access Autograph",
+        "tag": "rookie"
+      },
+      {
+        "name": "Artyom Levshunov - Debut Ticket Access Autograph",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matthew Schaefer - Debut Ticket Access Autograph",
+        "tag": "rookie"
+      },
+      {
+        "name": "Zayne Parekh - Acetate Debut Ticket Access Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Beckett Sennecke - Acetate Debut Ticket Access",
+        "tag": "rookie"
+      }
     ],
     "legends": [],
-    "hotPlayers": ["Ivan Demidov", "Artyom Levshunov", "Zayne Parekh", "Matthew Schaefer", "Easton Cowan"],
+    "hotPlayers": [
+      "Ivan Demidov",
+      "Artyom Levshunov",
+      "Zayne Parekh",
+      "Matthew Schaefer",
+      "Easton Cowan"
+    ],
     "hypeFacts": [
       "Le subset Debut Ticket Access est exclusif aux rookies et ancre tout le produit",
       "Les cartes Acetate Debut Ticket Access sont parmi les plus visuellement frappantes du hobby",
       "Multiples niveaux d'autos (Purple, Black, Green, Gold) ajoutent des couches de rareté pour les top rookies"
     ]
   },
-
   "2025-2026 Skybox Metal Universe Hockey": {
     "brand": "Upper Deck",
     "year": "2025-26",
@@ -207,56 +748,201 @@
     "format": "Blaster Box",
     "summary": "Skybox Metal Universe Hockey features a 150-card base set with veterans (1-100) and rookies (101-151), wrapped in the iconic Metal Universe chromium design.",
     "rookies": [
-      { "name": "Luca Cagnoni", "team": "Vancouver Canucks", "position": "D" },
-      { "name": "Jacob Quillan", "team": "Anaheim Ducks", "position": "C" },
-      { "name": "Karsen Dorwart", "team": "Pittsburgh Penguins", "position": "C" },
-      { "name": "Ben Kindel", "team": "Pittsburgh Penguins", "position": "C" },
-      { "name": "Alexander Nikishin", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Dylan Duke", "team": "Tampa Bay Lightning", "position": "LW" },
-      { "name": "Dmitri Simashev", "team": "Utah Mammoth", "position": "D" },
-      { "name": "Jacob Melanson", "team": "New Jersey Devils", "position": "LW" },
-      { "name": "Matthew Robertson", "team": "Edmonton Oilers", "position": "D" },
-      { "name": "Beckett Sennecke", "team": "Anaheim Ducks", "position": "RW" },
-      { "name": "Ty Mueller", "team": "Colorado Avalanche", "position": "C" },
-      { "name": "Zeev Buium", "team": "Minnesota Wild", "position": "D" },
-      { "name": "Matthew Schaefer", "team": "New York Islanders", "position": "D" },
-      { "name": "Brady Martin", "team": "Nashville Predators", "position": "C" },
-      { "name": "Noah Ostlund", "team": "Buffalo Sabres", "position": "C" },
-      { "name": "Jack Finley", "team": "Tampa Bay Lightning", "position": "C" },
-      { "name": "Jimmy Snuggerud", "team": "St. Louis Blues", "position": "RW" },
-      { "name": "Colton Dach", "team": "Chicago Blackhawks", "position": "LW" },
-      { "name": "Ivan Demidov", "team": "Montreal Canadiens", "position": "RW" },
-      { "name": "Artyom Levshunov", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Zayne Parekh", "team": "Calgary Flames", "position": "D" },
-      { "name": "Ryan Leonard", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Gabe Perreault", "team": "New York Rangers", "position": "LW" },
-      { "name": "Easton Cowan", "team": "Toronto Maple Leafs", "position": "C" },
-      { "name": "Michael Misa", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Berkly Catton", "team": "Seattle Kraken", "position": "C" },
-      { "name": "Sam Dickinson", "team": "San Jose Sharks", "position": "D" },
-      { "name": "Dalibor Dvorsky", "team": "St. Louis Blues", "position": "C" },
-      { "name": "Axel Sandin-Pellikka", "team": "Detroit Red Wings", "position": "D" }
+      {
+        "name": "Luca Cagnoni",
+        "team": "Vancouver Canucks",
+        "position": "D"
+      },
+      {
+        "name": "Jacob Quillan",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Karsen Dorwart",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Ben Kindel",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Dylan Duke",
+        "team": "Tampa Bay Lightning",
+        "position": "LW"
+      },
+      {
+        "name": "Dmitri Simashev",
+        "team": "Utah Mammoth",
+        "position": "D"
+      },
+      {
+        "name": "Jacob Melanson",
+        "team": "New Jersey Devils",
+        "position": "LW"
+      },
+      {
+        "name": "Matthew Robertson",
+        "team": "Edmonton Oilers",
+        "position": "D"
+      },
+      {
+        "name": "Beckett Sennecke",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      },
+      {
+        "name": "Ty Mueller",
+        "team": "Colorado Avalanche",
+        "position": "C"
+      },
+      {
+        "name": "Zeev Buium",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Schaefer",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Brady Martin",
+        "team": "Nashville Predators",
+        "position": "C"
+      },
+      {
+        "name": "Noah Ostlund",
+        "team": "Buffalo Sabres",
+        "position": "C"
+      },
+      {
+        "name": "Jack Finley",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "team": "St. Louis Blues",
+        "position": "RW"
+      },
+      {
+        "name": "Colton Dach",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Ivan Demidov",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Zayne Parekh",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Ryan Leonard",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Gabe Perreault",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Easton Cowan",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Michael Misa",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Berkly Catton",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Sam Dickinson",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Dalibor Dvorsky",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Axel Sandin-Pellikka",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      }
     ],
     "topCards": [
-      { "name": "Ivan Demidov - Precious Metal Gems Green Auto", "tag": "rookie" },
-      { "name": "Artyom Levshunov - Precious Metal Gems Green Auto", "tag": "rookie" },
-      { "name": "Matthew Schaefer - Auto Parallel", "tag": "rookie" },
-      { "name": "Zayne Parekh - Auto Parallel", "tag": "rookie" },
-      { "name": "Connor McDavid - Precious Metal Gems Red", "tag": "legend" }
+      {
+        "name": "Ivan Demidov - Precious Metal Gems Green Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Artyom Levshunov - Precious Metal Gems Green Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matthew Schaefer - Auto Parallel",
+        "tag": "rookie"
+      },
+      {
+        "name": "Zayne Parekh - Auto Parallel",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Precious Metal Gems Red",
+        "tag": "legend"
+      }
     ],
     "legends": [
-      { "name": "Connor McDavid", "cardType": "Precious Metal Gems" },
-      { "name": "Sidney Crosby", "cardType": "Precious Metal Gems" },
-      { "name": "Wayne Gretzky", "cardType": "2013 Retro" }
+      {
+        "name": "Connor McDavid",
+        "cardType": "Precious Metal Gems"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Precious Metal Gems"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "2013 Retro"
+      }
     ],
-    "hotPlayers": ["Ivan Demidov", "Artyom Levshunov", "Zayne Parekh", "Beckett Sennecke", "Matthew Schaefer"],
+    "hotPlayers": [
+      "Ivan Demidov",
+      "Artyom Levshunov",
+      "Zayne Parekh",
+      "Beckett Sennecke",
+      "Matthew Schaefer"
+    ],
     "hypeFacts": [
       "Le parallèle Purple Spectrum FX exclusif blaster est le plus recherché de ce produit",
       "Les Precious Metal Gems Red (/150) et Blue (/299) sont des cartes chasse iconiques",
       "Les inserts 2013 Retro ramènent le design classique des années 90 de Skybox"
     ]
   },
-
   "2025-26 Flair Hockey": {
     "brand": "Upper Deck",
     "year": "2025-26",
@@ -265,57 +951,206 @@
     "format": "Hobby Box",
     "summary": "Flair Hockey features a stunning design with multiple image variations per card, a large rookie subset, and autographic inserts. Each box delivers premium hits with on-card signatures.",
     "rookies": [
-      { "name": "Ozzy Wiesblatt", "team": "Nashville Predators", "position": "RW" },
-      { "name": "Colton Dach", "team": "Chicago Blackhawks", "position": "LW" },
-      { "name": "Owen Sillinger", "team": "Columbus Blue Jackets", "position": "C" },
-      { "name": "Ethen Frank", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Rory Kerins", "team": "Calgary Flames", "position": "C" },
-      { "name": "Jack Finley", "team": "Tampa Bay Lightning", "position": "C" },
-      { "name": "Zayne Parekh", "team": "Calgary Flames", "position": "D" },
-      { "name": "Alexander Nikishin", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Donovan Sebrango", "team": "Ottawa Senators", "position": "D" },
-      { "name": "Rodrigo Abols", "team": "Ottawa Senators", "position": "C" },
-      { "name": "Jacob Quillan", "team": "Anaheim Ducks", "position": "C" },
-      { "name": "Zeev Buium", "team": "Minnesota Wild", "position": "D" },
-      { "name": "Ryan Suzuki", "team": "Carolina Hurricanes", "position": "C" },
-      { "name": "Parker Ford", "team": "Philadelphia Flyers", "position": "C" },
-      { "name": "Jakub Skarek", "team": "New York Islanders", "position": "G" },
-      { "name": "Jacob Gaucher", "team": "Calgary Flames", "position": "C" },
-      { "name": "Joakim Kemell", "team": "Nashville Predators", "position": "RW" },
-      { "name": "Dylan Duke", "team": "Tampa Bay Lightning", "position": "LW" },
-      { "name": "Ryan Greene", "team": "Utah Mammoth", "position": "C" },
-      { "name": "Ivan Demidov", "team": "Montreal Canadiens", "position": "RW" },
-      { "name": "Artyom Levshunov", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Matthew Schaefer", "team": "New York Islanders", "position": "D" },
-      { "name": "Gabe Perreault", "team": "New York Rangers", "position": "LW" },
-      { "name": "Easton Cowan", "team": "Toronto Maple Leafs", "position": "C" },
-      { "name": "Berkly Catton", "team": "Seattle Kraken", "position": "C" },
-      { "name": "Michael Misa", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Noah Ostlund", "team": "Buffalo Sabres", "position": "C" },
-      { "name": "Jimmy Snuggerud", "team": "St. Louis Blues", "position": "RW" },
-      { "name": "Ryan Leonard", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Beckett Sennecke", "team": "Anaheim Ducks", "position": "RW" }
+      {
+        "name": "Ozzy Wiesblatt",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Colton Dach",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Owen Sillinger",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Ethen Frank",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Rory Kerins",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Jack Finley",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Zayne Parekh",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Donovan Sebrango",
+        "team": "Ottawa Senators",
+        "position": "D"
+      },
+      {
+        "name": "Rodrigo Abols",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Jacob Quillan",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Zeev Buium",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Ryan Suzuki",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Parker Ford",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Jakub Skarek",
+        "team": "New York Islanders",
+        "position": "G"
+      },
+      {
+        "name": "Jacob Gaucher",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Joakim Kemell",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Dylan Duke",
+        "team": "Tampa Bay Lightning",
+        "position": "LW"
+      },
+      {
+        "name": "Ryan Greene",
+        "team": "Utah Mammoth",
+        "position": "C"
+      },
+      {
+        "name": "Ivan Demidov",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Matthew Schaefer",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Gabe Perreault",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Easton Cowan",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Berkly Catton",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Michael Misa",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Noah Ostlund",
+        "team": "Buffalo Sabres",
+        "position": "C"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "team": "St. Louis Blues",
+        "position": "RW"
+      },
+      {
+        "name": "Ryan Leonard",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Beckett Sennecke",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      }
     ],
     "topCards": [
-      { "name": "Ivan Demidov - Autographics", "tag": "rookie" },
-      { "name": "Artyom Levshunov - Autographics", "tag": "rookie" },
-      { "name": "Zayne Parekh - Autographics", "tag": "rookie" },
-      { "name": "Matthew Schaefer - Center Spotlight Auto", "tag": "rookie" },
-      { "name": "Connor McDavid - 3-on-1 Breakaway", "tag": "legend" }
+      {
+        "name": "Ivan Demidov - Autographics",
+        "tag": "rookie"
+      },
+      {
+        "name": "Artyom Levshunov - Autographics",
+        "tag": "rookie"
+      },
+      {
+        "name": "Zayne Parekh - Autographics",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matthew Schaefer - Center Spotlight Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - 3-on-1 Breakaway",
+        "tag": "legend"
+      }
     ],
     "legends": [
-      { "name": "Connor McDavid", "cardType": "3-on-1 Breakaway" },
-      { "name": "Sidney Crosby", "cardType": "Artistic Flair" },
-      { "name": "Wayne Gretzky", "cardType": "1993 Variant" }
+      {
+        "name": "Connor McDavid",
+        "cardType": "3-on-1 Breakaway"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Artistic Flair"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "1993 Variant"
+      }
     ],
-    "hotPlayers": ["Ivan Demidov", "Artyom Levshunov", "Zayne Parekh", "Beckett Sennecke", "Gabe Perreault"],
+    "hotPlayers": [
+      "Ivan Demidov",
+      "Artyom Levshunov",
+      "Zayne Parekh",
+      "Beckett Sennecke",
+      "Gabe Perreault"
+    ],
     "hypeFacts": [
       "Trois variations d'images (Image B, Image C et 1993 Retro) pour chaque carte de base",
       "Autographics est un set chasse légendaire datant du Flair original des années 90",
       "270 cartes rookies uniques dans le checklist complet — un des plus profonds du hobby"
     ]
   },
-
   "2025-26 Upper Deck Series 2 Hockey": {
     "brand": "Upper Deck",
     "year": "2025-26",
@@ -324,62 +1159,229 @@
     "format": "Hobby Box",
     "summary": "Upper Deck Series 2 completes the flagship UD hockey set with Young Guns rookies, canvas cards, and key insert sets including UD Canvas Signatures.",
     "rookies": [
-      { "name": "Matthew Schaefer", "team": "New York Islanders", "position": "D" },
-      { "name": "Danila Yurov", "team": "Minnesota Wild", "position": "RW" },
-      { "name": "Ben Kindel", "team": "Pittsburgh Penguins", "position": "C" },
-      { "name": "Charles-Alexis Legault", "team": "Montreal Canadiens", "position": "LW" },
-      { "name": "Hunter Brzustewicz", "team": "Calgary Flames", "position": "D" },
-      { "name": "Maxim Shabanov", "team": "St. Louis Blues", "position": "LW" },
-      { "name": "Wyatt Aamodt", "team": "Colorado Avalanche", "position": "D" },
-      { "name": "Arseni Gritsyuk", "team": "New Jersey Devils", "position": "LW" },
-      { "name": "Brady Martin", "team": "Nashville Predators", "position": "C" },
-      { "name": "Alexander Nikishin", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Easton Cowan", "team": "Toronto Maple Leafs", "position": "C" },
-      { "name": "Noah Laba", "team": "New York Rangers", "position": "C" },
-      { "name": "Carl Lindbom", "team": "New York Rangers", "position": "G" },
-      { "name": "Ryan Greene", "team": "Utah Mammoth", "position": "C" },
-      { "name": "Matvei Gridin", "team": "Ottawa Senators", "position": "RW" },
-      { "name": "Marshall Warren", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Kirill Kudryavtsev", "team": "Utah Mammoth", "position": "D" },
-      { "name": "Isaac Howard", "team": "Edmonton Oilers", "position": "LW" },
-      { "name": "Dmitri Simashev", "team": "Utah Mammoth", "position": "D" },
-      { "name": "Ivan Demidov", "team": "Montreal Canadiens", "position": "RW" },
-      { "name": "Artyom Levshunov", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Zayne Parekh", "team": "Calgary Flames", "position": "D" },
-      { "name": "Beckett Sennecke", "team": "Anaheim Ducks", "position": "RW" },
-      { "name": "Gabe Perreault", "team": "New York Rangers", "position": "LW" },
-      { "name": "Ryan Leonard", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Michael Misa", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Sam Dickinson", "team": "San Jose Sharks", "position": "D" },
-      { "name": "Berkly Catton", "team": "Seattle Kraken", "position": "C" },
-      { "name": "Colton Dach", "team": "Chicago Blackhawks", "position": "LW" },
-      { "name": "Zeev Buium", "team": "Minnesota Wild", "position": "D" },
-      { "name": "Jack Finley", "team": "Tampa Bay Lightning", "position": "C" },
-      { "name": "Dalibor Dvorsky", "team": "St. Louis Blues", "position": "C" },
-      { "name": "Jimmy Snuggerud", "team": "St. Louis Blues", "position": "RW" }
+      {
+        "name": "Matthew Schaefer",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Danila Yurov",
+        "team": "Minnesota Wild",
+        "position": "RW"
+      },
+      {
+        "name": "Ben Kindel",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Charles-Alexis Legault",
+        "team": "Montreal Canadiens",
+        "position": "LW"
+      },
+      {
+        "name": "Hunter Brzustewicz",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Maxim Shabanov",
+        "team": "St. Louis Blues",
+        "position": "LW"
+      },
+      {
+        "name": "Wyatt Aamodt",
+        "team": "Colorado Avalanche",
+        "position": "D"
+      },
+      {
+        "name": "Arseni Gritsyuk",
+        "team": "New Jersey Devils",
+        "position": "LW"
+      },
+      {
+        "name": "Brady Martin",
+        "team": "Nashville Predators",
+        "position": "C"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Easton Cowan",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Noah Laba",
+        "team": "New York Rangers",
+        "position": "C"
+      },
+      {
+        "name": "Carl Lindbom",
+        "team": "New York Rangers",
+        "position": "G"
+      },
+      {
+        "name": "Ryan Greene",
+        "team": "Utah Mammoth",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Gridin",
+        "team": "Ottawa Senators",
+        "position": "RW"
+      },
+      {
+        "name": "Marshall Warren",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Kirill Kudryavtsev",
+        "team": "Utah Mammoth",
+        "position": "D"
+      },
+      {
+        "name": "Isaac Howard",
+        "team": "Edmonton Oilers",
+        "position": "LW"
+      },
+      {
+        "name": "Dmitri Simashev",
+        "team": "Utah Mammoth",
+        "position": "D"
+      },
+      {
+        "name": "Ivan Demidov",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Zayne Parekh",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Beckett Sennecke",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      },
+      {
+        "name": "Gabe Perreault",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Ryan Leonard",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Michael Misa",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Sam Dickinson",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Berkly Catton",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Colton Dach",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Zeev Buium",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Jack Finley",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Dalibor Dvorsky",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "team": "St. Louis Blues",
+        "position": "RW"
+      }
     ],
     "topCards": [
-      { "name": "Ivan Demidov - Young Guns", "tag": "rookie" },
-      { "name": "Artyom Levshunov - Young Guns", "tag": "rookie" },
-      { "name": "Matthew Schaefer - Young Guns", "tag": "rookie" },
-      { "name": "Zayne Parekh - Young Guns", "tag": "rookie" },
-      { "name": "Ivan Demidov - UD Canvas Young Guns", "tag": "rookie" },
-      { "name": "Connor McDavid - UD Canvas Signatures", "tag": "auto" },
-      { "name": "Sidney Crosby - UD Canvas Signatures", "tag": "auto" }
+      {
+        "name": "Ivan Demidov - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Artyom Levshunov - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matthew Schaefer - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Zayne Parekh - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Ivan Demidov - UD Canvas Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - UD Canvas Signatures",
+        "tag": "auto"
+      },
+      {
+        "name": "Sidney Crosby - UD Canvas Signatures",
+        "tag": "auto"
+      }
     ],
     "legends": [
-      { "name": "Connor McDavid", "cardType": "UD Canvas Signatures" },
-      { "name": "Sidney Crosby", "cardType": "UD Canvas Signatures" },
-      { "name": "Wayne Gretzky", "cardType": "UD Portraits" }
+      {
+        "name": "Connor McDavid",
+        "cardType": "UD Canvas Signatures"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "UD Canvas Signatures"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "UD Portraits"
+      }
     ],
-    "hotPlayers": ["Ivan Demidov", "Artyom Levshunov", "Zayne Parekh", "Beckett Sennecke", "Easton Cowan"],
+    "hotPlayers": [
+      "Ivan Demidov",
+      "Artyom Levshunov",
+      "Zayne Parekh",
+      "Beckett Sennecke",
+      "Easton Cowan"
+    ],
     "hypeFacts": [
       "Young Guns est le subset de rookies le plus iconique du hockey, depuis 1990-91",
       "UD Canvas Young Guns (style art dessiné à la main) sont parmi les cartes rookies les plus distinctes",
       "293 Young Guns rookies dans le checklist — un paradis pour les collectionneurs"
     ]
   },
-
   "2025-2026 NHL Star Rookies Box Set": {
     "brand": "Upper Deck",
     "year": "2025-26",
@@ -388,43 +1390,1649 @@
     "format": "Box Set",
     "summary": "The NHL Star Rookies Box Set features exactly 25 of the top rookie class members in a standalone boxed collection, with autograph parallels available.",
     "rookies": [
-      { "name": "Ivan Demidov", "team": "Montreal Canadiens", "position": "RW" },
-      { "name": "Ben Kindel", "team": "Pittsburgh Penguins", "position": "C" },
-      { "name": "Noah Ostlund", "team": "Buffalo Sabres", "position": "C" },
-      { "name": "Dalibor Dvorsky", "team": "St. Louis Blues", "position": "C" },
-      { "name": "Matthew Schaefer", "team": "New York Islanders", "position": "D" },
-      { "name": "Alexander Nikishin", "team": "Carolina Hurricanes", "position": "D" },
-      { "name": "Beckett Sennecke", "team": "Anaheim Ducks", "position": "RW" },
-      { "name": "Gabe Perreault", "team": "New York Rangers", "position": "LW" },
-      { "name": "Ryan Leonard", "team": "Washington Capitals", "position": "LW" },
-      { "name": "Dmitri Simashev", "team": "Utah Mammoth", "position": "D" },
-      { "name": "Easton Cowan", "team": "Toronto Maple Leafs", "position": "C" },
-      { "name": "Axel Sandin-Pellikka", "team": "Detroit Red Wings", "position": "D" },
-      { "name": "Michael Misa", "team": "San Jose Sharks", "position": "C" },
-      { "name": "Sam Dickinson", "team": "San Jose Sharks", "position": "D" },
-      { "name": "Zayne Parekh", "team": "Calgary Flames", "position": "D" },
-      { "name": "Artyom Levshunov", "team": "Chicago Blackhawks", "position": "D" },
-      { "name": "Berkly Catton", "team": "Seattle Kraken", "position": "C" },
-      { "name": "Zeev Buium", "team": "Minnesota Wild", "position": "D" },
-      { "name": "Jimmy Snuggerud", "team": "St. Louis Blues", "position": "RW" },
-      { "name": "Colton Dach", "team": "Chicago Blackhawks", "position": "LW" },
-      { "name": "Brady Martin", "team": "Nashville Predators", "position": "C" },
-      { "name": "Jack Finley", "team": "Tampa Bay Lightning", "position": "C" },
-      { "name": "Ryan Greene", "team": "Utah Mammoth", "position": "C" },
-      { "name": "Joakim Kemell", "team": "Nashville Predators", "position": "RW" },
-      { "name": "Noah Laba", "team": "New York Rangers", "position": "C" }
+      {
+        "name": "Ivan Demidov",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Ben Kindel",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Noah Ostlund",
+        "team": "Buffalo Sabres",
+        "position": "C"
+      },
+      {
+        "name": "Dalibor Dvorsky",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Matthew Schaefer",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Alexander Nikishin",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Beckett Sennecke",
+        "team": "Anaheim Ducks",
+        "position": "RW"
+      },
+      {
+        "name": "Gabe Perreault",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Ryan Leonard",
+        "team": "Washington Capitals",
+        "position": "LW"
+      },
+      {
+        "name": "Dmitri Simashev",
+        "team": "Utah Mammoth",
+        "position": "D"
+      },
+      {
+        "name": "Easton Cowan",
+        "team": "Toronto Maple Leafs",
+        "position": "C"
+      },
+      {
+        "name": "Axel Sandin-Pellikka",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Michael Misa",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Sam Dickinson",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Zayne Parekh",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Artyom Levshunov",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Berkly Catton",
+        "team": "Seattle Kraken",
+        "position": "C"
+      },
+      {
+        "name": "Zeev Buium",
+        "team": "Minnesota Wild",
+        "position": "D"
+      },
+      {
+        "name": "Jimmy Snuggerud",
+        "team": "St. Louis Blues",
+        "position": "RW"
+      },
+      {
+        "name": "Colton Dach",
+        "team": "Chicago Blackhawks",
+        "position": "LW"
+      },
+      {
+        "name": "Brady Martin",
+        "team": "Nashville Predators",
+        "position": "C"
+      },
+      {
+        "name": "Jack Finley",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Ryan Greene",
+        "team": "Utah Mammoth",
+        "position": "C"
+      },
+      {
+        "name": "Joakim Kemell",
+        "team": "Nashville Predators",
+        "position": "RW"
+      },
+      {
+        "name": "Noah Laba",
+        "team": "New York Rangers",
+        "position": "C"
+      }
     ],
     "topCards": [
-      { "name": "Ivan Demidov - Autograph Parallel", "tag": "rookie" },
-      { "name": "Artyom Levshunov - Autograph Parallel", "tag": "rookie" },
-      { "name": "Matthew Schaefer - Autograph Parallel", "tag": "rookie" }
+      {
+        "name": "Ivan Demidov - Autograph Parallel",
+        "tag": "rookie"
+      },
+      {
+        "name": "Artyom Levshunov - Autograph Parallel",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matthew Schaefer - Autograph Parallel",
+        "tag": "rookie"
+      }
     ],
     "legends": [],
-    "hotPlayers": ["Ivan Demidov", "Artyom Levshunov", "Matthew Schaefer", "Zayne Parekh", "Beckett Sennecke"],
+    "hotPlayers": [
+      "Ivan Demidov",
+      "Artyom Levshunov",
+      "Matthew Schaefer",
+      "Zayne Parekh",
+      "Beckett Sennecke"
+    ],
     "hypeFacts": [
       "Set de 25 cartes exclusivement dédié aux meilleurs rookies de la classe 2025-26",
       "Point d'entrée abordable pour collecter les top rookies de l'année",
       "Parallèles d'autographes disponibles pour les joueurs clés du set"
+    ]
+  },
+  "2024-25 Upper Deck Series 1 Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 2,
+    "format": "Hobby Box",
+    "summary": "Le produit phare annuel d'Upper Deck avec le sous-ensemble Young Guns et les grands inserts classiques. 140 Young Guns identifiés dans le checklist officiel.",
+    "rookies": [
+      {
+        "name": "Zachary Bolduc",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Jesper Wallstedt",
+        "team": "Minnesota Wild",
+        "position": "G"
+      },
+      {
+        "name": "Landon Slaggert",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Kyle MacLean",
+        "team": "New York Islanders",
+        "position": "C"
+      },
+      {
+        "name": "Mason Morelli",
+        "team": "Vegas Golden Knights",
+        "position": "LW"
+      },
+      {
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Bradly Nadeau",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Zack Ostapchuk",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Jason Polin",
+        "team": "Colorado Avalanche",
+        "position": "RW"
+      },
+      {
+        "name": "Shakir Mukhamadullin",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Zach Dean",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Luca Del Bel Belluz",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Mavrik Bourque",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Matt Rempe",
+        "team": "New York Rangers",
+        "position": "C"
+      },
+      {
+        "name": "Matt Villalta",
+        "team": "Arizona Coyotes",
+        "position": "G"
+      },
+      {
+        "name": "Maxwell Crozier",
+        "team": "Tampa Bay Lightning",
+        "position": "D"
+      },
+      {
+        "name": "Frank Nazar",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Logan Stankoven",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Fabian Lysell",
+        "team": "Boston Bruins",
+        "position": "RW"
+      },
+      {
+        "name": "Olen Zellweger",
+        "team": "Anaheim Ducks",
+        "position": "D"
+      },
+      {
+        "name": "Rutger McGroarty",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Conor Geekie",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Joshua Roy",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matvei Michkov - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Will Smith - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Lane Hutson - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Cutter Gauthier - Young Guns",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - UD Canvas Signatures",
+        "tag": "auto"
+      },
+      {
+        "name": "Sidney Crosby - UD Canvas Signatures",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "UD Canvas Signatures"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "UD Canvas"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "UD Portraits"
+      }
+    ],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Will Smith",
+      "Lane Hutson",
+      "Cutter Gauthier"
+    ],
+    "hypeFacts": [
+      "Young Guns est le sous-ensemble recrue le plus iconique du hockey depuis 1990-91",
+      "Premier apparition en cartes de Macklin Celebrini (1er choix 2024) dans la gamme flagship",
+      "Matvei Michkov — le prospect le plus attendu de la draft 2023 — fait ses débuts en Young Guns"
+    ]
+  },
+  "2024-25 Upper Deck Extended Series Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 2,
+    "format": "Hobby Box",
+    "summary": "La série étendue complète la collection flagship avec 483 recrues Young Guns supplémentaires, des variations canvas et des inserts exclusifs.",
+    "rookies": [
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Erik Portillo",
+        "team": "Los Angeles Kings",
+        "position": "G"
+      },
+      {
+        "name": "Owen Pickering",
+        "team": "Pittsburgh Penguins",
+        "position": "D"
+      },
+      {
+        "name": "Lian Bichsel",
+        "team": "Dallas Stars",
+        "position": "D"
+      },
+      {
+        "name": "Brett Berard",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Jonathan Lekkerimaki",
+        "team": "Vancouver Canucks",
+        "position": "RW"
+      },
+      {
+        "name": "Tye Felhaber",
+        "team": "Colorado Avalanche",
+        "position": "RW"
+      },
+      {
+        "name": "Sebastian Cossa",
+        "team": "Detroit Red Wings",
+        "position": "G"
+      },
+      {
+        "name": "Trent Miner",
+        "team": "Colorado Avalanche",
+        "position": "G"
+      },
+      {
+        "name": "Denton Mateychuk",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Isaiah George",
+        "team": "New York Islanders",
+        "position": "D"
+      },
+      {
+        "name": "Nikita Grebenkin",
+        "team": "Toronto Maple Leafs",
+        "position": "RW"
+      },
+      {
+        "name": "Tyson Kozak",
+        "team": "Buffalo Sabres",
+        "position": "C"
+      },
+      {
+        "name": "Juha Jaaska",
+        "team": "Carolina Hurricanes",
+        "position": "LW"
+      },
+      {
+        "name": "Nathan Legare",
+        "team": "New Jersey Devils",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Cormier",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Logan Mailloux",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Josh Doan",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      },
+      {
+        "name": "Arshdeep Bains",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Samuel Honzek",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Gage Goncalves",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Phil Kemp",
+        "team": "Edmonton Oilers",
+        "position": "D"
+      },
+      {
+        "name": "Nolan Allan",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Maveric Lamoureux",
+        "team": "Utah Hockey Club",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Will Smith - Young Guns Extended",
+        "tag": "rookie"
+      },
+      {
+        "name": "Jonathan Lekkerimaki - Young Guns Extended",
+        "tag": "rookie"
+      },
+      {
+        "name": "Sebastian Cossa - Young Guns Extended",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - UD Canvas Signatures",
+        "tag": "auto"
+      },
+      {
+        "name": "Lane Hutson - Canvas Young Guns",
+        "tag": "rookie"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "UD Canvas Signatures"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "UD Portraits"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "UD Canvas"
+      }
+    ],
+    "hotPlayers": [
+      "Will Smith",
+      "Jonathan Lekkerimaki",
+      "Sebastian Cossa",
+      "Jett Luchanko",
+      "Lane Hutson"
+    ],
+    "hypeFacts": [
+      "483 Young Guns recrues supplémentaires — le checklist le plus profond de la saison flagship",
+      "Inserts Fluorescence et Dazzlers disponibles exclusivement dans cette série étendue",
+      "Variations Canvas Young Guns avec style illustration artistique à la main"
+    ]
+  },
+  "2024-25 O-Pee-Chee Platinum Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "O-Pee-Chee Platinum revient avec 100 Marquee Rookies chromium (cartes 201-300), de nombreux parallèles colorés et des autographes sur cartes.",
+    "rookies": [
+      {
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Logan Stankoven",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Jesper Wallstedt",
+        "team": "Minnesota Wild",
+        "position": "G"
+      },
+      {
+        "name": "Mavrik Bourque",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Frank Nazar",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Olen Zellweger",
+        "team": "Anaheim Ducks",
+        "position": "D"
+      },
+      {
+        "name": "Joshua Roy",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Shakir Mukhamadullin",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Sam Colangelo",
+        "team": "Anaheim Ducks",
+        "position": "C"
+      },
+      {
+        "name": "Aku Raty",
+        "team": "Utah Hockey Club",
+        "position": "C"
+      },
+      {
+        "name": "Lian Bichsel",
+        "team": "Dallas Stars",
+        "position": "D"
+      },
+      {
+        "name": "Denton Mateychuk",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Owen Pickering",
+        "team": "Pittsburgh Penguins",
+        "position": "D"
+      },
+      {
+        "name": "Fabian Lysell",
+        "team": "Boston Bruins",
+        "position": "RW"
+      },
+      {
+        "name": "Justin Brazeau",
+        "team": "Boston Bruins",
+        "position": "RW"
+      },
+      {
+        "name": "Adam Klapka",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Yan Kuznetsov",
+        "team": "Calgary Flames",
+        "position": "D"
+      },
+      {
+        "name": "Bradly Nadeau",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Rutger McGroarty",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Conor Geekie",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Samuel Honzek",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Jonathan Lekkerimaki",
+        "team": "Vancouver Canucks",
+        "position": "RW"
+      },
+      {
+        "name": "Logan Morrison",
+        "team": "Seattle Kraken",
+        "position": "C"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matvei Michkov - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Will Smith - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Lane Hutson - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Cutter Gauthier - Marquee Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Base Set",
+        "tag": "legend"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Base Set"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Base Set"
+      },
+      {
+        "name": "Nathan MacKinnon",
+        "cardType": "Base Set"
+      }
+    ],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Will Smith",
+      "Lane Hutson",
+      "Cutter Gauthier"
+    ],
+    "hypeFacts": [
+      "100 Marquee Rookies chromium (cartes 201-300) — l'une des sélections recrues les plus profondes",
+      "Multiples niveaux de parallèles numérotés dont les Cosmic, Golden Treasures et Bioluminescence",
+      "Autographes sur cartes pour les meilleures recrues dans des éditions numérotées limitées"
+    ]
+  },
+  "2024-25 Credentials Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 3,
+    "format": "Hobby Box",
+    "summary": "Credentials Hockey mise fortement sur les recrues via le sous-ensemble Debut Ticket Access, avec des tickets autographiés comme carte phare à chasser.",
+    "rookies": [
+      {
+        "name": "Albert Johansson",
+        "team": "Detroit Red Wings",
+        "position": "D"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Joel Blomqvist",
+        "team": "Pittsburgh Penguins",
+        "position": "G"
+      },
+      {
+        "name": "Maxim Tsyplakov",
+        "team": "New York Islanders",
+        "position": "LW"
+      },
+      {
+        "name": "Oliver Kapanen",
+        "team": "Montreal Canadiens",
+        "position": "C"
+      },
+      {
+        "name": "Samuel Honzek",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Calum Ritchie",
+        "team": "Colorado Avalanche",
+        "position": "C"
+      },
+      {
+        "name": "Victor Mancini",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Nolan Allan",
+        "team": "Chicago Blackhawks",
+        "position": "D"
+      },
+      {
+        "name": "Seamus Casey",
+        "team": "New Jersey Devils",
+        "position": "D"
+      },
+      {
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Rutger McGroarty",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Conor Geekie",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Cormier",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Brad Lambert",
+        "team": "Winnipeg Jets",
+        "position": "C"
+      },
+      {
+        "name": "Zack Ostapchuk",
+        "team": "Ottawa Senators",
+        "position": "C"
+      },
+      {
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Logan Stankoven",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Frank Nazar",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Scott Morrow",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Debut Ticket Access Autograph",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matvei Michkov - Debut Ticket Access Autograph",
+        "tag": "rookie"
+      },
+      {
+        "name": "Will Smith - Debut Ticket Access Autograph",
+        "tag": "rookie"
+      },
+      {
+        "name": "Lane Hutson - Acetate Debut Ticket Access Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Cutter Gauthier - Acetate Debut Ticket Access",
+        "tag": "rookie"
+      }
+    ],
+    "legends": [],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Will Smith",
+      "Lane Hutson",
+      "Cutter Gauthier"
+    ],
+    "hypeFacts": [
+      "Le Debut Ticket Access est un sous-ensemble exclusif aux recrues et constitue le cœur du produit",
+      "Les cartes Acetate Debut Ticket Access sont parmi les plus visuellement frappantes de la saison",
+      "Niveaux d'autographes multiples (Purple, Black, Green, Gold) ajoutent des couches de rareté"
+    ]
+  },
+  "2024-25 SP Authentic Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 3,
+    "format": "Hobby Box",
+    "summary": "SP Authentic est centré sur les autographes Future Watch des recrues — l'une des séries de cartes recrue autographiées les plus respectées du hobby depuis 1996.",
+    "rookies": [
+      {
+        "name": "Olen Zellweger",
+        "team": "Anaheim Ducks",
+        "position": "D"
+      },
+      {
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Jesper Wallstedt",
+        "team": "Minnesota Wild",
+        "position": "G"
+      },
+      {
+        "name": "Zachary Bolduc",
+        "team": "St. Louis Blues",
+        "position": "C"
+      },
+      {
+        "name": "Brendan Brisson",
+        "team": "Vegas Golden Knights",
+        "position": "C"
+      },
+      {
+        "name": "Joshua Roy",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Graeme Clarke",
+        "team": "New Jersey Devils",
+        "position": "RW"
+      },
+      {
+        "name": "Matt Rempe",
+        "team": "New York Rangers",
+        "position": "C"
+      },
+      {
+        "name": "Vasily Ponomarev",
+        "team": "Pittsburgh Penguins",
+        "position": "C"
+      },
+      {
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Adam Klapka",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Jack Thompson",
+        "team": "San Jose Sharks",
+        "position": "D"
+      },
+      {
+        "name": "Jason Polin",
+        "team": "Colorado Avalanche",
+        "position": "RW"
+      },
+      {
+        "name": "Phil Kemp",
+        "team": "Edmonton Oilers",
+        "position": "D"
+      },
+      {
+        "name": "Gage Goncalves",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Arshdeep Bains",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Lukas Cormier",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Mason Morelli",
+        "team": "Vegas Golden Knights",
+        "position": "LW"
+      },
+      {
+        "name": "Luca Del Bel Belluz",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Autographed Future Watch",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matvei Michkov - Autographed Future Watch",
+        "tag": "rookie"
+      },
+      {
+        "name": "Will Smith - Autographed Future Watch",
+        "tag": "rookie"
+      },
+      {
+        "name": "Lane Hutson - Autographed Future Watch",
+        "tag": "rookie"
+      },
+      {
+        "name": "Cutter Gauthier - Autographed Future Watch",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Chirography Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Chirography"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "SP Authentic Signatures"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Chirography"
+      }
+    ],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Will Smith",
+      "Lane Hutson",
+      "Cutter Gauthier"
+    ],
+    "hypeFacts": [
+      "Les Autographed Future Watch sont parmi les cartes recrues les plus recherchées du hobby depuis 1996",
+      "474 recrues dans le checklist complet avec plusieurs niveaux d'autographes numérotés",
+      "Les parallèles /999, /499, /199, /99 et /25 créent une hiérarchie de rareté très appréciée"
+    ]
+  },
+  "2024-25 Clear Cut Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "Clear Cut Hockey se distingue par son design ultra-moderne et ses cartes acétate transparentes, avec 209 recrues dans le checklist.",
+    "rookies": [
+      {
+        "name": "Arshdeep Bains",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Adam Klapka",
+        "team": "Calgary Flames",
+        "position": "C"
+      },
+      {
+        "name": "Akil Thomas",
+        "team": "Los Angeles Kings",
+        "position": "RW"
+      },
+      {
+        "name": "Brendan Brisson",
+        "team": "Vegas Golden Knights",
+        "position": "C"
+      },
+      {
+        "name": "Brian Halonen",
+        "team": "New Jersey Devils",
+        "position": "C"
+      },
+      {
+        "name": "Bradly Nadeau",
+        "team": "Carolina Hurricanes",
+        "position": "C"
+      },
+      {
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Justin Brazeau",
+        "team": "Boston Bruins",
+        "position": "RW"
+      },
+      {
+        "name": "Declan Carlile",
+        "team": "Tampa Bay Lightning",
+        "position": "D"
+      },
+      {
+        "name": "Denton Mateychuk",
+        "team": "Columbus Blue Jackets",
+        "position": "D"
+      },
+      {
+        "name": "Emil Lilleberg",
+        "team": "Nashville Predators",
+        "position": "D"
+      },
+      {
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Logan Stankoven",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Frank Nazar",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Jesper Wallstedt",
+        "team": "Minnesota Wild",
+        "position": "G"
+      },
+      {
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Samuel Honzek",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Scott Morrow",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Olen Zellweger",
+        "team": "Anaheim Ducks",
+        "position": "D"
+      },
+      {
+        "name": "Josh Doan",
+        "team": "Arizona Coyotes",
+        "position": "C"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Clear Cut Rookie Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matvei Michkov - Clear Cut Rookie Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Will Smith - Clear Cut Rookie Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Lane Hutson - Clear Cut Rookie Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Clear Cut Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Clear Cut Renditions"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Clear Cut Legends"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Clear Cut Signatures"
+      }
+    ],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Will Smith",
+      "Lane Hutson",
+      "Cutter Gauthier"
+    ],
+    "hypeFacts": [
+      "Technologie acétate transparente sur les cartes recrues — un look unique dans le hobby",
+      "209 recrues dans le checklist complet avec des autographes sur cartes numérotés",
+      "Parallèles multiples dont les éditions /99, /49 et /10 pour les séries courtes"
+    ]
+  },
+  "2024-25 Stature Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 4,
+    "format": "Hobby Box",
+    "summary": "Stature Hockey met en avant une photographie haut de gamme et 40 recrues premium avec des autographes sur cartes.",
+    "rookies": [
+      {
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Conor Geekie",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Logan Stankoven",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Frank Nazar",
+        "team": "Chicago Blackhawks",
+        "position": "C"
+      },
+      {
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Rutger McGroarty",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Jonathan Lekkerimaki",
+        "team": "Vancouver Canucks",
+        "position": "RW"
+      },
+      {
+        "name": "Jesper Wallstedt",
+        "team": "Minnesota Wild",
+        "position": "G"
+      },
+      {
+        "name": "Matt Rempe",
+        "team": "New York Rangers",
+        "position": "C"
+      },
+      {
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Samuel Honzek",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Scott Morrow",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Joshua Roy",
+        "team": "Montreal Canadiens",
+        "position": "RW"
+      },
+      {
+        "name": "Zachary Bolduc",
+        "team": "St. Louis Blues",
+        "position": "C"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Stature Rookie Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matvei Michkov - Stature Rookie Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Will Smith - Stature Rookie Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Stature Signatures",
+        "tag": "auto"
+      },
+      {
+        "name": "Sidney Crosby - Stature Signatures",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Stature Signatures"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Stature Signatures"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Stature Legends"
+      }
+    ],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Will Smith",
+      "Lane Hutson",
+      "Cutter Gauthier"
+    ],
+    "hypeFacts": [
+      "40 recrues premium dans le checklist — produit sélectif axé sur la qualité plutôt que la quantité",
+      "Photographie grand format haut de gamme avec design moderne et épuré",
+      "Autographes sur cartes garantis pour les meilleures recrues de la classe 2024"
+    ]
+  },
+  "2024-25 Upper Deck Ice Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": 3,
+    "format": "Hobby Box",
+    "summary": "Upper Deck Ice est l'un des produits mid-range les plus populaires, avec 611 recrues dans son checklist complet et un design épuré avec des parallèles glacés distinctifs.",
+    "rookies": [
+      {
+        "name": "Logan Stankoven",
+        "team": "Dallas Stars",
+        "position": "C"
+      },
+      {
+        "name": "Arshdeep Bains",
+        "team": "Vancouver Canucks",
+        "position": "LW"
+      },
+      {
+        "name": "Olen Zellweger",
+        "team": "Anaheim Ducks",
+        "position": "D"
+      },
+      {
+        "name": "Nikita Chibrikov",
+        "team": "Winnipeg Jets",
+        "position": "RW"
+      },
+      {
+        "name": "Justin Brazeau",
+        "team": "Boston Bruins",
+        "position": "RW"
+      },
+      {
+        "name": "Lukas Cormier",
+        "team": "Vegas Golden Knights",
+        "position": "D"
+      },
+      {
+        "name": "Luca Del Bel Belluz",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Maxwell Crozier",
+        "team": "Tampa Bay Lightning",
+        "position": "D"
+      },
+      {
+        "name": "Logan Mailloux",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW"
+      },
+      {
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C"
+      },
+      {
+        "name": "Gage Goncalves",
+        "team": "Tampa Bay Lightning",
+        "position": "C"
+      },
+      {
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW"
+      },
+      {
+        "name": "Will Smith",
+        "team": "San Jose Sharks",
+        "position": "C"
+      },
+      {
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D"
+      },
+      {
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW"
+      },
+      {
+        "name": "Jett Luchanko",
+        "team": "Philadelphia Flyers",
+        "position": "C"
+      },
+      {
+        "name": "Samuel Honzek",
+        "team": "Calgary Flames",
+        "position": "LW"
+      },
+      {
+        "name": "Jesper Wallstedt",
+        "team": "Minnesota Wild",
+        "position": "G"
+      },
+      {
+        "name": "Sebastian Cossa",
+        "team": "Detroit Red Wings",
+        "position": "G"
+      },
+      {
+        "name": "Scott Morrow",
+        "team": "Carolina Hurricanes",
+        "position": "D"
+      },
+      {
+        "name": "Brad Lambert",
+        "team": "Winnipeg Jets",
+        "position": "C"
+      },
+      {
+        "name": "Rutger McGroarty",
+        "team": "Pittsburgh Penguins",
+        "position": "LW"
+      },
+      {
+        "name": "Maveric Lamoureux",
+        "team": "Utah Hockey Club",
+        "position": "D"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Ice Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Matvei Michkov - Ice Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Will Smith - Ice Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Lane Hutson - Ice Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Cutter Gauthier - Ice Rookies Auto",
+        "tag": "rookie"
+      },
+      {
+        "name": "Connor McDavid - Ice Premieres Auto",
+        "tag": "auto"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Connor McDavid",
+        "cardType": "Ice Premieres"
+      },
+      {
+        "name": "Wayne Gretzky",
+        "cardType": "Ice Legends"
+      },
+      {
+        "name": "Sidney Crosby",
+        "cardType": "Ice Premieres"
+      }
+    ],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Will Smith",
+      "Lane Hutson",
+      "Cutter Gauthier"
+    ],
+    "hypeFacts": [
+      "611 recrues dans le checklist complet — l'un des plus profonds de la saison",
+      "Design épuré avec parallèles glacés distinctifs en bleu, violet et or",
+      "Ice Premieres est le set d'autographes vedettes pour les stars établies"
     ]
   }
 }
