@@ -14,19 +14,25 @@ const ALIASES = {
   'star rookies': 'nhl star rookies',
 };
 
+// Single year X → season ending in X (e.g. 2026 → 2025-2026)
+// Short form X-Y → long form (e.g. 2025-26 → 2025-2026)
 const YEAR_VARIANTS = {
-  '2025': ['2025-26', '2025-2026'],
-  '2026': ['2025-26', '2025-2026'],
-  '2024': ['2024-25', '2024-2025'],
-  '2023': ['2023-24', '2023-2024'],
-  '2022': ['2022-23', '2022-2023'],
+  '2026': '2025-2026',
+  '2025': '2024-2025',
+  '2024': '2023-2024',
+  '2023': '2022-2023',
+  '2022': '2021-2022',
+  '2025-26': '2025-2026',
+  '2024-25': '2024-2025',
+  '2023-24': '2023-2024',
+  '2022-23': '2022-2023',
 };
 
 function normalize(text) {
   let t = text.toLowerCase().trim();
-  // Expand year abbreviations (2025 → 2025-26)
-  for (const [short, variants] of Object.entries(YEAR_VARIANTS)) {
-    t = t.replace(new RegExp(`\\b${short}\\b`), variants[0]);
+  // Normalize years: single year or short form → full season format
+  for (const [short, full] of Object.entries(YEAR_VARIANTS)) {
+    t = t.replace(new RegExp(`\\b${short}\\b`), full);
   }
   // Expand aliases (opc → o-pee-chee)
   for (const [alias, full] of Object.entries(ALIASES)) {
