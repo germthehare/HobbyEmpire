@@ -12,6 +12,14 @@ const ALIASES = {
   'metal': 'skybox metal universe',
   'skybox': 'skybox metal universe',
   'star rookies': 'nhl star rookies',
+  // Series number aliases (written vs digit)
+  'series one': 'series 1',
+  'series two': 'series 2',
+  'series three': 'series 3',
+  'série one': 'series 1',
+  'série two': 'series 2',
+  'série 1': 'series 1',
+  'série 2': 'series 2',
 };
 
 // Single year X → season ending in X (e.g. 2026 → 2025-2026)
