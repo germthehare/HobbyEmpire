@@ -98,7 +98,7 @@ export default async function handler(req, res) {
     if (body.messages && body.messages.length > 0) {
       const userMsg = body.messages[body.messages.length - 1];
       const content = typeof userMsg.content === 'string' ? userMsg.content : '';
-      const match = content.match(/Generate a complete accurate prep sheet for: "([^"]+)"/);
+      const match = content.match(/prep sheet for[^"]*"([^"]+)"/);
       if (match) {
         const found = findChecklist(match[1]);
         if (found) {
