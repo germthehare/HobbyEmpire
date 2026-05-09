@@ -30,9 +30,19 @@ const YEAR_VARIANTS = (() => {
 
 function normalize(text) {
   let t = text.toLowerCase().trim();
-  // Normalize years: single year or short form → full season format
+  // Pass 1: expand short forms like "2025-26" → "2025-2026"
+  // Must run BEFORE single-year pass so "2025" in "2025-26" isn't replaced first
   for (const [short, full] of Object.entries(YEAR_VARIANTS)) {
-    t = t.replace(new RegExp(`\\b${short}\\b`), full);
+    if (short.includes('-')) {
+      t = t.replace(new RegExp(`\\b${short}\\b`, 'g'), full);
+    }
+  }
+  // Pass 2: expand standalone single years like "2026" → "2025-2026"
+  // Negative look-behind/ahead prevents matching years already inside a range (e.g. "2025" in "2025-2026")
+  for (const [short, full] of Object.entries(YEAR_VARIANTS)) {
+    if (!short.includes('-')) {
+      t = t.replace(new RegExp(`(?<!-)\\b${short}\\b(?!-)`, 'g'), full);
+    }
   }
   // Expand aliases (opc → o-pee-chee)
   for (const [alias, full] of Object.entries(ALIASES)) {
