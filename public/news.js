@@ -52,7 +52,10 @@
   ];
 
   const RSS2JSON = 'https://api.rss2json.com/v1/api.json?count=8&rss_url=';
-  const NEWS_API_LEAGUES = ['nhl','ahl','ohl','whl','lhjmq','ncaa'];
+  const HOCKEY_API_LEAGUES  = ['nhl','ahl','ohl','whl','lhjmq','ncaa'];
+  const FOOTBALL_API_LEAGUES = ['nfl'];
+  // legacy alias
+  const NEWS_API_LEAGUES = HOCKEY_API_LEAGUES;
 
   async function fetchFeed(source) {
     try {
@@ -366,19 +369,21 @@
 
   // ── Dispatch principal ───────────────────────────────────────────────
   async function loadNews(force = false) {
-    const cacheKey = newsSport === 'hockey' ? `hockey-${newsLeague}` : newsSport;
+    const cacheKey = `${newsSport}-${newsLeague}`;
     if (newsCache[cacheKey] && !force) { newsItems = newsCache[cacheKey]; renderNews(); return; }
 
     const feed = document.getElementById('news-feed');
     if (!feed) return;
     feed.innerHTML = '<div class="news-loading">Chargement des nouvelles...</div>';
 
+    // ── Hockey / NHL complet (scores + leaders + bracket + standings + news)
     if (newsSport === 'hockey' && newsLeague === 'nhl') {
       await loadNHLTab();
       return;
     }
 
-    if (newsSport === 'hockey' && NEWS_API_LEAGUES.includes(newsLeague)) {
+    // ── Hockey via NewsAPI (AHL, OHL, WHL, LHJMQ, NCAA)
+    if (newsSport === 'hockey' && HOCKEY_API_LEAGUES.includes(newsLeague)) {
       try {
         const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
         const d = await r.json();
@@ -389,9 +394,27 @@
       return;
     }
 
-    let sources = newsSport === 'hockey'
-      ? (LEAGUE_FEEDS[newsLeague] || [])
-      : NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
+    // ── Football / NFL via NewsAPI
+    if (newsSport === 'football' && FOOTBALL_API_LEAGUES.includes(newsLeague)) {
+      try {
+        const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
+        const d = await r.json();
+        newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-default' } }));
+        newsCache[cacheKey] = newsItems;
+        renderNews();
+      } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
+      return;
+    }
+
+    // ── RSS feeds (Hockey hobby, Football hobby, Basketball, Baseball)
+    let sources;
+    if (newsSport === 'hockey') {
+      sources = LEAGUE_FEEDS[newsLeague] || [];
+    } else if (newsSport === 'football' && newsLeague === 'hobby') {
+      sources = NEWS_SOURCES.filter(s => s.sport === 'football');
+    } else {
+      sources = NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
+    }
 
     const all = await Promise.all(sources.map(fetchFeed));
     newsItems = all.flat().sort((a, b) => b.date - a.date);
@@ -407,13 +430,20 @@
 
   function switchSport(sport) {
     newsSport = sport;
-    newsLeague = sport === 'hockey' ? 'hobby' : sport;
+    // Sports with sub-league tabs default to 'hobby'
+    newsLeague = (sport === 'hockey' || sport === 'football') ? 'hobby' : sport;
     document.querySelectorAll('.news-sport-btn').forEach(b => b.classList.toggle('active', b.dataset.sport === sport));
+
     const hl = document.getElementById('hockey-leagues');
+    const fl = document.getElementById('football-leagues');
     const os = document.getElementById('other-sport-bar');
-    if (hl) hl.style.display  = sport === 'hockey' ? 'flex' : 'none';
-    if (os) os.style.display  = sport !== 'hockey' ? 'flex' : 'none';
-    if (sport === 'hockey') document.querySelectorAll('.league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
+    if (hl) hl.style.display = sport === 'hockey'   ? 'flex' : 'none';
+    if (fl) fl.style.display = sport === 'football'  ? 'flex' : 'none';
+    if (os) os.style.display = (sport !== 'hockey' && sport !== 'football') ? 'flex' : 'none';
+
+    // Reset active state on league tabs of the newly visible bar
+    if (sport === 'hockey')   document.querySelectorAll('#hockey-leagues .league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
+    if (sport === 'football') document.querySelectorAll('#football-leagues .league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
     loadNews();
   }
 

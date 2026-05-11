@@ -2,16 +2,17 @@
 // Env var: NEWS_API_KEY
 
 const QUERIES = {
-  nhl:    'NHL hockey',
-  ahl:    'AHL "american hockey league"',
-  ohl:    'OHL "ontario hockey league"',
-  whl:    'WHL "western hockey league"',
-  lhjmq:  'LHJMQ OR "Quebec Major Junior"',
-  ncaa:   'NCAA "college hockey"',
-  hockey: 'hockey cards trading cards',
-  football: 'football cards "trading cards"',
+  nhl:        'NHL hockey',
+  ahl:        'AHL "american hockey league"',
+  ohl:        'OHL "ontario hockey league"',
+  whl:        'WHL "western hockey league"',
+  lhjmq:      'LHJMQ OR "Quebec Major Junior"',
+  ncaa:       'NCAA "college hockey"',
+  nfl:        'NFL "national football league" football',
+  hockey:     'hockey cards trading cards',
+  football:   'football cards "trading cards"',
   basketball: 'basketball cards "trading cards"',
-  baseball: 'baseball cards "trading cards"',
+  baseball:   'baseball cards "trading cards"',
 };
 
 export default async function handler(req, res) {
