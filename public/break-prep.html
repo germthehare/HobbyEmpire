@@ -96,6 +96,12 @@
   .score-abbrev { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text2); flex: 1; }
   .score-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
   .score-pts.winner { color: var(--gold3); }
+  .score-record { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text3); flex: 1; }
+  .score-serie { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: var(--gold2); margin-top: 7px; padding-top: 7px; border-top: 1px solid #1e1e1e; }
+  .score-leaders { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; }
+  .score-leader { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
+  .score-leader strong { color: var(--text2); }
+  .score-headshot { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; background: var(--dark4); flex-shrink: 0; }
   /* ── eBay prices ── */
   .ebay-results { margin-top: 14px; }
   .ebay-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -333,32 +339,61 @@ async function loadNHLScores() {
     const d = await r.json();
     const games = d.games || [];
     if (!games.length) { el.innerHTML = ''; return; }
+
     const cards = games.map(g => {
       const away = g.awayTeam, home = g.homeTeam;
       const state = g.gameState;
       const isFinal = state === 'OFF' || state === 'FINAL';
       const isLive  = state === 'LIVE' || state === 'CRIT';
-      const stateLabel = isFinal ? 'Final' : isLive ? '🔴 En direct' : g.startTimeUTC ? new Date(g.startTimeUTC).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}) : 'À venir';
+      const stateLabel = isFinal ? 'Final' : isLive ? '🔴 En direct' : g.startTimeUTC
+        ? new Date(g.startTimeUTC).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'})
+        : 'À venir';
       const stateClass = isFinal ? 'final' : isLive ? 'live' : '';
       const awayScore = away.score ?? '';
       const homeScore = home.score ?? '';
       const awayWin = isFinal && awayScore > homeScore;
       const homeWin = isFinal && homeScore > awayScore;
+
+      // Série playoffs
+      let serieHtml = '';
+      const s = g.seriesStatus;
+      if (s) {
+        const leader = s.topSeedWins > s.bottomSeedWins ? s.topSeedTeamAbbrev : s.bottomSeedWins > s.topSeedWins ? s.bottomSeedTeamAbbrev : null;
+        const tied   = s.topSeedWins === s.bottomSeedWins;
+        const serieLabel = tied
+          ? `Égalité ${s.topSeedWins}-${s.bottomSeedWins}`
+          : `${leader} mène ${Math.max(s.topSeedWins,s.bottomSeedWins)}-${Math.min(s.topSeedWins,s.bottomSeedWins)}`;
+        serieHtml = `<div class="score-serie">Match ${s.gameNumberOfSeries} · ${serieLabel}</div>`;
+      }
+
+      // Leaders du match (buts + passes)
+      const leaders = (g.teamLeaders || []).filter(l => l.category === 'goals' || l.category === 'assists');
+      const leadersHtml = leaders.length ? `<div class="score-leaders">` +
+        leaders.slice(0,3).map(l => {
+          const icon = l.category === 'goals' ? '🥅' : '🍎';
+          return `<div class="score-leader"><img src="${l.headshot||''}" class="score-headshot" onerror="this.style.display='none'"/><span>${icon} ${l.firstName?.default||''} ${l.lastName?.default||''} <strong>${l.value}</strong></span></div>`;
+        }).join('') + `</div>` : '';
+
       return `<div class="score-card">
         <div class="score-state ${stateClass}">${stateLabel}</div>
         <div class="score-team">
           <img class="score-logo" src="${away.logo||''}" onerror="this.style.display='none'" />
           <span class="score-abbrev">${away.abbrev||''}</span>
+          ${away.record ? `<span class="score-record">${away.record}</span>` : ''}
           ${awayScore !== '' ? `<span class="score-pts${awayWin?' winner':''}">${awayScore}</span>` : ''}
         </div>
         <div class="score-team">
           <img class="score-logo" src="${home.logo||''}" onerror="this.style.display='none'" />
           <span class="score-abbrev">${home.abbrev||''}</span>
+          ${home.record ? `<span class="score-record">${home.record}</span>` : ''}
           ${homeScore !== '' ? `<span class="score-pts${homeWin?' winner':''}">${homeScore}</span>` : ''}
         </div>
+        ${serieHtml}
+        ${leadersHtml}
       </div>`;
     }).join('');
-    el.innerHTML = `<div class="scores-wrap"><div class="scores-head">Matchs d'aujourd'hui</div><div class="scores-scroll">${cards}</div></div>`;
+
+    el.innerHTML = `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
   } catch(e) { el.innerHTML = ''; }
 }
 
