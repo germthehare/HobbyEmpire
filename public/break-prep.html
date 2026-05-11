@@ -78,6 +78,7 @@
   .news-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; margin-bottom: 5px; }
   .news-card:hover .news-title { color: var(--gold3); }
   .news-excerpt { font-size: 12px; color: var(--text3); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .news-thumb { width: 100%; max-height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 10px; display: block; }
   .news-loading { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 13px; }
   .news-error { background: #110606; border: 1px solid #2a1010; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #b06060; margin-bottom: 10px; }
   .news-empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 13px; }
@@ -458,6 +459,9 @@ function renderEbayResults(data, container) {
     </div>`;
 }
 
+// Leagues qui utilisent NewsAPI plutôt que RSS
+const NEWS_API_LEAGUES = ['nhl','ahl','ohl','whl','lhjmq','ncaa'];
+
 async function loadNews(force = false) {
   const cacheKey = newsSport === 'hockey' ? `hockey-${newsLeague}` : newsSport;
   if (newsCache[cacheKey] && !force) { newsItems = newsCache[cacheKey]; renderNews(); return; }
@@ -465,19 +469,28 @@ async function loadNews(force = false) {
   const feed = document.getElementById('news-feed');
   feed.innerHTML = '<div class="news-loading">Chargement des nouvelles...</div>';
 
-  // NHL onglet = scores + news
+  // NHL = scores + NewsAPI
   if (newsSport === 'hockey' && newsLeague === 'nhl') {
     await loadNHLTab();
     return;
   }
 
-  // Hobby ou autres ligues = RSS
-  let sources = [];
-  if (newsSport === 'hockey') {
-    sources = LEAGUE_FEEDS[newsLeague] || [];
-  } else {
-    sources = NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
+  // Autres ligues hockey = NewsAPI
+  if (newsSport === 'hockey' && NEWS_API_LEAGUES.includes(newsLeague)) {
+    try {
+      const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
+      const d = await r.json();
+      newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-hockey' } }));
+      newsCache[cacheKey] = newsItems;
+      renderNews();
+    } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
+    return;
   }
+
+  // Hobby hockey + autres sports = RSS
+  let sources = newsSport === 'hockey'
+    ? (LEAGUE_FEEDS[newsLeague] || [])
+    : NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
 
   const all = await Promise.all(sources.map(fetchFeed));
   newsItems = all.flat().sort((a, b) => b.date - a.date);
@@ -525,16 +538,13 @@ async function loadNHLTab() {
       html += `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
     }
 
-    // News RSS
-    const newsArticles = rssResults.flat().sort((a,b) => b.date - a.date);
+    // NewsAPI
+    const newsRes = await fetch('/api/news?league=nhl&limit=15');
+    const newsJson = await newsRes.json();
+    const newsArticles = newsJson.items || [];
     if (newsArticles.length) {
-      html += `<div class="scores-head" style="margin-bottom:10px">Nouvelles NHL</div>`;
-      html += newsArticles.map(item => `
-        <a class="news-card" href="${item.link}" target="_blank" rel="noopener">
-          <div class="news-meta"><span class="news-source ${item.source.cls}">${item.source.label}</span><span class="news-age">${timeAgo(item.date)}</span></div>
-          <div class="news-title">${item.title}</div>
-          ${item.excerpt ? `<div class="news-excerpt">${item.excerpt}</div>` : ''}
-        </a>`).join('');
+      html += `<div class="scores-head" style="margin-bottom:10px;margin-top:${games.length?'16px':'0'}">Nouvelles NHL</div>`;
+      html += newsArticles.map(item => renderNewsItem(item)).join('');
     }
     feed.innerHTML = html || '<div class="news-empty">Aucun contenu disponible.</div>';
   } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
@@ -574,22 +584,31 @@ function timeAgo(date) {
 
 const SPORT_EMOJI = { hockey: '🏒', football: '🏈', basketball: '🏀', baseball: '⚾' };
 
+function renderNewsItem(item) {
+  const date  = item.date ? new Date(item.date) : null;
+  const age   = date ? timeAgo(date) : '';
+  const src   = item.source || {};
+  const label = src.label || item.sourceName || '';
+  const cls   = src.cls   || 'src-default';
+  const img   = item.image ? `<img class="news-thumb" src="${item.image}" onerror="this.style.display='none'" />` : '';
+  return `<a class="news-card" href="${item.link}" target="_blank" rel="noopener">
+    ${img}
+    <div class="news-meta">
+      <span class="news-source ${cls}">${label}</span>
+      ${age ? `<span class="news-age">${age}</span>` : ''}
+    </div>
+    <div class="news-title">${item.title}</div>
+    ${item.excerpt ? `<div class="news-excerpt">${item.excerpt}</div>` : ''}
+  </a>`;
+}
+
 function renderNews() {
   const feed = document.getElementById('news-feed');
   if (!newsItems.length) {
     feed.innerHTML = '<div class="news-empty">Aucune nouvelle disponible pour le moment.</div>';
     return;
   }
-  feed.innerHTML = newsItems.map(item => `
-    <a class="news-card" href="${item.link}" target="_blank" rel="noopener">
-      <div class="news-meta">
-        <span class="news-source ${item.source.cls}">${item.source.label}</span>
-        <span class="news-age">${timeAgo(item.date)}</span>
-      </div>
-      <div class="news-title">${item.title}</div>
-      ${item.excerpt ? `<div class="news-excerpt">${item.excerpt}</div>` : ''}
-    </a>
-  `).join('');
+  feed.innerHTML = newsItems.map(item => renderNewsItem(item)).join('');
 }
 
 // ── Parse a product key into parts ──────────────────────────────────────────
