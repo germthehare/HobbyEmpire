@@ -31,20 +31,28 @@
   .tab.active { color: var(--gold3); border-bottom-color: var(--gold); }
   .main { padding: 20px 16px; max-width: 700px; margin: 0 auto; }
   .section-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
-  .product-row { display: flex; gap: 8px; margin-bottom: 8px; position: relative; }
-  .product-row input { flex: 1; background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 13px 16px; color: var(--text); font-size: 15px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; }
-  .product-row input:focus { border-color: var(--gold); }
-  .product-row input::placeholder { color: var(--text3); }
-  .suggestions-dropdown { position: absolute; top: calc(100% - 1px); left: 0; right: 52px; background: var(--dark2); border: 1px solid var(--gold); border-top: none; border-radius: 0 0 8px 8px; z-index: 300; max-height: 260px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-  .suggestion-item { padding: 10px 16px; font-size: 13px; color: var(--text2); cursor: pointer; border-bottom: 1px solid #1a1a1a; transition: all 0.1s; display: flex; align-items: center; gap: 8px; }
-  .suggestion-item:last-child { border-bottom: none; }
-  .suggestion-item:hover, .suggestion-item.active { background: var(--dark3); color: var(--gold3); }
-  .suggestion-year { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: var(--gold); background: rgba(184,148,42,0.1); border: 1px solid rgba(184,148,42,0.2); border-radius: 3px; padding: 1px 5px; white-space: nowrap; flex-shrink: 0; }
-  .suggestion-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .remove-btn { width: 44px; height: 44px; background: var(--dark3); border: 1px solid #222; border-radius: 8px; color: var(--text3); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
-  .remove-btn:hover { border-color: var(--red); color: var(--red); }
-  .add-btn { width: 100%; background: transparent; border: 1px dashed #262626; border-radius: 8px; color: var(--text3); font-size: 13px; font-family: 'Barlow', sans-serif; padding: 12px; cursor: pointer; margin-bottom: 14px; transition: all 0.15s; }
+  /* ── Selected product chips ── */
+  .product-chip-row { display: flex; align-items: center; gap: 10px; background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 11px 14px; margin-bottom: 8px; }
+  .chip-sport { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); background: rgba(184,148,42,0.1); border: 1px solid rgba(184,148,42,0.2); border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
+  .chip-year { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--text3); white-space: nowrap; }
+  .chip-label { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chip-remove { width: 28px; height: 28px; background: transparent; border: none; color: var(--text3); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; flex-shrink: 0; transition: all 0.15s; }
+  .chip-remove:hover { color: var(--red); }
+  /* ── Cascade selector panel ── */
+  .selector-panel { background: var(--dark2); border: 1px solid #242424; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .selector-step { padding: 12px 14px; border-bottom: 1px solid #1a1a1a; }
+  .selector-step:last-child { border-bottom: none; }
+  .step-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .step-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .step-opt { padding: 6px 13px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .step-opt:hover { border-color: #3a3a3a; color: var(--text); }
+  .step-opt.selected { background: rgba(184,148,42,0.12); border-color: var(--gold); color: var(--gold3); }
+  .step-opt.disabled { opacity: 0.3; pointer-events: none; }
+  .step-placeholder { font-size: 12px; color: var(--text3); font-style: italic; }
+  /* ── Add button ── */
+  .add-btn { width: 100%; background: transparent; border: 1px dashed #262626; border-radius: 8px; color: var(--text3); font-size: 13px; font-family: 'Barlow', sans-serif; padding: 12px; cursor: pointer; margin-bottom: 10px; transition: all 0.15s; }
   .add-btn:hover { border-color: #3a3a3a; color: var(--text2); }
+  .add-btn.open { border-color: var(--gold); color: var(--gold3); }
   .gen-btn { width: 100%; background: var(--gold); border: none; border-radius: 8px; color: #000; font-size: 12px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; text-transform: uppercase; padding: 15px; cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
   .gen-btn:hover { background: var(--gold3); }
   .gen-btn:disabled { background: #222; color: #3a3a3a; cursor: not-allowed; }
@@ -153,7 +161,21 @@
   <div id="mode-prep">
     <div class="section-head" id="lbl-products">Produits à breaker</div>
     <div id="product-list"></div>
-    <button class="add-btn" id="btn-add" onclick="addProduct()">+ Ajouter un produit</button>
+    <button class="add-btn" id="btn-add" onclick="toggleSelector()">+ Ajouter un produit</button>
+    <div class="selector-panel" id="selector-panel" style="display:none">
+      <div class="selector-step">
+        <div class="step-head" id="lbl-sport">Sport</div>
+        <div class="step-opts" id="sport-opts"></div>
+      </div>
+      <div class="selector-step">
+        <div class="step-head" id="lbl-year">Année</div>
+        <div class="step-opts" id="year-opts"><span class="step-placeholder" id="ph-year">← Sélectionne un sport</span></div>
+      </div>
+      <div class="selector-step">
+        <div class="step-head" id="lbl-product-step">Produit</div>
+        <div class="step-opts" id="product-opts"><span class="step-placeholder" id="ph-product">← Sélectionne une année</span></div>
+      </div>
+    </div>
     <button class="gen-btn" id="gen-btn" onclick="generatePrep()">Générer les fiches</button>
     <div id="prep-result">
       <div class="empty">
@@ -176,111 +198,131 @@
 <div class="footer" id="footer-text">Hobby Empire Break Prep — Propulsé par Claude AI</div>
 <script>
 let lang = 'fr';
-let productCount = 0;
 let checklistKeys = [];
+let selectorOpen = false;
+let selSport = null, selYear = null;
 
-// Client-side aliases for autocomplete filtering
-const CLIENT_ALIASES = {
-  'opc': 'o-pee-chee', 'spa': 'sp authentic', 'sp auth': 'sp authentic',
-  'spx': 'spx', 'ud': 'upper deck', 'metal': 'skybox metal universe',
-  'skybox': 'skybox', 'cup': 'the cup', 'clear cut': 'clear cut',
-  'series 1': 'series 1', 'series 2': 'series 2', 'series one': 'series 1', 'series two': 'series 2',
-};
-
-function expandQuery(q) {
-  let t = q.toLowerCase().trim();
-  for (const [alias, full] of Object.entries(CLIENT_ALIASES)) {
-    t = t.replace(new RegExp('\\b' + alias + '\\b', 'gi'), full);
-  }
-  return t;
+// ── Parse a product key into parts ──────────────────────────────────────────
+function parseKey(key) {
+  // e.g. "2024-25 The Cup Hockey" or "2025-2026 O-Pee-Chee Platinum Hockey"
+  const words = key.trim().split(' ');
+  const sport = words[words.length - 1];
+  const year  = words[0];
+  const name  = words.slice(1, -1).join(' ');
+  // Normalize year display: "2025-2026" → "2025-26"
+  const yearDisplay = year.replace(/^(\d{4})-(\d{4})$/, (_, a, b) => a + '-' + b.slice(2));
+  return { key, sport, year, yearDisplay, name };
 }
 
+// ── Build hierarchy from keys ────────────────────────────────────────────────
+function buildHierarchy() {
+  const h = {}; // { sport: { year: [parsedProduct, ...] } }
+  for (const key of checklistKeys) {
+    const p = parseKey(key);
+    if (!h[p.sport]) h[p.sport] = {};
+    if (!h[p.sport][p.yearDisplay]) h[p.sport][p.yearDisplay] = [];
+    h[p.sport][p.yearDisplay].push(p);
+  }
+  return h;
+}
+
+// ── Load products.json ───────────────────────────────────────────────────────
 async function loadChecklistKeys() {
   try {
     const r = await fetch('/products.json');
     checklistKeys = await r.json();
   } catch(e) { checklistKeys = []; }
+  buildSelectorUI();
 }
 
-function filterKeys(query) {
-  if (!query || query.length < 2) return [];
-  const q = expandQuery(query);
-  const words = q.split(/\s+/).filter(w => w.length > 1);
-  if (!words.length) return [];
-  const scored = checklistKeys.map(key => {
-    const k = key.toLowerCase();
-    const hits = words.filter(w => {
-      const esc = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      return new RegExp('\\b' + esc + '\\b').test(k);
-    }).length;
-    return { key, hits };
-  }).filter(x => x.hits > 0);
-  scored.sort((a, b) => b.hits - a.hits);
-  return scored.slice(0, 10).map(x => x.key);
+// ── Build the selector UI ────────────────────────────────────────────────────
+function buildSelectorUI() {
+  const h = buildHierarchy();
+  const sports = Object.keys(h).sort();
+
+  // Sport buttons
+  const sportOpts = document.getElementById('sport-opts');
+  sportOpts.innerHTML = '';
+  for (const sport of sports) {
+    const btn = document.createElement('button');
+    btn.className = 'step-opt';
+    btn.textContent = sport;
+    btn.onclick = () => onSelectSport(sport, h);
+    sportOpts.appendChild(btn);
+  }
 }
 
-function parseKeyParts(key) {
-  const m = key.match(/^(\d{4}-\d{2,4})\s+(.+)$/);
-  if (m) return { year: m[1], name: m[2] };
-  return { year: '', name: key };
+function onSelectSport(sport, h) {
+  selSport = sport; selYear = null;
+  // Mark selected sport
+  document.querySelectorAll('#sport-opts .step-opt').forEach(b => b.classList.toggle('selected', b.textContent === sport));
+  // Populate years (sorted descending)
+  const yearOpts = document.getElementById('year-opts');
+  yearOpts.innerHTML = '';
+  const years = Object.keys(h[sport]).sort((a, b) => b.localeCompare(a));
+  for (const year of years) {
+    const btn = document.createElement('button');
+    btn.className = 'step-opt';
+    btn.textContent = year;
+    btn.onclick = () => onSelectYear(year, h[sport][year]);
+    yearOpts.appendChild(btn);
+  }
+  // Reset product step
+  document.getElementById('product-opts').innerHTML = '<span class="step-placeholder">← Sélectionne une année</span>';
 }
 
-function attachAutocomplete(input) {
-  let dropdown = null;
-  let currentMatches = [];
-  let activeIdx = -1;
-
-  function closeDropdown() {
-    if (dropdown) { dropdown.remove(); dropdown = null; }
-    currentMatches = []; activeIdx = -1;
+function onSelectYear(year, products) {
+  selYear = year;
+  document.querySelectorAll('#year-opts .step-opt').forEach(b => b.classList.toggle('selected', b.textContent === year));
+  const prodOpts = document.getElementById('product-opts');
+  prodOpts.innerHTML = '';
+  for (const p of products) {
+    const btn = document.createElement('button');
+    btn.className = 'step-opt';
+    btn.textContent = p.name;
+    btn.onclick = () => onSelectProduct(p);
+    prodOpts.appendChild(btn);
   }
+}
 
-  function setActive(idx) {
-    if (!dropdown) return;
-    dropdown.querySelectorAll('.suggestion-item').forEach((el, i) => el.classList.toggle('active', i === idx));
-    activeIdx = idx;
-  }
+function onSelectProduct(p) {
+  addProductChip(p.key, p.sport, p.yearDisplay, p.name);
+  closeSelector();
+}
 
-  function selectItem(idx) {
-    if (currentMatches[idx]) { input.value = currentMatches[idx]; closeDropdown(); }
-  }
+// ── Toggle selector panel ────────────────────────────────────────────────────
+function toggleSelector() {
+  selectorOpen = !selectorOpen;
+  document.getElementById('selector-panel').style.display = selectorOpen ? 'block' : 'none';
+  document.getElementById('btn-add').classList.toggle('open', selectorOpen);
+  document.getElementById('btn-add').textContent = selectorOpen ? '× Fermer' : '+ Ajouter un produit';
+}
 
-  input.addEventListener('input', function() {
-    closeDropdown();
-    currentMatches = filterKeys(this.value);
-    if (!currentMatches.length) return;
-    dropdown = document.createElement('div');
-    dropdown.className = 'suggestions-dropdown';
-    currentMatches.forEach((key, i) => {
-      const { year, name } = parseKeyParts(key);
-      const item = document.createElement('div');
-      item.className = 'suggestion-item';
-      item.innerHTML = (year ? '<span class="suggestion-year">' + year + '</span>' : '') +
-                       '<span class="suggestion-name">' + name + '</span>';
-      item.addEventListener('mousedown', e => { e.preventDefault(); selectItem(i); });
-      dropdown.appendChild(item);
-    });
-    // Append to body with absolute coords to avoid any overflow clipping
-    const rect = input.getBoundingClientRect();
-    dropdown.style.position = 'fixed';
-    dropdown.style.top = (rect.bottom - 1) + 'px';
-    dropdown.style.left = rect.left + 'px';
-    dropdown.style.width = rect.width + 'px';
-    dropdown.style.zIndex = '9999';
-    document.body.appendChild(dropdown);
-  });
+function closeSelector() {
+  selectorOpen = false;
+  document.getElementById('selector-panel').style.display = 'none';
+  document.getElementById('btn-add').classList.remove('open');
+  document.getElementById('btn-add').textContent = t('addProduct');
+  // Reset selections
+  selSport = null; selYear = null;
+  document.querySelectorAll('.step-opt').forEach(b => b.classList.remove('selected'));
+  document.getElementById('year-opts').innerHTML = '<span class="step-placeholder" id="ph-year">← Sélectionne un sport</span>';
+  document.getElementById('product-opts').innerHTML = '<span class="step-placeholder" id="ph-product">← Sélectionne une année</span>';
+}
 
-  input.addEventListener('keydown', e => {
-    if (!dropdown) return;
-    const items = dropdown.querySelectorAll('.suggestion-item');
-    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(Math.min(activeIdx + 1, items.length - 1)); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(Math.max(activeIdx - 1, 0)); }
-    else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); e.stopPropagation(); selectItem(activeIdx); }
-    else if (e.key === 'Escape') { closeDropdown(); }
-  });
-
-  input.addEventListener('blur', () => { setTimeout(closeDropdown, 160); });
-  window.addEventListener('scroll', closeDropdown, { passive: true });
+// ── Add a product chip to the list ──────────────────────────────────────────
+function addProductChip(key, sport, year, name) {
+  const id = 'chip-' + Date.now();
+  const div = document.createElement('div');
+  div.className = 'product-chip-row';
+  div.id = id;
+  div.dataset.key = key;
+  div.innerHTML =
+    '<span class="chip-sport">' + sport + '</span>' +
+    '<span class="chip-year">' + year + '</span>' +
+    '<span class="chip-label">' + name + '</span>' +
+    '<button class="chip-remove" onclick="document.getElementById(\'' + id + '\').remove()" title="Retirer">×</button>';
+  document.getElementById('product-list').appendChild(div);
 }
 
 const T = {
@@ -327,7 +369,7 @@ function setLang(l) {
   document.getElementById('card-input').placeholder = t('cardPlaceholder');
   const et = document.getElementById('empty-title'); if(et) et.textContent = t('emptyTitle');
   const es = document.getElementById('empty-sub'); if(es) es.textContent = t('emptySub');
-  document.querySelectorAll('.product-row input').forEach(i => i.placeholder = t('placeholder'));
+  if (!selectorOpen) document.getElementById('btn-add').textContent = t('addProduct');
 }
 
 function setMode(m) {
@@ -382,8 +424,8 @@ async function callClaude(msg, sys) {
 }
 
 async function generatePrep() {
-  const inputs = document.querySelectorAll('#product-list input');
-  const products = Array.from(inputs).map(i=>i.value.trim()).filter(Boolean);
+  const chips = document.querySelectorAll('#product-list .product-chip-row');
+  const products = Array.from(chips).map(c => c.dataset.key).filter(Boolean);
   if (!products.length) return;
   const btn = document.getElementById('gen-btn');
   btn.disabled = true; btn.textContent = t('generating');
@@ -479,7 +521,7 @@ async function lookupCard() {
 }
 
 document.getElementById('card-input').addEventListener('keydown', e => { if(e.key==='Enter') lookupCard(); });
-loadChecklistKeys().then(() => { addProduct(); addProduct(); });
+loadChecklistKeys();
 
 // Hide admin-only nav links for staff users
 document.addEventListener('DOMContentLoaded', function() {
