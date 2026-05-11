@@ -13,9 +13,10 @@
   let newsItems = [], newsFilter = 'all', newsSport = 'hockey', newsLeague = 'hobby';
   const newsCache = {};
   let nhlData = { leaders: {}, standings: [], bracket: null, scores: [], news: [] };
-  let leadersTab = 'points';
+  let leadersTab  = 'points';
   let leadersMode = 'season';
   let standingsTab = 'ALL';
+  let nhlSubTab   = 'stats';   // 'stats' | 'nouvelles'
   const NHL_SEASON = '20252026';
 
   // ── News sources ─────────────────────────────────────────────────────────
@@ -323,12 +324,28 @@
     </div>`;
   }
 
+  // ── Sous-onglets Stats / Nouvelles dans le tab NHL ───────────────────
+  function switchNHLSubTab(tab) {
+    nhlSubTab = tab;
+    document.querySelectorAll('.nhl-sub-pill').forEach(b => b.classList.toggle('active', b.dataset.sub === tab));
+    const statsEl = document.getElementById('nhl-stats-panel');
+    const newsEl  = document.getElementById('nhl-news-panel');
+    if (statsEl) statsEl.style.display = tab === 'stats'     ? '' : 'none';
+    if (newsEl)  newsEl.style.display  = tab === 'nouvelles' ? '' : 'none';
+  }
+
   // ── NHL tab complet ──────────────────────────────────────────────────
   function renderNHLTab() {
     const feed = document.getElementById('news-feed');
     if (!feed) return;
 
-    // Colonne gauche : Scores + Meneurs + Bracket
+    // ── Sous-onglets
+    const subTabs = `<div class="nhl-tabs" style="margin-bottom:18px">
+      <button class="nhl-tab nhl-sub-pill${nhlSubTab==='stats'?' active':''}" data-sub="stats" onclick="HE_NEWS.switchNHLSubTab('stats')">Stats</button>
+      <button class="nhl-tab nhl-sub-pill${nhlSubTab==='nouvelles'?' active':''}" data-sub="nouvelles" onclick="HE_NEWS.switchNHLSubTab('nouvelles')">Nouvelles</button>
+    </div>`;
+
+    // ── Panneau Stats (2 colonnes)
     let left = '';
     if (nhlData.scores.length) {
       const cards = nhlData.scores.map(g => buildScoreCard(g)).join('');
@@ -338,15 +355,22 @@
     if (hasLeaders) left += renderLeadersSection();
     if (nhlData.bracket?.series?.length) left += renderBracketSection(nhlData.bracket);
 
-    // Colonne droite : Classement uniquement
     let right = '';
     if (nhlData.standings.length) right += renderStandingsSection();
 
-    const body = (left || right)
-      ? `<div class="nhl-layout"><div class="nhl-col">${left}</div><div class="nhl-col">${right}</div></div>`
-      : '<div class="news-empty">Aucun contenu disponible.</div>';
+    const statsPanel = `<div id="nhl-stats-panel"${nhlSubTab==='nouvelles'?' style="display:none"':''}>
+      <div class="nhl-layout"><div class="nhl-col">${left}</div><div class="nhl-col">${right}</div></div>
+    </div>`;
 
-    feed.innerHTML = body;
+    // ── Panneau Nouvelles (grille)
+    const newsHtml = nhlData.news.length
+      ? `<div class="news-grid">${nhlData.news.map(item => renderNewsItem(item)).join('')}</div>`
+      : '<div class="news-empty">Aucune nouvelle disponible.</div>';
+    const newsPanel = `<div id="nhl-news-panel"${nhlSubTab==='stats'?' style="display:none"':''}>
+      ${newsHtml}
+    </div>`;
+
+    feed.innerHTML = subTabs + statsPanel + newsPanel;
   }
 
   async function loadNHLTab() {
@@ -361,6 +385,7 @@
         sGoals, sAssists, sPoints,
         pGoals, pAssists, pPoints,
         standingsRes, bracketRes,
+        newsApiRes, cbcItems, sportsnetItems,
       ] = await Promise.all([
         fetch(p('score/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`skater-stats-leaders/${seasonId}/2?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
@@ -371,6 +396,9 @@
         fetch(p(`skater-stats-leaders/${seasonId}/3?categories=points&limit=5`)).then(r=>r.json()).catch(()=>({})),
         fetch(p('standings/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`playoff-bracket/${yr}`)).then(r=>r.json()).catch(()=>({})),
+        fetch('/api/news?league=nhl&limit=15').then(r=>r.json()).catch(()=>({})),
+        fetchFeed({ label: 'CBC Sports', cls: 'src-cbc',    url: 'https://www.cbc.ca/cmlink/rss-sports' }),
+        fetchFeed({ label: 'Sportsnet',  cls: 'src-hockey', url: 'https://www.sportsnet.ca/feed/' }),
       ]);
       nhlData.scores = scoresRes.games || [];
       nhlData.leaders = {
@@ -379,6 +407,10 @@
       };
       nhlData.standings = standingsRes.standings || [];
       nhlData.bracket   = bracketRes;
+      const apiNews = (newsApiRes.items || []).map(item => ({ ...item, source: { label: item.sourceName || 'NHL', cls: 'src-hockey' } }));
+      nhlData.news = [...apiNews, ...cbcItems, ...sportsnetItems]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 30);
       renderNHLTab();
     } catch(e) {
       feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>';
@@ -414,23 +446,6 @@
       return;
     }
 
-    // ── Hockey → Nouvelles (NewsAPI + CBC + Sportsnet)
-    if (reqSport === 'hockey' && reqLeague === 'nouvelles') {
-      try {
-        const [newsApiRes, cbcItems, sportsnetItems] = await Promise.all([
-          fetch('/api/news?league=nhl&limit=15').then(r=>r.json()).catch(()=>({})),
-          fetchFeed({ label: 'CBC Sports', cls: 'src-cbc',    url: 'https://www.cbc.ca/cmlink/rss-sports' }),
-          fetchFeed({ label: 'Sportsnet',  cls: 'src-hockey', url: 'https://www.sportsnet.ca/feed/' }),
-        ]);
-        const apiNews = (newsApiRes.items || []).map(item => ({ ...item, source: { label: item.sourceName || 'NHL', cls: 'src-hockey' } }));
-        const items = [...apiNews, ...cbcItems, ...sportsnetItems]
-          .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .slice(0, 30);
-        commit(items);
-      } catch(e) { if (seq === _loadSeq) feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
-      return;
-    }
-
     // ── Hockey via NewsAPI (AHL, OHL, WHL, LHJMQ, NCAA)
     if (reqSport === 'hockey' && HOCKEY_API_LEAGUES.includes(reqLeague)) {
       try {
@@ -458,6 +473,7 @@
 
   function switchLeague(league) {
     newsLeague = league;
+    nhlSubTab  = 'stats'; // reset au changement de ligue
     document.querySelectorAll('.league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === league));
     loadNews();
   }
@@ -499,6 +515,7 @@
   window.HE_NEWS = {
     loadNews,
     switchSport, switchLeague,
+    switchNHLSubTab,
     switchLeadersTab, switchLeadersMode,
     switchStandingsTab,
   };
