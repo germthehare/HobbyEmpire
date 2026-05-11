@@ -389,48 +389,57 @@
   }
 
   // ── Dispatch principal ───────────────────────────────────────────────
+  let _loadSeq = 0; // sequence counter — chaque appel reçoit un ID unique
+
   async function loadNews(force = false) {
-    const cacheKey = `${newsSport}-${newsLeague}`;
+    const seq = ++_loadSeq;                          // ID de CETTE requête
+    const reqSport  = newsSport;
+    const reqLeague = newsLeague;
+    const cacheKey  = `${reqSport}-${reqLeague}`;
+
     if (newsCache[cacheKey] && !force) { newsItems = newsCache[cacheKey]; renderNews(); return; }
 
     const feed = document.getElementById('news-feed');
     if (!feed) return;
     feed.innerHTML = '<div class="news-loading">Chargement des nouvelles...</div>';
 
+    // Helper : ne rend que si c'est toujours la requête courante
+    const commit = (items) => {
+      if (seq !== _loadSeq) return; // une requête plus récente a pris le relais
+      newsCache[cacheKey] = items;
+      newsItems = items;
+      renderNews();
+    };
+
     // ── Hockey / NHL complet (scores + leaders + bracket + standings + news)
-    if (newsSport === 'hockey' && newsLeague === 'nhl') {
+    if (reqSport === 'hockey' && reqLeague === 'nhl') {
       await loadNHLTab();
       return;
     }
 
     // ── Hockey via NewsAPI (AHL, OHL, WHL, LHJMQ, NCAA)
-    if (newsSport === 'hockey' && HOCKEY_API_LEAGUES.includes(newsLeague)) {
+    if (reqSport === 'hockey' && HOCKEY_API_LEAGUES.includes(reqLeague)) {
       try {
-        const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
+        const r = await fetch(`/api/news?league=${reqLeague}&limit=20`);
         const d = await r.json();
-        newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-hockey' } }));
-        newsCache[cacheKey] = newsItems;
-        renderNews();
-      } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
+        const items = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-hockey' } }));
+        commit(items);
+      } catch(e) { if (seq === _loadSeq) feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
       return;
     }
 
     // ── RSS feeds (toutes ligues sauf hockey minor leagues via NewsAPI)
     let sources;
-    if (newsLeague === 'hobby') {
-      // Onglet Hobby : feeds de cartes à collectionner
-      sources = newsSport === 'hockey'
+    if (reqLeague === 'hobby') {
+      sources = reqSport === 'hockey'
         ? (LEAGUE_FEEDS.hobby || [])
-        : NEWS_SOURCES.filter(s => s.sport === newsSport);
+        : NEWS_SOURCES.filter(s => s.sport === reqSport);
     } else {
-      // Onglet ligue (nfl, nba, mlb) : feeds officiels définis dans LEAGUE_FEEDS
-      sources = LEAGUE_FEEDS[newsLeague] || [];
+      sources = LEAGUE_FEEDS[reqLeague] || [];
     }
 
     const all = await Promise.all(sources.map(fetchFeed));
-    newsItems = all.flat().sort((a, b) => b.date - a.date);
-    newsCache[cacheKey] = newsItems;
-    renderNews();
+    commit(all.flat().sort((a, b) => b.date - a.date));
   }
 
   function switchLeague(league) {
