@@ -203,12 +203,15 @@ let selectorOpen = false;
 let selSport = null, selYear = null;
 
 // ── Parse a product key into parts ──────────────────────────────────────────
+const KNOWN_SPORTS = ['Hockey', 'Football', 'Basketball', 'Baseball', 'Soccer'];
 function parseKey(key) {
-  // e.g. "2024-25 The Cup Hockey" or "2025-2026 O-Pee-Chee Platinum Hockey"
+  // e.g. "2024-25 The Cup Hockey" or "2025-2026 NHL Star Rookies Box Set"
   const words = key.trim().split(' ');
-  const sport = words[words.length - 1];
   const year  = words[0];
-  const name  = words.slice(1, -1).join(' ');
+  const lastWord = words[words.length - 1];
+  const sport = KNOWN_SPORTS.includes(lastWord) ? lastWord : 'Hockey';
+  const nameEnd = KNOWN_SPORTS.includes(lastWord) ? words.length - 1 : words.length;
+  const name  = words.slice(1, nameEnd).join(' ');
   // Normalize year display: "2025-2026" → "2025-26"
   const yearDisplay = year.replace(/^(\d{4})-(\d{4})$/, (_, a, b) => a + '-' + b.slice(2));
   return { key, sport, year, yearDisplay, name };
