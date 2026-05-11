@@ -338,13 +338,9 @@
     if (hasLeaders) left += renderLeadersSection();
     if (nhlData.bracket?.series?.length) left += renderBracketSection(nhlData.bracket);
 
-    // Colonne droite : Classement + Nouvelles
+    // Colonne droite : Classement uniquement
     let right = '';
     if (nhlData.standings.length) right += renderStandingsSection();
-    if (nhlData.news.length) {
-      right += `<div class="scores-head" style="margin-bottom:10px;margin-top:16px">Nouvelles</div>`;
-      right += `<div class="news-grid">${nhlData.news.map(item => renderNewsItem(item)).join('')}</div>`;
-    }
 
     const body = (left || right)
       ? `<div class="nhl-layout"><div class="nhl-col">${left}</div><div class="nhl-col">${right}</div></div>`
@@ -364,8 +360,7 @@
       const [scoresRes,
         sGoals, sAssists, sPoints,
         pGoals, pAssists, pPoints,
-        standingsRes, bracketRes, newsRes,
-        cbcItems, sportsnetItems
+        standingsRes, bracketRes,
       ] = await Promise.all([
         fetch(p('score/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`skater-stats-leaders/${seasonId}/2?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
@@ -376,9 +371,6 @@
         fetch(p(`skater-stats-leaders/${seasonId}/3?categories=points&limit=5`)).then(r=>r.json()).catch(()=>({})),
         fetch(p('standings/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`playoff-bracket/${yr}`)).then(r=>r.json()).catch(()=>({})),
-        fetch('/api/news?league=nhl&limit=8').then(r=>r.json()).catch(()=>({})),
-        fetchFeed({ label: 'CBC Sports', cls: 'src-cbc',    url: 'https://www.cbc.ca/cmlink/rss-sports' }),
-        fetchFeed({ label: 'Sportsnet',  cls: 'src-hockey', url: 'https://www.sportsnet.ca/feed/' }),
       ]);
       nhlData.scores = scoresRes.games || [];
       nhlData.leaders = {
@@ -387,11 +379,6 @@
       };
       nhlData.standings = standingsRes.standings || [];
       nhlData.bracket   = bracketRes;
-      // Merge NewsAPI + RSS news, sort by date, cap at 25
-      const apiNews = (newsRes.items || []).map(item => ({ ...item, source: { label: item.sourceName || 'NHL', cls: 'src-hockey' } }));
-      nhlData.news = [...apiNews, ...cbcItems, ...sportsnetItems]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-        .slice(0, 25);
       renderNHLTab();
     } catch(e) {
       feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>';
@@ -424,6 +411,23 @@
     // ── Hockey / NHL complet (scores + leaders + bracket + standings + news)
     if (reqSport === 'hockey' && reqLeague === 'nhl') {
       await loadNHLTab();
+      return;
+    }
+
+    // ── Hockey → Nouvelles (NewsAPI + CBC + Sportsnet)
+    if (reqSport === 'hockey' && reqLeague === 'nouvelles') {
+      try {
+        const [newsApiRes, cbcItems, sportsnetItems] = await Promise.all([
+          fetch('/api/news?league=nhl&limit=15').then(r=>r.json()).catch(()=>({})),
+          fetchFeed({ label: 'CBC Sports', cls: 'src-cbc',    url: 'https://www.cbc.ca/cmlink/rss-sports' }),
+          fetchFeed({ label: 'Sportsnet',  cls: 'src-hockey', url: 'https://www.sportsnet.ca/feed/' }),
+        ]);
+        const apiNews = (newsApiRes.items || []).map(item => ({ ...item, source: { label: item.sourceName || 'NHL', cls: 'src-hockey' } }));
+        const items = [...apiNews, ...cbcItems, ...sportsnetItems]
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 30);
+        commit(items);
+      } catch(e) { if (seq === _loadSeq) feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
       return;
     }
 
