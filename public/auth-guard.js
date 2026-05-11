@@ -31,11 +31,13 @@
     if (nav) {
       const user = localStorage.getItem('he_user') || '';
       const btn = document.createElement('div');
-      btn.style.cssText = 'display:flex;align-items:center;gap:10px;margin-left:8px;padding-left:14px;border-left:1px solid #1e1e1e';
+      btn.style.cssText = 'display:flex;align-items:center;gap:10px;margin-left:8px;padding-left:14px;border-left:1px solid var(--line)';
       btn.innerHTML = `
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5C5650">${user}</span>
-        <button onclick="logout()" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#5C5650;background:transparent;border:1px solid #1e1e1e;border-radius:5px;padding:5px 10px;cursor:pointer">Déconnexion</button>
+        <span style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-3)">${user}</span>
+        <button onclick="logout()" style="font-family:var(--font-mono);font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);background:transparent;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:7px 12px;cursor:pointer;transition:background 0.12s">Déconnexion</button>
       `;
+      btn.querySelector('button').addEventListener('mouseenter', e => e.target.style.background = 'var(--bg-2)');
+      btn.querySelector('button').addEventListener('mouseleave', e => e.target.style.background = 'transparent');
       nav.appendChild(btn);
     }
   });

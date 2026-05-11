@@ -3,123 +3,216 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hobby Empire</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Hobby Empire — Sports Cards</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="news.css">
 <style>
-  :root {
-    --gold: #B8942A;
-    --gold2: #D4AD47;
-    --gold3: #F0CC6A;
-    --dark: #080808;
-    --dark2: #111111;
-    --dark3: #1A1A1A;
-    --dark4: #242424;
-    --text: #EAE6DF;
-    --text2: #A89F94;
-    --text3: #5C5650;
-    --red: #C94040;
-    --green: #3A8C5C;
+  .home-hero {
+    padding: 48px 56px 28px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 48px;
+    align-items: end;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+  .home-hero h1 {
+    font-size: clamp(56px, 9vw, 128px);
+    margin: 0;
+  }
+  .home-hero .lead {
+    max-width: 520px;
+    margin-top: 24px;
+    font-size: 17px;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+  .home-hero .ctas {
+    display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap;
+  }
+  /* League logos grid (replaces photo stack) */
+  .leagues-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    min-width: 0;
+    max-width: 520px;
+    margin-left: auto;
+  }
+  .league-tile {
+    aspect-ratio: 1 / 1;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px;
+    transition: transform .15s, border-color .15s;
+    overflow: hidden;
+  }
+  .league-tile:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+  .league-tile img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+  .league-tile .league-fallback {
+    font-family: var(--font-display); font-weight: 800; font-size: 40px;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
 
-  .header { background: var(--dark2); border-bottom: 1px solid #1e1e1e; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
-  .logo-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-  .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold3); }
-  .logo-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: -2px; }
-  .header-nav { display: flex; gap: 6px; }
-  .nav-link { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 7px 13px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
-  .nav-link:hover { color: var(--text2); border-color: #2a2a2a; }
-  .nav-link.active { color: var(--gold3); border-color: #2a2010; background: rgba(184,148,42,0.06); }
+  /* Stat ticker */
+  .ticker { display: flex; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 0 56px; }
+  .ticker .cell { flex: 1; padding: 14px 20px; display: flex; flex-direction: column; gap: 4px; }
+  .ticker .cell + .cell { border-left: 1px solid var(--line); }
+  .ticker .v { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+  .ticker .v.txt { font-family: var(--font-display); font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+  .ticker .s { font-family: var(--font-mono); font-size: 10px; color: var(--mute); letter-spacing: .08em; text-transform: uppercase; }
 
-  .hero { padding: 80px 24px 60px; max-width: 900px; margin: 0 auto; text-align: center; }
-  .hero-eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--gold2); margin-bottom: 20px; }
-  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(36px, 7vw, 64px); font-weight: 700; color: var(--text); line-height: 1.1; margin-bottom: 20px; }
-  .hero-title span { color: var(--gold3); }
-  .hero-sub { font-size: 16px; color: var(--text3); line-height: 1.7; max-width: 520px; margin: 0 auto 40px; }
-  .hero-divider { width: 40px; height: 1px; background: var(--gold); margin: 0 auto 40px; }
+  /* News section */
+  .news-section { padding: 40px 56px 56px; }
+  .news-section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; gap: 16px; flex-wrap: wrap; }
+  .news-section-head h2 { font-family: var(--font-display); font-weight: 800; letter-spacing: -.02em; line-height: .92; font-size: 44px; margin: 6px 0 0; }
+  .news-wrap { max-width: 900px; }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; padding: 0 24px 80px; }
-  .card { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 16px; overflow: hidden; text-decoration: none; transition: all 0.2s; display: block; }
-  .card:hover { border-color: #2a2010; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-  .card-top { padding: 28px 24px 20px; }
-  .card-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(184,148,42,0.1); border: 1px solid rgba(184,148,42,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 18px; font-size: 20px; }
-  .card-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-  .card-desc { font-size: 13px; color: var(--text3); line-height: 1.6; }
-  .card-bottom { padding: 14px 24px; border-top: 1px solid #111; display: flex; align-items: center; justify-content: space-between; }
-  .card-action { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold2); }
-  .card-arrow { color: var(--gold); font-size: 14px; transition: transform 0.15s; }
-  .card:hover .card-arrow { transform: translateX(4px); }
-  .card.featured { border-color: #2a2010; background: linear-gradient(135deg, #111 0%, #130f05 100%); }
-  .card.featured .card-icon { background: rgba(184,148,42,0.15); border-color: rgba(184,148,42,0.35); }
+  /* Footer */
+  .footer {
+    padding: 20px 56px 36px;
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    color: var(--mute);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+    border-top: 1px solid var(--line);
+  }
 
-  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); border-top: 1px solid #111; }
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .home-hero { grid-template-columns: 1fr; padding: 36px 28px 24px; gap: 32px; }
+    .leagues-grid { max-width: 480px; }
+    .ticker { margin: 0 28px; flex-wrap: wrap; }
+    .ticker .cell { flex: 1 1 50%; }
+    .ticker .cell:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
+    .ticker .cell:nth-child(4) { border-top: 1px solid var(--line); }
+    .news-section { padding: 32px 28px 40px; }
+    .footer { padding: 20px 28px 36px; }
+  }
+  @media (max-width: 640px) {
+    .home-hero h1 { font-size: clamp(40px, 12vw, 72px); }
+    .leagues-grid { gap: 10px; }
+    .league-tile { padding: 18px; }
+    .news-section-head h2 { font-size: 32px; }
+  }
 </style>
 <script src="/auth-guard.js" data-role="admin"></script>
 </head>
-<body>
+<body class="he-root he-court">
 
-<div class="header">
-  <a class="logo-wrap" href="/">
-    <div>
-      <div class="logo">Hobby Empire</div>
-      <div class="logo-sub">Sports Cards</div>
-    </div>
+<header class="nav">
+  <a class="logo" href="/" style="text-decoration:none">
+    <span class="dot"></span>
+    <span>Hobby Empire</span>
+    <small>/ Sports Cards</small>
   </a>
-  <nav class="header-nav">
-    <a class="nav-link active" href="/">Home</a>
+  <nav class="nav-links">
+    <a class="nav-link is-active" href="/">Home</a>
     <a class="nav-link" href="/break-builder.html">Break Tracker</a>
     <a class="nav-link" href="/hub.html">Hub</a>
     <a class="nav-link" href="/break-prep.html">Break Prep</a>
   </nav>
+</header>
+
+<section class="home-hero">
+  <div>
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px; flex-wrap:wrap;">
+      <span class="tag tag-live">SAISON 25/26 · EN COURS</span>
+    </div>
+    <h1 class="display display-tight">Gérez vos breaks.<br><span style="color:var(--accent)">Maximisez</span> vos profits.</h1>
+    <p class="lead">Plateforme complète pour tracker vos breaks sportifs, analyser vos stats et préparer vos lives en toute confiance.</p>
+    <div class="ctas">
+      <a class="btn btn-primary" href="/break-builder.html">
+        Entrer un break
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="/break-prep.html">Préparer un live</a>
+    </div>
+  </div>
+  <div class="leagues-grid">
+    <div class="league-tile">
+      <img src="/images/leagues/nhl.png" alt="NHL"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <span class="league-fallback" style="display:none">NHL</span>
+    </div>
+    <div class="league-tile">
+      <img src="/images/leagues/nfl.png" alt="NFL"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <span class="league-fallback" style="display:none">NFL</span>
+    </div>
+    <div class="league-tile">
+      <img src="/images/leagues/nba.png" alt="NBA"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <span class="league-fallback" style="display:none">NBA</span>
+    </div>
+    <div class="league-tile">
+      <img src="/images/leagues/mlb.png" alt="MLB"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+      <span class="league-fallback" style="display:none">MLB</span>
+    </div>
+  </div>
+</section>
+
+<!-- Stat ticker : valeurs statiques. Branchable plus tard sur /api/sheets. -->
+<div class="ticker">
+  <div class="cell">
+    <div class="eyebrow">Revenu — Aujourd'hui</div>
+    <div class="v">$6 067</div>
+    <div class="s">+22% vs hier</div>
+  </div>
+  <div class="cell">
+    <div class="eyebrow">Breaks ce mois</div>
+    <div class="v">4</div>
+    <div class="s">Mai 2026</div>
+  </div>
+  <div class="cell">
+    <div class="eyebrow">Marge moyenne</div>
+    <div class="v">22.2%</div>
+    <div class="s">Hockey en tête</div>
+  </div>
+  <div class="cell">
+    <div class="eyebrow">Meilleur vendeur</div>
+    <div class="v txt">Chuck</div>
+    <div class="s">$16 095 / break</div>
+  </div>
 </div>
 
-<div class="hero">
-  <div class="hero-eyebrow">Hobby Empire — Sports Cards</div>
-  <h1 class="hero-title">Gérez vos breaks.<br><span>Maximisez vos profits.</span></h1>
-  <div class="hero-divider"></div>
-  <p class="hero-sub">Plateforme complète pour tracker vos breaks sportifs, analyser vos stats et préparer vos lives en toute confiance.</p>
-</div>
+<!-- Actualités -->
+<section class="news-section">
+  <div class="news-section-head">
+    <div>
+      <div class="eyebrow">Actualités</div>
+      <h2>Le feed du jour.</h2>
+    </div>
+  </div>
+  <div class="news-wrap">
+    <div class="news-filters" style="margin-bottom:10px">
+      <button class="news-sport-btn active" data-sport="hockey"     onclick="HE_NEWS.switchSport('hockey')">Hockey</button>
+      <button class="news-sport-btn"        data-sport="football"   onclick="HE_NEWS.switchSport('football')">Football</button>
+      <button class="news-sport-btn"        data-sport="basketball" onclick="HE_NEWS.switchSport('basketball')">Basketball</button>
+      <button class="news-sport-btn"        data-sport="baseball"   onclick="HE_NEWS.switchSport('baseball')">Baseball</button>
+    </div>
+    <div id="hockey-leagues" class="league-tabs">
+      <button class="league-tab active" data-league="hobby"  onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
+      <button class="league-tab"        data-league="nhl"    onclick="HE_NEWS.switchLeague('nhl')">NHL</button>
+      <button class="league-tab"        data-league="ahl"    onclick="HE_NEWS.switchLeague('ahl')">AHL</button>
+      <button class="league-tab"        data-league="ncaa"   onclick="HE_NEWS.switchLeague('ncaa')">NCAA</button>
+      <button class="league-tab"        data-league="ohl"    onclick="HE_NEWS.switchLeague('ohl')">OHL</button>
+      <button class="league-tab"        data-league="whl"    onclick="HE_NEWS.switchLeague('whl')">WHL</button>
+      <button class="league-tab"        data-league="lhjmq"  onclick="HE_NEWS.switchLeague('lhjmq')">LHJMQ</button>
+      <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
+    </div>
+    <div id="other-sport-bar" class="news-filters" style="display:none">
+      <button class="news-refresh" onclick="HE_NEWS.loadNews(true)">↻ Rafraîchir</button>
+    </div>
+    <div id="news-feed"><div class="news-loading">Chargement des nouvelles...</div></div>
+  </div>
+</section>
 
-<div class="cards">
-  <a class="card featured" href="/break-builder.html">
-    <div class="card-top">
-      <div class="card-icon">📊</div>
-      <div class="card-title">Break Tracker</div>
-      <div class="card-desc">Entrez vos stats de break — durée, revenu, vendeur, sport. Calculs automatiques, données synchronisées.</div>
-    </div>
-    <div class="card-bottom">
-      <span class="card-action">Entrer un break</span>
-      <span class="card-arrow">→</span>
-    </div>
-  </a>
+<footer class="footer">
+  <div>Hobby Empire © 2026 / Sports Cards Platform</div>
+  <div>v2.0 / Build 0526</div>
+</footer>
 
-  <a class="card featured" href="/hub.html">
-    <div class="card-top">
-      <div class="card-icon">🏆</div>
-      <div class="card-title">Hub</div>
-      <div class="card-desc">Dashboard complet — stats par jour, par plage horaire, par mois, par catégorie et par sport.</div>
-    </div>
-    <div class="card-bottom">
-      <span class="card-action">Voir les stats</span>
-      <span class="card-arrow">→</span>
-    </div>
-  </a>
-
-  <a class="card" href="/break-prep.html">
-    <div class="card-top">
-      <div class="card-icon">🎯</div>
-      <div class="card-title">Break Prep</div>
-      <div class="card-desc">Générez des fiches de préparation pour vos lives. Rookies, valeurs de cartes, faits pour votre chat.</div>
-    </div>
-    <div class="card-bottom">
-      <span class="card-action">Préparer un live</span>
-      <span class="card-arrow">→</span>
-    </div>
-  </a>
-</div>
-
-<div class="footer">Hobby Empire &mdash; Sports Cards &copy; 2026</div>
-
+<script src="news.js"></script>
 </body>
 </html>

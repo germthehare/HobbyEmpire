@@ -5,247 +5,258 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hobby Empire — Break Prep</title>
 <script src="/auth-guard.js" data-role="any"></script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
 <style>
-  :root {
-    --gold: #B8942A; --gold2: #D4AD47; --gold3: #F0CC6A;
-    --dark: #080808; --dark2: #111111; --dark3: #1A1A1A; --dark4: #242424;
-    --text: #EAE6DF; --text2: #A89F94; --text3: #5C5650;
-    --red: #C94040; --green: #3A8C5C;
+  /* Aliases Court : les anciens noms restent valides, ils pointent vers les nouveaux tokens. */
+  .he-court {
+    --gold:  var(--accent);
+    --gold2: color-mix(in oklch, var(--accent), white 12%);
+    --gold3: color-mix(in oklch, var(--accent), white 22%);
+    --dark:  var(--bg);
+    --dark2: var(--bg-3);
+    --dark3: var(--bg-2);
+    --dark4: var(--line);
+    --text:  var(--ink);
+    --text2: var(--ink-2);
+    --text3: var(--ink-3);
+    --red:   var(--neg);
+    --green: var(--pos);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--dark); color: var(--text); font-family: 'Barlow', sans-serif; min-height: 100vh; }
-  .header { background: var(--dark2); border-bottom: 1px solid #1e1e1e; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
-  .logo-wrap { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-  .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold3); }
-  .logo-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-top: -2px; }
+  body { background: var(--dark); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+  .header { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 2px; align-self: center; }
+  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.01em; line-height: 1; color: var(--ink); }
+  .logo-sub { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-top: 2px; }
   .header-nav { display: flex; gap: 6px; align-items: center; }
-  .nav-link { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 7px 13px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
-  .nav-link:hover { color: var(--text2); border-color: #2a2a2a; }
-  .nav-link.active { color: var(--gold3); border-color: #2a2010; background: rgba(184,148,42,0.06); }
-  .lang-toggle { display: flex; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; overflow: hidden; margin-left: 6px; }
-  .lang-btn { padding: 5px 11px; font-size: 11px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; color: var(--text3); cursor: pointer; border: none; background: transparent; transition: all 0.15s; }
-  .lang-btn.active { background: var(--gold); color: #000; }
-  .tabs { display: flex; background: var(--dark2); border-bottom: 1px solid #1a1a1a; }
-  .tab { flex: 1; padding: 14px 0; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 7px 13px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: var(--text2); border-color: var(--line); }
+  .nav-link.active { color: var(--gold3); border-color: var(--accent-soft); background: color-mix(in oklch, var(--accent), transparent 94%); }
+  .lang-toggle { display: flex; background: var(--dark3); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-left: 6px; }
+  .lang-btn { padding: 5px 11px; font-size: 11px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 1px; color: var(--text3); cursor: pointer; border: none; background: transparent; transition: all 0.15s; }
+  .lang-btn.active { background: var(--gold); color: var(--accent-ink); }
+  .tabs { display: flex; background: var(--dark2); border-bottom: 1px solid var(--line); }
+  .tab { flex: 1; padding: 14px 0; text-align: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
   .tab.active { color: var(--gold3); border-bottom-color: var(--gold); }
   .main { padding: 20px 16px; max-width: 700px; margin: 0 auto; }
-  .section-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+  .section-head { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
   /* ── Selected product chips ── */
-  .product-chip-row { display: flex; align-items: center; gap: 10px; background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 11px 14px; margin-bottom: 8px; }
-  .chip-sport { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); background: rgba(184,148,42,0.1); border: 1px solid rgba(184,148,42,0.2); border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
-  .chip-year { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--text3); white-space: nowrap; }
+  .product-chip-row { display: flex; align-items: center; gap: 10px; background: var(--dark3); border: 1px solid var(--line); border-radius: 8px; padding: 11px 14px; margin-bottom: 8px; }
+  .chip-sport { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); background: color-mix(in oklch, var(--accent), transparent 90%); border: 1px solid color-mix(in oklch, var(--accent), transparent 80%); border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
+  .chip-year { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--text3); white-space: nowrap; }
   .chip-label { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .chip-remove { width: 28px; height: 28px; background: transparent; border: none; color: var(--text3); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; flex-shrink: 0; transition: all 0.15s; }
   .chip-remove:hover { color: var(--red); }
   /* ── Cascade selector panel ── */
-  .selector-panel { background: var(--dark2); border: 1px solid #242424; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
-  .selector-step { padding: 12px 14px; border-bottom: 1px solid #1a1a1a; }
+  .selector-panel { background: var(--dark2); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .selector-step { padding: 12px 14px; border-bottom: 1px solid var(--line); }
   .selector-step:last-child { border-bottom: none; }
-  .step-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .step-head { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
   .step-opts { display: flex; flex-wrap: wrap; gap: 6px; }
-  .step-opt { padding: 6px 13px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
-  .step-opt:hover { border-color: #3a3a3a; color: var(--text); }
-  .step-opt.selected { background: rgba(184,148,42,0.12); border-color: var(--gold); color: var(--gold3); }
+  .step-opt { padding: 6px 13px; background: var(--dark3); border: 1px solid var(--line); border-radius: 6px; font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.5px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .step-opt:hover { border-color: var(--line-strong); color: var(--text); }
+  .step-opt.selected { background: color-mix(in oklch, var(--accent), transparent 88%); border-color: var(--gold); color: var(--gold3); }
   .step-opt.disabled { opacity: 0.3; pointer-events: none; }
   .step-placeholder { font-size: 12px; color: var(--text3); font-style: italic; }
   /* ── Add button ── */
-  .add-btn { width: 100%; background: transparent; border: 1px dashed #262626; border-radius: 8px; color: var(--text3); font-size: 13px; font-family: 'Barlow', sans-serif; padding: 12px; cursor: pointer; margin-bottom: 10px; transition: all 0.15s; }
-  .add-btn:hover { border-color: #3a3a3a; color: var(--text2); }
+  .add-btn { width: 100%; background: transparent; border: 1px dashed var(--line); border-radius: 8px; color: var(--text3); font-size: 13px; font-family: var(--font-body); padding: 12px; cursor: pointer; margin-bottom: 10px; transition: all 0.15s; }
+  .add-btn:hover { border-color: var(--line-strong); color: var(--text2); }
   .add-btn.open { border-color: var(--gold); color: var(--gold3); }
   /* ── News feed ── */
   .news-filters { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
-  .news-sport-btn { padding: 6px 13px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
-  .news-sport-btn:hover { color: var(--text); border-color: #3a3a3a; }
+  .news-sport-btn { padding: 6px 13px; background: var(--dark3); border: 1px solid var(--line); border-radius: 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .news-sport-btn:hover { color: var(--text); border-color: var(--line-strong); }
   .news-sport-btn.active { background: var(--dark4); border-color: var(--gold); color: var(--gold3); }
-  .news-filter { padding: 5px 12px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
-  .news-filter:hover { color: var(--text2); border-color: #3a3a3a; }
-  .news-filter.active { border-color: var(--gold); color: var(--gold3); background: rgba(184,148,42,0.1); }
-  .news-refresh { margin-left: auto; padding: 5px 12px; background: transparent; border: 1px solid #2a2a2a; border-radius: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .news-filter { padding: 5px 12px; background: var(--dark3); border: 1px solid var(--line); border-radius: 20px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .news-filter:hover { color: var(--text2); border-color: var(--line-strong); }
+  .news-filter.active { border-color: var(--gold); color: var(--gold3); background: color-mix(in oklch, var(--accent), transparent 90%); }
+  .news-refresh { margin-left: auto; padding: 5px 12px; background: transparent; border: 1px solid var(--line); border-radius: 20px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
   .news-refresh:hover { color: var(--gold3); border-color: var(--gold); }
-  .news-card { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 10px; margin-bottom: 10px; padding: 14px 16px; transition: border-color 0.15s; text-decoration: none; display: block; }
-  .news-card:hover { border-color: #2a2a2a; }
+  .news-card { background: var(--dark2); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; padding: 14px 16px; transition: border-color 0.15s; text-decoration: none; display: block; }
+  .news-card:hover { border-color: var(--line); }
   .news-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; flex-wrap: wrap; }
-  .news-source { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
+  .news-source { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
   .src-beckett    { color: #6a9fd4; background: rgba(106,159,212,0.12); border: 1px solid rgba(106,159,212,0.25); }
   .src-sportscard { color: #7ac97a; background: rgba(122,201,122,0.12); border: 1px solid rgba(122,201,122,0.25); }
   .src-cardboard  { color: #c9a87a; background: rgba(201,168,122,0.12); border: 1px solid rgba(201,168,122,0.25); }
   .src-hockey     { color: #c97a9a; background: rgba(201,122,154,0.12); border: 1px solid rgba(201,122,154,0.25); }
-  .src-ud         { color: var(--gold2); background: rgba(184,148,42,0.12); border: 1px solid rgba(184,148,42,0.25); }
-  .src-default    { color: var(--text3); background: var(--dark3); border: 1px solid #2a2a2a; }
-  .news-age { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text3); letter-spacing: 0.5px; }
-  .news-cat { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); padding: 2px 5px; border-radius: 3px; background: var(--dark3); border: 1px solid #222; }
+  .src-ud         { color: var(--gold2); background: color-mix(in oklch, var(--accent), transparent 88%); border: 1px solid color-mix(in oklch, var(--accent), transparent 75%); }
+  .src-default    { color: var(--text3); background: var(--dark3); border: 1px solid var(--line); }
+  .news-age { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.5px; }
+  .news-cat { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); padding: 2px 5px; border-radius: 3px; background: var(--dark3); border: 1px solid var(--line); }
   .news-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; margin-bottom: 5px; }
   .news-card:hover .news-title { color: var(--gold3); }
   .news-excerpt { font-size: 12px; color: var(--text3); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .news-thumb { width: 100%; max-height: 160px; object-fit: cover; border-radius: 6px; margin-bottom: 10px; display: block; }
   .news-loading { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 13px; }
-  .news-error { background: #110606; border: 1px solid #2a1010; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #b06060; margin-bottom: 10px; }
+  .news-error { background: color-mix(in oklch, var(--neg), transparent 88%); border: 1px solid color-mix(in oklch, var(--neg), transparent 65%); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--neg); margin-bottom: 10px; }
   .news-empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 13px; }
   /* ── League sub-tabs ── */
   .league-tabs { display: flex; gap: 4px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; flex-wrap: nowrap; align-items: center; }
   .league-tabs::-webkit-scrollbar { display: none; }
-  .league-tab { padding: 6px 12px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
-  .league-tab:hover { color: var(--text); border-color: #3a3a3a; }
+  .league-tab { padding: 6px 12px; background: var(--dark3); border: 1px solid var(--line); border-radius: 6px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .league-tab:hover { color: var(--text); border-color: var(--line-strong); }
   .league-tab.active { background: var(--dark4); border-color: var(--gold); color: var(--gold3); }
   /* ── NHL Scores widget ── */
   .scores-wrap { margin-bottom: 14px; }
-  .scores-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .scores-head { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
   .scores-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
   .scores-scroll::-webkit-scrollbar { display: none; }
-  .score-card { background: var(--dark2); border: 1px solid #1e1e1e; border-radius: 8px; min-width: 160px; flex-shrink: 0; overflow: hidden; }
-  .score-head-bar { display: flex; align-items: center; justify-content: space-between; padding: 7px 11px 6px; border-bottom: 1px solid #141414; }
-  .score-state { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); display: flex; align-items: center; gap: 5px; }
-  .score-state.live { color: #c97070; }
-  .score-state.live::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #c97070; animation: blink 1.2s ease-in-out infinite; }
+  .score-card { background: var(--dark2); border: 1px solid var(--line); border-radius: 8px; min-width: 160px; flex-shrink: 0; overflow: hidden; }
+  .score-head-bar { display: flex; align-items: center; justify-content: space-between; padding: 7px 11px 6px; border-bottom: 1px solid var(--line); }
+  .score-state { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); display: flex; align-items: center; gap: 5px; }
+  .score-state.live { color: var(--neg); }
+  .score-state.live::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--neg); animation: blink 1.2s ease-in-out infinite; }
   .score-state.final { color: var(--gold2); }
   @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-  .score-serie-top { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); text-align: right; }
+  .score-serie-top { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); text-align: right; }
   .score-body { padding: 8px 11px; }
   .score-team { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
   .score-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
-  .score-abbrev { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--text2); flex: 1; letter-spacing: 0.5px; }
+  .score-abbrev { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--text2); flex: 1; letter-spacing: 0.5px; }
   .score-abbrev.winner { color: var(--text); }
-  .score-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--text3); min-width: 20px; text-align: right; }
+  .score-pts { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--text3); min-width: 20px; text-align: right; }
   .score-pts.winner { color: var(--gold3); }
-  .score-leaders { border-top: 1px solid #141414; padding: 6px 11px 8px; display: flex; flex-direction: column; gap: 3px; }
-  .score-leader { display: flex; align-items: baseline; gap: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--text3); }
+  .score-leaders { border-top: 1px solid var(--line); padding: 6px 11px 8px; display: flex; flex-direction: column; gap: 3px; }
+  .score-leader { display: flex; align-items: baseline; gap: 0; font-family: var(--font-mono); font-size: 11px; color: var(--text3); }
   .sc-name { flex: 1; color: var(--text3); font-weight: 400; }
   .sc-stat { font-weight: 700; color: var(--text2); white-space: nowrap; }
   .sc-cat { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); margin-left: 2px; }
   /* ── Leaders widget ── */
   .nhl-section { margin-bottom: 16px; }
   .nhl-section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .nhl-section-title { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+  .nhl-section-title { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
   .nhl-tabs { display: flex; gap: 4px; }
-  .nhl-tab { padding: 3px 10px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 4px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; color: var(--text3); cursor: pointer; transition: all 0.15s; }
-  .nhl-tab.active { border-color: var(--gold); color: var(--gold3); background: rgba(184,148,42,0.1); }
-  .leaders-list { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 8px; overflow: hidden; }
-  .leader-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid #0e0e0e; }
+  .nhl-tab { padding: 3px 10px; background: var(--dark3); border: 1px solid var(--line); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .nhl-tab.active { border-color: var(--gold); color: var(--gold3); background: color-mix(in oklch, var(--accent), transparent 90%); }
+  .leaders-list { background: var(--dark2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .leader-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid var(--line); }
   .leader-row:last-child { border-bottom: none; }
-  .leader-rank { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; color: var(--text3); width: 14px; text-align: center; flex-shrink: 0; }
-  .leader-headshot { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--dark4); flex-shrink: 0; border: 1px solid #252525; }
+  .leader-rank { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text3); width: 14px; text-align: center; flex-shrink: 0; }
+  .leader-headshot { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--dark4); flex-shrink: 0; border: 1px solid var(--line); }
   .leader-info { flex: 1; min-width: 0; }
   .leader-name { font-size: 13px; font-weight: 500; color: var(--text); }
-  .leader-team { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text3); letter-spacing: 0.5px; margin-top: 1px; }
-  .leader-val { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--gold3); min-width: 30px; text-align: right; }
+  .leader-team { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.5px; margin-top: 1px; }
+  .leader-val { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--gold3); min-width: 30px; text-align: right; }
   /* ── Standings ── */
-  .standings-tbl { width: 100%; background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 8px; overflow: hidden; border-collapse: collapse; }
-  .standings-tbl th { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); padding: 7px 10px; text-align: left; border-bottom: 1px solid #1a1a1a; background: var(--dark3); }
+  .standings-tbl { width: 100%; background: var(--dark2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; border-collapse: collapse; }
+  .standings-tbl th { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--line); background: var(--dark3); }
   .standings-tbl th.num, .standings-tbl td.num { text-align: right; }
-  .standings-tbl td { padding: 6px 10px; border-bottom: 1px solid #0d0d0d; font-size: 12px; color: var(--text2); }
+  .standings-tbl td { padding: 6px 10px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--text2); }
   .standings-tbl tr:last-child td { border-bottom: none; }
   .st-logo { width: 16px; height: 16px; object-fit: contain; vertical-align: middle; margin-right: 6px; }
-  .st-abbrev { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); }
-  .td-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--gold3) !important; }
+  .st-abbrev { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--text); }
+  .td-pts { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--gold3) !important; }
   .playoff-spot td:first-child { border-left: 2px solid var(--green); }
   /* ── Bracket playoffs ── */
   .bracket-scroll { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 6px; }
   .bracket-scroll::-webkit-scrollbar { display: none; }
   .bracket-round { flex-shrink: 0; min-width: 148px; }
-  .bracket-round-title { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
-  .bracket-series { background: var(--dark2); border: 1px solid #1e1e1e; border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; }
+  .bracket-round-title { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+  .bracket-series { background: var(--dark2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; }
   .bracket-team { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
   .bt-logo { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; image-rendering: auto; }
-  .bt-abbrev { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--text2); flex: 1; letter-spacing: 0.5px; }
+  .bt-abbrev { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--text2); flex: 1; letter-spacing: 0.5px; }
   .bt-abbrev.winner { color: var(--gold3); }
   .bt-abbrev.elim { color: var(--text3); opacity: 0.45; text-decoration: line-through; }
-  .bt-wins { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); min-width: 16px; text-align: right; }
+  .bt-wins { font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--text); min-width: 16px; text-align: right; }
   .bt-wins.winner { color: var(--gold3); }
   /* ── eBay prices ── */
   .ebay-results { margin-top: 14px; }
-  .ebay-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-  .ebay-badge { background: rgba(58,140,92,0.15); border: 1px solid rgba(58,140,92,0.3); color: #5aad72; border-radius: 3px; padding: 1px 6px; font-size: 9px; }
-  .ebay-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #111; }
+  .ebay-head { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .ebay-badge { background: color-mix(in oklch, var(--pos), transparent 85%); border: 1px solid color-mix(in oklch, var(--pos), transparent 70%); color: var(--pos); border-radius: 3px; padding: 1px 6px; font-size: 9px; }
+  .ebay-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
   .ebay-item:last-child { border-bottom: none; }
   .ebay-img { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; background: var(--dark4); flex-shrink: 0; }
   .ebay-info { flex: 1; min-width: 0; }
   .ebay-title { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ebay-price { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; color: var(--green); white-space: nowrap; }
-  .gen-btn { width: 100%; background: var(--gold); border: none; border-radius: 8px; color: #000; font-size: 12px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; text-transform: uppercase; padding: 15px; cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
+  .ebay-price { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--green); white-space: nowrap; }
+  .gen-btn { width: 100%; background: var(--gold); border: none; border-radius: 8px; color: var(--accent-ink); font-size: 12px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; padding: 15px; cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
   .gen-btn:hover { background: var(--gold3); }
-  .gen-btn:disabled { background: #222; color: #3a3a3a; cursor: not-allowed; }
+  .gen-btn:disabled { background: var(--line); color: var(--line-strong); cursor: not-allowed; }
   .live-row { display: flex; gap: 8px; margin-bottom: 16px; }
-  .live-row input { flex: 1; background: var(--dark3); border: 1px solid #222; border-radius: 8px; padding: 13px 16px; color: var(--text); font-size: 15px; font-family: 'Barlow', sans-serif; outline: none; transition: border-color 0.2s; }
+  .live-row input { flex: 1; background: var(--dark3); border: 1px solid var(--line); border-radius: 8px; padding: 13px 16px; color: var(--text); font-size: 15px; font-family: var(--font-body); outline: none; transition: border-color 0.2s; }
   .live-row input:focus { border-color: var(--gold); }
   .live-row input::placeholder { color: var(--text3); }
-  .live-btn { background: var(--gold); border: none; border-radius: 8px; color: #000; font-size: 11px; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; padding: 0 18px; cursor: pointer; white-space: nowrap; }
-  .live-btn:disabled { background: #222; color: #3a3a3a; }
-  .hint { background: var(--dark3); border: 1px solid #1e1e1e; border-radius: 8px; padding: 14px 16px; font-size: 13px; color: var(--text3); line-height: 1.7; }
+  .live-btn { background: var(--gold); border: none; border-radius: 8px; color: var(--accent-ink); font-size: 11px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 1.5px; text-transform: uppercase; padding: 0 18px; cursor: pointer; white-space: nowrap; }
+  .live-btn:disabled { background: var(--line); color: var(--line-strong); }
+  .hint { background: var(--dark3); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; font-size: 13px; color: var(--text3); line-height: 1.7; }
   .loading { text-align: center; padding: 48px 20px; color: var(--text3); }
-  .spinner { width: 26px; height: 26px; border: 1px solid #222; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 14px; }
+  .spinner { width: 26px; height: 26px; border: 1px solid var(--line); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 14px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; letter-spacing: 0.5px; font-family: 'Barlow Condensed', sans-serif; }
-  .error-box { background: #110606; border: 1px solid #2a1010; border-radius: 8px; padding: 14px 16px; font-size: 13px; color: #b06060; margin-bottom: 16px; }
-  .product-card { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
-  .card-hero { position: relative; height: 100px; background: #0A0A09; border-bottom: 1px solid #1a1a1a; overflow: hidden; display: flex; align-items: flex-end; padding: 16px; }
+  .loading-text { font-size: 13px; letter-spacing: 0.5px; font-family: var(--font-mono); }
+  .error-box { background: color-mix(in oklch, var(--neg), transparent 88%); border: 1px solid color-mix(in oklch, var(--neg), transparent 65%); border-radius: 8px; padding: 14px 16px; font-size: 13px; color: var(--neg); margin-bottom: 16px; }
+  .product-card { background: var(--dark2); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .card-hero { position: relative; height: 100px; background: var(--bg-2); border-bottom: 1px solid var(--line); overflow: hidden; display: flex; align-items: flex-end; padding: 16px; }
   .hero-accent { position: absolute; top: 0; left: 0; width: 2px; height: 100%; background: linear-gradient(to bottom, var(--gold), transparent); }
   .hero-players { position: absolute; right: 0; top: 0; bottom: 0; display: flex; }
   .hero-player-img { width: 65px; height: 100%; object-fit: cover; object-position: top center; opacity: 0.3; filter: grayscale(20%); mask-image: linear-gradient(to left, rgba(0,0,0,0.5) 0%, transparent 100%); -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.5) 0%, transparent 100%); }
   .hero-text { position: relative; z-index: 2; }
-  .hero-name { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 700; color: var(--gold3); line-height: 1; margin-bottom: 3px; }
-  .hero-meta { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
-  .stats-bar { display: flex; border-bottom: 1px solid #141414; }
-  .stat-cell { padding: 11px 14px; text-align: center; border-right: 1px solid #141414; }
+  .hero-name { font-family: var(--font-display); font-size: 21px; font-weight: 700; color: var(--gold3); line-height: 1; margin-bottom: 3px; }
+  .hero-meta { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+  .stats-bar { display: flex; border-bottom: 1px solid var(--line); }
+  .stat-cell { padding: 11px 14px; text-align: center; border-right: 1px solid var(--line); }
   .stat-cell:last-child { border-right: none; }
-  .stat-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
-  .stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
-  .summary-text { padding: 11px 16px; font-size: 13px; color: var(--text2); line-height: 1.6; border-bottom: 1px solid #111; }
-  .sect { border-bottom: 1px solid #111; }
+  .stat-lbl { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+  .stat-num { font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--text); }
+  .summary-text { padding: 11px 16px; font-size: 13px; color: var(--text2); line-height: 1.6; border-bottom: 1px solid var(--line); }
+  .sect { border-bottom: 1px solid var(--line); }
   .sect:last-child { border-bottom: none; }
-  .sect-lbl { padding: 9px 16px 0; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); }
-  .card-row { display: flex; align-items: center; padding: 8px 16px; border-bottom: 1px solid #0e0e0e; gap: 10px; }
+  .sect-lbl { padding: 9px 16px 0; font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); }
+  .card-row { display: flex; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--line); gap: 10px; }
   .card-row:last-child { border-bottom: none; }
-  .row-num { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--text3); width: 16px; flex-shrink: 0; text-align: right; }
-  .player-thumb { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--dark4); flex-shrink: 0; border: 1px solid #252525; }
-  .player-init { width: 32px; height: 32px; border-radius: 50%; background: var(--dark4); border: 1px solid #252525; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; color: var(--text3); }
+  .row-num { font-family: var(--font-mono); font-size: 11px; color: var(--text3); width: 16px; flex-shrink: 0; text-align: right; }
+  .player-thumb { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--dark4); flex-shrink: 0; border: 1px solid var(--line); }
+  .player-init { width: 32px; height: 32px; border-radius: 50%; background: var(--dark4); border: 1px solid var(--line); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text3); }
   .row-info { flex: 1; min-width: 0; }
   .row-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .row-sub { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text3); letter-spacing: 0.5px; margin-top: 1px; }
-  .row-price { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--green); white-space: nowrap; flex-shrink: 0; }
-  .tag { display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: 1px; padding: 1px 5px; border-radius: 3px; margin-left: 5px; vertical-align: middle; text-transform: uppercase; }
-  .tag-rookie { background: rgba(58,140,92,0.12); color: #5aad72; border: 1px solid rgba(58,140,92,0.25); }
-  .tag-hot { background: rgba(201,64,64,0.12); color: #c97070; border: 1px solid rgba(201,64,64,0.25); }
-  .tag-rare { background: rgba(184,148,42,0.12); color: #c9a84c; border: 1px solid rgba(184,148,42,0.25); }
+  .row-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.5px; margin-top: 1px; }
+  .row-price { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--green); white-space: nowrap; flex-shrink: 0; }
+  .tag { display: inline-block; font-family: var(--font-mono); font-size: 8px; font-weight: 700; letter-spacing: 1px; padding: 1px 5px; border-radius: 3px; margin-left: 5px; vertical-align: middle; text-transform: uppercase; }
+  .tag-rookie { background: color-mix(in oklch, var(--pos), transparent 88%); color: var(--pos); border: 1px solid color-mix(in oklch, var(--pos), transparent 75%); }
+  .tag-hot { background: rgba(201,64,64,0.12); color: var(--neg); border: 1px solid rgba(201,64,64,0.25); }
+  .tag-rare { background: color-mix(in oklch, var(--accent), transparent 88%); color: #c9a84c; border: 1px solid color-mix(in oklch, var(--accent), transparent 75%); }
   .tag-auto { background: rgba(58,106,156,0.12); color: #6a8ec9; border: 1px solid rgba(58,106,156,0.25); }
   .tag-legend { background: rgba(122,74,156,0.12); color: #9a7ac9; border: 1px solid rgba(122,74,156,0.25); }
   .players-grid { display: flex; flex-wrap: wrap; gap: 7px; padding: 9px 16px 13px; }
-  .player-chip { display: flex; align-items: center; gap: 6px; background: var(--dark3); border: 1px solid #1e1e1e; border-radius: 20px; padding: 4px 11px 4px 4px; }
+  .player-chip { display: flex; align-items: center; gap: 6px; background: var(--dark3); border: 1px solid var(--line); border-radius: 20px; padding: 4px 11px 4px 4px; }
   .chip-img { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--dark4); }
-  .chip-init { width: 22px; height: 22px; border-radius: 50%; background: var(--dark4); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; color: var(--text3); }
+  .chip-init { width: 22px; height: 22px; border-radius: 50%; background: var(--dark4); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 9px; font-weight: 700; color: var(--text3); }
   .chip-name { font-size: 12px; font-weight: 500; color: var(--text2); }
   .facts-list { padding: 8px 16px 12px; }
-  .fact-row { display: flex; gap: 9px; padding: 5px 0; font-size: 13px; color: var(--text2); line-height: 1.55; border-bottom: 1px solid #0e0e0e; }
+  .fact-row { display: flex; gap: 9px; padding: 5px 0; font-size: 13px; color: var(--text2); line-height: 1.55; border-bottom: 1px solid var(--line); }
   .fact-row:last-child { border-bottom: none; }
   .fact-dash { color: var(--gold2); flex-shrink: 0; font-weight: 700; }
   .compare-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .compare-tbl th { text-align: left; padding: 8px 14px; font-family: 'Barlow Condensed', sans-serif; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid #1a1a1a; font-weight: 700; }
-  .compare-tbl td { padding: 8px 14px; border-bottom: 1px solid #0e0e0e; color: var(--text); font-size: 12px; }
+  .compare-tbl th { text-align: left; padding: 8px 14px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--line); font-weight: 700; }
+  .compare-tbl td { padding: 8px 14px; border-bottom: 1px solid var(--line); color: var(--text); font-size: 12px; }
   .compare-tbl tr:last-child td { border-bottom: none; }
-  .live-card { background: var(--dark2); border: 1px solid #1a1a1a; border-radius: 12px; overflow: hidden; }
-  .live-hero { background: #0A0A09; padding: 16px; border-bottom: 1px solid #1a1a1a; display: flex; gap: 14px; align-items: center; }
-  .live-player-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; object-position: top; background: var(--dark4); border: 1px solid #222; flex-shrink: 0; }
-  .live-card-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--gold3); line-height: 1.2; margin-bottom: 5px; }
+  .live-card { background: var(--dark2); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .live-hero { background: var(--bg-2); padding: 16px; border-bottom: 1px solid var(--line); display: flex; gap: 14px; align-items: center; }
+  .live-player-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; object-position: top; background: var(--dark4); border: 1px solid var(--line); flex-shrink: 0; }
+  .live-card-name { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--gold3); line-height: 1.2; margin-bottom: 5px; }
   .trend-row { display: flex; align-items: center; gap: 7px; }
-  .trend-up { color: #5aad72; font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
-  .trend-down { color: #c97070; font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
-  .trend-stable { color: var(--text3); font-weight: 700; font-size: 12px; font-family: 'Barlow Condensed', sans-serif; }
+  .trend-up { color: var(--pos); font-weight: 700; font-size: 12px; font-family: var(--font-mono); letter-spacing: 1px; }
+  .trend-down { color: var(--neg); font-weight: 700; font-size: 12px; font-family: var(--font-mono); letter-spacing: 1px; }
+  .trend-stable { color: var(--text3); font-weight: 700; font-size: 12px; font-family: var(--font-mono); }
   .trend-note { font-size: 12px; color: var(--text3); }
-  .live-prices { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid #111; }
-  .price-cell { padding: 11px 14px; text-align: center; border-right: 1px solid #111; }
+  .live-prices { display: grid; grid-template-columns: repeat(3,1fr); border-bottom: 1px solid var(--line); }
+  .price-cell { padding: 11px 14px; text-align: center; border-right: 1px solid var(--line); }
   .price-cell:last-child { border-right: none; }
-  .price-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
-  .price-val { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--green); }
+  .price-lbl { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+  .price-val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--green); }
   .live-fact { padding: 12px 16px; font-size: 13px; color: var(--text2); line-height: 1.6; }
   .empty { text-align: center; padding: 48px 20px; color: var(--text3); }
-  .empty-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--text2); margin-bottom: 8px; }
+  .empty-title { font-family: var(--font-display); font-size: 17px; color: var(--text2); margin-bottom: 8px; }
   .empty-sub { font-size: 13px; line-height: 1.6; }
-  .footer { text-align: center; padding: 22px 16px; font-size: 10px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); border-top: 1px solid #111; margin-top: 20px; }
+  .footer { text-align: center; padding: 22px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); border-top: 1px solid var(--line); margin-top: 20px; }
 </style>
 </head>
-<body>
+<body class="he-root he-court">
 <div class="header">
   <a class="logo-wrap" href="/">
+    <span class="logo-dot"></span>
     <div>
       <div class="logo">Hobby Empire</div>
       <div class="logo-sub">Break Prep</div>
@@ -265,7 +276,6 @@
 <div class="tabs">
   <div class="tab active" id="tab-prep" onclick="setMode('prep')">Avant le live</div>
   <div class="tab" id="tab-live" onclick="setMode('live')">Pendant le live</div>
-  <div class="tab" id="tab-news" onclick="setMode('news')">Actualités</div>
 </div>
 <div class="main">
   <div id="mode-prep">
@@ -304,31 +314,7 @@
       <div class="hint" id="live-hint">Entre le nom d'une carte pour voir sa valeur Raw / PSA 9 / PSA 10 et la tendance du marché.</div>
     </div>
   </div>
-  <div id="mode-news" style="display:none">
-    <!-- Sport selector -->
-    <div class="news-filters" style="margin-bottom:10px">
-      <button class="news-sport-btn active" data-sport="hockey"     onclick="switchSport('hockey')">🏒 Hockey</button>
-      <button class="news-sport-btn"        data-sport="football"   onclick="switchSport('football')">🏈 Football</button>
-      <button class="news-sport-btn"        data-sport="basketball" onclick="switchSport('basketball')">🏀 Basketball</button>
-      <button class="news-sport-btn"        data-sport="baseball"   onclick="switchSport('baseball')">⚾ Baseball</button>
-    </div>
-    <!-- League sub-tabs (hockey only) -->
-    <div id="hockey-leagues" class="league-tabs">
-      <button class="league-tab active" data-league="hobby"  onclick="switchLeague('hobby')">🃏 Hobby</button>
-      <button class="league-tab"        data-league="nhl"    onclick="switchLeague('nhl')">NHL</button>
-      <button class="league-tab"        data-league="ahl"    onclick="switchLeague('ahl')">AHL</button>
-      <button class="league-tab"        data-league="ncaa"   onclick="switchLeague('ncaa')">NCAA</button>
-      <button class="league-tab"        data-league="ohl"    onclick="switchLeague('ohl')">OHL</button>
-      <button class="league-tab"        data-league="whl"    onclick="switchLeague('whl')">WHL</button>
-      <button class="league-tab"        data-league="lhjmq"  onclick="switchLeague('lhjmq')">LHJMQ</button>
-      <button class="news-refresh" onclick="loadNews(true)" style="margin-left:auto">↻</button>
-    </div>
-    <!-- Other sports: just a refresh -->
-    <div id="other-sport-bar" class="news-filters" style="display:none">
-      <button class="news-refresh" onclick="loadNews(true)">↻ Rafraîchir</button>
-    </div>
-    <div id="news-feed"><div class="news-loading">Chargement des nouvelles...</div></div>
-  </div>
+  <!-- Onglet Actualités déplacé vers la Home (voir public/index.html + news.js) -->
 </div>
 <div class="footer" id="footer-text">Hobby Empire Break Prep — Propulsé par Claude AI</div>
 <script>
@@ -336,482 +322,6 @@ let lang = 'fr';
 let checklistKeys = [];
 let selectorOpen = false;
 let selSport = null, selYear = null;
-let newsItems = [], newsFilter = 'all', newsSport = 'hockey', newsLeague = 'hobby';
-const newsCache = {};
-let nhlData = { leaders: {}, standings: [], bracket: null, scores: [], news: [] };
-let leadersTab = 'points';
-let leadersMode = 'season'; // 'season' | 'playoffs'
-let standingsTab = 'ALL';   // 'ALL' | 'E' | 'W' | 'A' | 'M' | 'C' | 'P'
-const NHL_SEASON = '20252026'; // saison courante
-
-// ── News sources (RSS via rss2json) ─────────────────────────────────────────
-// RSS feeds par ligue hockey
-const LEAGUE_FEEDS = {
-  hobby: [
-    { label: 'Beckett Hockey',       cls: 'src-beckett',    url: 'https://www.beckett.com/news/category/hockey/feed/' },
-    { label: 'Cardboard Connection', cls: 'src-cardboard',  url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
-    { label: 'SC Investor',          cls: 'src-sportscard', url: 'https://sportscardsinvestor.com/feed/' },
-  ],
-  nhl: [
-    { label: 'NHL.com',              cls: 'src-hockey',     url: 'https://www.nhl.com/rss/news.xml' },
-    { label: 'Sportsnet',            cls: 'src-hockey',     url: 'https://www.sportsnet.ca/feed/' },
-  ],
-  ahl: [
-    { label: 'AHL',                  cls: 'src-hockey',     url: 'https://theahl.com/rss/news' },
-  ],
-  ncaa: [
-    { label: 'USCHO',                cls: 'src-hockey',     url: 'https://www.uscho.com/feed/' },
-    { label: 'College Hockey News',  cls: 'src-hockey',     url: 'https://www.collegehockeynews.com/feed/' },
-  ],
-  ohl: [
-    { label: 'OHL',                  cls: 'src-hockey',     url: 'https://ontariohockeyleague.com/feed/' },
-  ],
-  whl: [
-    { label: 'WHL',                  cls: 'src-hockey',     url: 'https://whl.ca/feed/' },
-  ],
-  lhjmq: [
-    { label: 'LHJMQ',                cls: 'src-hockey',     url: 'https://www.lhjmq.qc.ca/en/rss/news' },
-  ],
-};
-
-const NEWS_SOURCES = [
-  // Hockey cards
-  { id: 'beckett-hockey',    label: 'Beckett Hockey',       sport: 'hockey',     cls: 'src-beckett',
-    url: 'https://www.beckett.com/news/category/hockey/feed/' },
-  { id: 'cardboard-hockey',  label: 'Cardboard Connection', sport: 'hockey',     cls: 'src-cardboard',
-    url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
-  // Football cards
-  { id: 'beckett-football',  label: 'Beckett Football',     sport: 'football',   cls: 'src-beckett',
-    url: 'https://www.beckett.com/news/category/football/feed/' },
-  { id: 'cardboard-football',label: 'Cardboard Connection', sport: 'football',   cls: 'src-cardboard',
-    url: 'https://cardboardconnection.com/category/football-cards/feed/' },
-  // Basketball cards
-  { id: 'beckett-bball',     label: 'Beckett Basketball',   sport: 'basketball', cls: 'src-beckett',
-    url: 'https://www.beckett.com/news/category/basketball/feed/' },
-  { id: 'cardboard-bball',   label: 'Cardboard Connection', sport: 'basketball', cls: 'src-cardboard',
-    url: 'https://cardboardconnection.com/category/basketball-cards/feed/' },
-  // Baseball cards
-  { id: 'beckett-baseball',  label: 'Beckett Baseball',     sport: 'baseball',   cls: 'src-beckett',
-    url: 'https://www.beckett.com/news/category/baseball/feed/' },
-  { id: 'cardboard-baseball',label: 'Cardboard Connection', sport: 'baseball',   cls: 'src-cardboard',
-    url: 'https://cardboardconnection.com/category/baseball-cards/feed/' },
-  // Toutes sports — hobby général
-  { id: 'sportscard',        label: 'SC Investor',          sport: 'all',        cls: 'src-sportscard',
-    url: 'https://sportscardsinvestor.com/feed/' },
-];
-
-const RSS2JSON = 'https://api.rss2json.com/v1/api.json?count=8&rss_url=';
-
-async function fetchFeed(source) {
-  try {
-    const r = await fetch(RSS2JSON + encodeURIComponent(source.url));
-    const d = await r.json();
-    if (d.status !== 'ok') return [];
-    return (d.items || []).map(item => ({
-      title:   (item.title || '').replace(/<[^>]+>/g, '').trim(),
-      link:    item.link || item.guid || '#',
-      excerpt: (item.description || item.content || '').replace(/<[^>]+>/g, '').replace(/\s+/g,' ').trim().slice(0, 180),
-      date:    new Date(item.pubDate || item.published || Date.now()),
-      source:  source,
-    }));
-  } catch(e) { return []; }
-}
-
-// ── NHL Scores ──────────────────────────────────────────────────────────────
-function buildScoreCard(g) {
-  const away = g.awayTeam, home = g.homeTeam;
-  const state = g.gameState;
-  const isFinal = state === 'OFF' || state === 'FINAL';
-  const isLive  = state === 'LIVE' || state === 'CRIT';
-  const stateLabel = isFinal ? 'Final' : isLive ? '🔴 En direct' : g.startTimeUTC
-    ? new Date(g.startTimeUTC).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'})
-    : 'À venir';
-  const stateClass = isFinal ? 'final' : isLive ? 'live' : '';
-  const awayScore = away.score ?? '';
-  const homeScore = home.score ?? '';
-  const awayWin = isFinal && awayScore > homeScore;
-  const homeWin = isFinal && homeScore > awayScore;
-
-  // Série playoffs
-  let serieHtml = '';
-  const s = g.seriesStatus;
-  if (s) {
-    const leader = s.topSeedWins > s.bottomSeedWins ? s.topSeedTeamAbbrev : s.bottomSeedWins > s.topSeedWins ? s.bottomSeedTeamAbbrev : null;
-    const tied   = s.topSeedWins === s.bottomSeedWins;
-    const serieLabel = tied
-      ? `Égalité ${s.topSeedWins}-${s.bottomSeedWins}`
-      : `${leader} mène ${Math.max(s.topSeedWins,s.bottomSeedWins)}-${Math.min(s.topSeedWins,s.bottomSeedWins)}`;
-    serieHtml = `Mtch ${s.gameNumberOfSeries} · ${serieLabel}`;
-  }
-
-  // Leaders du match (buts + passes)
-  const leaders = (g.teamLeaders || []).filter(l => l.category === 'goals' || l.category === 'assists');
-  const leadersHtml = leaders.length ? `<div class="score-leaders">` +
-    leaders.slice(0,3).map(l => {
-      const last = l.lastName?.default || l.firstName?.default || '';
-      const cat = l.category === 'goals' ? 'B' : 'P';
-      return `<div class="score-leader"><span class="sc-name">${last}</span><span class="sc-stat">${l.value}</span><span class="sc-cat">${cat}</span></div>`;
-    }).join('') + `</div>` : '';
-
-  return `<div class="score-card">
-    <div class="score-head-bar">
-      <div class="score-state ${stateClass}">${stateLabel}</div>
-      ${serieHtml ? `<div class="score-serie-top">${serieHtml}</div>` : ''}
-    </div>
-    <div class="score-body">
-      <div class="score-team">
-        <img class="score-logo" src="${away.logo||''}" onerror="this.style.display='none'" />
-        <span class="score-abbrev${awayWin?' winner':''}">${away.abbrev||''}</span>
-        ${awayScore !== '' ? `<span class="score-pts${awayWin?' winner':''}">${awayScore}</span>` : ''}
-      </div>
-      <div class="score-team">
-        <img class="score-logo" src="${home.logo||''}" onerror="this.style.display='none'" />
-        <span class="score-abbrev${homeWin?' winner':''}">${home.abbrev||''}</span>
-        ${homeScore !== '' ? `<span class="score-pts${homeWin?' winner':''}">${homeScore}</span>` : ''}
-      </div>
-    </div>
-    ${leadersHtml}
-  </div>`;
-}
-
-async function loadNHLScores() {
-  const el = document.getElementById('nhl-scores');
-  if (!el || newsSport !== 'hockey') return;
-  try {
-    const r = await fetch('/api/nhl?path=score/now');
-    const d = await r.json();
-    const games = d.games || [];
-    if (!games.length) { el.innerHTML = ''; return; }
-    const cards = games.map(g => buildScoreCard(g)).join('');
-    el.innerHTML = `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
-  } catch(e) { el.innerHTML = ''; }
-}
-
-// ── eBay sold prices ─────────────────────────────────────────────────────────
-async function searchEbay(query) {
-  const r = await fetch('/api/ebay?limit=6&q=' + encodeURIComponent(query));
-  if (!r.ok) throw new Error('eBay API error');
-  return await r.json();
-}
-
-function renderEbayResults(data, container) {
-  const items = data.itemSummaries || [];
-  if (!items.length) { container.innerHTML = ''; return; }
-  container.innerHTML = `
-    <div class="ebay-results">
-      <div class="ebay-head">Ventes récentes eBay <span class="ebay-badge">Vendus</span></div>
-      ${items.map(item => `
-        <a class="ebay-item" href="${item.itemWebUrl}" target="_blank" rel="noopener" style="text-decoration:none">
-          <img class="ebay-img" src="${item.image?.imageUrl||''}" onerror="this.style.display='none'" />
-          <div class="ebay-info"><div class="ebay-title">${item.title}</div></div>
-          <div class="ebay-price">$${parseFloat(item.price?.value||0).toFixed(0)}</div>
-        </a>
-      `).join('')}
-    </div>`;
-}
-
-// Leagues qui utilisent NewsAPI plutôt que RSS
-const NEWS_API_LEAGUES = ['nhl','ahl','ohl','whl','lhjmq','ncaa'];
-
-async function loadNews(force = false) {
-  const cacheKey = newsSport === 'hockey' ? `hockey-${newsLeague}` : newsSport;
-  if (newsCache[cacheKey] && !force) { newsItems = newsCache[cacheKey]; renderNews(); return; }
-
-  const feed = document.getElementById('news-feed');
-  feed.innerHTML = '<div class="news-loading">Chargement des nouvelles...</div>';
-
-  // NHL = scores + NewsAPI
-  if (newsSport === 'hockey' && newsLeague === 'nhl') {
-    await loadNHLTab();
-    return;
-  }
-
-  // Autres ligues hockey = NewsAPI
-  if (newsSport === 'hockey' && NEWS_API_LEAGUES.includes(newsLeague)) {
-    try {
-      const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
-      const d = await r.json();
-      newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-hockey' } }));
-      newsCache[cacheKey] = newsItems;
-      renderNews();
-    } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
-    return;
-  }
-
-  // Hobby hockey + autres sports = RSS
-  let sources = newsSport === 'hockey'
-    ? (LEAGUE_FEEDS[newsLeague] || [])
-    : NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
-
-  const all = await Promise.all(sources.map(fetchFeed));
-  newsItems = all.flat().sort((a, b) => b.date - a.date);
-  newsCache[cacheKey] = newsItems;
-  renderNews();
-}
-
-// ── Leaders tabs ────────────────────────────────────────────────────────────
-function switchLeadersTab(cat) {
-  leadersTab = cat;
-  document.querySelectorAll('.leaders-pill').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
-  const el = document.getElementById('leaders-list');
-  if (el) el.innerHTML = renderLeadersList();
-}
-
-function switchLeadersMode(mode) {
-  leadersMode = mode;
-  document.querySelectorAll('.leaders-mode-pill').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-  const el = document.getElementById('leaders-list');
-  if (el) el.innerHTML = renderLeadersList();
-}
-
-function renderLeadersList() {
-  const modeData = nhlData.leaders[leadersMode] || {};
-  const players  = modeData[leadersTab] || [];
-  if (!players.length) return '<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Données non disponibles</div>';
-  return players.map((p, i) => `
-    <div class="leader-row">
-      <span class="leader-rank">${i+1}</span>
-      <img class="leader-headshot" src="${p.headshot||''}" onerror="this.style.display='none'" />
-      <div class="leader-info">
-        <div class="leader-name">${p.firstName?.default||''} ${p.lastName?.default||''}</div>
-        <div class="leader-team">${p.teamAbbrev||''}</div>
-      </div>
-      <span class="leader-val">${p.value}</span>
-    </div>`).join('');
-}
-
-function renderLeadersSection() {
-  const cats  = [{id:'points',label:'Pts'},{id:'goals',label:'Buts'},{id:'assists',label:'Passes'}];
-  const modes = [{id:'season',label:'Saison'},{id:'playoffs',label:'Playoffs'}];
-  const catPills  = cats.map(c  => `<button class="nhl-tab leaders-pill${leadersTab===c.id?' active':''}"  data-cat="${c.id}"  onclick="switchLeadersTab('${c.id}')">${c.label}</button>`).join('');
-  const modePills = modes.map(m => `<button class="nhl-tab leaders-mode-pill${leadersMode===m.id?' active':''}" data-mode="${m.id}" onclick="switchLeadersMode('${m.id}')">${m.label}</button>`).join('');
-  return `<div class="nhl-section">
-    <div class="nhl-section-head">
-      <span class="nhl-section-title">Meneurs LNH</span>
-      <div class="nhl-tabs" style="gap:8px">${modePills}<span style="width:1px;background:#2a2a2a;align-self:stretch"></span>${catPills}</div>
-    </div>
-    <div class="leaders-list" id="leaders-list">${renderLeadersList()}</div>
-  </div>`;
-}
-
-// ── Standings tabs ──────────────────────────────────────────────────────────
-function switchStandingsTab(tab) {
-  standingsTab = tab;
-  document.querySelectorAll('.standings-pill').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  const el = document.getElementById('standings-body');
-  if (el) el.innerHTML = renderStandingsRows();
-}
-
-function renderStandingsRows() {
-  const all = nhlData.standings;
-  if (!all.length) return '<tr><td colspan="6" style="padding:14px;text-align:center;color:var(--text3)">Données non disponibles</td></tr>';
-
-  let filtered, playoffCutoff;
-  if      (standingsTab === 'ALL') { filtered = [...all]; playoffCutoff = -1; }
-  else if (standingsTab === 'E')   { filtered = all.filter(t=>t.conferenceAbbrev==='E'); playoffCutoff = 8; }
-  else if (standingsTab === 'W')   { filtered = all.filter(t=>t.conferenceAbbrev==='W'); playoffCutoff = 8; }
-  else                              { filtered = all.filter(t=>t.divisionAbbrev===standingsTab); playoffCutoff = 3; }
-
-  filtered.sort((a,b) => (b.points||0)-(a.points||0) || (b.wins||0)-(a.wins||0));
-
-  return filtered.map((t, i) => {
-    const abbrev = typeof t.teamAbbrev==='object' ? (t.teamAbbrev?.default||'') : (t.teamAbbrev||'');
-    const inPlayoff = playoffCutoff > 0 && i < playoffCutoff;
-    return `<tr class="${inPlayoff?'playoff-spot':''}">
-      <td><img class="st-logo" src="${t.teamLogo||''}" onerror="this.style.display='none'" /><span class="st-abbrev">${abbrev}</span></td>
-      <td class="num">${t.gamesPlayed||0}</td>
-      <td class="num">${t.wins||0}</td>
-      <td class="num">${t.losses||0}</td>
-      <td class="num">${t.otLosses||0}</td>
-      <td class="num td-pts">${t.points||0}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderStandingsSection() {
-  const tabs = [
-    {id:'ALL',label:'LNH'},{id:'E',label:'Est'},{id:'W',label:'Ouest'},
-    {id:'A',label:'Atl'},{id:'M',label:'Mét'},{id:'C',label:'Cen'},{id:'P',label:'Pac'},
-  ];
-  const pills = tabs.map(t => `<button class="nhl-tab standings-pill${standingsTab===t.id?' active':''}" data-tab="${t.id}" onclick="switchStandingsTab('${t.id}')">${t.label}</button>`).join('');
-  return `<div class="nhl-section">
-    <div class="nhl-section-head" style="flex-wrap:wrap;gap:6px">
-      <span class="nhl-section-title">Classement</span>
-      <div class="nhl-tabs" style="flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none">${pills}</div>
-    </div>
-    <table class="standings-tbl">
-      <thead><tr>
-        <th>Équipe</th><th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">DP</th><th class="num">Pts</th>
-      </tr></thead>
-      <tbody id="standings-body">${renderStandingsRows()}</tbody>
-    </table>
-  </div>`;
-}
-
-// ── Bracket playoffs ────────────────────────────────────────────────────────
-function renderBracketSection(data) {
-  // Structure réelle : data.series[] avec topSeedTeam/bottomSeedTeam, playoffRound, topSeedWins/bottomSeedWins
-  const allSeries = data?.series || [];
-  if (!allSeries.length) return '';
-
-  const rounds = {};
-  for (const s of allSeries) {
-    const r = s.playoffRound || s.roundNumber || 1;
-    if (!rounds[r]) rounds[r] = [];
-    rounds[r].push(s);
-  }
-  const roundLabels = {1:'1er tour',2:'Demi-finales',3:'Finales conf.',4:'Finale Stanley'};
-
-  const roundsHtml = Object.keys(rounds).sort((a,b)=>+a-+b).map(r => {
-    const seriesHtml = rounds[r].map(s => {
-      const top    = s.topSeedTeam    || {};
-      const bottom = s.bottomSeedTeam || {};
-      const topW   = s.topSeedWins    || 0;
-      const botW   = s.bottomSeedWins || 0;
-      const done   = topW >= 4 || botW >= 4;
-      const topWon = done && topW > botW;
-      const botWon = done && botW > topW;
-
-      const teamRow = (team, wins, isWinner, isElim) => `
-        <div class="bracket-team">
-          <img class="bt-logo" src="${team.darkLogo||team.logo||''}" onerror="this.style.display='none'" />
-          <span class="bt-abbrev${isWinner?' winner':isElim?' elim':''}">${team.abbrev||''}</span>
-          <span class="bt-wins${isWinner?' winner':''}">${wins}</span>
-        </div>`;
-
-      return `<div class="bracket-series">
-        ${teamRow(top,    topW, topWon, botWon)}
-        ${teamRow(bottom, botW, botWon, topWon)}
-      </div>`;
-    }).join('');
-    return `<div class="bracket-round"><div class="bracket-round-title">${roundLabels[r]||'Tour '+r}</div>${seriesHtml}</div>`;
-  }).join('');
-
-  return `<div class="nhl-section">
-    <div class="nhl-section-head"><span class="nhl-section-title">Bracket Playoffs ${new Date().getFullYear()}</span></div>
-    <div class="bracket-scroll">${roundsHtml}</div>
-  </div>`;
-}
-
-// ── Render NHL tab complet ──────────────────────────────────────────────────
-function renderNHLTab() {
-  const feed = document.getElementById('news-feed');
-  let html = '';
-  if (nhlData.scores.length) {
-    const cards = nhlData.scores.map(g => buildScoreCard(g)).join('');
-    html += `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
-  }
-  const hasLeaders = ['season','playoffs'].some(m => Object.values(nhlData.leaders[m]||{}).some(a=>a.length>0));
-  if (hasLeaders) html += renderLeadersSection();
-  if (nhlData.bracket?.series?.length) html += renderBracketSection(nhlData.bracket);
-  if (nhlData.standings.length) html += renderStandingsSection();
-  if (nhlData.news.length) {
-    html += `<div class="scores-head" style="margin-bottom:10px;margin-top:16px">Nouvelles NHL</div>`;
-    html += nhlData.news.map(item => renderNewsItem(item)).join('');
-  }
-  feed.innerHTML = html || '<div class="news-empty">Aucun contenu disponible.</div>';
-}
-
-async function loadNHLTab() {
-  const feed = document.getElementById('news-feed');
-  feed.innerHTML = '<div class="news-loading">Chargement des données NHL...</div>';
-  const yr = new Date().getFullYear();
-  // Construire le seasonId (ex: 2025-26 → 20252026)
-  const seasonId = NHL_SEASON;
-  const p = p => '/api/nhl?path=' + encodeURIComponent(p);
-  try {
-    const [scoresRes,
-      sGoals, sAssists, sPoints,
-      pGoals, pAssists, pPoints,
-      standingsRes, bracketRes, newsRes
-    ] = await Promise.all([
-      fetch(p('score/now')).then(r=>r.json()).catch(()=>({})),
-      // Saison régulière (gameType=2)
-      fetch(p(`skater-stats-leaders/${seasonId}/2?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
-      fetch(p(`skater-stats-leaders/${seasonId}/2?categories=assists&limit=5`)).then(r=>r.json()).catch(()=>({})),
-      fetch(p(`skater-stats-leaders/${seasonId}/2?categories=points&limit=5`)).then(r=>r.json()).catch(()=>({})),
-      // Playoffs (gameType=3)
-      fetch(p(`skater-stats-leaders/${seasonId}/3?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
-      fetch(p(`skater-stats-leaders/${seasonId}/3?categories=assists&limit=5`)).then(r=>r.json()).catch(()=>({})),
-      fetch(p(`skater-stats-leaders/${seasonId}/3?categories=points&limit=5`)).then(r=>r.json()).catch(()=>({})),
-      fetch(p('standings/now')).then(r=>r.json()).catch(()=>({})),
-      fetch(p(`playoff-bracket/${yr}`)).then(r=>r.json()).catch(()=>({})),
-      fetch('/api/news?league=nhl&limit=10').then(r=>r.json()).catch(()=>({})),
-    ]);
-    nhlData.scores = scoresRes.games || [];
-    nhlData.leaders = {
-      season:  { goals: sGoals.goals||[], assists: sAssists.assists||[], points: sPoints.points||[] },
-      playoffs:{ goals: pGoals.goals||[], assists: pAssists.assists||[], points: pPoints.points||[] },
-    };
-    nhlData.standings = standingsRes.standings || [];
-    nhlData.bracket   = bracketRes;
-    nhlData.news      = newsRes.items || [];
-    renderNHLTab();
-  } catch(e) {
-    feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>';
-  }
-}
-
-function switchLeague(league) {
-  newsLeague = league;
-  document.querySelectorAll('.league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === league));
-  loadNews();
-}
-
-function switchSport(sport) {
-  newsSport = sport;
-  newsLeague = sport === 'hockey' ? 'hobby' : sport;
-  document.querySelectorAll('.news-sport-btn').forEach(b => b.classList.toggle('active', b.dataset.sport === sport));
-  // Afficher/cacher les sous-onglets hockey
-  document.getElementById('hockey-leagues').style.display  = sport === 'hockey' ? 'flex' : 'none';
-  document.getElementById('other-sport-bar').style.display = sport !== 'hockey' ? 'flex' : 'none';
-  if (sport === 'hockey') document.querySelectorAll('.league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
-  loadNews();
-}
-
-function filterNews(cat) {
-  newsFilter = cat;
-  document.querySelectorAll('.news-filter').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
-  renderNews();
-}
-
-function timeAgo(date) {
-  const s = Math.floor((Date.now() - date) / 1000);
-  if (s < 60)   return 'À l\'instant';
-  if (s < 3600) return Math.floor(s/60) + ' min';
-  if (s < 86400) return Math.floor(s/3600) + 'h';
-  if (s < 604800) return Math.floor(s/86400) + 'j';
-  return date.toLocaleDateString('fr-CA', { month: 'short', day: 'numeric' });
-}
-
-const SPORT_EMOJI = { hockey: '🏒', football: '🏈', basketball: '🏀', baseball: '⚾' };
-
-function renderNewsItem(item) {
-  const date  = item.date ? new Date(item.date) : null;
-  const age   = date ? timeAgo(date) : '';
-  const src   = item.source || {};
-  const label = src.label || item.sourceName || '';
-  const cls   = src.cls   || 'src-default';
-  const img   = item.image ? `<img class="news-thumb" src="${item.image}" onerror="this.style.display='none'" />` : '';
-  return `<a class="news-card" href="${item.link}" target="_blank" rel="noopener">
-    ${img}
-    <div class="news-meta">
-      <span class="news-source ${cls}">${label}</span>
-      ${age ? `<span class="news-age">${age}</span>` : ''}
-    </div>
-    <div class="news-title">${item.title}</div>
-    ${item.excerpt ? `<div class="news-excerpt">${item.excerpt}</div>` : ''}
-  </a>`;
-}
-
-function renderNews() {
-  const feed = document.getElementById('news-feed');
-  if (!newsItems.length) {
-    feed.innerHTML = '<div class="news-empty">Aucune nouvelle disponible pour le moment.</div>';
-    return;
-  }
-  feed.innerHTML = newsItems.map(item => renderNewsItem(item)).join('');
-}
 
 // ── Parse a product key into parts ──────────────────────────────────────────
 const KNOWN_SPORTS = ['Hockey', 'Football', 'Basketball', 'Baseball', 'Soccer'];
@@ -971,6 +481,29 @@ const T = {
 };
 function t(k) { return T[lang][k] || k; }
 
+// ── eBay sold prices (utilisé par lookupCard) ────────────────────────
+async function searchEbay(query) {
+  const r = await fetch('/api/ebay?limit=6&q=' + encodeURIComponent(query));
+  if (!r.ok) throw new Error('eBay API error');
+  return await r.json();
+}
+
+function renderEbayResults(data, container) {
+  const items = data.itemSummaries || [];
+  if (!items.length) { container.innerHTML = ''; return; }
+  container.innerHTML = `
+    <div class="ebay-results">
+      <div class="ebay-head">Ventes récentes eBay <span class="ebay-badge">Vendus</span></div>
+      ${items.map(item => `
+        <a class="ebay-item" href="${item.itemWebUrl}" target="_blank" rel="noopener" style="text-decoration:none">
+          <img class="ebay-img" src="${item.image?.imageUrl||''}" onerror="this.style.display='none'" />
+          <div class="ebay-info"><div class="ebay-title">${item.title}</div></div>
+          <div class="ebay-price">$${parseFloat(item.price?.value||0).toFixed(0)}</div>
+        </a>
+      `).join('')}
+    </div>`;
+}
+
 function setLang(l) {
   lang = l;
   document.getElementById('lang-fr').classList.toggle('active', l==='fr');
@@ -993,11 +526,8 @@ function setLang(l) {
 function setMode(m) {
   document.getElementById('mode-prep').style.display = m==='prep'?'block':'none';
   document.getElementById('mode-live').style.display = m==='live'?'block':'none';
-  document.getElementById('mode-news').style.display = m==='news'?'block':'none';
   document.getElementById('tab-prep').classList.toggle('active', m==='prep');
   document.getElementById('tab-live').classList.toggle('active', m==='live');
-  document.getElementById('tab-news').classList.toggle('active', m==='news');
-  if (m === 'news') loadNews();
 }
 
 function addProduct(v) {
