@@ -1,9 +1,12 @@
 import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { join } from 'path';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const checklists = JSON.parse(readFileSync(join(__dirname, '../data/checklists.json'), 'utf-8'));
+let checklists = {};
+try {
+  checklists = JSON.parse(readFileSync(join(process.cwd(), 'data/checklists.json'), 'utf-8'));
+} catch (e) {
+  console.error('checklists.json not loaded:', e.message);
+}
 
 export const config = { maxDuration: 60 };
 
