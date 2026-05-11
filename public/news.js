@@ -38,19 +38,20 @@
     lhjmq: [{ label: 'LHJMQ',cls: 'src-hockey', url: 'https://www.lhjmq.qc.ca/en/rss/news' }],
     // ── Football ─────────────────────────────────────────────────────────
     nfl: [
-      { label: 'NFL.com',           cls: 'src-nfl',     url: 'https://www.nfl.com/rss/rsslanding?searchString=news' },
+      { label: 'ESPN',              cls: 'src-default', url: 'https://www.espn.com/espn/rss/nfl/news' },
       { label: 'Pro Football Talk', cls: 'src-default', url: 'https://profootballtalk.nbcsports.com/feed/' },
       { label: 'CBS Sports',        cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/nfl/' },
     ],
     // ── Basketball ───────────────────────────────────────────────────────
     nba: [
-      { label: 'NBA.com',  cls: 'src-nba',     url: 'https://www.nba.com/news/rss.xml' },
-      { label: 'CBS Sports',cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/nba/' },
+      { label: 'ESPN',       cls: 'src-default', url: 'https://www.espn.com/espn/rss/nba/news' },
+      { label: 'CBS Sports', cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/nba/' },
     ],
     // ── Baseball ─────────────────────────────────────────────────────────
     mlb: [
-      { label: 'MLB.com',  cls: 'src-mlb',     url: 'https://www.mlb.com/feeds/news/rss.xml' },
-      { label: 'CBS Sports',cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/mlb/' },
+      { label: 'ESPN',       cls: 'src-default', url: 'https://www.espn.com/espn/rss/mlb/news' },
+      { label: 'MLB.com',    cls: 'src-mlb',     url: 'https://www.mlb.com/feeds/news/rss.xml' },
+      { label: 'CBS Sports', cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/mlb/' },
     ],
   };
 
@@ -354,7 +355,7 @@
         sGoals, sAssists, sPoints,
         pGoals, pAssists, pPoints,
         standingsRes, bracketRes, newsRes,
-        cbcItems, rdsItems, sportsnetItems
+        cbcItems, sportsnetItems
       ] = await Promise.all([
         fetch(p('score/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`skater-stats-leaders/${seasonId}/2?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
@@ -366,8 +367,7 @@
         fetch(p('standings/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`playoff-bracket/${yr}`)).then(r=>r.json()).catch(()=>({})),
         fetch('/api/news?league=nhl&limit=8').then(r=>r.json()).catch(()=>({})),
-        fetchFeed({ label: 'CBC Sports', cls: 'src-cbc', url: 'https://www.cbc.ca/cmlink/rss-sports' }),
-        fetchFeed({ label: 'RDS',        cls: 'src-rds', url: 'https://www.rds.ca/rss' }),
+        fetchFeed({ label: 'CBC Sports', cls: 'src-cbc',    url: 'https://www.cbc.ca/cmlink/rss-sports' }),
         fetchFeed({ label: 'Sportsnet',  cls: 'src-hockey', url: 'https://www.sportsnet.ca/feed/' }),
       ]);
       nhlData.scores = scoresRes.games || [];
@@ -379,7 +379,7 @@
       nhlData.bracket   = bracketRes;
       // Merge NewsAPI + RSS news, sort by date, cap at 25
       const apiNews = (newsRes.items || []).map(item => ({ ...item, source: { label: item.sourceName || 'NHL', cls: 'src-hockey' } }));
-      nhlData.news = [...apiNews, ...cbcItems, ...rdsItems, ...sportsnetItems]
+      nhlData.news = [...apiNews, ...cbcItems, ...sportsnetItems]
         .sort((a, b) => new Date(b.date) - new Date(a.date))
         .slice(0, 25);
       renderNHLTab();
