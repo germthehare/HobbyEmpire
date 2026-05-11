@@ -55,6 +55,9 @@
   .add-btn.open { border-color: var(--gold); color: var(--gold3); }
   /* ── News feed ── */
   .news-filters { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .news-sport-btn { padding: 6px 13px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .news-sport-btn:hover { color: var(--text); border-color: #3a3a3a; }
+  .news-sport-btn.active { background: var(--dark4); border-color: var(--gold); color: var(--gold3); }
   .news-filter { padding: 5px 12px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; }
   .news-filter:hover { color: var(--text2); border-color: #3a3a3a; }
   .news-filter.active { border-color: var(--gold); color: var(--gold3); background: rgba(184,148,42,0.1); }
@@ -221,10 +224,16 @@
     </div>
   </div>
   <div id="mode-news" style="display:none">
+    <div class="news-filters" style="margin-bottom:8px">
+      <button class="news-sport-btn active" data-sport="hockey"     onclick="switchSport('hockey')">🏒 Hockey</button>
+      <button class="news-sport-btn"        data-sport="football"   onclick="switchSport('football')">🏈 Football</button>
+      <button class="news-sport-btn"        data-sport="basketball" onclick="switchSport('basketball')">🏀 Basketball</button>
+      <button class="news-sport-btn"        data-sport="baseball"   onclick="switchSport('baseball')">⚾ Baseball</button>
+    </div>
     <div class="news-filters">
-      <button class="news-filter active" data-cat="all" onclick="filterNews('all')">Tout</button>
-      <button class="news-filter" data-cat="hobby" onclick="filterNews('hobby')">Hobby</button>
-      <button class="news-filter" data-cat="hockey" onclick="filterNews('hockey')">Hockey</button>
+      <button class="news-filter active" data-cat="all"   onclick="filterNews('all')">Tout</button>
+      <button class="news-filter"        data-cat="hobby" onclick="filterNews('hobby')">🃏 Hobby</button>
+      <button class="news-filter"        data-cat="sport" onclick="filterNews('sport')">Sport</button>
       <button class="news-refresh" onclick="loadNews(true)">↻ Rafraîchir</button>
     </div>
     <div id="news-feed"><div class="news-loading">Chargement des nouvelles...</div></div>
@@ -236,18 +245,39 @@ let lang = 'fr';
 let checklistKeys = [];
 let selectorOpen = false;
 let selSport = null, selYear = null;
-let newsItems = [], newsFilter = 'all', newsLoaded = false;
+let newsItems = [], newsFilter = 'all', newsSport = 'hockey', newsLoaded = false;
 
 // ── News sources (RSS via rss2json) ─────────────────────────────────────────
 const NEWS_SOURCES = [
-  { id: 'beckett',    label: 'Beckett',              cat: 'hobby',  cls: 'src-beckett',
+  // Hockey
+  { id: 'beckett-hockey',  label: 'Beckett',              sport: 'hockey',     cat: 'hobby',    cls: 'src-beckett',
     url: 'https://www.beckett.com/news/category/hockey/feed/' },
-  { id: 'cardboard',  label: 'Cardboard Connection', cat: 'hobby',  cls: 'src-cardboard',
+  { id: 'cardboard-hockey',label: 'Cardboard Connection', sport: 'hockey',     cat: 'hobby',    cls: 'src-cardboard',
     url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
-  { id: 'sportscard', label: 'SC Investor',          cat: 'hobby',  cls: 'src-sportscard',
-    url: 'https://sportscardsinvestor.com/feed/' },
-  { id: 'thw',        label: 'Hockey Writers',       cat: 'hockey', cls: 'src-hockey',
+  { id: 'thw',             label: 'Hockey Writers',       sport: 'hockey',     cat: 'sport',    cls: 'src-hockey',
     url: 'https://thehockeywriters.com/feed/' },
+  // Football
+  { id: 'beckett-football', label: 'Beckett Football',    sport: 'football',   cat: 'hobby',    cls: 'src-beckett',
+    url: 'https://www.beckett.com/news/category/football/feed/' },
+  { id: 'cardboard-football',label: 'Cardboard Connection',sport: 'football',  cat: 'hobby',    cls: 'src-cardboard',
+    url: 'https://cardboardconnection.com/category/football-cards/feed/' },
+  { id: 'pft',             label: 'Pro Football Talk',    sport: 'football',   cat: 'sport',    cls: 'src-hockey',
+    url: 'https://profootballtalk.nbcsports.com/feed/' },
+  // Basketball
+  { id: 'beckett-bball',   label: 'Beckett Basketball',  sport: 'basketball', cat: 'hobby',    cls: 'src-beckett',
+    url: 'https://www.beckett.com/news/category/basketball/feed/' },
+  { id: 'cardboard-bball', label: 'Cardboard Connection',sport: 'basketball', cat: 'hobby',    cls: 'src-cardboard',
+    url: 'https://cardboardconnection.com/category/basketball-cards/feed/' },
+  { id: 'hoopshype',       label: 'HoopsHype',           sport: 'basketball', cat: 'sport',    cls: 'src-hockey',
+    url: 'https://hoopshype.com/feed/' },
+  // Baseball
+  { id: 'beckett-baseball',label: 'Beckett Baseball',    sport: 'baseball',   cat: 'hobby',    cls: 'src-beckett',
+    url: 'https://www.beckett.com/news/category/baseball/feed/' },
+  { id: 'cardboard-baseball',label: 'Cardboard Connection',sport: 'baseball', cat: 'hobby',    cls: 'src-cardboard',
+    url: 'https://cardboardconnection.com/category/baseball-cards/feed/' },
+  // Hobby général
+  { id: 'sportscard',      label: 'SC Investor',         sport: 'all',        cat: 'hobby',    cls: 'src-sportscard',
+    url: 'https://sportscardsinvestor.com/feed/' },
 ];
 
 const RSS2JSON = 'https://api.rss2json.com/v1/api.json?count=8&rss_url=';
@@ -268,13 +298,25 @@ async function fetchFeed(source) {
   } catch(e) { return []; }
 }
 
+// Cache par sport pour ne pas re-fetcher inutilement
+const newsCache = {};
+
 async function loadNews(force = false) {
-  if (newsLoaded && !force) return;
+  if (newsCache[newsSport] && !force) { newsItems = newsCache[newsSport]; renderNews(); return; }
   document.getElementById('news-feed').innerHTML = '<div class="news-loading">Chargement des nouvelles...</div>';
-  const all = await Promise.all(NEWS_SOURCES.map(fetchFeed));
+  const sources = NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
+  const all = await Promise.all(sources.map(fetchFeed));
   newsItems = all.flat().sort((a, b) => b.date - a.date);
-  newsLoaded = true;
+  newsCache[newsSport] = newsItems;
   renderNews();
+}
+
+function switchSport(sport) {
+  newsSport = sport;
+  newsFilter = 'all';
+  document.querySelectorAll('.news-sport-btn').forEach(b => b.classList.toggle('active', b.dataset.sport === sport));
+  document.querySelectorAll('.news-filter').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
+  loadNews();
 }
 
 function filterNews(cat) {
@@ -292,6 +334,8 @@ function timeAgo(date) {
   return date.toLocaleDateString('fr-CA', { month: 'short', day: 'numeric' });
 }
 
+const SPORT_EMOJI = { hockey: '🏒', football: '🏈', basketball: '🏀', baseball: '⚾' };
+
 function renderNews() {
   const feed = document.getElementById('news-feed');
   const items = newsFilter === 'all' ? newsItems : newsItems.filter(i => i.cat === newsFilter);
@@ -299,12 +343,13 @@ function renderNews() {
     feed.innerHTML = '<div class="news-empty">Aucune nouvelle disponible pour le moment.</div>';
     return;
   }
+  const emoji = SPORT_EMOJI[newsSport] || '🃏';
   feed.innerHTML = items.map(item => `
     <a class="news-card" href="${item.link}" target="_blank" rel="noopener">
       <div class="news-meta">
         <span class="news-source ${item.source.cls}">${item.source.label}</span>
         <span class="news-age">${timeAgo(item.date)}</span>
-        <span class="news-cat">${item.cat === 'hobby' ? '🃏 Hobby' : '🏒 Hockey'}</span>
+        <span class="news-cat">${item.cat === 'hobby' ? '🃏 Hobby' : emoji + ' ' + newsSport.charAt(0).toUpperCase() + newsSport.slice(1)}</span>
       </div>
       <div class="news-title">${item.title}</div>
       ${item.excerpt ? `<div class="news-excerpt">${item.excerpt}</div>` : ''}
