@@ -66,21 +66,42 @@ function normalize(text) {
 }
 
 function findChecklist(productName) {
+  // 1. Exact key lookup (always wins — used when selector sends the exact key)
+  if (checklists[productName]) {
+    return { key: productName, data: checklists[productName] };
+  }
+
   const query = normalize(productName);
+
+  // 2. Exact normalized match
   for (const [key, value] of Object.entries(checklists)) {
     const keyNorm = normalize(key);
-    // Exact inclusion match
-    if (keyNorm.includes(query) || query.includes(keyNorm)) {
-      return { key, data: value };
-    }
-    // Fuzzy match: 60% of query words must appear in the key
-    const queryWords = query.split(/\s+/).filter(w => w.length > 2);
-    const matches = queryWords.filter(w => keyNorm.includes(w));
-    if (matches.length >= Math.ceil(queryWords.length * 0.6)) {
+    if (keyNorm === query) {
       return { key, data: value };
     }
   }
-  return null;
+
+  // 3. Inclusion match
+  for (const [key, value] of Object.entries(checklists)) {
+    const keyNorm = normalize(key);
+    if (keyNorm.includes(query) || query.includes(keyNorm)) {
+      return { key, data: value };
+    }
+  }
+
+  // 4. Fuzzy match — scored, best match wins (not first match)
+  let best = null, bestScore = 0;
+  const queryWords = query.split(/\s+/).filter(w => w.length > 2);
+  for (const [key, value] of Object.entries(checklists)) {
+    const keyNorm = normalize(key);
+    const hits = queryWords.filter(w => keyNorm.includes(w)).length;
+    const score = hits / queryWords.length;
+    if (score >= 0.6 && score > bestScore) {
+      bestScore = score;
+      best = { key, data: value };
+    }
+  }
+  return best;
 }
 
 export default async function handler(req, res) {

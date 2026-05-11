@@ -290,7 +290,11 @@ function onSelectYear(year, products) {
 
 function onSelectProduct(p) {
   addProductChip(p.key, p.sport, p.yearDisplay, p.name);
-  closeSelector();
+  // Stay open — reset year + product steps so user can add another
+  selYear = null;
+  document.querySelectorAll('#year-opts .step-opt').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('#product-opts .step-opt').forEach(b => b.classList.remove('selected'));
+  document.getElementById('product-opts').innerHTML = '<span class="step-placeholder">← Sélectionne une année</span>';
 }
 
 // ── Toggle selector panel ────────────────────────────────────────────────────
