@@ -20,23 +20,38 @@
 
   // ── News sources ─────────────────────────────────────────────────────────
   const LEAGUE_FEEDS = {
+    // ── Hockey ──────────────────────────────────────────────────────────
     hobby: [
       { label: 'Beckett Hockey',       cls: 'src-beckett',    url: 'https://www.beckett.com/news/category/hockey/feed/' },
       { label: 'Cardboard Connection', cls: 'src-cardboard',  url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
       { label: 'SC Investor',          cls: 'src-sportscard', url: 'https://sportscardsinvestor.com/feed/' },
     ],
-    nhl: [
-      { label: 'NHL.com',              cls: 'src-hockey',     url: 'https://www.nhl.com/rss/news.xml' },
-      { label: 'Sportsnet',            cls: 'src-hockey',     url: 'https://www.sportsnet.ca/feed/' },
-    ],
-    ahl:   [{ label: 'AHL',                 cls: 'src-hockey', url: 'https://theahl.com/rss/news' }],
+    // nhl → handled by loadNHLTab() which adds CBC + RDS directly
+    nhl: [],
+    ahl:   [{ label: 'AHL',                cls: 'src-hockey', url: 'https://theahl.com/rss/news' }],
     ncaa:  [
-      { label: 'USCHO',                cls: 'src-hockey',     url: 'https://www.uscho.com/feed/' },
-      { label: 'College Hockey News',  cls: 'src-hockey',     url: 'https://www.collegehockeynews.com/feed/' },
+      { label: 'USCHO',               cls: 'src-hockey', url: 'https://www.uscho.com/feed/' },
+      { label: 'College Hockey News', cls: 'src-hockey', url: 'https://www.collegehockeynews.com/feed/' },
     ],
-    ohl:   [{ label: 'OHL',                 cls: 'src-hockey', url: 'https://ontariohockeyleague.com/feed/' }],
-    whl:   [{ label: 'WHL',                 cls: 'src-hockey', url: 'https://whl.ca/feed/' }],
-    lhjmq: [{ label: 'LHJMQ',               cls: 'src-hockey', url: 'https://www.lhjmq.qc.ca/en/rss/news' }],
+    ohl:   [{ label: 'OHL',   cls: 'src-hockey', url: 'https://ontariohockeyleague.com/feed/' }],
+    whl:   [{ label: 'WHL',   cls: 'src-hockey', url: 'https://whl.ca/feed/' }],
+    lhjmq: [{ label: 'LHJMQ',cls: 'src-hockey', url: 'https://www.lhjmq.qc.ca/en/rss/news' }],
+    // ── Football ─────────────────────────────────────────────────────────
+    nfl: [
+      { label: 'NFL.com',           cls: 'src-nfl',     url: 'https://www.nfl.com/rss/rsslanding?searchString=news' },
+      { label: 'Pro Football Talk', cls: 'src-default', url: 'https://profootballtalk.nbcsports.com/feed/' },
+      { label: 'CBS Sports',        cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/nfl/' },
+    ],
+    // ── Basketball ───────────────────────────────────────────────────────
+    nba: [
+      { label: 'NBA.com',  cls: 'src-nba',     url: 'https://www.nba.com/news/rss.xml' },
+      { label: 'CBS Sports',cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/nba/' },
+    ],
+    // ── Baseball ─────────────────────────────────────────────────────────
+    mlb: [
+      { label: 'MLB.com',  cls: 'src-mlb',     url: 'https://www.mlb.com/feeds/news/rss.xml' },
+      { label: 'CBS Sports',cls: 'src-default', url: 'https://www.cbssports.com/rss/headlines/mlb/' },
+    ],
   };
 
   const NEWS_SOURCES = [
@@ -52,12 +67,8 @@
   ];
 
   const RSS2JSON = 'https://api.rss2json.com/v1/api.json?count=8&rss_url=';
-  const HOCKEY_API_LEAGUES  = ['nhl','ahl','ohl','whl','lhjmq','ncaa'];
-  const FOOTBALL_API_LEAGUES    = ['nfl'];
-  const BASKETBALL_API_LEAGUES  = ['nba'];
-  const BASEBALL_API_LEAGUES    = ['mlb'];
-  // legacy alias
-  const NEWS_API_LEAGUES = HOCKEY_API_LEAGUES;
+  // Ligues hockey desservies par NewsAPI (pas de flux RSS fiable)
+  const HOCKEY_API_LEAGUES = ['ahl','ohl','whl','lhjmq','ncaa'];
 
   async function fetchFeed(source) {
     try {
@@ -342,7 +353,8 @@
       const [scoresRes,
         sGoals, sAssists, sPoints,
         pGoals, pAssists, pPoints,
-        standingsRes, bracketRes, newsRes
+        standingsRes, bracketRes, newsRes,
+        cbcItems, rdsItems, sportsnetItems
       ] = await Promise.all([
         fetch(p('score/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`skater-stats-leaders/${seasonId}/2?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
@@ -353,7 +365,10 @@
         fetch(p(`skater-stats-leaders/${seasonId}/3?categories=points&limit=5`)).then(r=>r.json()).catch(()=>({})),
         fetch(p('standings/now')).then(r=>r.json()).catch(()=>({})),
         fetch(p(`playoff-bracket/${yr}`)).then(r=>r.json()).catch(()=>({})),
-        fetch('/api/news?league=nhl&limit=10').then(r=>r.json()).catch(()=>({})),
+        fetch('/api/news?league=nhl&limit=8').then(r=>r.json()).catch(()=>({})),
+        fetchFeed({ label: 'CBC Sports', cls: 'src-cbc', url: 'https://www.cbc.ca/cmlink/rss-sports' }),
+        fetchFeed({ label: 'RDS',        cls: 'src-rds', url: 'https://www.rds.ca/rss' }),
+        fetchFeed({ label: 'Sportsnet',  cls: 'src-hockey', url: 'https://www.sportsnet.ca/feed/' }),
       ]);
       nhlData.scores = scoresRes.games || [];
       nhlData.leaders = {
@@ -362,7 +377,11 @@
       };
       nhlData.standings = standingsRes.standings || [];
       nhlData.bracket   = bracketRes;
-      nhlData.news      = newsRes.items || [];
+      // Merge NewsAPI + RSS news, sort by date, cap at 25
+      const apiNews = (newsRes.items || []).map(item => ({ ...item, source: { label: item.sourceName || 'NHL', cls: 'src-hockey' } }));
+      nhlData.news = [...apiNews, ...cbcItems, ...rdsItems, ...sportsnetItems]
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
+        .slice(0, 25);
       renderNHLTab();
     } catch(e) {
       feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>';
@@ -396,54 +415,16 @@
       return;
     }
 
-    // ── Football / NFL via NewsAPI
-    if (newsSport === 'football' && FOOTBALL_API_LEAGUES.includes(newsLeague)) {
-      try {
-        const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
-        const d = await r.json();
-        newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-default' } }));
-        newsCache[cacheKey] = newsItems;
-        renderNews();
-      } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
-      return;
-    }
-
-    // ── Baseball / MLB via NewsAPI
-    if (newsSport === 'baseball' && BASEBALL_API_LEAGUES.includes(newsLeague)) {
-      try {
-        const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
-        const d = await r.json();
-        newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-default' } }));
-        newsCache[cacheKey] = newsItems;
-        renderNews();
-      } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
-      return;
-    }
-
-    // ── Basketball / NBA via NewsAPI
-    if (newsSport === 'basketball' && BASKETBALL_API_LEAGUES.includes(newsLeague)) {
-      try {
-        const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
-        const d = await r.json();
-        newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-default' } }));
-        newsCache[cacheKey] = newsItems;
-        renderNews();
-      } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
-      return;
-    }
-
-    // ── RSS feeds (Hockey hobby, Football hobby, Basketball, Baseball)
+    // ── RSS feeds (toutes ligues sauf hockey minor leagues via NewsAPI)
     let sources;
-    if (newsSport === 'hockey') {
-      sources = LEAGUE_FEEDS[newsLeague] || [];
-    } else if (newsSport === 'football' && newsLeague === 'hobby') {
-      sources = NEWS_SOURCES.filter(s => s.sport === 'football');
-    } else if (newsSport === 'basketball' && newsLeague === 'hobby') {
-      sources = NEWS_SOURCES.filter(s => s.sport === 'basketball');
-    } else if (newsSport === 'baseball' && newsLeague === 'hobby') {
-      sources = NEWS_SOURCES.filter(s => s.sport === 'baseball');
+    if (newsLeague === 'hobby') {
+      // Onglet Hobby : feeds de cartes à collectionner
+      sources = newsSport === 'hockey'
+        ? (LEAGUE_FEEDS.hobby || [])
+        : NEWS_SOURCES.filter(s => s.sport === newsSport);
     } else {
-      sources = NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
+      // Onglet ligue (nfl, nba, mlb) : feeds officiels définis dans LEAGUE_FEEDS
+      sources = LEAGUE_FEEDS[newsLeague] || [];
     }
 
     const all = await Promise.all(sources.map(fetchFeed));
