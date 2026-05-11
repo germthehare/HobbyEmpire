@@ -6260,5 +6260,254 @@
       "Shield Patch cards (numbered 1/1) are the crown jewel of the product featuring the Captain's 'C' or 'A' patch",
       "Jumbo Patch parallels offer oversized game-used jersey pieces in a premium foil-bordered design"
     ]
+  },
+  "2024-25 The Cup Hockey": {
+    "brand": "Upper Deck",
+    "year": "2024-25",
+    "sport": "Hockey",
+    "hitsPerBox": "3 hits par boîte (tin)",
+    "format": "Hobby Tin",
+    "summary": "The Cup est le produit premium d'Upper Deck — chaque tin contient 3 cartes numérotées incluant des Rookie Auto Patches, des book cards et des mémorabilias. Le set 2024-25 est dominé par Macklin Celebrini (#1 overall 2024) et Matvei Michkov.",
+    "rookies": [
+      {
+        "rank": 1,
+        "name": "Macklin Celebrini",
+        "team": "San Jose Sharks",
+        "position": "C",
+        "value": "$400-$1500"
+      },
+      {
+        "rank": 2,
+        "name": "Matvei Michkov",
+        "team": "Philadelphia Flyers",
+        "position": "RW",
+        "value": "$300-$1200"
+      },
+      {
+        "rank": 3,
+        "name": "Lane Hutson",
+        "team": "Montreal Canadiens",
+        "position": "D",
+        "value": "$150-$600"
+      },
+      {
+        "rank": 4,
+        "name": "Cutter Gauthier",
+        "team": "Anaheim Ducks",
+        "position": "LW",
+        "value": "$100-$400"
+      },
+      {
+        "rank": 5,
+        "name": "Frank Nazar",
+        "team": "Chicago Blackhawks",
+        "position": "C",
+        "value": "$80-$300"
+      },
+      {
+        "rank": 6,
+        "name": "Logan Stankoven",
+        "team": "Dallas Stars",
+        "position": "C",
+        "value": "$80-$300"
+      },
+      {
+        "rank": 7,
+        "name": "Brennan Othmann",
+        "team": "New York Rangers",
+        "position": "LW",
+        "value": "$60-$200"
+      },
+      {
+        "rank": 8,
+        "name": "Olen Zellweger",
+        "team": "Anaheim Ducks",
+        "position": "D",
+        "value": "$60-$200"
+      },
+      {
+        "rank": 9,
+        "name": "Bradly Nadeau",
+        "team": "Carolina Hurricanes",
+        "position": "C",
+        "value": "$50-$150"
+      },
+      {
+        "rank": 10,
+        "name": "Jackson Blake",
+        "team": "Carolina Hurricanes",
+        "position": "RW",
+        "value": "$50-$150"
+      },
+      {
+        "rank": 11,
+        "name": "Calum Ritchie",
+        "team": "Colorado Avalanche",
+        "position": "C",
+        "value": "$50-$150"
+      },
+      {
+        "rank": 12,
+        "name": "Gavin Brindley",
+        "team": "Columbus Blue Jackets",
+        "position": "C",
+        "value": "$40-$120"
+      },
+      {
+        "rank": 13,
+        "name": "Yan Kuznetsov",
+        "team": "Calgary Flames",
+        "position": "D",
+        "value": "$40-$120"
+      },
+      {
+        "rank": 14,
+        "name": "Matt Rempe",
+        "team": "New York Rangers",
+        "position": "C",
+        "value": "$40-$120"
+      },
+      {
+        "rank": 15,
+        "name": "Luca Del Bel Belluz",
+        "team": "Columbus Blue Jackets",
+        "position": "C",
+        "value": "$30-$100"
+      },
+      {
+        "rank": 16,
+        "name": "Devin Cooley",
+        "team": "San Jose Sharks",
+        "position": "G",
+        "value": "$30-$80"
+      },
+      {
+        "rank": 17,
+        "name": "Mavrik Bourque",
+        "team": "Dallas Stars",
+        "position": "C",
+        "value": "$30-$100"
+      },
+      {
+        "rank": 18,
+        "name": "Joshua Roy",
+        "team": "Montreal Canadiens",
+        "position": "RW",
+        "value": "$30-$80"
+      },
+      {
+        "rank": 19,
+        "name": "Liam Ohgren",
+        "team": "Minnesota Wild",
+        "position": "LW",
+        "value": "$25-$80"
+      }
+    ],
+    "topCards": [
+      {
+        "name": "Macklin Celebrini - Rookie Auto Patch /249",
+        "value": "$400-$1500",
+        "tag": "rookie",
+        "player": "Macklin Celebrini"
+      },
+      {
+        "name": "Matvei Michkov - Rookie Auto Patch /249",
+        "value": "$300-$1200",
+        "tag": "rookie",
+        "player": "Matvei Michkov"
+      },
+      {
+        "name": "Lane Hutson - Rookie Auto Patch /249",
+        "value": "$150-$600",
+        "tag": "rookie",
+        "player": "Lane Hutson"
+      },
+      {
+        "name": "Cutter Gauthier - Rookie Auto Patch /249",
+        "value": "$100-$400",
+        "tag": "rookie",
+        "player": "Cutter Gauthier"
+      },
+      {
+        "name": "Connor Bedard - Rookie Auto Patch (Update)",
+        "value": "$500-$2000",
+        "tag": "hot",
+        "player": "Connor Bedard"
+      },
+      {
+        "name": "Bobby Orr - Auto Patch /8",
+        "value": "$800-$3000",
+        "tag": "legend",
+        "player": "Bobby Orr"
+      },
+      {
+        "name": "Mario Lemieux - Auto Patch /8",
+        "value": "$600-$2500",
+        "tag": "legend",
+        "player": "Mario Lemieux"
+      },
+      {
+        "name": "Alex Ovechkin - Gold Foil Auto Patch /8",
+        "value": "$400-$1500",
+        "tag": "legend",
+        "player": "Alex Ovechkin"
+      }
+    ],
+    "legends": [
+      {
+        "name": "Bobby Orr",
+        "cardType": "Gold Foil Auto Patch /8",
+        "value": "$800-$3000"
+      },
+      {
+        "name": "Mario Lemieux",
+        "cardType": "Gold Foil Auto Patch /8",
+        "value": "$600-$2500"
+      },
+      {
+        "name": "Patrick Roy",
+        "cardType": "Gold Foil Auto /8",
+        "value": "$400-$1200"
+      },
+      {
+        "name": "Dominik Hasek",
+        "cardType": "Gold Foil Auto /8",
+        "value": "$300-$800"
+      },
+      {
+        "name": "Mark Messier",
+        "cardType": "Gold Foil Auto /8",
+        "value": "$250-$700"
+      },
+      {
+        "name": "Paul Coffey",
+        "cardType": "Gold Foil Auto Patch /8",
+        "value": "$200-$600"
+      },
+      {
+        "name": "Alex Ovechkin",
+        "cardType": "Gold Foil Auto Patch /8",
+        "value": "$400-$1500"
+      },
+      {
+        "name": "Nick Suzuki",
+        "cardType": "Gold Foil Auto Patch /8",
+        "value": "$150-$400"
+      }
+    ],
+    "hotPlayers": [
+      "Macklin Celebrini",
+      "Matvei Michkov",
+      "Lane Hutson",
+      "Cutter Gauthier",
+      "Frank Nazar"
+    ],
+    "hypeFacts": [
+      "Macklin Celebrini est le #1 overall du repêchage 2024 — ses RPAs /249 sont parmi les plus recherchées de l'année",
+      "Matvei Michkov a attendu 2 ans en KHL avant de rejoindre les Flyers — une des cartes les plus hype de la saison",
+      "76 Rookie Auto Patches dans le set de base, plus des parallèles numérotés jusqu'au /1 (NHL Shield)",
+      "The Cup inclut des Update Cards avec des anciennes saisons — possibilité de tirer un Connor Bedard RPA 2023-24",
+      "Les Gold Foil Auto Patch de légendes comme Bobby Orr /8 sont parmi les cartes les plus précieuses du hobby"
+    ]
   }
 }
