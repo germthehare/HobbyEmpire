@@ -262,12 +262,9 @@
       <button class="news-sport-btn"        data-sport="baseball"   onclick="switchSport('baseball')">⚾ Baseball</button>
     </div>
     <div class="news-filters">
-      <button class="news-filter active" data-cat="all"   onclick="filterNews('all')">Tout</button>
-      <button class="news-filter"        data-cat="hobby" onclick="filterNews('hobby')">🃏 Hobby</button>
-      <button class="news-filter"        data-cat="sport" onclick="filterNews('sport')">Sport</button>
+      <button class="news-filter active" data-cat="all" onclick="filterNews('all')">Toutes les sources</button>
       <button class="news-refresh" onclick="loadNews(true)">↻ Rafraîchir</button>
     </div>
-    <div id="nhl-scores"></div>
     <div id="news-feed"><div class="news-loading">Chargement des nouvelles...</div></div>
   </div>
 </div>
@@ -281,34 +278,28 @@ let newsItems = [], newsFilter = 'all', newsSport = 'hockey', newsLoaded = false
 
 // ── News sources (RSS via rss2json) ─────────────────────────────────────────
 const NEWS_SOURCES = [
-  // Hockey
-  { id: 'beckett-hockey',  label: 'Beckett',              sport: 'hockey',     cat: 'hobby',    cls: 'src-beckett',
+  // Hockey cards
+  { id: 'beckett-hockey',    label: 'Beckett Hockey',       sport: 'hockey',     cls: 'src-beckett',
     url: 'https://www.beckett.com/news/category/hockey/feed/' },
-  { id: 'cardboard-hockey',label: 'Cardboard Connection', sport: 'hockey',     cat: 'hobby',    cls: 'src-cardboard',
+  { id: 'cardboard-hockey',  label: 'Cardboard Connection', sport: 'hockey',     cls: 'src-cardboard',
     url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
-  { id: 'thw',             label: 'Hockey Writers',       sport: 'hockey',     cat: 'sport',    cls: 'src-hockey',
-    url: 'https://thehockeywriters.com/feed/' },
-  // Football
-  { id: 'beckett-football', label: 'Beckett Football',    sport: 'football',   cat: 'hobby',    cls: 'src-beckett',
+  // Football cards
+  { id: 'beckett-football',  label: 'Beckett Football',     sport: 'football',   cls: 'src-beckett',
     url: 'https://www.beckett.com/news/category/football/feed/' },
-  { id: 'cardboard-football',label: 'Cardboard Connection',sport: 'football',  cat: 'hobby',    cls: 'src-cardboard',
+  { id: 'cardboard-football',label: 'Cardboard Connection', sport: 'football',   cls: 'src-cardboard',
     url: 'https://cardboardconnection.com/category/football-cards/feed/' },
-  { id: 'pft',             label: 'Pro Football Talk',    sport: 'football',   cat: 'sport',    cls: 'src-hockey',
-    url: 'https://profootballtalk.nbcsports.com/feed/' },
-  // Basketball
-  { id: 'beckett-bball',   label: 'Beckett Basketball',  sport: 'basketball', cat: 'hobby',    cls: 'src-beckett',
+  // Basketball cards
+  { id: 'beckett-bball',     label: 'Beckett Basketball',   sport: 'basketball', cls: 'src-beckett',
     url: 'https://www.beckett.com/news/category/basketball/feed/' },
-  { id: 'cardboard-bball', label: 'Cardboard Connection',sport: 'basketball', cat: 'hobby',    cls: 'src-cardboard',
+  { id: 'cardboard-bball',   label: 'Cardboard Connection', sport: 'basketball', cls: 'src-cardboard',
     url: 'https://cardboardconnection.com/category/basketball-cards/feed/' },
-  { id: 'hoopshype',       label: 'HoopsHype',           sport: 'basketball', cat: 'sport',    cls: 'src-hockey',
-    url: 'https://hoopshype.com/feed/' },
-  // Baseball
-  { id: 'beckett-baseball',label: 'Beckett Baseball',    sport: 'baseball',   cat: 'hobby',    cls: 'src-beckett',
+  // Baseball cards
+  { id: 'beckett-baseball',  label: 'Beckett Baseball',     sport: 'baseball',   cls: 'src-beckett',
     url: 'https://www.beckett.com/news/category/baseball/feed/' },
-  { id: 'cardboard-baseball',label: 'Cardboard Connection',sport: 'baseball', cat: 'hobby',    cls: 'src-cardboard',
+  { id: 'cardboard-baseball',label: 'Cardboard Connection', sport: 'baseball',   cls: 'src-cardboard',
     url: 'https://cardboardconnection.com/category/baseball-cards/feed/' },
-  // Hobby général
-  { id: 'sportscard',      label: 'SC Investor',         sport: 'all',        cat: 'hobby',    cls: 'src-sportscard',
+  // Toutes sports — hobby général
+  { id: 'sportscard',        label: 'SC Investor',          sport: 'all',        cls: 'src-sportscard',
     url: 'https://sportscardsinvestor.com/feed/' },
 ];
 
@@ -325,7 +316,6 @@ async function fetchFeed(source) {
       excerpt: (item.description || item.content || '').replace(/<[^>]+>/g, '').replace(/\s+/g,' ').trim().slice(0, 180),
       date:    new Date(item.pubDate || item.published || Date.now()),
       source:  source,
-      cat:     source.cat,
     }));
   } catch(e) { return []; }
 }
@@ -438,9 +428,7 @@ function switchSport(sport) {
   newsFilter = 'all';
   document.querySelectorAll('.news-sport-btn').forEach(b => b.classList.toggle('active', b.dataset.sport === sport));
   document.querySelectorAll('.news-filter').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
-  document.getElementById('nhl-scores').innerHTML = '';
   loadNews();
-  if (sport === 'hockey') loadNHLScores();
 }
 
 function filterNews(cat) {
@@ -462,18 +450,15 @@ const SPORT_EMOJI = { hockey: '🏒', football: '🏈', basketball: '🏀', base
 
 function renderNews() {
   const feed = document.getElementById('news-feed');
-  const items = newsFilter === 'all' ? newsItems : newsItems.filter(i => i.cat === newsFilter);
-  if (!items.length) {
+  if (!newsItems.length) {
     feed.innerHTML = '<div class="news-empty">Aucune nouvelle disponible pour le moment.</div>';
     return;
   }
-  const emoji = SPORT_EMOJI[newsSport] || '🃏';
-  feed.innerHTML = items.map(item => `
+  feed.innerHTML = newsItems.map(item => `
     <a class="news-card" href="${item.link}" target="_blank" rel="noopener">
       <div class="news-meta">
         <span class="news-source ${item.source.cls}">${item.source.label}</span>
         <span class="news-age">${timeAgo(item.date)}</span>
-        <span class="news-cat">${item.cat === 'hobby' ? '🃏 Hobby' : emoji + ' ' + newsSport.charAt(0).toUpperCase() + newsSport.slice(1)}</span>
       </div>
       <div class="news-title">${item.title}</div>
       ${item.excerpt ? `<div class="news-excerpt">${item.excerpt}</div>` : ''}
@@ -665,7 +650,7 @@ function setMode(m) {
   document.getElementById('tab-prep').classList.toggle('active', m==='prep');
   document.getElementById('tab-live').classList.toggle('active', m==='live');
   document.getElementById('tab-news').classList.toggle('active', m==='news');
-  if (m === 'news') { loadNews(); if (newsSport === 'hockey') loadNHLScores(); }
+  if (m === 'news') loadNews();
 }
 
 function addProduct(v) {
