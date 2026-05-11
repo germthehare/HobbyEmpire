@@ -10,6 +10,7 @@ const QUERIES = {
   ncaa:       'NCAA "college hockey"',
   nfl:        'NFL "national football league" football',
   nba:        'NBA "national basketball association" basketball',
+  mlb:        'MLB "major league baseball" baseball',
   hockey:     'hockey cards trading cards',
   football:   'football cards "trading cards"',
   basketball: 'basketball cards "trading cards"',

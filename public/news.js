@@ -55,6 +55,7 @@
   const HOCKEY_API_LEAGUES  = ['nhl','ahl','ohl','whl','lhjmq','ncaa'];
   const FOOTBALL_API_LEAGUES    = ['nfl'];
   const BASKETBALL_API_LEAGUES  = ['nba'];
+  const BASEBALL_API_LEAGUES    = ['mlb'];
   // legacy alias
   const NEWS_API_LEAGUES = HOCKEY_API_LEAGUES;
 
@@ -407,6 +408,18 @@
       return;
     }
 
+    // ── Baseball / MLB via NewsAPI
+    if (newsSport === 'baseball' && BASEBALL_API_LEAGUES.includes(newsLeague)) {
+      try {
+        const r = await fetch(`/api/news?league=${newsLeague}&limit=20`);
+        const d = await r.json();
+        newsItems = (d.items || []).map(item => ({ ...item, source: { label: item.sourceName, cls: 'src-default' } }));
+        newsCache[cacheKey] = newsItems;
+        renderNews();
+      } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
+      return;
+    }
+
     // ── Basketball / NBA via NewsAPI
     if (newsSport === 'basketball' && BASKETBALL_API_LEAGUES.includes(newsLeague)) {
       try {
@@ -427,6 +440,8 @@
       sources = NEWS_SOURCES.filter(s => s.sport === 'football');
     } else if (newsSport === 'basketball' && newsLeague === 'hobby') {
       sources = NEWS_SOURCES.filter(s => s.sport === 'basketball');
+    } else if (newsSport === 'baseball' && newsLeague === 'hobby') {
+      sources = NEWS_SOURCES.filter(s => s.sport === 'baseball');
     } else {
       sources = NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
     }
@@ -446,22 +461,25 @@
   function switchSport(sport) {
     newsSport = sport;
     // Sports with sub-league tabs default to 'hobby'
-    newsLeague = (sport === 'hockey' || sport === 'football' || sport === 'basketball') ? 'hobby' : sport;
+    newsLeague = (sport === 'hockey' || sport === 'football' || sport === 'basketball' || sport === 'baseball') ? 'hobby' : sport;
     document.querySelectorAll('.news-sport-btn').forEach(b => b.classList.toggle('active', b.dataset.sport === sport));
 
     const hl = document.getElementById('hockey-leagues');
     const fl = document.getElementById('football-leagues');
     const bl = document.getElementById('basketball-leagues');
+    const bbl = document.getElementById('baseball-leagues');
     const os = document.getElementById('other-sport-bar');
-    if (hl) hl.style.display = sport === 'hockey'     ? 'flex' : 'none';
-    if (fl) fl.style.display = sport === 'football'   ? 'flex' : 'none';
-    if (bl) bl.style.display = sport === 'basketball' ? 'flex' : 'none';
-    if (os) os.style.display = (sport !== 'hockey' && sport !== 'football' && sport !== 'basketball') ? 'flex' : 'none';
+    if (hl)  hl.style.display  = sport === 'hockey'     ? 'flex' : 'none';
+    if (fl)  fl.style.display  = sport === 'football'   ? 'flex' : 'none';
+    if (bl)  bl.style.display  = sport === 'basketball' ? 'flex' : 'none';
+    if (bbl) bbl.style.display = sport === 'baseball'   ? 'flex' : 'none';
+    if (os)  os.style.display  = (sport !== 'hockey' && sport !== 'football' && sport !== 'basketball' && sport !== 'baseball') ? 'flex' : 'none';
 
     // Reset active state on league tabs of the newly visible bar
     if (sport === 'hockey')     document.querySelectorAll('#hockey-leagues .league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
     if (sport === 'football')   document.querySelectorAll('#football-leagues .league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
     if (sport === 'basketball') document.querySelectorAll('#basketball-leagues .league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
+    if (sport === 'baseball')   document.querySelectorAll('#baseball-leagues .league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
     loadNews();
   }
 
