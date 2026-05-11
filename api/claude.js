@@ -1,4 +1,9 @@
-import checklists from '../data/checklists.json' assert { type: 'json' };
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const checklists = JSON.parse(readFileSync(join(__dirname, '../data/checklists.json'), 'utf-8'));
 
 export const config = { maxDuration: 60 };
 
