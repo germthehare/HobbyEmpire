@@ -340,7 +340,9 @@ let newsItems = [], newsFilter = 'all', newsSport = 'hockey', newsLeague = 'hobb
 const newsCache = {};
 let nhlData = { leaders: {}, standings: [], bracket: null, scores: [], news: [] };
 let leadersTab = 'points';
-let standingsTab = 'E';
+let leadersMode = 'season'; // 'season' | 'playoffs'
+let standingsTab = 'ALL';   // 'ALL' | 'E' | 'W' | 'A' | 'M' | 'C' | 'P'
+const NHL_SEASON = '20252026'; // saison courante
 
 // ── News sources (RSS via rss2json) ─────────────────────────────────────────
 // RSS feeds par ligue hockey
@@ -547,22 +549,24 @@ async function loadNews(force = false) {
   renderNews();
 }
 
+// ── Leaders tabs ────────────────────────────────────────────────────────────
 function switchLeadersTab(cat) {
   leadersTab = cat;
   document.querySelectorAll('.leaders-pill').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
   const el = document.getElementById('leaders-list');
-  if (el) el.innerHTML = renderLeadersList(cat);
+  if (el) el.innerHTML = renderLeadersList();
 }
 
-function switchStandingsTab(conf) {
-  standingsTab = conf;
-  document.querySelectorAll('.standings-pill').forEach(b => b.classList.toggle('active', b.dataset.conf === conf));
-  const el = document.getElementById('standings-body');
-  if (el) el.innerHTML = renderStandingsRows(conf);
+function switchLeadersMode(mode) {
+  leadersMode = mode;
+  document.querySelectorAll('.leaders-mode-pill').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+  const el = document.getElementById('leaders-list');
+  if (el) el.innerHTML = renderLeadersList();
 }
 
-function renderLeadersList(cat) {
-  const players = nhlData.leaders[cat] || [];
+function renderLeadersList() {
+  const modeData = nhlData.leaders[leadersMode] || {};
+  const players  = modeData[leadersTab] || [];
   if (!players.length) return '<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px">Données non disponibles</div>';
   return players.map((p, i) => `
     <div class="leader-row">
@@ -576,14 +580,44 @@ function renderLeadersList(cat) {
     </div>`).join('');
 }
 
-function renderStandingsRows(conf) {
-  const filtered = nhlData.standings
-    .filter(t => t.conferenceAbbrev === conf)
-    .sort((a,b) => (b.points||0)-(a.points||0) || (b.wins||0)-(a.wins||0));
-  if (!filtered.length) return '<tr><td colspan="6" style="padding:14px;text-align:center;color:var(--text3)">Données non disponibles</td></tr>';
+function renderLeadersSection() {
+  const cats  = [{id:'points',label:'Pts'},{id:'goals',label:'Buts'},{id:'assists',label:'Passes'}];
+  const modes = [{id:'season',label:'Saison'},{id:'playoffs',label:'Playoffs'}];
+  const catPills  = cats.map(c  => `<button class="nhl-tab leaders-pill${leadersTab===c.id?' active':''}"  data-cat="${c.id}"  onclick="switchLeadersTab('${c.id}')">${c.label}</button>`).join('');
+  const modePills = modes.map(m => `<button class="nhl-tab leaders-mode-pill${leadersMode===m.id?' active':''}" data-mode="${m.id}" onclick="switchLeadersMode('${m.id}')">${m.label}</button>`).join('');
+  return `<div class="nhl-section">
+    <div class="nhl-section-head">
+      <span class="nhl-section-title">Meneurs LNH</span>
+      <div class="nhl-tabs" style="gap:8px">${modePills}<span style="width:1px;background:#2a2a2a;align-self:stretch"></span>${catPills}</div>
+    </div>
+    <div class="leaders-list" id="leaders-list">${renderLeadersList()}</div>
+  </div>`;
+}
+
+// ── Standings tabs ──────────────────────────────────────────────────────────
+function switchStandingsTab(tab) {
+  standingsTab = tab;
+  document.querySelectorAll('.standings-pill').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  const el = document.getElementById('standings-body');
+  if (el) el.innerHTML = renderStandingsRows();
+}
+
+function renderStandingsRows() {
+  const all = nhlData.standings;
+  if (!all.length) return '<tr><td colspan="6" style="padding:14px;text-align:center;color:var(--text3)">Données non disponibles</td></tr>';
+
+  let filtered, playoffCutoff;
+  if      (standingsTab === 'ALL') { filtered = [...all]; playoffCutoff = -1; }
+  else if (standingsTab === 'E')   { filtered = all.filter(t=>t.conferenceAbbrev==='E'); playoffCutoff = 8; }
+  else if (standingsTab === 'W')   { filtered = all.filter(t=>t.conferenceAbbrev==='W'); playoffCutoff = 8; }
+  else                              { filtered = all.filter(t=>t.divisionAbbrev===standingsTab); playoffCutoff = 3; }
+
+  filtered.sort((a,b) => (b.points||0)-(a.points||0) || (b.wins||0)-(a.wins||0));
+
   return filtered.map((t, i) => {
-    const abbrev = typeof t.teamAbbrev === 'object' ? (t.teamAbbrev?.default || '') : (t.teamAbbrev || '');
-    return `<tr class="${i < 8 ? 'playoff-spot' : ''}">
+    const abbrev = typeof t.teamAbbrev==='object' ? (t.teamAbbrev?.default||'') : (t.teamAbbrev||'');
+    const inPlayoff = playoffCutoff > 0 && i < playoffCutoff;
+    return `<tr class="${inPlayoff?'playoff-spot':''}">
       <td><img class="st-logo" src="${t.teamLogo||''}" onerror="this.style.display='none'" /><span class="st-abbrev">${abbrev}</span></td>
       <td class="num">${t.gamesPlayed||0}</td>
       <td class="num">${t.wins||0}</td>
@@ -594,86 +628,83 @@ function renderStandingsRows(conf) {
   }).join('');
 }
 
-function renderLeadersSection() {
-  const cats = [{id:'points',label:'Points'},{id:'goals',label:'Buts'},{id:'assists',label:'Passes'}];
-  const pills = cats.map(c => `<button class="nhl-tab leaders-pill${leadersTab===c.id?' active':''}" data-cat="${c.id}" onclick="switchLeadersTab('${c.id}')">${c.label}</button>`).join('');
-  return `<div class="nhl-section">
-    <div class="nhl-section-head">
-      <span class="nhl-section-title">Meneurs de la LNH</span>
-      <div class="nhl-tabs">${pills}</div>
-    </div>
-    <div class="leaders-list" id="leaders-list">${renderLeadersList(leadersTab)}</div>
-  </div>`;
-}
-
 function renderStandingsSection() {
-  const confs = [{id:'E',label:'Est'},{id:'W',label:'Ouest'}];
-  const pills = confs.map(c => `<button class="nhl-tab standings-pill${standingsTab===c.id?' active':''}" data-conf="${c.id}" onclick="switchStandingsTab('${c.id}')">${c.label}</button>`).join('');
+  const tabs = [
+    {id:'ALL',label:'LNH'},{id:'E',label:'Est'},{id:'W',label:'Ouest'},
+    {id:'A',label:'Atl'},{id:'M',label:'Mét'},{id:'C',label:'Cen'},{id:'P',label:'Pac'},
+  ];
+  const pills = tabs.map(t => `<button class="nhl-tab standings-pill${standingsTab===t.id?' active':''}" data-tab="${t.id}" onclick="switchStandingsTab('${t.id}')">${t.label}</button>`).join('');
   return `<div class="nhl-section">
-    <div class="nhl-section-head">
+    <div class="nhl-section-head" style="flex-wrap:wrap;gap:6px">
       <span class="nhl-section-title">Classement</span>
-      <div class="nhl-tabs">${pills}</div>
+      <div class="nhl-tabs" style="flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none">${pills}</div>
     </div>
     <table class="standings-tbl">
       <thead><tr>
         <th>Équipe</th><th class="num">PJ</th><th class="num">V</th><th class="num">D</th><th class="num">DP</th><th class="num">Pts</th>
       </tr></thead>
-      <tbody id="standings-body">${renderStandingsRows(standingsTab)}</tbody>
+      <tbody id="standings-body">${renderStandingsRows()}</tbody>
     </table>
   </div>`;
 }
 
+// ── Bracket playoffs ────────────────────────────────────────────────────────
 function renderBracketSection(data) {
-  const series = data?.series || data?.bracket?.series || [];
-  if (!series.length) return '';
+  // Structure réelle : data.series[] avec topSeedTeam/bottomSeedTeam, playoffRound, topSeedWins/bottomSeedWins
+  const allSeries = data?.series || [];
+  if (!allSeries.length) return '';
+
   const rounds = {};
-  for (const s of series) {
-    const r = s.roundNumber || s.round?.number || 1;
+  for (const s of allSeries) {
+    const r = s.playoffRound || s.roundNumber || 1;
     if (!rounds[r]) rounds[r] = [];
     rounds[r].push(s);
   }
-  const roundLabels = {1:'1er tour',2:'Demi-finales de conf.',3:'Finales de conf.',4:'Finale Stanley'};
+  const roundLabels = {1:'1er tour',2:'Demi-finales',3:'Finales conf.',4:'Finale Stanley'};
+
   const roundsHtml = Object.keys(rounds).sort((a,b)=>+a-+b).map(r => {
     const seriesHtml = rounds[r].map(s => {
-      const teams = s.matchupTeams || [];
-      const maxWins = Math.max(...teams.map(t=>t.wins||0));
-      const seriesOver = maxWins >= 4;
-      return `<div class="bracket-series">${teams.map(t => {
-        const abbrev = t.team?.abbrev || t.team?.triCode || '';
-        const logo = t.team?.logo || '';
-        const wins = t.wins || 0;
-        const isWinner = seriesOver && wins === maxWins;
-        const isElim  = seriesOver && wins < maxWins;
-        return `<div class="bracket-team">
-          <img class="bt-logo" src="${logo}" onerror="this.style.display='none'" />
-          <span class="bt-abbrev${isWinner?' winner':isElim?' elim':''}">${abbrev}</span>
+      const top    = s.topSeedTeam    || {};
+      const bottom = s.bottomSeedTeam || {};
+      const topW   = s.topSeedWins    || 0;
+      const botW   = s.bottomSeedWins || 0;
+      const done   = topW >= 4 || botW >= 4;
+      const topWon = done && topW > botW;
+      const botWon = done && botW > topW;
+
+      const teamRow = (team, wins, isWinner, isElim) => `
+        <div class="bracket-team">
+          <img class="bt-logo" src="${team.logo||team.darkLogo||''}" onerror="this.style.display='none'" />
+          <span class="bt-abbrev${isWinner?' winner':isElim?' elim':''}">${team.abbrev||''}</span>
           <span class="bt-wins${isWinner?' winner':''}">${wins}</span>
         </div>`;
-      }).join('')}</div>`;
+
+      return `<div class="bracket-series">
+        ${teamRow(top,    topW, topWon, botWon)}
+        ${teamRow(bottom, botW, botWon, topWon)}
+      </div>`;
     }).join('');
     return `<div class="bracket-round"><div class="bracket-round-title">${roundLabels[r]||'Tour '+r}</div>${seriesHtml}</div>`;
   }).join('');
+
   return `<div class="nhl-section">
-    <div class="nhl-section-head"><span class="nhl-section-title">Bracket Playoffs</span></div>
+    <div class="nhl-section-head"><span class="nhl-section-title">Bracket Playoffs ${new Date().getFullYear()}</span></div>
     <div class="bracket-scroll">${roundsHtml}</div>
   </div>`;
 }
 
+// ── Render NHL tab complet ──────────────────────────────────────────────────
 function renderNHLTab() {
   const feed = document.getElementById('news-feed');
   let html = '';
-  // 1. Scores
   if (nhlData.scores.length) {
     const cards = nhlData.scores.map(g => buildScoreCard(g)).join('');
     html += `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
   }
-  // 2. Leaders
-  if (Object.values(nhlData.leaders).some(a=>a.length>0)) html += renderLeadersSection();
-  // 3. Bracket
-  if (nhlData.bracket) { const s = nhlData.bracket?.series||nhlData.bracket?.bracket?.series||[]; if(s.length) html += renderBracketSection(nhlData.bracket); }
-  // 4. Standings
+  const hasLeaders = ['season','playoffs'].some(m => Object.values(nhlData.leaders[m]||{}).some(a=>a.length>0));
+  if (hasLeaders) html += renderLeadersSection();
+  if (nhlData.bracket?.series?.length) html += renderBracketSection(nhlData.bracket);
   if (nhlData.standings.length) html += renderStandingsSection();
-  // 5. News
   if (nhlData.news.length) {
     html += `<div class="scores-head" style="margin-bottom:10px;margin-top:16px">Nouvelles NHL</div>`;
     html += nhlData.news.map(item => renderNewsItem(item)).join('');
@@ -684,21 +715,37 @@ function renderNHLTab() {
 async function loadNHLTab() {
   const feed = document.getElementById('news-feed');
   feed.innerHTML = '<div class="news-loading">Chargement des données NHL...</div>';
+  const yr = new Date().getFullYear();
+  // Construire le seasonId (ex: 2025-26 → 20252026)
+  const seasonId = NHL_SEASON;
+  const p = p => '/api/nhl?path=' + encodeURIComponent(p);
   try {
-    const [scoresRes, goalsRes, assistsRes, pointsRes, standingsRes, bracketRes, newsRes] = await Promise.all([
-      fetch('/api/nhl?path=score/now').then(r=>r.json()).catch(()=>({})),
-      fetch('/api/nhl?path=' + encodeURIComponent('skater-stats-leaders/current?categories=goals&limit=5')).then(r=>r.json()).catch(()=>({})),
-      fetch('/api/nhl?path=' + encodeURIComponent('skater-stats-leaders/current?categories=assists&limit=5')).then(r=>r.json()).catch(()=>({})),
-      fetch('/api/nhl?path=' + encodeURIComponent('skater-stats-leaders/current?categories=points&limit=5')).then(r=>r.json()).catch(()=>({})),
-      fetch('/api/nhl?path=standings/now').then(r=>r.json()).catch(()=>({})),
-      fetch('/api/nhl?path=playoff-bracket/now').then(r=>r.json()).catch(()=>({})),
+    const [scoresRes,
+      sGoals, sAssists, sPoints,
+      pGoals, pAssists, pPoints,
+      standingsRes, bracketRes, newsRes
+    ] = await Promise.all([
+      fetch(p('score/now')).then(r=>r.json()).catch(()=>({})),
+      // Saison régulière (gameType=2)
+      fetch(p(`skater-stats-leaders/${seasonId}/2?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
+      fetch(p(`skater-stats-leaders/${seasonId}/2?categories=assists&limit=5`)).then(r=>r.json()).catch(()=>({})),
+      fetch(p(`skater-stats-leaders/${seasonId}/2?categories=points&limit=5`)).then(r=>r.json()).catch(()=>({})),
+      // Playoffs (gameType=3)
+      fetch(p(`skater-stats-leaders/${seasonId}/3?categories=goals&limit=5`)).then(r=>r.json()).catch(()=>({})),
+      fetch(p(`skater-stats-leaders/${seasonId}/3?categories=assists&limit=5`)).then(r=>r.json()).catch(()=>({})),
+      fetch(p(`skater-stats-leaders/${seasonId}/3?categories=points&limit=5`)).then(r=>r.json()).catch(()=>({})),
+      fetch(p('standings/now')).then(r=>r.json()).catch(()=>({})),
+      fetch(p(`playoff-bracket/${yr}`)).then(r=>r.json()).catch(()=>({})),
       fetch('/api/news?league=nhl&limit=10').then(r=>r.json()).catch(()=>({})),
     ]);
-    nhlData.scores   = scoresRes.games || [];
-    nhlData.leaders  = { goals: goalsRes.goals||[], assists: assistsRes.assists||[], points: pointsRes.points||[] };
+    nhlData.scores = scoresRes.games || [];
+    nhlData.leaders = {
+      season:  { goals: sGoals.goals||[], assists: sAssists.assists||[], points: sPoints.points||[] },
+      playoffs:{ goals: pGoals.goals||[], assists: pAssists.assists||[], points: pPoints.points||[] },
+    };
     nhlData.standings = standingsRes.standings || [];
-    nhlData.bracket  = bracketRes;
-    nhlData.news     = newsRes.items || [];
+    nhlData.bracket   = bracketRes;
+    nhlData.news      = newsRes.items || [];
     renderNHLTab();
   } catch(e) {
     feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>';
