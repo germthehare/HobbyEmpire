@@ -93,22 +93,26 @@
   .scores-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
   .scores-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
   .scores-scroll::-webkit-scrollbar { display: none; }
-  .score-card { background: var(--dark2); border: 1px solid #1e1e1e; border-radius: 8px; padding: 10px 12px; min-width: 140px; flex-shrink: 0; }
-  .score-state { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+  .score-card { background: var(--dark2); border: 1px solid #1e1e1e; border-radius: 8px; min-width: 160px; flex-shrink: 0; overflow: hidden; }
+  .score-head-bar { display: flex; align-items: center; justify-content: space-between; padding: 7px 11px 6px; border-bottom: 1px solid #141414; }
+  .score-state { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); display: flex; align-items: center; gap: 5px; }
   .score-state.live { color: #c97070; }
+  .score-state.live::before { content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: #c97070; animation: blink 1.2s ease-in-out infinite; }
   .score-state.final { color: var(--gold2); }
-  .score-team { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; gap: 8px; }
-  .score-team:last-child { margin-bottom: 0; }
-  .score-logo { width: 20px; height: 20px; object-fit: contain; }
-  .score-abbrev { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--text2); flex: 1; }
-  .score-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; color: var(--text); }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+  .score-serie-top { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); text-align: right; }
+  .score-body { padding: 8px 11px; }
+  .score-team { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+  .score-logo { width: 18px; height: 18px; object-fit: contain; flex-shrink: 0; }
+  .score-abbrev { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; color: var(--text2); flex: 1; letter-spacing: 0.5px; }
+  .score-abbrev.winner { color: var(--text); }
+  .score-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--text3); min-width: 20px; text-align: right; }
   .score-pts.winner { color: var(--gold3); }
-  .score-record { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; color: var(--text3); flex: 1; }
-  .score-serie { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; color: var(--gold2); margin-top: 7px; padding-top: 7px; border-top: 1px solid #1e1e1e; }
-  .score-leaders { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; }
-  .score-leader { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
-  .score-leader strong { color: var(--text2); }
-  .score-headshot { width: 18px; height: 18px; border-radius: 50%; object-fit: cover; background: var(--dark4); flex-shrink: 0; }
+  .score-leaders { border-top: 1px solid #141414; padding: 6px 11px 8px; display: flex; flex-direction: column; gap: 3px; }
+  .score-leader { display: flex; align-items: baseline; gap: 0; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; color: var(--text3); }
+  .sc-name { flex: 1; color: var(--text3); font-weight: 400; }
+  .sc-stat { font-weight: 700; color: var(--text2); white-space: nowrap; }
+  .sc-cat { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; color: var(--text3); margin-left: 2px; }
   /* ── eBay prices ── */
   .ebay-results { margin-top: 14px; }
   .ebay-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -402,32 +406,35 @@ async function loadNHLScores() {
         const serieLabel = tied
           ? `Égalité ${s.topSeedWins}-${s.bottomSeedWins}`
           : `${leader} mène ${Math.max(s.topSeedWins,s.bottomSeedWins)}-${Math.min(s.topSeedWins,s.bottomSeedWins)}`;
-        serieHtml = `<div class="score-serie">Match ${s.gameNumberOfSeries} · ${serieLabel}</div>`;
+        serieHtml = `Mtch ${s.gameNumberOfSeries} · ${serieLabel}`;
       }
 
       // Leaders du match (buts + passes)
       const leaders = (g.teamLeaders || []).filter(l => l.category === 'goals' || l.category === 'assists');
       const leadersHtml = leaders.length ? `<div class="score-leaders">` +
         leaders.slice(0,3).map(l => {
-          const icon = l.category === 'goals' ? '🥅' : '🍎';
-          return `<div class="score-leader"><img src="${l.headshot||''}" class="score-headshot" onerror="this.style.display='none'"/><span>${icon} ${l.firstName?.default||''} ${l.lastName?.default||''} <strong>${l.value}</strong></span></div>`;
+          const last = l.lastName?.default || l.firstName?.default || '';
+          const cat = l.category === 'goals' ? 'B' : 'P';
+          return `<div class="score-leader"><span class="sc-name">${last}</span><span class="sc-stat">${l.value}</span><span class="sc-cat">${cat}</span></div>`;
         }).join('') + `</div>` : '';
 
       return `<div class="score-card">
-        <div class="score-state ${stateClass}">${stateLabel}</div>
-        <div class="score-team">
-          <img class="score-logo" src="${away.logo||''}" onerror="this.style.display='none'" />
-          <span class="score-abbrev">${away.abbrev||''}</span>
-          ${away.record ? `<span class="score-record">${away.record}</span>` : ''}
-          ${awayScore !== '' ? `<span class="score-pts${awayWin?' winner':''}">${awayScore}</span>` : ''}
+        <div class="score-head-bar">
+          <div class="score-state ${stateClass}">${stateLabel}</div>
+          ${serieHtml ? `<div class="score-serie-top">${serieHtml}</div>` : ''}
         </div>
-        <div class="score-team">
-          <img class="score-logo" src="${home.logo||''}" onerror="this.style.display='none'" />
-          <span class="score-abbrev">${home.abbrev||''}</span>
-          ${home.record ? `<span class="score-record">${home.record}</span>` : ''}
-          ${homeScore !== '' ? `<span class="score-pts${homeWin?' winner':''}">${homeScore}</span>` : ''}
+        <div class="score-body">
+          <div class="score-team">
+            <img class="score-logo" src="${away.logo||''}" onerror="this.style.display='none'" />
+            <span class="score-abbrev${awayWin?' winner':''}">${away.abbrev||''}</span>
+            ${awayScore !== '' ? `<span class="score-pts${awayWin?' winner':''}">${awayScore}</span>` : ''}
+          </div>
+          <div class="score-team">
+            <img class="score-logo" src="${home.logo||''}" onerror="this.style.display='none'" />
+            <span class="score-abbrev${homeWin?' winner':''}">${home.abbrev||''}</span>
+            ${homeScore !== '' ? `<span class="score-pts${homeWin?' winner':''}">${homeScore}</span>` : ''}
+          </div>
         </div>
-        ${serieHtml}
         ${leadersHtml}
       </div>`;
     }).join('');
@@ -522,17 +529,27 @@ async function loadNHLTab() {
         const awayScore = away.score ?? '', homeScore = home.score ?? '';
         const awayWin = isFinal && awayScore > homeScore, homeWin = isFinal && homeScore > awayScore;
         const s = g.seriesStatus;
-        const serieHtml = s ? `<div class="score-serie">Match ${s.gameNumberOfSeries} · ${
-          s.topSeedWins === s.bottomSeedWins ? `Égalité ${s.topSeedWins}-${s.bottomSeedWins}`
-          : `${s.topSeedWins > s.bottomSeedWins ? s.topSeedTeamAbbrev : s.bottomSeedTeamAbbrev} mène ${Math.max(s.topSeedWins,s.bottomSeedWins)}-${Math.min(s.topSeedWins,s.bottomSeedWins)}`
-        }</div>` : '';
+        const serieHtml = s ? (
+          s.topSeedWins === s.bottomSeedWins
+            ? `Mtch ${s.gameNumberOfSeries} · Égalité ${s.topSeedWins}-${s.bottomSeedWins}`
+            : `Mtch ${s.gameNumberOfSeries} · ${s.topSeedWins > s.bottomSeedWins ? s.topSeedTeamAbbrev : s.bottomSeedTeamAbbrev} mène ${Math.max(s.topSeedWins,s.bottomSeedWins)}-${Math.min(s.topSeedWins,s.bottomSeedWins)}`
+        ) : '';
         const leaders = (g.teamLeaders||[]).filter(l=>l.category==='goals'||l.category==='assists');
-        const leadersHtml = leaders.length ? `<div class="score-leaders">${leaders.slice(0,3).map(l=>`<div class="score-leader"><img src="${l.headshot||''}" class="score-headshot" onerror="this.style.display='none'"/><span>${l.category==='goals'?'🥅':'🍎'} ${l.firstName?.default||''} ${l.lastName?.default||''} <strong>${l.value}</strong></span></div>`).join('')}</div>` : '';
+        const leadersHtml = leaders.length ? `<div class="score-leaders">${leaders.slice(0,3).map(l=>{
+          const last = l.lastName?.default || l.firstName?.default || '';
+          const cat = l.category === 'goals' ? 'B' : 'P';
+          return `<div class="score-leader"><span class="sc-name">${last}</span><span class="sc-stat">${l.value}</span><span class="sc-cat">${cat}</span></div>`;
+        }).join('')}</div>` : '';
         return `<div class="score-card">
-          <div class="score-state ${stateClass}">${stateLabel}</div>
-          <div class="score-team"><img class="score-logo" src="${away.logo||''}" onerror="this.style.display='none'"/><span class="score-abbrev">${away.abbrev||''}</span>${away.record?`<span class="score-record">${away.record}</span>`:''} ${awayScore!==''?`<span class="score-pts${awayWin?' winner':''}">${awayScore}</span>`:''}</div>
-          <div class="score-team"><img class="score-logo" src="${home.logo||''}" onerror="this.style.display='none'"/><span class="score-abbrev">${home.abbrev||''}</span>${home.record?`<span class="score-record">${home.record}</span>`:''} ${homeScore!==''?`<span class="score-pts${homeWin?' winner':''}">${homeScore}</span>`:''}</div>
-          ${serieHtml}${leadersHtml}
+          <div class="score-head-bar">
+            <div class="score-state ${stateClass}">${stateLabel}</div>
+            ${serieHtml ? `<div class="score-serie-top">${serieHtml}</div>` : ''}
+          </div>
+          <div class="score-body">
+            <div class="score-team"><img class="score-logo" src="${away.logo||''}" onerror="this.style.display='none'"/><span class="score-abbrev${awayWin?' winner':''}">${away.abbrev||''}</span>${awayScore!==''?`<span class="score-pts${awayWin?' winner':''}">${awayScore}</span>`:''}</div>
+            <div class="score-team"><img class="score-logo" src="${home.logo||''}" onerror="this.style.display='none'"/><span class="score-abbrev${homeWin?' winner':''}">${home.abbrev||''}</span>${homeScore!==''?`<span class="score-pts${homeWin?' winner':''}">${homeScore}</span>`:''}</div>
+          </div>
+          ${leadersHtml}
         </div>`;
       }).join('');
       html += `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
