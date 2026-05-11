@@ -67,7 +67,7 @@
     { id: 'sportscard',        label: 'SC Investor',          sport: 'all',        cls: 'src-sportscard', url: 'https://sportscardsinvestor.com/feed/' },
   ];
 
-  const RSS2JSON = 'https://api.rss2json.com/v1/api.json?count=8&rss_url=';
+  const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
   // Ligues hockey desservies par NewsAPI (pas de flux RSS fiable)
   const HOCKEY_API_LEAGUES = ['ahl','ohl','whl','lhjmq','ncaa'];
 
