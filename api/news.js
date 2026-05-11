@@ -9,6 +9,7 @@ const QUERIES = {
   lhjmq:      'LHJMQ OR "Quebec Major Junior"',
   ncaa:       'NCAA "college hockey"',
   nfl:        'NFL "national football league" football',
+  nba:        'NBA "national basketball association" basketball',
   hockey:     'hockey cards trading cards',
   football:   'football cards "trading cards"',
   basketball: 'basketball cards "trading cards"',
