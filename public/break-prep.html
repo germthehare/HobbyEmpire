@@ -81,6 +81,12 @@
   .news-loading { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 13px; }
   .news-error { background: #110606; border: 1px solid #2a1010; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #b06060; margin-bottom: 10px; }
   .news-empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 13px; }
+  /* ── League sub-tabs ── */
+  .league-tabs { display: flex; gap: 4px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; flex-wrap: nowrap; align-items: center; }
+  .league-tabs::-webkit-scrollbar { display: none; }
+  .league-tab { padding: 6px 12px; background: var(--dark3); border: 1px solid #2a2a2a; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--text3); cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .league-tab:hover { color: var(--text); border-color: #3a3a3a; }
+  .league-tab.active { background: var(--dark4); border-color: var(--gold); color: var(--gold3); }
   /* ── NHL Scores widget ── */
   .scores-wrap { margin-bottom: 14px; }
   .scores-head { font-family: 'Barlow Condensed', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
@@ -255,14 +261,26 @@
     </div>
   </div>
   <div id="mode-news" style="display:none">
-    <div class="news-filters" style="margin-bottom:8px">
+    <!-- Sport selector -->
+    <div class="news-filters" style="margin-bottom:10px">
       <button class="news-sport-btn active" data-sport="hockey"     onclick="switchSport('hockey')">🏒 Hockey</button>
       <button class="news-sport-btn"        data-sport="football"   onclick="switchSport('football')">🏈 Football</button>
       <button class="news-sport-btn"        data-sport="basketball" onclick="switchSport('basketball')">🏀 Basketball</button>
       <button class="news-sport-btn"        data-sport="baseball"   onclick="switchSport('baseball')">⚾ Baseball</button>
     </div>
-    <div class="news-filters">
-      <button class="news-filter active" data-cat="all" onclick="filterNews('all')">Toutes les sources</button>
+    <!-- League sub-tabs (hockey only) -->
+    <div id="hockey-leagues" class="league-tabs">
+      <button class="league-tab active" data-league="hobby"  onclick="switchLeague('hobby')">🃏 Hobby</button>
+      <button class="league-tab"        data-league="nhl"    onclick="switchLeague('nhl')">NHL</button>
+      <button class="league-tab"        data-league="ahl"    onclick="switchLeague('ahl')">AHL</button>
+      <button class="league-tab"        data-league="ncaa"   onclick="switchLeague('ncaa')">NCAA</button>
+      <button class="league-tab"        data-league="ohl"    onclick="switchLeague('ohl')">OHL</button>
+      <button class="league-tab"        data-league="whl"    onclick="switchLeague('whl')">WHL</button>
+      <button class="league-tab"        data-league="lhjmq"  onclick="switchLeague('lhjmq')">LHJMQ</button>
+      <button class="news-refresh" onclick="loadNews(true)" style="margin-left:auto">↻</button>
+    </div>
+    <!-- Other sports: just a refresh -->
+    <div id="other-sport-bar" class="news-filters" style="display:none">
       <button class="news-refresh" onclick="loadNews(true)">↻ Rafraîchir</button>
     </div>
     <div id="news-feed"><div class="news-loading">Chargement des nouvelles...</div></div>
@@ -274,9 +292,39 @@ let lang = 'fr';
 let checklistKeys = [];
 let selectorOpen = false;
 let selSport = null, selYear = null;
-let newsItems = [], newsFilter = 'all', newsSport = 'hockey', newsLoaded = false;
+let newsItems = [], newsFilter = 'all', newsSport = 'hockey', newsLeague = 'hobby';
+const newsCache = {};
 
 // ── News sources (RSS via rss2json) ─────────────────────────────────────────
+// RSS feeds par ligue hockey
+const LEAGUE_FEEDS = {
+  hobby: [
+    { label: 'Beckett Hockey',       cls: 'src-beckett',    url: 'https://www.beckett.com/news/category/hockey/feed/' },
+    { label: 'Cardboard Connection', cls: 'src-cardboard',  url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
+    { label: 'SC Investor',          cls: 'src-sportscard', url: 'https://sportscardsinvestor.com/feed/' },
+  ],
+  nhl: [
+    { label: 'NHL.com',              cls: 'src-hockey',     url: 'https://www.nhl.com/rss/news.xml' },
+    { label: 'Sportsnet',            cls: 'src-hockey',     url: 'https://www.sportsnet.ca/feed/' },
+  ],
+  ahl: [
+    { label: 'AHL',                  cls: 'src-hockey',     url: 'https://theahl.com/rss/news' },
+  ],
+  ncaa: [
+    { label: 'USCHO',                cls: 'src-hockey',     url: 'https://www.uscho.com/feed/' },
+    { label: 'College Hockey News',  cls: 'src-hockey',     url: 'https://www.collegehockeynews.com/feed/' },
+  ],
+  ohl: [
+    { label: 'OHL',                  cls: 'src-hockey',     url: 'https://ontariohockeyleague.com/feed/' },
+  ],
+  whl: [
+    { label: 'WHL',                  cls: 'src-hockey',     url: 'https://whl.ca/feed/' },
+  ],
+  lhjmq: [
+    { label: 'LHJMQ',                cls: 'src-hockey',     url: 'https://www.lhjmq.qc.ca/en/rss/news' },
+  ],
+};
+
 const NEWS_SOURCES = [
   // Hockey cards
   { id: 'beckett-hockey',    label: 'Beckett Hockey',       sport: 'hockey',     cls: 'src-beckett',
@@ -410,24 +458,102 @@ function renderEbayResults(data, container) {
     </div>`;
 }
 
-// Cache par sport pour ne pas re-fetcher inutilement
-const newsCache = {};
-
 async function loadNews(force = false) {
-  if (newsCache[newsSport] && !force) { newsItems = newsCache[newsSport]; renderNews(); return; }
-  document.getElementById('news-feed').innerHTML = '<div class="news-loading">Chargement des nouvelles...</div>';
-  const sources = NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
+  const cacheKey = newsSport === 'hockey' ? `hockey-${newsLeague}` : newsSport;
+  if (newsCache[cacheKey] && !force) { newsItems = newsCache[cacheKey]; renderNews(); return; }
+
+  const feed = document.getElementById('news-feed');
+  feed.innerHTML = '<div class="news-loading">Chargement des nouvelles...</div>';
+
+  // NHL onglet = scores + news
+  if (newsSport === 'hockey' && newsLeague === 'nhl') {
+    await loadNHLTab();
+    return;
+  }
+
+  // Hobby ou autres ligues = RSS
+  let sources = [];
+  if (newsSport === 'hockey') {
+    sources = LEAGUE_FEEDS[newsLeague] || [];
+  } else {
+    sources = NEWS_SOURCES.filter(s => s.sport === newsSport || s.sport === 'all');
+  }
+
   const all = await Promise.all(sources.map(fetchFeed));
   newsItems = all.flat().sort((a, b) => b.date - a.date);
-  newsCache[newsSport] = newsItems;
+  newsCache[cacheKey] = newsItems;
   renderNews();
+}
+
+async function loadNHLTab() {
+  const feed = document.getElementById('news-feed');
+  try {
+    // Scores en parallel avec les news
+    const [scoresRes, ...rssResults] = await Promise.all([
+      fetch('/api/nhl?path=score/now').then(r => r.json()),
+      ...((LEAGUE_FEEDS.nhl || []).map(fetchFeed))
+    ]);
+
+    const games = scoresRes.games || [];
+    let html = '';
+
+    // Widget scores
+    if (games.length) {
+      const cards = games.map(g => {
+        const away = g.awayTeam, home = g.homeTeam;
+        const isFinal = g.gameState === 'OFF' || g.gameState === 'FINAL';
+        const isLive  = g.gameState === 'LIVE' || g.gameState === 'CRIT';
+        const stateLabel = isFinal ? 'Final' : isLive ? '🔴 En direct'
+          : g.startTimeUTC ? new Date(g.startTimeUTC).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}) : 'À venir';
+        const stateClass = isFinal ? 'final' : isLive ? 'live' : '';
+        const awayScore = away.score ?? '', homeScore = home.score ?? '';
+        const awayWin = isFinal && awayScore > homeScore, homeWin = isFinal && homeScore > awayScore;
+        const s = g.seriesStatus;
+        const serieHtml = s ? `<div class="score-serie">Match ${s.gameNumberOfSeries} · ${
+          s.topSeedWins === s.bottomSeedWins ? `Égalité ${s.topSeedWins}-${s.bottomSeedWins}`
+          : `${s.topSeedWins > s.bottomSeedWins ? s.topSeedTeamAbbrev : s.bottomSeedTeamAbbrev} mène ${Math.max(s.topSeedWins,s.bottomSeedWins)}-${Math.min(s.topSeedWins,s.bottomSeedWins)}`
+        }</div>` : '';
+        const leaders = (g.teamLeaders||[]).filter(l=>l.category==='goals'||l.category==='assists');
+        const leadersHtml = leaders.length ? `<div class="score-leaders">${leaders.slice(0,3).map(l=>`<div class="score-leader"><img src="${l.headshot||''}" class="score-headshot" onerror="this.style.display='none'"/><span>${l.category==='goals'?'🥅':'🍎'} ${l.firstName?.default||''} ${l.lastName?.default||''} <strong>${l.value}</strong></span></div>`).join('')}</div>` : '';
+        return `<div class="score-card">
+          <div class="score-state ${stateClass}">${stateLabel}</div>
+          <div class="score-team"><img class="score-logo" src="${away.logo||''}" onerror="this.style.display='none'"/><span class="score-abbrev">${away.abbrev||''}</span>${away.record?`<span class="score-record">${away.record}</span>`:''} ${awayScore!==''?`<span class="score-pts${awayWin?' winner':''}">${awayScore}</span>`:''}</div>
+          <div class="score-team"><img class="score-logo" src="${home.logo||''}" onerror="this.style.display='none'"/><span class="score-abbrev">${home.abbrev||''}</span>${home.record?`<span class="score-record">${home.record}</span>`:''} ${homeScore!==''?`<span class="score-pts${homeWin?' winner':''}">${homeScore}</span>`:''}</div>
+          ${serieHtml}${leadersHtml}
+        </div>`;
+      }).join('');
+      html += `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
+    }
+
+    // News RSS
+    const newsArticles = rssResults.flat().sort((a,b) => b.date - a.date);
+    if (newsArticles.length) {
+      html += `<div class="scores-head" style="margin-bottom:10px">Nouvelles NHL</div>`;
+      html += newsArticles.map(item => `
+        <a class="news-card" href="${item.link}" target="_blank" rel="noopener">
+          <div class="news-meta"><span class="news-source ${item.source.cls}">${item.source.label}</span><span class="news-age">${timeAgo(item.date)}</span></div>
+          <div class="news-title">${item.title}</div>
+          ${item.excerpt ? `<div class="news-excerpt">${item.excerpt}</div>` : ''}
+        </a>`).join('');
+    }
+    feed.innerHTML = html || '<div class="news-empty">Aucun contenu disponible.</div>';
+  } catch(e) { feed.innerHTML = '<div class="news-error">Erreur de chargement.</div>'; }
+}
+
+function switchLeague(league) {
+  newsLeague = league;
+  document.querySelectorAll('.league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === league));
+  loadNews();
 }
 
 function switchSport(sport) {
   newsSport = sport;
-  newsFilter = 'all';
+  newsLeague = sport === 'hockey' ? 'hobby' : sport;
   document.querySelectorAll('.news-sport-btn').forEach(b => b.classList.toggle('active', b.dataset.sport === sport));
-  document.querySelectorAll('.news-filter').forEach(b => b.classList.toggle('active', b.dataset.cat === 'all'));
+  // Afficher/cacher les sous-onglets hockey
+  document.getElementById('hockey-leagues').style.display  = sport === 'hockey' ? 'flex' : 'none';
+  document.getElementById('other-sport-bar').style.display = sport !== 'hockey' ? 'flex' : 'none';
+  if (sport === 'hockey') document.querySelectorAll('.league-tab').forEach(b => b.classList.toggle('active', b.dataset.league === 'hobby'));
   loadNews();
 }
 
