@@ -177,7 +177,7 @@
       feed.innerHTML = '<div class="news-empty">Aucune nouvelle disponible pour le moment.</div>';
       return;
     }
-    feed.innerHTML = newsItems.map(item => renderNewsItem(item)).join('');
+    feed.innerHTML = `<div class="news-grid">${newsItems.map(item => renderNewsItem(item)).join('')}</div>`;
   }
 
   // ── Leaders ──────────────────────────────────────────────────────────
@@ -327,20 +327,30 @@
   function renderNHLTab() {
     const feed = document.getElementById('news-feed');
     if (!feed) return;
-    let html = '';
+
+    // Colonne gauche : Scores + Meneurs + Bracket
+    let left = '';
     if (nhlData.scores.length) {
       const cards = nhlData.scores.map(g => buildScoreCard(g)).join('');
-      html += `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
+      left += `<div class="scores-wrap"><div class="scores-head">Matchs — Playoffs ${new Date().getFullYear()}</div><div class="scores-scroll">${cards}</div></div>`;
     }
     const hasLeaders = ['season','playoffs'].some(m => Object.values(nhlData.leaders[m]||{}).some(a=>a.length>0));
-    if (hasLeaders) html += renderLeadersSection();
-    if (nhlData.bracket?.series?.length) html += renderBracketSection(nhlData.bracket);
-    if (nhlData.standings.length) html += renderStandingsSection();
+    if (hasLeaders) left += renderLeadersSection();
+    if (nhlData.bracket?.series?.length) left += renderBracketSection(nhlData.bracket);
+
+    // Colonne droite : Classement + Nouvelles
+    let right = '';
+    if (nhlData.standings.length) right += renderStandingsSection();
     if (nhlData.news.length) {
-      html += `<div class="scores-head" style="margin-bottom:10px;margin-top:16px">Nouvelles NHL</div>`;
-      html += nhlData.news.map(item => renderNewsItem(item)).join('');
+      right += `<div class="scores-head" style="margin-bottom:10px;margin-top:16px">Nouvelles</div>`;
+      right += `<div class="news-grid">${nhlData.news.map(item => renderNewsItem(item)).join('')}</div>`;
     }
-    feed.innerHTML = html || '<div class="news-empty">Aucun contenu disponible.</div>';
+
+    const body = (left || right)
+      ? `<div class="nhl-layout"><div class="nhl-col">${left}</div><div class="nhl-col">${right}</div></div>`
+      : '<div class="news-empty">Aucun contenu disponible.</div>';
+
+    feed.innerHTML = body;
   }
 
   async function loadNHLTab() {

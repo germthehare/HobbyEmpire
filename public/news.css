@@ -112,6 +112,25 @@
 }
 .news-empty { text-align: center; padding: 40px 20px; color: var(--ink-3); font-size: 13px; }
 
+/* ── Grille 2 colonnes pour les articles ─────────────────────────────── */
+.news-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+@media (max-width: 760px) { .news-grid { grid-template-columns: 1fr; } }
+
+/* ── Layout 2 colonnes pour l'onglet NHL ─────────────────────────────── */
+.nhl-layout {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 28px;
+  align-items: start;
+}
+.nhl-col { min-width: 0; }
+@media (max-width: 900px) { .nhl-layout { grid-template-columns: 1fr; } }
+
 /* ── NHL Scores ──────────────────────────────────────────────────────── */
 .scores-wrap { margin-bottom: 14px; }
 .scores-head {
