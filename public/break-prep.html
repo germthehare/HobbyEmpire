@@ -209,7 +209,10 @@ function filterKeys(query) {
   if (!words.length) return [];
   const scored = checklistKeys.map(key => {
     const k = key.toLowerCase();
-    const hits = words.filter(w => k.includes(w)).length;
+    const hits = words.filter(w => {
+      const esc = w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp('\\b' + esc + '\\b').test(k);
+    }).length;
     return { key, hits };
   }).filter(x => x.hits > 0);
   scored.sort((a, b) => b.hits - a.hits);
