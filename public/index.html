@@ -110,6 +110,7 @@
     <a class="nav-link" href="/break-builder.html">Break Tracker</a>
     <a class="nav-link" href="/hub.html">Hub</a>
     <a class="nav-link" href="/break-prep.html">Break Prep</a>
+    <a class="nav-link" href="/releases.html">Sorties</a>
   </nav>
 </header>
 
@@ -221,6 +222,110 @@
     </div>
     <div id="news-feed"><div class="news-loading">Chargement des nouvelles...</div></div>
   </div>
+</section>
+
+<!-- Sorties à venir — teaser. Liste complète sur /releases.html. -->
+<section class="news-section" id="home-releases">
+  <div class="news-section-head">
+    <div>
+      <div class="eyebrow">Calendrier — Hockey</div>
+      <h2>Sorties à venir.</h2>
+    </div>
+    <a class="btn btn-ghost btn-sm" href="/releases.html">Voir tout
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+  <style>
+    #home-releases .hr-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 10px;
+    }
+    #home-releases .hr-card {
+      background: var(--bg-3);
+      border: 1px solid var(--line);
+      border-radius: var(--r-md);
+      padding: 12px 14px;
+      box-shadow: var(--shadow-card);
+      display: grid; grid-template-columns: 56px 1fr; gap: 12px; align-items: center;
+      transition: border-color .12s, transform .12s;
+      text-decoration: none; color: inherit;
+    }
+    #home-releases .hr-card:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+    #home-releases .hr-date {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 6px; border-radius: var(--r-sm);
+      background: var(--bg-2); border: 1px solid var(--line); text-align: center;
+    }
+    #home-releases .hr-date .d { font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1; letter-spacing: -.02em; color: var(--ink); }
+    #home-releases .hr-date .m { font-family: var(--font-mono); font-size: 8px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); margin-top: 2px; }
+    #home-releases .hr-meta { display: flex; gap: 6px; margin-bottom: 4px; align-items: center; }
+    #home-releases .hr-brand {
+      font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); background: color-mix(in oklch, var(--accent), transparent 88%);
+      border: 1px solid color-mix(in oklch, var(--accent), transparent 70%);
+      padding: 2px 6px; border-radius: 3px;
+    }
+    #home-releases .hr-format {
+      font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-3); padding: 2px 5px; border-radius: 3px; background: var(--bg-2); border: 1px solid var(--line);
+    }
+    #home-releases .hr-name { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+    #home-releases .hr-card:hover .hr-name { color: var(--accent); }
+    #home-releases .hr-loading { padding: 30px 20px; text-align: center; color: var(--ink-3); font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+    #home-releases .hr-error { padding: 14px; color: var(--mute); font-size: 12px; font-style: italic; }
+  </style>
+  <div id="hr-feed"><div class="hr-loading">Chargement…</div></div>
+  <script>
+    (function() {
+      const API = 'https://api.hobbyempire.org';
+      const escapeHtml = s => String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const monthShort = iso => {
+        const m = ['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC'];
+        return iso ? m[parseInt(iso.slice(5, 7), 10) - 1] : 'TBD';
+      };
+      const dayNum = iso => iso ? String(parseInt(iso.slice(8, 10), 10)) : '—';
+      fetch(API + '/api/releases/upcoming')
+        .then(r => r.json())
+        .then(data => {
+          const all = data.releases || [];
+          // Take the next 6 with confirmed dates and dedupe on product_line+season so we
+          // don't show 3 cards for the same product in Hobby/Blaster/Retail formats.
+          const seen = new Set();
+          const cards = [];
+          for (const r of all) {
+            if (!r.releaseDateConfirmed) continue;
+            const k = `${r.season}|${r.productLine}`;
+            if (seen.has(k)) continue;
+            seen.add(k);
+            cards.push(r);
+            if (cards.length >= 6) break;
+          }
+          if (cards.length === 0) {
+            document.getElementById('hr-feed').innerHTML = '<div class="hr-error">Aucune sortie confirmée à venir.</div>';
+            return;
+          }
+          document.getElementById('hr-feed').innerHTML = '<div class="hr-grid">' + cards.map(r => `
+            <a class="hr-card" href="/releases.html">
+              <div class="hr-date">
+                <div class="d">${dayNum(r.releaseDate)}</div>
+                <div class="m">${monthShort(r.releaseDate)}</div>
+              </div>
+              <div>
+                <div class="hr-meta">
+                  <span class="hr-brand">${escapeHtml(r.brand)}</span>
+                  ${r.format ? `<span class="hr-format">${escapeHtml(r.format)}</span>` : ''}
+                </div>
+                <div class="hr-name">${escapeHtml(r.productName)}</div>
+              </div>
+            </a>
+          `).join('') + '</div>';
+        })
+        .catch(() => {
+          document.getElementById('hr-feed').innerHTML = '<div class="hr-error">Calendrier indisponible pour le moment.</div>';
+        });
+    })();
+  </script>
 </section>
 
 <footer class="footer">

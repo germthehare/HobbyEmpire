@@ -23,7 +23,8 @@ Hébergé sur **Vercel** (compte : glelievre71@gmail.com, projet : `glelievre71-
 │   ├── break-prep.html      ← PAGE PRINCIPALE (Break Prep + Actualités + Live)
 │   ├── break-builder.html   ← Break Tracker
 │   ├── hub.html             ← Hub
-│   ├── index.html           ← Page d'accueil
+│   ├── index.html           ← Page d'accueil (+ teaser "Sorties à venir")
+│   ├── releases.html        ← Calendrier complet des sorties (API: api.hobbyempire.org)
 │   ├── products.json        ← Liste des clés de produits (auto-généré)
 │   └── auth-guard.js        ← Guard d'authentification
 │
@@ -53,6 +54,7 @@ Hébergé sur **Vercel** (compte : glelievre71@gmail.com, projet : `glelievre71-
 | eBay Browse API | `api/ebay.js` | `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET` | OAuth auto-géré, category 212 |
 | NewsAPI.org | `api/news.js` | `NEWS_API_KEY` | 100 req/jour, cache 10min |
 | Google Sheets | `api/sheets.js` | `GOOGLE_CREDENTIALS` | |
+| **Hobby Empire Releases API** | externe (`https://api.hobbyempire.org`) | aucune | Worker Cloudflare séparé (`~/hobbyempire-releases`) qui scrape Waxstat/Miraj/Beckett toutes les 6h et expose `/api/releases`, `/api/releases/upcoming`, `/api/releases/:id`, `/api/stats`. Utilisé par `public/releases.html` + teaser sur la home. CORS ouvert pour `hobbyempire.org`. |
 
 ---
 
