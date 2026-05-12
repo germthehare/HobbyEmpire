@@ -64,7 +64,7 @@
     box-shadow: var(--shadow-card);
     transition: border-color .12s, transform .12s;
     display: grid;
-    grid-template-columns: 72px 1fr auto;
+    grid-template-columns: 72px 1fr;
     gap: 14px;
     align-items: center;
   }
@@ -120,14 +120,6 @@
   .rel-name { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.35; }
   .rel-card:hover .rel-name { color: var(--accent); }
 
-  /* Price */
-  .rel-price { display: flex; flex-direction: column; align-items: end; gap: 2px; }
-  .rel-price .p {
-    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
-    font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap;
-  }
-  .rel-price .c { font-family: var(--font-mono); font-size: 9px; color: var(--mute); letter-spacing: .08em; text-transform: uppercase; }
-
   /* States */
   .rel-loading { padding: 60px 20px; text-align: center; color: var(--ink-3); font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
   .rel-error {
@@ -146,7 +138,6 @@
     .rel-stats .cell:nth-child(odd) { border-right: 1px solid var(--line); }
     .rel-stats .cell:nth-child(n+3) { border-top: 1px solid var(--line); }
     .rel-card { grid-template-columns: 56px 1fr; }
-    .rel-card .rel-price { grid-column: 1 / -1; flex-direction: row; align-items: baseline; justify-content: flex-end; gap: 6px; padding-top: 4px; border-top: 1px solid var(--line); }
   }
 </style>
 </head>
@@ -281,11 +272,6 @@
       const m = ['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC'];
       return iso ? m[parseInt(iso.slice(5, 7), 10) - 1] : 'TBD';
     },
-    price(cad, usd) {
-      if (cad != null) return { v: '$' + cad.toFixed(2), c: 'CAD' };
-      if (usd != null) return { v: '$' + usd.toFixed(2), c: 'USD' };
-      return null;
-    },
     relativeDate(iso) {
       if (!iso) return '—';
       const d = new Date(iso + 'T00:00:00Z');
@@ -310,7 +296,6 @@
   function renderCard(r) {
     const date = r.releaseDate;
     const dateClass = !date ? 'is-tbd' : (r.releaseDateConfirmed ? '' : 'is-estimated');
-    const price = fmt.price(r.estimatedPriceCad, r.estimatedPriceUsd);
     const brandClassName = brandClass(r.brand);
 
     return `
@@ -328,7 +313,6 @@
           </div>
           <div class="rel-name">${escapeHtml(r.productName)}</div>
         </div>
-        ${price ? `<div class="rel-price"><span class="p">${price.v}</span><span class="c">${price.c}</span></div>` : ''}
       </article>
     `;
   }
