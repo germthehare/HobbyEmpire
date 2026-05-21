@@ -130,14 +130,14 @@
 }
 .pf-pin-label input { margin: 0; accent-color: var(--accent); }
 
-/* Post cards grid */
+/* Post cards — single-column editorial feed */
 .announce-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 700px;
 }
 .announce-empty {
-  grid-column: 1 / -1;
   padding: 52px 20px;
   text-align: center;
   color: var(--ink-3);
@@ -146,120 +146,123 @@
 .announce-empty-title { font-weight: 600; color: var(--ink-2); font-size: 15px; }
 .announce-empty-sub { font-size: 12px; margin-top: 5px; color: var(--mute); }
 
+/* Post card shell */
 .announce-card {
   background: var(--bg-3);
   border: 1px solid var(--line);
-  border-left-width: 3px;
+  border-left-width: 4px;
   border-radius: var(--r-md);
-  padding: 16px 18px 14px;
-  box-shadow: var(--shadow-card);
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  transition: transform 0.12s, box-shadow 0.12s;
-  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.07);
+  transition: box-shadow 0.15s, transform 0.15s;
 }
-.announce-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.10); }
+.announce-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,.07), 0 10px 30px rgba(0,0,0,.11);
+  transform: translateY(-1px);
+}
+/* Accent left border by type */
 .announce-card.type-info    { border-left-color: oklch(58% 0.16 260); }
 .announce-card.type-urgent  { border-left-color: var(--accent); }
 .announce-card.type-live    { border-left-color: var(--pos); }
 .announce-card.type-rappel  { border-left-color: var(--warn); }
+/* Pinned: slightly stronger presence */
+.announce-card.is-pinned    { border-left-width: 5px; }
 
-.announce-card-top {
+/* Banner strip (tinted header row) */
+.announce-card-banner {
   display: flex;
   align-items: center;
-  gap: 7px;
-  min-width: 0;
+  justify-content: space-between;
+  padding: 9px 14px 9px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.type-info   .announce-card-banner { background: color-mix(in oklch, oklch(58% 0.16 260), transparent 91%); }
+.type-urgent .announce-card-banner { background: color-mix(in oklch, var(--accent),           transparent 91%); }
+.type-live   .announce-card-banner { background: color-mix(in oklch, var(--pos),              transparent 91%); }
+.type-rappel .announce-card-banner { background: color-mix(in oklch, var(--warn),             transparent 91%); }
+
+.announce-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .announce-type-badge {
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  padding: 3px 7px;
-  border-radius: 4px;
   white-space: nowrap;
-  flex-shrink: 0;
 }
-.type-info   .announce-type-badge { background: color-mix(in oklch, oklch(58% 0.16 260), transparent 86%); color: oklch(40% 0.16 260); }
-.type-urgent .announce-type-badge { background: color-mix(in oklch, var(--accent), transparent 86%); color: var(--accent); }
-.type-live   .announce-type-badge { background: color-mix(in oklch, var(--pos), transparent 86%); color: var(--pos); }
-.type-rappel .announce-type-badge { background: color-mix(in oklch, var(--warn), transparent 86%); color: oklch(50% 0.18 80); }
+.type-info   .announce-type-badge { color: oklch(36% 0.18 260); }
+.type-urgent .announce-type-badge { color: oklch(40% 0.20 32);  }
+.type-live   .announce-type-badge { color: oklch(34% 0.18 160); }
+.type-rappel .announce-type-badge { color: oklch(42% 0.20 80);  }
 
-.announce-pin { font-size: 11px; flex-shrink: 0; }
-.announce-date-meta {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--mute);
-  letter-spacing: 0.05em;
-  margin-left: auto;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+.announce-pin-icon { font-size: 11px; line-height: 1; }
+
+.announce-banner-right { display: flex; align-items: center; gap: 4px; }
 .announce-del {
   background: transparent;
   border: none;
-  padding: 1px 5px;
-  color: var(--ink-3);
+  padding: 2px 6px;
+  color: var(--mute);
   font-size: 16px;
   line-height: 1;
   cursor: pointer;
   border-radius: 3px;
   transition: color 0.12s, background 0.12s;
-  flex-shrink: 0;
 }
 .announce-del:hover { color: var(--neg); background: color-mix(in oklch, var(--neg), transparent 90%); }
 
+/* Card main content */
+.announce-card-body {
+  padding: 20px 22px 14px;
+}
 .announce-titre {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 900;
   font-stretch: 75%;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  letter-spacing: -0.028em;
+  line-height: 1.04;
   color: var(--ink);
+  margin: 0 0 10px;
 }
 .announce-body {
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 14px;
+  line-height: 1.72;
   color: var(--ink-2);
   white-space: pre-line;
   word-break: break-word;
+  margin: 0;
 }
+
+/* Byline footer */
 .announce-footer {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
-  margin-top: auto;
+  justify-content: space-between;
+  padding: 10px 22px 14px;
+  gap: 12px;
 }
-.announce-avatar {
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  background: var(--bg-ink);
-  color: oklch(80% 0.01 75);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
+.announce-byline {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.announce-author-name {
+  gap: 5px;
   font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--ink-3);
+  color: var(--mute);
+  letter-spacing: 0.04em;
 }
+.announce-byline-author {
+  color: var(--ink-3);
+  font-weight: 700;
+}
+.announce-byline-dot { opacity: 0.4; }
 .announce-pin-btn {
-  margin-left: auto;
   background: transparent;
-  border: none;
+  border: 1px solid var(--line);
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 600;
@@ -267,11 +270,17 @@
   text-transform: uppercase;
   color: var(--ink-3);
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 4px 10px;
   border-radius: 3px;
-  transition: color 0.12s, background 0.12s;
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  white-space: nowrap;
 }
-.announce-pin-btn:hover { color: var(--ink); background: var(--bg-2); }
+.announce-pin-btn:hover { color: var(--ink); background: var(--bg-2); border-color: var(--line-strong); }
+.announce-pin-btn.is-pinned {
+  color: var(--accent);
+  border-color: color-mix(in oklch, var(--accent), transparent 55%);
+  background: color-mix(in oklch, var(--accent), transparent 93%);
+}
 
 /* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
 .ticker {
@@ -513,7 +522,6 @@
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .announce-section { padding: 24px 28px 18px; }
-  .announce-grid { grid-template-columns: 1fr; }
   .ticker { margin: 0 28px; grid-template-columns: 1fr 1fr; }
   .ticker-cell.featured { grid-column: 1 / -1; }
   .ticker-cell:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
@@ -1047,37 +1055,45 @@
       const d    = new Date(p.date);
       const date = d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' });
       const time = d.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
-      const initials = esc((p.auteur || 'AD').slice(0, 2).toUpperCase());
 
       return `
-        <div class="announce-card type-${esc(p.type)}">
+        <article class="announce-card type-${esc(p.type)}${p.pinned ? ' is-pinned' : ''}">
 
-          <!-- Card top row: type badge · pin · date · delete -->
-          <div class="announce-card-top">
-            <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
-            ${p.pinned ? '<span class="announce-pin" title="Épinglé">📌</span>' : ''}
-            <span class="announce-date-meta">${date} · ${time}</span>
-            <button class="announce-del" onclick="deletePost('${esc(p.id)}')"
-              title="Supprimer" aria-label="Supprimer ce post">×</button>
+          <!-- Tinted banner strip: type · pin indicator · delete -->
+          <div class="announce-card-banner">
+            <div class="announce-banner-left">
+              <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
+              ${p.pinned ? '<span class="announce-pin-icon" title="Épinglé">📌</span>' : ''}
+            </div>
+            <div class="announce-banner-right">
+              <button class="announce-del" onclick="deletePost('${esc(p.id)}')"
+                title="Supprimer" aria-label="Supprimer ce post">×</button>
+            </div>
           </div>
 
-          <!-- Title -->
-          <div class="announce-titre">${esc(p.titre)}</div>
+          <!-- Main content: big headline + body -->
+          <div class="announce-card-body">
+            <h3 class="announce-titre">${esc(p.titre)}</h3>
+            ${p.message ? `<p class="announce-body">${esc(p.message)}</p>` : ''}
+          </div>
 
-          <!-- Body (optional) -->
-          ${p.message ? `<div class="announce-body">${esc(p.message)}</div>` : ''}
-
-          <!-- Footer: author + pin toggle -->
+          <!-- Byline footer: author · date + pin button -->
           <div class="announce-footer">
-            <div class="announce-avatar" aria-hidden="true">${initials}</div>
-            <span class="announce-author-name">${esc(p.auteur || 'Admin')}</span>
-            <button class="announce-pin-btn" onclick="togglePin('${esc(p.id)}')"
+            <div class="announce-byline">
+              <span class="announce-byline-author">${esc(p.auteur || 'Admin')}</span>
+              <span class="announce-byline-dot">·</span>
+              <span>${date}</span>
+              <span class="announce-byline-dot">·</span>
+              <span>${time}</span>
+            </div>
+            <button class="announce-pin-btn${p.pinned ? ' is-pinned' : ''}"
+              onclick="togglePin('${esc(p.id)}')"
               title="${p.pinned ? 'Désépingler' : 'Épingler'}">
               ${p.pinned ? '📌 Épinglé' : 'Épingler'}
             </button>
           </div>
 
-        </div>`;
+        </article>`;
     }).join('');
   }
 
