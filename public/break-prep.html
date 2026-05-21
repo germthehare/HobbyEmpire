@@ -189,9 +189,11 @@
   .ebay-info { flex: 1; min-width: 0; }
   .ebay-title { font-size: 12px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ebay-price { font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--green); white-space: nowrap; }
-  .gen-btn { width: 100%; background: var(--gold); border: none; border-radius: 8px; color: var(--accent-ink); font-size: 12px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; padding: 15px; cursor: pointer; margin-bottom: 20px; transition: all 0.15s; }
+  .gen-btn { width: 100%; background: var(--gold); border: none; border-radius: 8px; color: var(--accent-ink); font-size: 12px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 2px; text-transform: uppercase; padding: 15px; cursor: pointer; margin-bottom: 10px; transition: all 0.15s; }
   .gen-btn:hover { background: var(--gold3); }
   .gen-btn:disabled { background: var(--line); color: var(--line-strong); cursor: not-allowed; }
+  .add-another-btn { width: 100%; background: transparent; border: 1px dashed var(--line); border-radius: 8px; color: var(--text3); font-size: 13px; font-family: var(--font-body); padding: 12px; cursor: pointer; margin-bottom: 16px; transition: all 0.15s; }
+  .add-another-btn:hover { border-color: var(--gold); color: var(--gold3); }
   .live-row { display: flex; gap: 8px; margin-bottom: 16px; }
   .live-row input { flex: 1; background: var(--dark3); border: 1px solid var(--line); border-radius: 8px; padding: 13px 16px; color: var(--text); font-size: 15px; font-family: var(--font-body); outline: none; transition: border-color 0.2s; }
   .live-row input:focus { border-color: var(--gold); }
@@ -299,8 +301,7 @@
   <div id="mode-prep">
     <div class="section-head" id="lbl-products">Produits à breaker</div>
     <div id="product-list"></div>
-    <button class="add-btn" id="btn-add" onclick="toggleSelector()">+ Ajouter un produit</button>
-    <div class="selector-panel" id="selector-panel" style="display:none">
+    <div class="selector-panel" id="selector-panel">
       <div class="selector-step">
         <div class="step-head" id="lbl-sport">Sport</div>
         <div class="step-opts" id="sport-opts"></div>
@@ -314,7 +315,10 @@
         <div class="step-opts" id="product-opts"><span class="step-placeholder" id="ph-product">← Sélectionne une année</span></div>
       </div>
     </div>
-    <button class="gen-btn" id="gen-btn" onclick="generatePrep()">Générer les fiches</button>
+    <div id="action-row" style="display:none">
+      <button class="gen-btn" id="gen-btn" onclick="generatePrep()">Générer les fiches</button>
+      <button class="add-another-btn" id="btn-add-another" onclick="openSelectorForMore()">+ Ajouter un autre produit</button>
+    </div>
     <div id="prep-result">
       <div class="empty">
         <div class="empty-title" id="empty-title">Tes fiches apparaîtront ici</div>
@@ -438,37 +442,26 @@ function onSelectProduct(p) {
     setTimeout(() => lastChip.classList.remove('chip-flash'), 1500);
   }
 
-  // Message de confirmation en haut du sélecteur
-  const panel = document.getElementById('selector-panel');
-  const existing = panel.querySelector('.selector-confirm');
-  if (existing) existing.remove();
-  const confirm = document.createElement('div');
-  confirm.className = 'selector-confirm';
-  confirm.textContent = '✓ ' + p.name + ' ajouté — sélectionne le prochain produit';
-  panel.insertBefore(confirm, panel.firstChild);
-  setTimeout(() => confirm.remove(), 1400);
+  // Cacher le sélecteur, afficher les boutons d'action
+  document.getElementById('selector-panel').style.display = 'none';
+  document.getElementById('action-row').style.display = 'block';
 
-  // Reset complet du sélecteur (sport + année + produit)
+  // Reset complet du sélecteur pour la prochaine ouverture
   selSport = null; selYear = null;
   document.querySelectorAll('.step-opt').forEach(b => b.classList.remove('selected'));
   document.getElementById('year-opts').innerHTML    = '<span class="step-placeholder" id="ph-year">← Sélectionne un sport</span>';
   document.getElementById('product-opts').innerHTML = '<span class="step-placeholder" id="ph-product">← Sélectionne une année</span>';
 }
 
-// ── Toggle selector panel ────────────────────────────────────────────────────
-function toggleSelector() {
-  selectorOpen = !selectorOpen;
-  document.getElementById('selector-panel').style.display = selectorOpen ? 'block' : 'none';
-  document.getElementById('btn-add').classList.toggle('open', selectorOpen);
-  document.getElementById('btn-add').textContent = selectorOpen ? '▲ Fermer le sélecteur' : '+ Ajouter un produit';
+function openSelectorForMore() {
+  document.getElementById('action-row').style.display = 'none';
+  document.getElementById('selector-panel').style.display = 'block';
 }
 
+// ── Selector helpers (kept for compatibility) ────────────────────────────────
+function toggleSelector() { /* no-op: selector now always-visible at start */ }
+
 function closeSelector() {
-  selectorOpen = false;
-  document.getElementById('selector-panel').style.display = 'none';
-  document.getElementById('btn-add').classList.remove('open');
-  document.getElementById('btn-add').textContent = t('addProduct');
-  // Reset selections
   selSport = null; selYear = null;
   document.querySelectorAll('.step-opt').forEach(b => b.classList.remove('selected'));
   document.getElementById('year-opts').innerHTML = '<span class="step-placeholder" id="ph-year">← Sélectionne un sport</span>';
@@ -548,7 +541,8 @@ function setLang(l) {
   document.getElementById('tab-prep').textContent = t('tabPrep');
   document.getElementById('tab-live').textContent = t('tabLive');
   document.getElementById('lbl-products').textContent = t('products');
-  document.getElementById('btn-add').textContent = t('addProduct');
+  const btnAddAnother = document.getElementById('btn-add-another');
+  if (btnAddAnother) btnAddAnother.textContent = t('addProduct');
   document.getElementById('gen-btn').textContent = t('genBtn');
   document.getElementById('lbl-card').textContent = t('cardLabel');
   document.getElementById('live-btn').textContent = t('cardBtn');
@@ -557,7 +551,6 @@ function setLang(l) {
   document.getElementById('card-input').placeholder = t('cardPlaceholder');
   const et = document.getElementById('empty-title'); if(et) et.textContent = t('emptyTitle');
   const es = document.getElementById('empty-sub'); if(es) es.textContent = t('emptySub');
-  if (!selectorOpen) document.getElementById('btn-add').textContent = t('addProduct');
 }
 
 function setMode(m) {
