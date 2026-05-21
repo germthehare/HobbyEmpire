@@ -11,49 +11,267 @@
 <style>
 /* ══ HOME-SPECIFIC STYLES ══════════════════════════════════════ */
 
-/* Hero */
-.home-hero {
-  display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  gap: 56px;
-  padding: 44px 48px 36px;
-  align-items: center;
+/* ── Announcements board ─────────────────────────────────────── */
+.announce-section {
+  padding: 32px 48px 24px;
 }
-.home-hero h1 {
+.announce-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.announce-header h2 {
   font-family: var(--font-display);
-  font-size: clamp(48px, 5.6vw, 76px);
+  font-size: 34px;
   font-weight: 900;
   font-stretch: 75%;
   letter-spacing: -0.025em;
-  line-height: 0.88;
+  line-height: 0.9;
   color: var(--ink);
   margin: 0;
 }
-.home-hero .lead {
-  max-width: 460px;
-  margin-top: 18px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--ink-2);
+
+/* New post slide-down form */
+.post-form-wrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.home-hero .ctas {
+.post-form-wrap.open { max-height: 640px; }
+.post-form-inner {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 20px 22px 18px;
+  margin-bottom: 16px;
+}
+.pf-type-row {
   display: flex;
-  gap: 10px;
-  margin-top: 22px;
+  gap: 6px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
 }
+.pf-type-btn {
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.pf-type-btn.active-info    { background: color-mix(in oklch, oklch(58% 0.16 260), transparent 86%); color: oklch(40% 0.16 260); border-color: oklch(58% 0.16 260); }
+.pf-type-btn.active-urgent  { background: color-mix(in oklch, var(--accent), transparent 86%); color: var(--accent); border-color: var(--accent); }
+.pf-type-btn.active-live    { background: color-mix(in oklch, var(--pos), transparent 86%); color: var(--pos); border-color: var(--pos); }
+.pf-type-btn.active-rappel  { background: color-mix(in oklch, var(--warn), transparent 86%); color: oklch(52% 0.18 80); border-color: var(--warn); }
+.pf-titre {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  font-stretch: 75%;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  outline: none;
+  margin-bottom: 10px;
+  display: block;
+  transition: border-color 0.12s;
+}
+.pf-titre:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
+.pf-titre::placeholder { font-family: var(--font-body); font-size: 14px; font-weight: 400; font-stretch: normal; letter-spacing: 0; color: var(--mute); }
+.pf-msg {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  margin-bottom: 14px;
+  display: block;
+  line-height: 1.6;
+  transition: border-color 0.12s;
+}
+.pf-msg:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
+.pf-msg::placeholder { color: var(--mute); }
+.pf-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pf-pin-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  cursor: pointer;
+  padding: 0 4px;
+}
+.pf-pin-label input { margin: 0; accent-color: var(--accent); }
 
-/* Slab stack */
-.slab-col {
+/* Post cards grid */
+.announce-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+.announce-empty {
+  grid-column: 1 / -1;
+  padding: 52px 20px;
+  text-align: center;
+  color: var(--ink-3);
+}
+.announce-empty-icon { font-size: 28px; margin-bottom: 10px; }
+.announce-empty-title { font-weight: 600; color: var(--ink-2); font-size: 15px; }
+.announce-empty-sub { font-size: 12px; margin-top: 5px; color: var(--mute); }
+
+.announce-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: var(--r-md);
+  padding: 16px 18px 14px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  transition: transform 0.12s, box-shadow 0.12s;
+  position: relative;
+}
+.announce-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.10); }
+.announce-card.type-info    { border-left-color: oklch(58% 0.16 260); }
+.announce-card.type-urgent  { border-left-color: var(--accent); }
+.announce-card.type-live    { border-left-color: var(--pos); }
+.announce-card.type-rappel  { border-left-color: var(--warn); }
+
+.announce-card-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+.announce-type-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.type-info   .announce-type-badge { background: color-mix(in oklch, oklch(58% 0.16 260), transparent 86%); color: oklch(40% 0.16 260); }
+.type-urgent .announce-type-badge { background: color-mix(in oklch, var(--accent), transparent 86%); color: var(--accent); }
+.type-live   .announce-type-badge { background: color-mix(in oklch, var(--pos), transparent 86%); color: var(--pos); }
+.type-rappel .announce-type-badge { background: color-mix(in oklch, var(--warn), transparent 86%); color: oklch(50% 0.18 80); }
+
+.announce-pin { font-size: 11px; flex-shrink: 0; }
+.announce-date-meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--mute);
+  letter-spacing: 0.05em;
+  margin-left: auto;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.announce-del {
+  background: transparent;
+  border: none;
+  padding: 1px 5px;
+  color: var(--ink-3);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color 0.12s, background 0.12s;
+  flex-shrink: 0;
+}
+.announce-del:hover { color: var(--neg); background: color-mix(in oklch, var(--neg), transparent 90%); }
+
+.announce-titre {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 900;
+  font-stretch: 75%;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+.announce-body {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  white-space: pre-line;
+  word-break: break-word;
+}
+.announce-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+.announce-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--bg-ink);
+  color: oklch(80% 0.01 75);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
-.slab-stack {
-  position: relative;
-  width: 290px;
-  height: 275px;
+.announce-author-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
 }
+.announce-pin-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: color 0.12s, background 0.12s;
+}
+.announce-pin-btn:hover { color: var(--ink); background: var(--bg-2); }
 
 /* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
 .ticker {
@@ -294,8 +512,8 @@
 
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 1100px) {
-  .home-hero { grid-template-columns: 1fr; padding: 32px 28px 24px; gap: 36px; }
-  .slab-col { justify-content: flex-start; }
+  .announce-section { padding: 24px 28px 18px; }
+  .announce-grid { grid-template-columns: 1fr; }
   .ticker { margin: 0 28px; grid-template-columns: 1fr 1fr; }
   .ticker-cell.featured { grid-column: 1 / -1; }
   .ticker-cell:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
@@ -305,7 +523,6 @@
   .home-section-sep { margin: 0 28px; }
 }
 @media (max-width: 640px) {
-  .home-hero h1 { font-size: clamp(38px, 11vw, 56px); }
   .ticker { grid-template-columns: 1fr 1fr; }
   .ticker-cell.featured { grid-column: 1 / -1; }
 }
@@ -370,91 +587,61 @@
 
   <div class="sp-page-content">
 
-    <!-- ══ HERO ═══════════════════════════════════════════════ -->
-    <section class="home-hero">
+    <!-- ══ ANNOUNCEMENTS BOARD ════════════════════════════════ -->
+    <section class="announce-section">
 
-      <!-- Left column — headline + CTAs -->
-      <div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
-          <span class="sp-live-pill">SAISON 25/26 · EN COURS</span>
+      <div class="announce-header">
+        <div>
+          <div class="home-section-eyebrow">
+            <span class="sp-holo-line" aria-hidden="true"></span>
+            Tableau d'affichage
+          </div>
+          <h2>Messages équipe.</h2>
         </div>
-        <h1>Gérez<br>vos breaks.<br><em style="font-style:normal;color:var(--accent)">Maximisez.</em></h1>
-        <p class="lead">
-          Speloosh — plateforme complète pour tracker vos breaks sportifs, analyser vos performances et préparer vos lives avec confiance.
-        </p>
-        <div class="ctas">
-          <a class="btn btn-primary" href="/break-builder.html">
-            Entrer un break
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a class="btn btn-ghost" href="/break-prep.html">Préparer un live</a>
-          <a class="btn btn-ghost" href="/hub.html">Voir les stats</a>
+        <button class="btn btn-primary btn-sm" onclick="togglePostForm()" id="new-post-btn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Nouveau post
+        </button>
+      </div>
+
+      <!-- Slide-down form -->
+      <div class="post-form-wrap" id="post-form-wrap" aria-live="polite">
+        <div class="post-form-inner">
+          <!-- Type selector -->
+          <div class="pf-type-row" role="group" aria-label="Type de post">
+            <button class="pf-type-btn active-info" data-type="info"   onclick="setPfType('info')">ℹ Info</button>
+            <button class="pf-type-btn"              data-type="urgent" onclick="setPfType('urgent')">⚡ Urgent</button>
+            <button class="pf-type-btn"              data-type="live"   onclick="setPfType('live')">🔴 Live</button>
+            <button class="pf-type-btn"              data-type="rappel" onclick="setPfType('rappel')">📅 Rappel</button>
+          </div>
+          <!-- Title -->
+          <input class="pf-titre" id="pf-titre" type="text"
+            placeholder="Titre du post…"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('pf-msg').focus();}" />
+          <!-- Body -->
+          <textarea class="pf-msg" id="pf-msg"
+            placeholder="Message (optionnel)…"></textarea>
+          <!-- Actions -->
+          <div class="pf-actions">
+            <label class="pf-pin-label">
+              <input type="checkbox" id="pf-pin"> Épingler en haut
+            </label>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="togglePostForm(false)">Annuler</button>
+              <button class="btn btn-primary btn-sm" onclick="submitPost()">
+                Publier
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Right column — stacked slab cards -->
-      <div class="slab-col">
-        <div class="slab-stack" aria-hidden="true">
-
-          <!-- Card 1 — back, –8° -->
-          <div class="mini-slab" style="position:absolute;transform:rotate(-8deg);top:28px;left:0;z-index:1">
-            <div class="ms-cert-top">
-              <span class="ms-cert-txt">SPELOOSH · BREAK</span>
-              <span class="ms-cert-txt">SPLSH·26·05</span>
-            </div>
-            <div class="ms-body">
-              <div class="ms-halftone"></div>
-              <div class="ms-eyebrow">PLANIFIÉ</div>
-              <div class="ms-label">Live<br>Lundi</div>
-              <div class="ms-foil-corner"></div>
-            </div>
-            <div class="ms-bottom">
-              <div class="ms-grade-num">10</div>
-              <div class="ms-grade-label">GEM<br>MINT</div>
-              <div class="ms-serial">#02/26</div>
-            </div>
-          </div>
-
-          <!-- Card 2 — center, +3°, FEATURED -->
-          <div class="mini-slab" style="position:absolute;transform:rotate(3deg);top:0;left:42px;z-index:3">
-            <div class="ms-cert-top">
-              <span class="ms-cert-txt">SPELOOSH · BREAK</span>
-              <span class="ms-cert-txt">SPLSH·26·05</span>
-            </div>
-            <div class="ms-body ms-featured">
-              <div class="ms-halftone"></div>
-              <div class="ms-eyebrow">EN COURS</div>
-              <div class="ms-label">Live<br>Mercredi</div>
-              <div class="ms-foil-corner"></div>
-            </div>
-            <div class="ms-bottom">
-              <div class="ms-grade-num">10</div>
-              <div class="ms-grade-label">GEM<br>MINT</div>
-              <div class="ms-serial">#04/26</div>
-            </div>
-          </div>
-
-          <!-- Card 3 — front-right, +9° -->
-          <div class="mini-slab" style="position:absolute;transform:rotate(9deg);top:20px;left:82px;z-index:2">
-            <div class="ms-cert-top">
-              <span class="ms-cert-txt">SPELOOSH · BREAK</span>
-              <span class="ms-cert-txt">SPLSH·26·05</span>
-            </div>
-            <div class="ms-body">
-              <div class="ms-halftone"></div>
-              <div class="ms-eyebrow">PROCHAIN</div>
-              <div class="ms-label">Live<br>Samedi</div>
-              <div class="ms-foil-corner"></div>
-            </div>
-            <div class="ms-bottom">
-              <div class="ms-grade-num">10</div>
-              <div class="ms-grade-label">GEM<br>MINT</div>
-              <div class="ms-serial">#06/26</div>
-            </div>
-          </div>
-
-        </div>
+      <!-- Posts grid -->
+      <div class="announce-grid" id="announce-grid" aria-live="polite">
+        <!-- rendered by JS -->
       </div>
+
     </section>
 
     <!-- ══ STAT TICKER (asymmetric 1.6 / 1 / 1 / 1) ══════════ -->
@@ -739,5 +926,164 @@
 </div>
 
 <script src="news.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   Announcements board — admin posts for vendors / helpers
+   Stored in localStorage under key 'he_announcements'
+   ═══════════════════════════════════════════════════════════ */
+(function () {
+  const KEY = 'he_announcements';
+
+  const TYPE_META = {
+    info:   { label: 'Info',   emoji: 'ℹ️' },
+    urgent: { label: 'Urgent', emoji: '⚡' },
+    live:   { label: 'Live',   emoji: '🔴' },
+    rappel: { label: 'Rappel', emoji: '📅' },
+  };
+
+  /* ── Storage ───────────────────────────────────────────── */
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+    catch { return []; }
+  }
+  function save(posts) {
+    localStorage.setItem(KEY, JSON.stringify(posts));
+  }
+
+  /* ── XSS escape ────────────────────────────────────────── */
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── State ─────────────────────────────────────────────── */
+  let currentType = 'info';
+
+  /* ── Toggle form ───────────────────────────────────────── */
+  window.togglePostForm = function (force) {
+    const wrap = document.getElementById('post-form-wrap');
+    const open = force !== undefined ? Boolean(force) : !wrap.classList.contains('open');
+    wrap.classList.toggle('open', open);
+    if (open) {
+      setTimeout(() => document.getElementById('pf-titre').focus(), 50);
+    }
+  };
+
+  /* ── Set post type ─────────────────────────────────────── */
+  window.setPfType = function (type) {
+    currentType = type;
+    document.querySelectorAll('.pf-type-btn').forEach(btn => {
+      btn.classList.remove('active-info','active-urgent','active-live','active-rappel');
+      if (btn.dataset.type === type) btn.classList.add('active-' + type);
+    });
+  };
+
+  /* ── Submit post ───────────────────────────────────────── */
+  window.submitPost = function () {
+    const titreEl = document.getElementById('pf-titre');
+    const msgEl   = document.getElementById('pf-msg');
+    const pinEl   = document.getElementById('pf-pin');
+
+    const titre = titreEl.value.trim();
+    if (!titre) { titreEl.focus(); titreEl.style.borderColor = 'var(--neg)'; return; }
+    titreEl.style.borderColor = '';
+
+    const posts = load();
+    posts.unshift({
+      id:      Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+      type:    currentType,
+      titre,
+      message: msgEl.value.trim(),
+      pinned:  pinEl.checked,
+      auteur:  'Admin',
+      date:    new Date().toISOString(),
+    });
+    save(posts);
+
+    /* Reset form */
+    titreEl.value = '';
+    msgEl.value   = '';
+    pinEl.checked = false;
+    togglePostForm(false);
+    render();
+  };
+
+  /* ── Delete post ───────────────────────────────────────── */
+  window.deletePost = function (id) {
+    if (!confirm('Supprimer ce post ?')) return;
+    save(load().filter(p => p.id !== id));
+    render();
+  };
+
+  /* ── Toggle pin ────────────────────────────────────────── */
+  window.togglePin = function (id) {
+    save(load().map(p => p.id === id ? { ...p, pinned: !p.pinned } : p));
+    render();
+  };
+
+  /* ── Render ────────────────────────────────────────────── */
+  function render() {
+    const posts = load();
+    const grid  = document.getElementById('announce-grid');
+    if (!grid) return;
+
+    if (!posts.length) {
+      grid.innerHTML = `
+        <div class="announce-empty">
+          <div class="announce-empty-icon">📌</div>
+          <div class="announce-empty-title">Aucun message pour le moment.</div>
+          <div class="announce-empty-sub">Cliquez sur <strong>Nouveau post</strong> pour commencer.</div>
+        </div>`;
+      return;
+    }
+
+    /* Pinned posts float to top */
+    const sorted = [
+      ...posts.filter(p => p.pinned),
+      ...posts.filter(p => !p.pinned),
+    ];
+
+    grid.innerHTML = sorted.map(p => {
+      const meta = TYPE_META[p.type] || { label: p.type, emoji: '' };
+      const d    = new Date(p.date);
+      const date = d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' });
+      const time = d.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
+      const initials = esc((p.auteur || 'AD').slice(0, 2).toUpperCase());
+
+      return `
+        <div class="announce-card type-${esc(p.type)}">
+
+          <!-- Card top row: type badge · pin · date · delete -->
+          <div class="announce-card-top">
+            <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
+            ${p.pinned ? '<span class="announce-pin" title="Épinglé">📌</span>' : ''}
+            <span class="announce-date-meta">${date} · ${time}</span>
+            <button class="announce-del" onclick="deletePost('${esc(p.id)}')"
+              title="Supprimer" aria-label="Supprimer ce post">×</button>
+          </div>
+
+          <!-- Title -->
+          <div class="announce-titre">${esc(p.titre)}</div>
+
+          <!-- Body (optional) -->
+          ${p.message ? `<div class="announce-body">${esc(p.message)}</div>` : ''}
+
+          <!-- Footer: author + pin toggle -->
+          <div class="announce-footer">
+            <div class="announce-avatar" aria-hidden="true">${initials}</div>
+            <span class="announce-author-name">${esc(p.auteur || 'Admin')}</span>
+            <button class="announce-pin-btn" onclick="togglePin('${esc(p.id)}')"
+              title="${p.pinned ? 'Désépingler' : 'Épingler'}">
+              ${p.pinned ? '📌 Épinglé' : 'Épingler'}
+            </button>
+          </div>
+
+        </div>`;
+    }).join('');
+  }
+
+  /* ── Init ──────────────────────────────────────────────── */
+  render();
+})();
+</script>
 </body>
 </html>
