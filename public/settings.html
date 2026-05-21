@@ -50,7 +50,7 @@
   .section-desc { font-size: 12px; color: var(--text3); margin-top: 3px; }
   .section-body { padding: 20px; }
 
-  /* TEAM SECTION */
+  /* CHIPS (réutilisé partout) */
   .team-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 560px) { .team-cols { grid-template-columns: 1fr; } }
   .team-col-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
@@ -65,7 +65,7 @@
   .add-btn { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 9px 16px; color: var(--text3); font-size: 12px; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.1em; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
   .add-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* SALAIRES SECTION */
+  /* SALAIRES */
   .salaire-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
   .salaire-row { display: flex; flex-direction: column; gap: 6px; }
   .salaire-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
@@ -76,7 +76,7 @@
   .salaire-hint { font-size: 10px; color: var(--mute); font-family: var(--font-mono); }
   .salaire-empty { color: var(--text3); font-size: 13px; font-style: italic; }
 
-  /* OBJECTIFS SECTION */
+  /* OBJECTIFS GLOBAUX */
   .objectif-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 480px) { .objectif-grid { grid-template-columns: 1fr; } }
   .objectif-card { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 18px; }
@@ -86,6 +86,47 @@
   .objectif-input { width: 100%; background: var(--dark); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 12px 12px 26px; color: var(--ink); font-size: 22px; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; outline: none; transition: border-color 0.12s; }
   .objectif-input:focus { border-color: var(--accent); }
   .objectif-hint { font-size: 11px; color: var(--mute); margin-top: 8px; font-family: var(--font-mono); letter-spacing: 0.04em; }
+
+  /* DEVISE & TAXES */
+  .devise-row { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 20px; }
+  .devise-toggle { display: flex; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+  .devise-btn { padding: 10px 24px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: var(--text3); background: transparent; border: none; cursor: pointer; transition: all 0.15s; }
+  .devise-btn.active { background: var(--accent); color: var(--accent-ink); }
+  .devise-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
+  .tax-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .tax-row { display: flex; flex-direction: column; gap: 6px; }
+  .tax-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
+  .tax-wrap { position: relative; }
+  .tax-symbol { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; pointer-events: none; font-family: var(--font-mono); }
+  .tax-input { width: 100%; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 28px 10px 12px; color: var(--text); font-size: 14px; font-family: var(--font-mono); outline: none; transition: border-color 0.12s; }
+  .tax-input:focus { border-color: var(--accent); }
+  .tax-hint { font-size: 10px; color: var(--mute); font-family: var(--font-mono); }
+  .tax-total { background: var(--dark3); border: 1px solid var(--accent); border-radius: var(--r-sm); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+  .tax-total-lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+  .tax-total-val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--accent); }
+
+  /* OBJECTIFS PAR VENDEUR */
+  .vendeur-obj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+  .vendeur-obj-card { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 16px; }
+  .vendeur-obj-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .vendeur-obj-avatar { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .obj-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+  .obj-field:last-child { margin-bottom: 0; }
+  .obj-field-lbl { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
+  .obj-field-wrap { position: relative; }
+  .obj-field-symbol { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 12px; pointer-events: none; font-family: var(--font-mono); }
+  .obj-field-symbol.right { left: auto; right: 10px; }
+  .obj-field-input { width: 100%; background: var(--dark); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 10px 8px 24px; color: var(--text); font-size: 13px; font-family: var(--font-mono); outline: none; transition: border-color 0.12s; }
+  .obj-field-input.no-symbol { padding-left: 10px; }
+  .obj-field-input.right-symbol { padding-left: 10px; padding-right: 26px; }
+  .obj-field-input:focus { border-color: var(--accent); }
+  .vendeur-obj-empty { color: var(--text3); font-size: 13px; font-style: italic; }
+
+  /* PLATEFORMES */
+  .platform-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .preset-btn { background: var(--dark3); border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; font-size: 12px; font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.08em; color: var(--text3); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
+  .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .preset-btn.used { background: color-mix(in oklch, var(--accent), transparent 88%); border-color: var(--accent); color: var(--accent); cursor: default; opacity: 0.6; }
 
   /* TOAST */
   .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark2); border: 1px solid var(--pos); border-radius: var(--r-sm); padding: 12px 20px; color: var(--pos); font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.08em; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; white-space: nowrap; z-index: 999; }
@@ -119,7 +160,7 @@
 <div class="page-head">
   <div>
     <h1 class="page-title">Settings</h1>
-    <p class="page-sub">Configurez votre équipe, les salaires et les objectifs — tout se sauvegarde automatiquement.</p>
+    <p class="page-sub">Configurez votre équipe, devise, taxes, objectifs et plateformes — tout se sauvegarde automatiquement.</p>
   </div>
 </div>
 
@@ -135,7 +176,6 @@
     </div>
     <div class="section-body">
       <div class="team-cols">
-        <!-- Vendeurs -->
         <div>
           <div class="team-col-label">Vendeurs</div>
           <div class="chip-list" id="chips-vendeurs"></div>
@@ -145,7 +185,6 @@
             <button class="add-btn" onclick="addMember('vendeur')">+ Ajouter</button>
           </div>
         </div>
-        <!-- Helpers -->
         <div>
           <div class="team-col-label">Helpers</div>
           <div class="chip-list" id="chips-helpers"></div>
@@ -164,7 +203,7 @@
     <div class="section-head">
       <div>
         <div class="section-label">Salaires par défaut</div>
-        <div class="section-desc">Taux horaire ($/ heure) — se remplit automatiquement dans le Break Tracker quand le vendeur est sélectionné.</div>
+        <div class="section-desc">Taux horaire ($/heure) — se remplit automatiquement dans le Break Tracker quand le vendeur est sélectionné.</div>
       </div>
     </div>
     <div class="section-body">
@@ -174,7 +213,59 @@
     </div>
   </div>
 
-  <!-- ── OBJECTIFS MENSUELS ─────────────────────────────────────── -->
+  <!-- ── DEVISE & TAXES ─────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Devise &amp; Taxes</div>
+        <div class="section-desc">Affecte tous les montants affichés dans le Hub et les rapports.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="devise-row">
+        <div class="devise-label">Devise</div>
+        <div class="devise-toggle">
+          <button class="devise-btn" id="btn-cad" onclick="setDevise('CAD')">CAD $</button>
+          <button class="devise-btn" id="btn-usd" onclick="setDevise('USD')">USD $</button>
+        </div>
+      </div>
+      <div class="tax-grid">
+        <div class="tax-row">
+          <div class="tax-lbl">TPS / GST</div>
+          <div class="tax-wrap">
+            <input class="tax-input" id="tax-tps" type="number" min="0" max="30" step="0.01" placeholder="5"
+              oninput="saveTaxes()" />
+            <span class="tax-symbol">%</span>
+          </div>
+          <div class="tax-hint">Taxe fédérale (défaut : 5 %)</div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-lbl">TVQ / PST</div>
+          <div class="tax-wrap">
+            <input class="tax-input" id="tax-tvq" type="number" min="0" max="30" step="0.01" placeholder="9.975"
+              oninput="saveTaxes()" />
+            <span class="tax-symbol">%</span>
+          </div>
+          <div class="tax-hint">Taxe provinciale (Qc : 9,975 %)</div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-lbl">Autre taxe</div>
+          <div class="tax-wrap">
+            <input class="tax-input" id="tax-autre" type="number" min="0" max="30" step="0.01" placeholder="0"
+              oninput="saveTaxes()" />
+            <span class="tax-symbol">%</span>
+          </div>
+          <div class="tax-hint">Ex : taxe de vente locale</div>
+        </div>
+      </div>
+      <div class="tax-total">
+        <span class="tax-total-lbl">Taux combiné total</span>
+        <span class="tax-total-val" id="tax-total-display">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OBJECTIFS MENSUELS GLOBAUX ────────────────────────────── -->
   <div class="section">
     <div class="section-head">
       <div>
@@ -206,36 +297,88 @@
     </div>
   </div>
 
+  <!-- ── OBJECTIFS PAR VENDEUR ─────────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Objectifs par vendeur</div>
+        <div class="section-desc">Cibles individuelles visibles sur la fiche de chaque membre dans la page Équipe.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="vendeur-obj-grid" id="vendeur-obj-grid">
+        <span class="vendeur-obj-empty">Ajoutez des vendeurs dans la section Équipe.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLATEFORMES DE DIFFUSION ──────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-label">Plateformes de diffusion</div>
+        <div class="section-desc">Plateformes utilisées pour vos lives — disponibles dans le Planificateur.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="platform-presets" id="platform-presets">
+        <!-- générés par JS -->
+      </div>
+      <div class="chip-list" id="chips-plateformes"></div>
+      <div class="add-row">
+        <input class="add-input" id="input-plateforme" type="text" placeholder="Autre plateforme..." maxlength="40"
+          onkeydown="if(event.key==='Enter') addPlateforme()" />
+        <button class="add-btn" onclick="addPlateforme()">+ Ajouter</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="footer">Hobby Empire &mdash; Settings &copy; 2026</div>
-
 <div class="toast" id="toast">✓ Paramètres sauvegardés</div>
 
 <script>
-// ── Storage ──────────────────────────────────────────────────────────────────
+// ── Constantes ────────────────────────────────────────────────────────────────
 const SETTINGS_KEY = 'he_settings';
+const AVATAR_COLORS = ['#E05A2B','#2B7BE0','#2BE07A','#E0C12B','#9B2BE0','#2BE0C1','#E02B6E','#7BE02B'];
+const PLATFORM_PRESETS = [
+  { name: 'Facebook Live', icon: '📘' },
+  { name: 'YouTube',       icon: '▶️' },
+  { name: 'TikTok',        icon: '🎵' },
+  { name: 'Instagram Live',icon: '📷' },
+  { name: 'Whatnot',       icon: '🃏' },
+  { name: 'Fanatics Live', icon: '⚡' },
+];
+
 const DEFAULTS = {
-  vendeurs: ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
-  helpers:  ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
-  salaires: {},
-  objectifs: { revenu: 0, benefice: 0 }
+  vendeurs:         ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  helpers:          ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  salaires:         {},
+  objectifs:        { revenu: 0, benefice: 0 },
+  devise:           'CAD',
+  taxes:            { tps: 5, tvq: 9.975, autre: 0 },
+  objectifsVendeurs:{},
+  plateformes:      [],
 };
 
+// ── Storage ───────────────────────────────────────────────────────────────────
 function getSettings() {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (!raw) return JSON.parse(JSON.stringify(DEFAULTS));
-    const parsed = JSON.parse(raw);
+    const p = JSON.parse(raw);
     return {
-      vendeurs:  parsed.vendeurs  || [...DEFAULTS.vendeurs],
-      helpers:   parsed.helpers   || [...DEFAULTS.helpers],
-      salaires:  parsed.salaires  || {},
-      objectifs: { ...DEFAULTS.objectifs, ...(parsed.objectifs || {}) },
+      vendeurs:          p.vendeurs          || [...DEFAULTS.vendeurs],
+      helpers:           p.helpers           || [...DEFAULTS.helpers],
+      salaires:          p.salaires          || {},
+      objectifs:         { ...DEFAULTS.objectifs,  ...(p.objectifs  || {}) },
+      devise:            p.devise            || 'CAD',
+      taxes:             { ...DEFAULTS.taxes,       ...(p.taxes      || {}) },
+      objectifsVendeurs: p.objectifsVendeurs || {},
+      plateformes:       p.plateformes       || [],
     };
-  } catch(e) {
-    return JSON.parse(JSON.stringify(DEFAULTS));
-  }
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULTS)); }
 }
 
 function saveSettings(s) {
@@ -251,14 +394,25 @@ function showToast() {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ── Render ───────────────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 let settings = getSettings();
 
+// ── Render ────────────────────────────────────────────────────────────────────
 function renderAll() {
   renderChips('vendeurs');
   renderChips('helpers');
   renderSalaires();
+  renderDevise();
+  renderTaxes();
   renderObjectifs();
+  renderObjectifsVendeurs();
+  renderPlateformes();
+}
+
+function avatarColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
 }
 
 function renderChips(type) {
@@ -275,20 +429,16 @@ function renderChips(type) {
 }
 
 function renderSalaires() {
-  const vendeurs = settings.vendeurs;
+  const v = settings.vendeurs;
   const grid = document.getElementById('salaire-grid');
-  if (!vendeurs.length) {
-    grid.innerHTML = '<span class="salaire-empty">Ajoutez des vendeurs dans la section Équipe pour configurer leurs salaires.</span>';
-    return;
-  }
-  grid.innerHTML = vendeurs.map(name => `
+  if (!v.length) { grid.innerHTML = '<span class="salaire-empty">Ajoutez des vendeurs dans la section Équipe pour configurer leurs salaires.</span>'; return; }
+  grid.innerHTML = v.map(name => `
     <div class="salaire-row">
       <div class="salaire-lbl">${name}</div>
       <div class="salaire-wrap">
         <span class="salaire-symbol">$</span>
         <input class="salaire-input" type="number" min="0" step="0.5"
-          value="${settings.salaires[name] || ''}"
-          placeholder="0.00"
+          value="${settings.salaires[name] || ''}" placeholder="0.00"
           oninput="saveSalaire('${name}', this.value)" />
       </div>
       <div class="salaire-hint">par heure</div>
@@ -296,21 +446,107 @@ function renderSalaires() {
   `).join('');
 }
 
+function renderDevise() {
+  document.getElementById('btn-cad').classList.toggle('active', settings.devise === 'CAD');
+  document.getElementById('btn-usd').classList.toggle('active', settings.devise === 'USD');
+}
+
+function renderTaxes() {
+  document.getElementById('tax-tps').value   = settings.taxes.tps   || '';
+  document.getElementById('tax-tvq').value   = settings.taxes.tvq   || '';
+  document.getElementById('tax-autre').value = settings.taxes.autre  || '';
+  updateTaxTotal();
+}
+
+function updateTaxTotal() {
+  const tps   = parseFloat(document.getElementById('tax-tps').value)   || 0;
+  const tvq   = parseFloat(document.getElementById('tax-tvq').value)   || 0;
+  const autre = parseFloat(document.getElementById('tax-autre').value) || 0;
+  const total = tps + tvq + autre;
+  document.getElementById('tax-total-display').textContent =
+    total > 0 ? total.toFixed(3).replace(/\.?0+$/, '') + ' %' : '—';
+}
+
 function renderObjectifs() {
-  document.getElementById('obj-revenu').value  = settings.objectifs.revenu  || '';
+  document.getElementById('obj-revenu').value   = settings.objectifs.revenu   || '';
   document.getElementById('obj-benefice').value = settings.objectifs.benefice || '';
 }
 
-// ── Actions ──────────────────────────────────────────────────────────────────
+function renderObjectifsVendeurs() {
+  const v = settings.vendeurs;
+  const grid = document.getElementById('vendeur-obj-grid');
+  if (!v.length) { grid.innerHTML = '<span class="vendeur-obj-empty">Ajoutez des vendeurs dans la section Équipe.</span>'; return; }
+  grid.innerHTML = v.map(name => {
+    const obj = settings.objectifsVendeurs[name] || { revenu: 0, breaks: 0, marge: 0 };
+    const color = avatarColor(name);
+    return `
+      <div class="vendeur-obj-card">
+        <div class="vendeur-obj-name">
+          <div class="vendeur-obj-avatar" style="background:${color}">${name.slice(0,2).toUpperCase()}</div>
+          ${name}
+        </div>
+        <div class="obj-field">
+          <div class="obj-field-lbl">Revenu mensuel cible</div>
+          <div class="obj-field-wrap">
+            <span class="obj-field-symbol">$</span>
+            <input class="obj-field-input" type="number" min="0" step="500"
+              value="${obj.revenu || ''}" placeholder="0"
+              oninput="saveObjVendeur('${name}', 'revenu', this.value)" />
+          </div>
+        </div>
+        <div class="obj-field">
+          <div class="obj-field-lbl">Breaks / mois cible</div>
+          <div class="obj-field-wrap">
+            <input class="obj-field-input no-symbol" type="number" min="0" step="1"
+              value="${obj.breaks || ''}" placeholder="0"
+              oninput="saveObjVendeur('${name}', 'breaks', this.value)" />
+          </div>
+        </div>
+        <div class="obj-field">
+          <div class="obj-field-lbl">Marge cible</div>
+          <div class="obj-field-wrap">
+            <input class="obj-field-input right-symbol" type="number" min="0" max="100" step="1"
+              value="${obj.marge || ''}" placeholder="0"
+              oninput="saveObjVendeur('${name}', 'marge', this.value)" />
+            <span class="obj-field-symbol right">%</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPlateformes() {
+  // Chips des plateformes actives
+  const chips = document.getElementById('chips-plateformes');
+  chips.innerHTML = settings.plateformes.map((name, i) => `
+    <span class="chip">
+      ${name}
+      <button class="chip-remove" onclick="removePlateforme(${i})" title="Retirer">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </span>
+  `).join('') || '<span style="color:var(--mute);font-size:12px;align-self:center">Aucune plateforme configurée</span>';
+
+  // Boutons preset
+  const presets = document.getElementById('platform-presets');
+  presets.innerHTML = PLATFORM_PRESETS.map(p => {
+    const used = settings.plateformes.includes(p.name);
+    return `<button class="preset-btn${used ? ' used' : ''}" onclick="addPlateformePreset('${p.name}')" ${used ? 'disabled' : ''}>
+      ${p.icon} ${p.name}
+    </button>`;
+  }).join('');
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
 function addMember(type) {
   const input = document.getElementById('input-' + type);
   const name = input.value.trim();
-  if (!name) return;
-  if (settings[type].includes(name)) { input.value = ''; return; }
+  if (!name || settings[type].includes(name)) { input.value = ''; return; }
   settings[type].push(name);
   input.value = '';
   renderChips(type);
-  if (type === 'vendeurs') renderSalaires();
+  if (type === 'vendeurs') { renderSalaires(); renderObjectifsVendeurs(); }
   saveSettings(settings);
 }
 
@@ -321,6 +557,7 @@ function removeMember(type, idx) {
   if (type === 'vendeurs') {
     delete settings.salaires[name];
     renderSalaires();
+    renderObjectifsVendeurs();
   }
   saveSettings(settings);
 }
@@ -330,14 +567,56 @@ function saveSalaire(name, val) {
   saveSettings(settings);
 }
 
+function setDevise(d) {
+  settings.devise = d;
+  renderDevise();
+  saveSettings(settings);
+}
+
+function saveTaxes() {
+  settings.taxes.tps   = parseFloat(document.getElementById('tax-tps').value)   || 0;
+  settings.taxes.tvq   = parseFloat(document.getElementById('tax-tvq').value)   || 0;
+  settings.taxes.autre = parseFloat(document.getElementById('tax-autre').value) || 0;
+  updateTaxTotal();
+  saveSettings(settings);
+}
+
 function saveObjectif() {
   settings.objectifs.revenu   = parseFloat(document.getElementById('obj-revenu').value)   || 0;
   settings.objectifs.benefice = parseFloat(document.getElementById('obj-benefice').value) || 0;
   saveSettings(settings);
 }
 
+function saveObjVendeur(name, field, val) {
+  if (!settings.objectifsVendeurs[name]) settings.objectifsVendeurs[name] = { revenu: 0, breaks: 0, marge: 0 };
+  settings.objectifsVendeurs[name][field] = parseFloat(val) || 0;
+  saveSettings(settings);
+}
+
+function addPlateformePreset(name) {
+  if (settings.plateformes.includes(name)) return;
+  settings.plateformes.push(name);
+  renderPlateformes();
+  saveSettings(settings);
+}
+
+function addPlateforme() {
+  const input = document.getElementById('input-plateforme');
+  const name = input.value.trim();
+  if (!name || settings.plateformes.includes(name)) { input.value = ''; return; }
+  settings.plateformes.push(name);
+  input.value = '';
+  renderPlateformes();
+  saveSettings(settings);
+}
+
+function removePlateforme(idx) {
+  settings.plateformes.splice(idx, 1);
+  renderPlateformes();
+  saveSettings(settings);
+}
+
 // ── Init ─────────────────────────────────────────────────────────────────────
-// Persist defaults to localStorage on first visit so other pages can read them
 if (!localStorage.getItem(SETTINGS_KEY)) {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
 }
