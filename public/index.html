@@ -130,12 +130,12 @@
 }
 .pf-pin-label input { margin: 0; accent-color: var(--accent); }
 
-/* Post cards — single-column editorial feed */
+/* Post cards — bulletin board paper notices */
 .announce-grid {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  max-width: 700px;
+  gap: 20px;
+  max-width: 680px;
 }
 .announce-empty {
   padding: 52px 20px;
@@ -146,105 +146,104 @@
 .announce-empty-title { font-weight: 600; color: var(--ink-2); font-size: 15px; }
 .announce-empty-sub { font-size: 12px; margin-top: 5px; color: var(--mute); }
 
-/* Post card shell */
+/* Paper card — background crème, ombre franche, coins quasi droits */
 .announce-card {
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  border-left-width: 4px;
-  border-radius: var(--r-md);
+  background: oklch(97.8% 0.007 80); /* papier crème chaud */
+  border: none;
+  border-top: 7px solid oklch(80% 0.01 75); /* remplacé par type */
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.07);
-  transition: box-shadow 0.15s, transform 0.15s;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.07),
+    0 5px 16px rgba(0,0,0,.12),
+    0 20px 44px rgba(0,0,0,.10);
+  transition: box-shadow 0.18s, transform 0.18s;
 }
 .announce-card:hover {
-  box-shadow: 0 2px 6px rgba(0,0,0,.07), 0 10px 30px rgba(0,0,0,.11);
-  transform: translateY(-1px);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.09),
+    0 8px 24px rgba(0,0,0,.14),
+    0 28px 56px rgba(0,0,0,.14);
+  transform: translateY(-2px);
 }
-/* Accent left border by type */
-.announce-card.type-info    { border-left-color: oklch(58% 0.16 260); }
-.announce-card.type-urgent  { border-left-color: var(--accent); }
-.announce-card.type-live    { border-left-color: var(--pos); }
-.announce-card.type-rappel  { border-left-color: var(--warn); }
-/* Pinned: slightly stronger presence */
-.announce-card.is-pinned    { border-left-width: 5px; }
 
-/* Banner strip (tinted header row) */
-.announce-card-banner {
+/* Barre de couleur du haut — catégorie du post */
+.announce-card.type-info    { border-top-color: oklch(56% 0.18 255); }
+.announce-card.type-urgent  { border-top-color: var(--accent); }
+.announce-card.type-live    { border-top-color: oklch(50% 0.18 155); }
+.announce-card.type-rappel  { border-top-color: oklch(72% 0.15 78); }
+
+/* Épinglé : papier légèrement teinté */
+.announce-card.is-pinned { background: oklch(97.0% 0.012 82); }
+
+/* Ligne meta : type + icône pin + supprimer */
+.announce-card-meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 9px 14px 9px 18px;
-  border-bottom: 1px solid var(--line);
-}
-.type-info   .announce-card-banner { background: color-mix(in oklch, oklch(58% 0.16 260), transparent 91%); }
-.type-urgent .announce-card-banner { background: color-mix(in oklch, var(--accent),           transparent 91%); }
-.type-live   .announce-card-banner { background: color-mix(in oklch, var(--pos),              transparent 91%); }
-.type-rappel .announce-card-banner { background: color-mix(in oklch, var(--warn),             transparent 91%); }
-
-.announce-banner-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  gap: 7px;
+  padding: 11px 16px 0 20px;
 }
 .announce-type-badge {
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   white-space: nowrap;
+  flex-shrink: 0;
 }
-.type-info   .announce-type-badge { color: oklch(36% 0.18 260); }
-.type-urgent .announce-type-badge { color: oklch(40% 0.20 32);  }
-.type-live   .announce-type-badge { color: oklch(34% 0.18 160); }
-.type-rappel .announce-type-badge { color: oklch(42% 0.20 80);  }
+.type-info   .announce-type-badge { color: oklch(40% 0.18 255); }
+.type-urgent .announce-type-badge { color: oklch(44% 0.22 32);  }
+.type-live   .announce-type-badge { color: oklch(38% 0.18 155); }
+.type-rappel .announce-type-badge { color: oklch(48% 0.16 78);  }
 
-.announce-pin-icon { font-size: 11px; line-height: 1; }
+.announce-pin-icon { font-size: 11px; flex-shrink: 0; line-height: 1; }
 
-.announce-banner-right { display: flex; align-items: center; gap: 4px; }
 .announce-del {
+  margin-left: auto;
   background: transparent;
   border: none;
-  padding: 2px 6px;
-  color: var(--mute);
-  font-size: 16px;
+  padding: 2px 5px;
+  color: oklch(74% 0.01 80);
+  font-size: 17px;
   line-height: 1;
   cursor: pointer;
   border-radius: 3px;
-  transition: color 0.12s, background 0.12s;
+  transition: color 0.12s;
 }
-.announce-del:hover { color: var(--neg); background: color-mix(in oklch, var(--neg), transparent 90%); }
+.announce-del:hover { color: oklch(52% 0.20 25); }
 
-/* Card main content */
+/* Contenu principal */
 .announce-card-body {
-  padding: 20px 22px 14px;
+  padding: 14px 22px 16px 22px;
 }
 .announce-titre {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   font-stretch: 75%;
-  letter-spacing: -0.028em;
-  line-height: 1.04;
-  color: var(--ink);
-  margin: 0 0 10px;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: oklch(14% 0.012 260); /* encre noire sur papier */
+  margin: 0 0 12px;
 }
 .announce-body {
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.72;
-  color: var(--ink-2);
+  color: oklch(36% 0.010 75); /* gris chaud lisible sur crème */
   white-space: pre-line;
   word-break: break-word;
   margin: 0;
 }
 
-/* Byline footer */
+/* Pied de page — byline journalistique */
 .announce-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 22px 14px;
+  padding: 10px 22px 15px;
   gap: 12px;
+  border-top: 1px solid oklch(89% 0.008 78); /* ligne règle papier */
 }
 .announce-byline {
   display: flex;
@@ -252,30 +251,35 @@
   gap: 5px;
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--mute);
+  color: oklch(62% 0.012 78);
   letter-spacing: 0.04em;
 }
 .announce-byline-author {
-  color: var(--ink-3);
+  color: oklch(36% 0.012 78);
   font-weight: 700;
 }
 .announce-byline-dot { opacity: 0.4; }
+
 .announce-pin-btn {
   background: transparent;
-  border: 1px solid var(--line);
+  border: 1px solid oklch(82% 0.008 78);
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: oklch(54% 0.012 78);
   cursor: pointer;
   padding: 4px 10px;
   border-radius: 3px;
   transition: color 0.12s, background 0.12s, border-color 0.12s;
   white-space: nowrap;
 }
-.announce-pin-btn:hover { color: var(--ink); background: var(--bg-2); border-color: var(--line-strong); }
+.announce-pin-btn:hover {
+  color: oklch(26% 0.010 78);
+  border-color: oklch(68% 0.010 78);
+  background: oklch(93% 0.007 78);
+}
 .announce-pin-btn.is-pinned {
   color: var(--accent);
   border-color: color-mix(in oklch, var(--accent), transparent 55%);
@@ -1059,25 +1063,21 @@
       return `
         <article class="announce-card type-${esc(p.type)}${p.pinned ? ' is-pinned' : ''}">
 
-          <!-- Tinted banner strip: type · pin indicator · delete -->
-          <div class="announce-card-banner">
-            <div class="announce-banner-left">
-              <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
-              ${p.pinned ? '<span class="announce-pin-icon" title="Épinglé">📌</span>' : ''}
-            </div>
-            <div class="announce-banner-right">
-              <button class="announce-del" onclick="deletePost('${esc(p.id)}')"
-                title="Supprimer" aria-label="Supprimer ce post">×</button>
-            </div>
+          <!-- Meta row: type badge · pin · delete -->
+          <div class="announce-card-meta">
+            <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
+            ${p.pinned ? '<span class="announce-pin-icon" title="Épinglé">📌</span>' : ''}
+            <button class="announce-del" onclick="deletePost('${esc(p.id)}')"
+              title="Supprimer" aria-label="Supprimer ce post">×</button>
           </div>
 
-          <!-- Main content: big headline + body -->
+          <!-- Headline + body -->
           <div class="announce-card-body">
             <h3 class="announce-titre">${esc(p.titre)}</h3>
             ${p.message ? `<p class="announce-body">${esc(p.message)}</p>` : ''}
           </div>
 
-          <!-- Byline footer: author · date + pin button -->
+          <!-- Byline footer -->
           <div class="announce-footer">
             <div class="announce-byline">
               <span class="announce-byline-author">${esc(p.auteur || 'Admin')}</span>
