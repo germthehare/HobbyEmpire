@@ -210,7 +210,7 @@
 <script>
 // ── Settings ──────────────────────────────────────────────────────────────────
 const SETTINGS_KEY = 'he_settings';
-const MEMBER_DEFAULTS = { prenom: '', nom: '', surnom: '', dateNaissance: '', objectifs: { revenu: 0, benefice: 0 } };
+const MEMBER_DEFAULTS = { prenom: '', nom: '', surnom: '', dateNaissance: '', telephone: '', email: '', notes: '', objectifs: { revenu: 0, benefice: 0 } };
 const AVATAR_COLORS = ['#E84A1D','#3B82F6','#8B5CF6','#10B981','#F59E0B','#EC4899','#06B6D4','#84CC16','#F97316','#14B8A6'];
 const MOIS_FR = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const JOURS_FR = { Monday:'Lun', Tuesday:'Mar', Wednesday:'Mer', Thursday:'Jeu', Friday:'Ven', Saturday:'Sam', Sunday:'Dim' };
@@ -368,9 +368,11 @@ function renderGrid() {
             <div class="member-role-badge ${roleCls(role)}">${roleLabel(role)}</div>
           </div>
         </div>
-        ${ageStr || sal ? `<div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+        ${(ageStr || sal || m.email || m.telephone) ? `<div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
           ${ageStr ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">${ageStr}</span>` : ''}
           ${sal ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">${sal}$/h</span>` : ''}
+          ${m.email ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px" title="${escHtml(m.email)}">✉ ${escHtml(m.email)}</span>` : ''}
+          ${m.telephone ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">📞 ${escHtml(m.telephone)}</span>` : ''}
         </div>` : ''}
         <div class="member-card-stats">
           <div class="stat-item">
@@ -490,6 +492,8 @@ function renderProfile(nom) {
           <span class="meta-pill ${roleCls(role)}">${roleLabel(role)}</span>
           ${dobFr ? `<span class="meta-dot">·</span><span class="meta-info">${dobFr}${ageStr ? ' (' + ageStr + ')' : ''}</span>` : ''}
           ${sal ? `<span class="meta-dot">·</span><span class="meta-info">${sal}$/h</span>` : ''}
+          ${m.telephone ? `<span class="meta-dot">·</span><span class="meta-info">${escHtml(m.telephone)}</span>` : ''}
+          ${m.email ? `<span class="meta-dot">·</span><span class="meta-info">${escHtml(m.email)}</span>` : ''}
         </div>
       </div>
     </div>
@@ -518,6 +522,22 @@ function renderProfile(nom) {
             <label class="pf-lbl">Date de naissance</label>
             <input class="pf-input" type="date" value="${m.dateNaissance || ''}"
               oninput="saveMembre('${nom}', 'dateNaissance', this.value); refreshHero('${nom}')" />
+          </div>
+          <div class="pf-field">
+            <label class="pf-lbl">Téléphone</label>
+            <input class="pf-input" type="tel" value="${escHtml(m.telephone)}" placeholder="ex: 514-555-0123"
+              oninput="saveMembre('${nom}', 'telephone', this.value)" />
+          </div>
+          <div class="pf-field">
+            <label class="pf-lbl">Courriel</label>
+            <input class="pf-input" type="email" value="${escHtml(m.email)}" placeholder="adresse@email.com"
+              oninput="saveMembre('${nom}', 'email', this.value)" />
+          </div>
+          <div class="pf-field" style="grid-column:1/-1">
+            <label class="pf-lbl">Notes internes</label>
+            <textarea class="pf-input" rows="3" placeholder="Notes sur ce membre..."
+              oninput="saveMembre('${nom}', 'notes', this.value)"
+              style="resize:vertical;min-height:80px">${escHtml(m.notes)}</textarea>
           </div>
         </div>
       </div>
