@@ -396,6 +396,20 @@ async function loadMonth() {
 
   try {
     const res = await fetch(`/api/schedule?from=${from}&to=${to}`);
+    if (res.status === 500) {
+      const err = await res.json().catch(() => ({}));
+      if (JSON.stringify(err).includes('breaks_schedule')) {
+        document.getElementById('cal-wrap').innerHTML = `
+          <div style="text-align:center;padding:60px 24px;color:var(--text3)">
+            <div style="font-size:28px;margin-bottom:14px">🗄️</div>
+            <div style="font-size:15px;color:var(--text2);font-weight:600;margin-bottom:8px">Table manquante dans Supabase</div>
+            <div style="font-size:13px;margin-bottom:16px">La table <code style="background:var(--dark3);padding:2px 8px;border-radius:4px;font-family:var(--font-mono)">breaks_schedule</code> n'existe pas encore.</div>
+            <div style="font-size:12px;color:var(--text3)">Allez dans Supabase → SQL Editor et exécutez le SQL fourni lors de l'installation.</div>
+          </div>`;
+        return;
+      }
+      throw new Error('Erreur serveur (' + res.status + ')');
+    }
     if (!res.ok) throw new Error('API ' + res.status);
     monthItems = await res.json();
   } catch(e) {
