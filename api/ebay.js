@@ -31,7 +31,7 @@ async function tryMarketplaceInsights(q, limit, token) {
     { headers: { Authorization: `Bearer ${token}` } }
   );
   const data = await r.json();
-  if (data.errors || !data.itemSales) return null;
+  if (data.errors || !data.itemSales) { console.error('MI raw:', JSON.stringify(data).slice(0,300)); return null; }
   return data.itemSales.map(item => ({
     title:      item.title || '',
     itemWebUrl: item.itemWebUrl || '',
