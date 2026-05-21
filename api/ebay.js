@@ -31,7 +31,7 @@ async function tryMarketplaceInsights(q, limit, token) {
     { headers: { Authorization: `Bearer ${token}` } }
   );
   const data = await r.json();
-  if (data.errors || !data.itemSales) { console.error('MI raw:', JSON.stringify(data).slice(0,300)); return null; }
+  if (data.errors || !data.itemSales) { return { _miRaw: data }; }
   return data.itemSales.map(item => ({
     title:      item.title || '',
     itemWebUrl: item.itemWebUrl || '',
@@ -79,8 +79,9 @@ export default async function handler(req, res) {
     try {
       const token = await getAppToken();
       debug.token = 'ok';
-      items = await tryMarketplaceInsights(q, limit, token);
-      debug.insights = items ? `${items.length} items` : 'null';
+      const miResult = await tryMarketplaceInsights(q, limit, token);
+      if (miResult?._miRaw) { debug.miRaw = miResult._miRaw; items = null; }
+      else { items = miResult; debug.insights = items ? `${items.length} items` : 'null'; }
     } catch (e) { debug.insightsErr = e.message; }
 
     // Fall back to Finding API if Marketplace Insights fails
