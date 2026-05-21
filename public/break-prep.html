@@ -513,9 +513,13 @@ function t(k) { return T[lang][k] || k; }
 
 // ── eBay sold prices (utilisé par lookupCard) ────────────────────────
 async function searchEbay(query) {
-  const r = await fetch('/api/ebay?limit=6&q=' + encodeURIComponent(query));
+  // Normalize query to improve cache hits (lowercase, trim extra spaces)
+  const q = query.toLowerCase().trim().replace(/\s+/g, ' ');
+  const r = await fetch('/api/ebay?limit=6&q=' + encodeURIComponent(q));
   if (!r.ok) throw new Error('eBay API error');
-  return await r.json();
+  const data = await r.json();
+  if (data.error) throw new Error(data.error);
+  return data;
 }
 
 function renderEbayResults(data, container) {
@@ -523,7 +527,7 @@ function renderEbayResults(data, container) {
   if (!items.length) { container.innerHTML = ''; return; }
   container.innerHTML = `
     <div class="ebay-results">
-      <div class="ebay-head">Ventes récentes eBay <span class="ebay-badge">Vendus</span></div>
+      <div class="ebay-head">Listings eBay <span class="ebay-badge">En vente</span></div>
       ${items.map(item => `
         <a class="ebay-item" href="${item.itemWebUrl}" target="_blank" rel="noopener" style="text-decoration:none">
           <img class="ebay-img" src="${item.image?.imageUrl||''}" onerror="this.style.display='none'" />

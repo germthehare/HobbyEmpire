@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       price:      { value: item.sellingStatus?.[0]?.convertedCurrentPrice?.[0]?.['__value__'] || '0' },
     }));
 
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200'); // cache 1h
     return res.status(200).json({ itemSummaries: items });
   } catch (e) {
     return res.status(500).json({ error: e.message });
