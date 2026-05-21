@@ -29,10 +29,8 @@ export default async function handler(req, res) {
     const raw = await r.json();
 
     // Normalize response to match what the front-end expects
-    // Debug: expose raw if structure unexpected
-    if (!raw?.findCompletedItemsResponse) {
-      return res.status(200).json({ itemSummaries: [], _debug: raw });
-    }
+    // TEMP DEBUG: return full raw
+    return res.status(200).json({ _raw: raw });
 
     const searchResult = raw?.findCompletedItemsResponse?.[0]?.searchResult?.[0];
     const items = (searchResult?.item || []).map(item => ({
