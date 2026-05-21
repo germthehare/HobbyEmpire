@@ -42,7 +42,24 @@
   .main { padding: 20px 16px; max-width: 700px; margin: 0 auto; }
   .section-head { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
   /* ── Selected product chips ── */
-  .product-chip-row { display: flex; align-items: center; gap: 10px; background: var(--dark3); border: 1px solid var(--line); border-radius: 8px; padding: 11px 14px; margin-bottom: 8px; }
+  .product-chip-row { display: flex; align-items: center; gap: 10px; background: var(--dark3); border: 1px solid var(--line); border-radius: 8px; padding: 11px 14px; margin-bottom: 8px; transition: border-color 0.3s, background 0.3s; }
+  @keyframes chip-flash {
+    0%   { border-color: var(--green); background: color-mix(in oklch, var(--green), var(--dark3) 82%); }
+    70%  { border-color: var(--green); background: color-mix(in oklch, var(--green), var(--dark3) 88%); }
+    100% { border-color: var(--line);  background: var(--dark3); }
+  }
+  .chip-flash { animation: chip-flash 1.4s ease-out forwards; }
+  /* ── Confirmation message in selector ── */
+  .selector-confirm {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    background: color-mix(in oklch, var(--green), transparent 88%);
+    border-bottom: 1px solid color-mix(in oklch, var(--green), transparent 65%);
+    font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.08em; color: var(--green);
+    animation: fadeOut 0.3s ease 1.1s forwards;
+  }
+  @keyframes fadeOut { to { opacity: 0; } }
   .chip-sport { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); background: color-mix(in oklch, var(--accent), transparent 90%); border: 1px solid color-mix(in oklch, var(--accent), transparent 80%); border-radius: 3px; padding: 2px 6px; white-space: nowrap; }
   .chip-year { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 1px; color: var(--text3); white-space: nowrap; }
   .chip-label { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -412,11 +429,30 @@ function onSelectYear(year, products) {
 
 function onSelectProduct(p) {
   addProductChip(p.key, p.sport, p.yearDisplay, p.name);
-  // Stay open — reset year + product steps so user can add another
-  selYear = null;
-  document.querySelectorAll('#year-opts .step-opt').forEach(b => b.classList.remove('selected'));
-  document.querySelectorAll('#product-opts .step-opt').forEach(b => b.classList.remove('selected'));
-  document.getElementById('product-opts').innerHTML = '<span class="step-placeholder">← Sélectionne une année</span>';
+
+  // Flash la nouvelle puce
+  const chips = document.querySelectorAll('#product-list .product-chip-row');
+  const lastChip = chips[chips.length - 1];
+  if (lastChip) {
+    lastChip.classList.add('chip-flash');
+    setTimeout(() => lastChip.classList.remove('chip-flash'), 1500);
+  }
+
+  // Message de confirmation en haut du sélecteur
+  const panel = document.getElementById('selector-panel');
+  const existing = panel.querySelector('.selector-confirm');
+  if (existing) existing.remove();
+  const confirm = document.createElement('div');
+  confirm.className = 'selector-confirm';
+  confirm.textContent = '✓ ' + p.name + ' ajouté — sélectionne le prochain produit';
+  panel.insertBefore(confirm, panel.firstChild);
+  setTimeout(() => confirm.remove(), 1400);
+
+  // Reset complet du sélecteur (sport + année + produit)
+  selSport = null; selYear = null;
+  document.querySelectorAll('.step-opt').forEach(b => b.classList.remove('selected'));
+  document.getElementById('year-opts').innerHTML    = '<span class="step-placeholder" id="ph-year">← Sélectionne un sport</span>';
+  document.getElementById('product-opts').innerHTML = '<span class="step-placeholder" id="ph-product">← Sélectionne une année</span>';
 }
 
 // ── Toggle selector panel ────────────────────────────────────────────────────
@@ -424,7 +460,7 @@ function toggleSelector() {
   selectorOpen = !selectorOpen;
   document.getElementById('selector-panel').style.display = selectorOpen ? 'block' : 'none';
   document.getElementById('btn-add').classList.toggle('open', selectorOpen);
-  document.getElementById('btn-add').textContent = selectorOpen ? '× Fermer' : '+ Ajouter un produit';
+  document.getElementById('btn-add').textContent = selectorOpen ? '▲ Fermer le sélecteur' : '+ Ajouter un produit';
 }
 
 function closeSelector() {
