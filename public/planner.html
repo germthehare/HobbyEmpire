@@ -33,115 +33,132 @@
   .nav-link:hover { color: var(--text); background: var(--bg-2); }
   .nav-link.active { color: var(--ink); background: var(--bg-2); }
 
-  /* ── WEEK NAV ── */
-  .week-nav { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; gap: 12px; height: 56px; position: sticky; top: 64px; z-index: 100; }
-  .week-nav-btn { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); font-size: 13px; padding: 6px 12px; cursor: pointer; transition: all 0.12s; display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); }
-  .week-nav-btn:hover { border-color: var(--text3); color: var(--ink); }
-  .week-label { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; flex: 1; text-align: center; }
-  .today-btn { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: color-mix(in oklch, var(--accent), transparent 88%); border: 1px solid color-mix(in oklch, var(--accent), transparent 65%); color: var(--accent); border-radius: var(--r-sm); padding: 6px 12px; cursor: pointer; transition: all 0.12s; }
+  /* ── CALENDAR NAV ── */
+  .cal-nav { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 14px; position: sticky; top: 64px; z-index: 100; }
+  .cal-nav-btn { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); padding: 7px 14px; cursor: pointer; transition: all 0.12s; display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; }
+  .cal-nav-btn:hover { border-color: var(--text3); color: var(--ink); }
+  .cal-month-label { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; flex: 1; }
+  .cal-year-label  { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--text3); letter-spacing: -0.02em; margin-left: -6px; }
+  .today-btn { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: color-mix(in oklch, var(--accent), transparent 88%); border: 1px solid color-mix(in oklch, var(--accent), transparent 60%); color: var(--accent); border-radius: var(--r-sm); padding: 7px 14px; cursor: pointer; transition: all 0.12s; }
   .today-btn:hover { background: color-mix(in oklch, var(--accent), transparent 78%); }
-  .add-global-btn { background: var(--accent); border: none; border-radius: var(--r-sm); color: var(--accent-ink, #fff); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; transition: filter 0.12s; white-space: nowrap; }
-  .add-global-btn:hover { filter: brightness(1.08); }
+  .add-btn-main { background: var(--accent); border: none; border-radius: var(--r-sm); color: #fff; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 18px; cursor: pointer; transition: filter 0.12s; white-space: nowrap; }
+  .add-btn-main:hover { filter: brightness(1.08); }
 
-  /* ── WEEK GRID ── */
-  .week-wrap { padding: 0 24px 60px; overflow-x: auto; }
-  .week-grid { display: grid; grid-template-columns: repeat(7, minmax(140px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; margin-top: 20px; min-width: 980px; }
+  /* ── CALENDAR WRAPPER ── */
+  .cal-wrap { padding: 0 24px 40px; }
 
-  .day-col { background: var(--dark); display: flex; flex-direction: column; }
-  .day-col.today .day-header { background: color-mix(in oklch, var(--accent), transparent 92%); }
-  .day-col.today .day-number { color: var(--accent); }
+  /* ── DAY-OF-WEEK HEADERS ── */
+  .cal-dow-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-bottom: none; border-radius: var(--r-md) var(--r-md) 0 0; overflow: hidden; margin-top: 20px; }
+  .cal-dow { background: var(--dark2); padding: 10px 14px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
+  .cal-dow.weekend { color: color-mix(in oklch, var(--accent), var(--text3) 55%); }
 
-  .day-header { background: var(--dark2); padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
-  .day-name { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
-  .day-number { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--ink); line-height: 1; }
-  .day-month { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.06em; margin-top: 2px; }
+  /* ── CALENDAR GRID ── */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-top: none; border-radius: 0 0 var(--r-md) var(--r-md); overflow: hidden; }
 
-  .day-body { flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 180px; }
+  /* ── DAY CELL ── */
+  .cal-cell { background: var(--dark); min-height: 130px; padding: 10px; cursor: pointer; position: relative; transition: background 0.1s; display: flex; flex-direction: column; }
+  .cal-cell:hover { background: var(--dark2); }
+  .cal-cell:hover .cell-add-hint { opacity: 1; }
+  .cal-cell.other-month { background: var(--dark3); opacity: 0.55; cursor: default; pointer-events: none; }
+  .cal-cell.today { background: color-mix(in oklch, var(--accent), var(--dark) 91%); }
+  .cal-cell.weekend { background: color-mix(in oklch, var(--dark3), var(--dark) 60%); }
+  .cal-cell.weekend:hover { background: var(--dark2); }
 
-  /* ── BREAK CARD ── */
-  .sched-card { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; position: relative; transition: border-color 0.12s; border-left: 3px solid var(--line); }
-  .sched-card.planifie  { border-left-color: var(--accent); }
-  .sched-card.en_direct { border-left-color: var(--neg); }
-  .sched-card.termine   { border-left-color: var(--pos); opacity: 0.75; }
-  .sched-card.annule    { border-left-color: var(--line); opacity: 0.45; }
+  /* ── DATE NUMBER ── */
+  .cell-date { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .cell-num { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1; }
+  .cal-cell.today .cell-num { background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .cal-cell.other-month .cell-num { color: var(--text3); }
+  .cell-add-hint { font-size: 16px; color: var(--text3); opacity: 0; transition: opacity 0.12s; line-height: 1; }
 
-  .scard-time { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: 0.06em; margin-bottom: 3px; }
-  .scard-vendeur { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
-  .scard-helper { font-family: var(--font-mono); font-size: 10px; color: var(--text3); margin-bottom: 4px; }
-  .scard-produit { font-size: 11px; color: var(--text2); margin-bottom: 6px; line-height: 1.35; }
-  .scard-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
-  .scard-tag { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; background: var(--dark3); color: var(--text3); }
+  /* ── BREAK CHIPS IN CELL ── */
+  .cell-breaks { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .break-chip { display: flex; align-items: center; gap: 5px; padding: 4px 7px; border-radius: 5px; border-left: 3px solid transparent; font-size: 11px; cursor: pointer; transition: filter 0.1s; overflow: hidden; min-width: 0; }
+  .break-chip:hover { filter: brightness(1.12); }
+  .break-chip.planifie  { background: color-mix(in oklch, var(--accent), var(--dark2) 82%); border-left-color: var(--accent); }
+  .break-chip.en_direct { background: color-mix(in oklch, var(--neg), var(--dark2) 82%); border-left-color: var(--neg); }
+  .break-chip.termine   { background: color-mix(in oklch, var(--pos), var(--dark2) 82%); border-left-color: var(--pos); }
+  .break-chip.annule    { background: var(--dark3); border-left-color: var(--line); opacity: 0.6; }
+  .chip-time    { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--text3); white-space: nowrap; flex-shrink: 0; }
+  .chip-name    { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .chip-more    { font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--text3); padding: 2px 6px; border-radius: 3px; background: var(--dark3); align-self: flex-start; margin-top: 1px; }
 
-  .scard-status { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
-  .scard-status.planifie  { color: var(--accent); }
-  .scard-status.en_direct { color: var(--neg); }
-  .scard-status.termine   { color: var(--pos); }
-  .scard-status.annule    { color: var(--text3); }
-
-  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  .live-dot { display: inline-block; width: 6px; height: 6px; background: var(--neg); border-radius: 50%; margin-right: 5px; animation: pulse-dot 1.2s ease-in-out infinite; vertical-align: middle; }
-
-  .scard-actions { display: flex; gap: 5px; flex-wrap: wrap; }
-  .scard-btn { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 9px; border-radius: 4px; cursor: pointer; transition: all 0.12s; border: 1px solid var(--line); background: transparent; color: var(--text3); }
-  .scard-btn:hover { color: var(--ink); border-color: var(--text3); }
-  .scard-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .scard-btn.primary:hover { filter: brightness(1.08); }
-  .scard-btn.success { background: color-mix(in oklch, var(--pos), transparent 88%); border-color: var(--pos); color: var(--pos); }
-  .scard-btn.danger { color: var(--neg); border-color: color-mix(in oklch, var(--neg), transparent 55%); }
-  .scard-btn.danger:hover { background: color-mix(in oklch, var(--neg), transparent 88%); }
-
-  .scard-notes { font-size: 11px; color: var(--text3); font-style: italic; margin-bottom: 8px; border-left: 2px solid var(--line); padding-left: 8px; line-height: 1.4; }
-
-  /* ── ADD DAY BUTTON ── */
-  .add-day-btn { margin: 4px 10px 10px; background: transparent; border: 1px dashed var(--line); border-radius: var(--r-sm); color: var(--text3); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px; cursor: pointer; transition: all 0.12s; text-align: center; }
-  .add-day-btn:hover { border-color: var(--accent); color: var(--accent); background: color-mix(in oklch, var(--accent), transparent 94%); }
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .live-dot { width: 6px; height: 6px; background: var(--neg); border-radius: 50%; animation: pulse-dot 1.2s ease-in-out infinite; flex-shrink: 0; }
 
   /* ── SLIDE-IN PANEL ── */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(2px); }
   .overlay.open { opacity: 1; pointer-events: all; }
-  .panel { position: fixed; top: 0; right: -480px; width: 460px; max-width: 100vw; height: 100dvh; background: var(--dark2); border-left: 1px solid var(--line); z-index: 400; display: flex; flex-direction: column; transition: right 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: -8px 0 40px rgba(0,0,0,0.25); }
-  .panel.open { right: 0; }
-  .panel-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .panel-title { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
-  .panel-close { background: none; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); font-size: 18px; width: 34px; height: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
-  .panel-close:hover { color: var(--ink); border-color: var(--text3); }
-  .panel-body { flex: 1; overflow-y: auto; padding: 20px 22px; }
-  .panel-footer { padding: 16px 22px; border-top: 1px solid var(--line); display: flex; gap: 10px; flex-shrink: 0; }
 
-  /* ── FORM ── */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-grid.full { grid-template-columns: 1fr; }
+  .panel { position: fixed; top: 0; right: -520px; width: 500px; max-width: 100vw; height: 100dvh; background: var(--dark2); border-left: 1px solid var(--line); z-index: 400; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow: -12px 0 48px rgba(0,0,0,0.3); }
+  .panel.open { right: 0; }
+
+  .panel-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--line); flex-shrink: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .panel-title { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1; }
+  .panel-date-display { font-family: var(--font-mono); font-size: 11px; color: var(--text3); letter-spacing: 0.1em; margin-top: 5px; }
+  .panel-close { background: none; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); font-size: 16px; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.12s; flex-shrink: 0; }
+  .panel-close:hover { color: var(--ink); border-color: var(--text3); }
+
+  .panel-body { flex: 1; overflow-y: auto; padding: 22px 24px; }
+
+  /* Status strip (edit mode) */
+  .status-strip { display: flex; gap: 6px; margin-bottom: 20px; }
+  .status-chip { flex: 1; padding: 9px 4px; border-radius: var(--r-sm); border: 2px solid transparent; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; cursor: pointer; transition: all 0.12s; }
+  .status-chip.planifie  { border-color: var(--accent); color: var(--accent); background: color-mix(in oklch, var(--accent), transparent 90%); }
+  .status-chip.en_direct { border-color: var(--neg);    color: var(--neg);    background: color-mix(in oklch, var(--neg),    transparent 90%); }
+  .status-chip.termine   { border-color: var(--pos);    color: var(--pos);    background: color-mix(in oklch, var(--pos),    transparent 90%); }
+  .status-chip.annule    { border-color: var(--line);   color: var(--text3);  background: var(--dark3); }
+  .status-chip:not(.selected) { opacity: 0.35; }
+  .status-chip.selected  { opacity: 1; }
+
+  /* Form */
+  .form-section { margin-bottom: 22px; }
+  .form-section-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row.single { grid-template-columns: 1fr; }
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field.span2 { grid-column: span 2; }
   .field label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
-  .field input, .field select, .field textarea { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 11px 13px; color: var(--ink); font-size: 14px; font-family: var(--font-body); outline: none; transition: border-color 0.12s; width: 100%; resize: none; }
+  .field input, .field select, .field textarea { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 13px; color: var(--ink); font-size: 14px; font-family: var(--font-body); outline: none; transition: border-color 0.12s, box-shadow 0.12s; width: 100%; }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
   .field select option { background: var(--dark3); }
-  .field textarea { min-height: 72px; }
+  .field textarea { min-height: 80px; resize: none; line-height: 1.5; }
 
-  .form-section-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin: 18px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  /* Time + Date row */
+  .date-time-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
+  .big-date { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; padding: 10px 14px; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; transition: border-color 0.12s; }
+  .big-date::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; }
+  .field input[type="date"] { font-size: 16px; font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em; }
+  .field input[type="time"] { font-size: 20px; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; text-align: center; }
 
-  .save-btn { flex: 1; background: var(--accent); border: none; border-radius: var(--r-sm); color: #fff; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 14px; cursor: pointer; transition: filter 0.12s; }
+  /* Tracker link */
+  .tracker-link { display: flex; align-items: center; gap: 10px; background: color-mix(in oklch, var(--pos), transparent 90%); border: 1px solid color-mix(in oklch, var(--pos), transparent 65%); border-radius: var(--r-sm); padding: 12px 16px; font-size: 13px; color: var(--pos); margin-bottom: 16px; cursor: pointer; transition: all 0.12s; }
+  .tracker-link:hover { background: color-mix(in oklch, var(--pos), transparent 82%); }
+  .tracker-link strong { font-weight: 700; }
+
+  .panel-footer { padding: 16px 24px; border-top: 1px solid var(--line); display: flex; gap: 10px; flex-shrink: 0; }
+  .save-btn { flex: 1; background: var(--accent); border: none; border-radius: var(--r-sm); color: #fff; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px; cursor: pointer; transition: filter 0.12s; }
   .save-btn:hover { filter: brightness(1.07); }
   .save-btn:disabled { background: var(--line); color: var(--mute); cursor: not-allowed; filter: none; }
-  .del-btn { background: transparent; border: 1px solid color-mix(in oklch, var(--neg), transparent 55%); border-radius: var(--r-sm); color: var(--neg); font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 14px 18px; cursor: pointer; transition: all 0.12s; }
+  .del-btn { background: transparent; border: 1px solid color-mix(in oklch, var(--neg), transparent 55%); border-radius: var(--r-sm); color: var(--neg); font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 15px 18px; cursor: pointer; transition: all 0.12s; }
   .del-btn:hover { background: color-mix(in oklch, var(--neg), transparent 88%); }
 
-  /* ── LOADING / EMPTY ── */
-  .day-loading { text-align: center; padding: 24px 10px; }
-  .day-empty { text-align: center; padding: 16px 10px; color: var(--text3); font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.06em; }
-
   /* ── TOAST ── */
-  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--dark2); border: 1px solid var(--pos); border-radius: var(--r-sm); padding: 11px 18px; color: var(--pos); font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.08em; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 999; }
+  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--dark2); border: 1px solid var(--pos); border-radius: var(--r-sm); padding: 12px 20px; color: var(--pos); font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.08em; box-shadow: 0 4px 24px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 999; white-space: nowrap; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast.error { border-color: var(--neg); color: var(--neg); }
+  .toast.err  { border-color: var(--neg); color: var(--neg); }
 
-  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); }
+  /* ── LOADING ── */
+  .cal-loading { padding: 60px 24px; text-align: center; color: var(--text3); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; margin-right: 8px; }
+
+  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 12px; }
 </style>
 </head>
 <body class="he-root he-court">
 
-<!-- HEADER -->
+<!-- ── HEADER ── -->
 <div class="header">
   <a class="logo-wrap" href="/">
     <span class="logo-dot"></span>
@@ -161,130 +178,148 @@
   </nav>
 </div>
 
-<!-- WEEK NAV -->
-<div class="week-nav">
-  <button class="week-nav-btn" onclick="shiftWeek(-1)">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-    Préc.
+<!-- ── CALENDAR NAV ── -->
+<div class="cal-nav">
+  <button class="cal-nav-btn" onclick="shiftMonth(-1)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
   </button>
-  <div class="week-label" id="week-label">—</div>
-  <button class="week-nav-btn" onclick="shiftWeek(1)">
-    Suiv.
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+  <span class="cal-month-label" id="month-label">—</span>
+  <span class="cal-year-label"  id="year-label"></span>
+  <button class="cal-nav-btn" onclick="shiftMonth(1)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
   </button>
   <button class="today-btn" onclick="goToday()">Aujourd'hui</button>
-  <button class="add-global-btn" onclick="openPanel(null)">+ Planifier un break</button>
+  <div style="flex:1"></div>
+  <button class="add-btn-main" onclick="openPanel(todayISO())">+ Planifier un break</button>
 </div>
 
-<!-- WEEK GRID -->
-<div class="week-wrap">
-  <div class="week-grid" id="week-grid"></div>
+<!-- ── CALENDAR ── -->
+<div class="cal-wrap" id="cal-wrap">
+  <div class="cal-loading"><span class="spin"></span>Chargement...</div>
 </div>
 
 <div class="footer">Hobby Empire &mdash; Planificateur &copy; 2026</div>
 
-<!-- OVERLAY + PANEL -->
+<!-- ── OVERLAY + PANEL ── -->
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
+
 <div class="panel" id="panel">
   <div class="panel-header">
-    <div class="panel-title" id="panel-title">Planifier un break</div>
+    <div>
+      <div class="panel-title" id="panel-title">Nouveau break</div>
+      <div class="panel-date-display" id="panel-date-display"></div>
+    </div>
     <button class="panel-close" onclick="closePanel()">✕</button>
   </div>
+
   <div class="panel-body">
-    <div class="form-section-label">Date &amp; Heure</div>
-    <div class="form-grid">
-      <div class="field">
-        <label>Date</label>
-        <input type="date" id="f-date" />
-      </div>
-      <div class="field">
-        <label>Heure estimée</label>
-        <input type="time" id="f-heure" />
+
+    <!-- Status (edit mode only) -->
+    <div id="status-strip" style="display:none">
+      <div class="status-strip">
+        <div class="status-chip planifie"  id="sc-planifie"  onclick="selectStatut('planifie')">Planifié</div>
+        <div class="status-chip en_direct" id="sc-en_direct" onclick="selectStatut('en_direct')">🔴 En direct</div>
+        <div class="status-chip termine"   id="sc-termine"   onclick="selectStatut('termine')">✓ Terminé</div>
+        <div class="status-chip annule"    id="sc-annule"    onclick="selectStatut('annule')">Annulé</div>
       </div>
     </div>
 
-    <div class="form-section-label">Équipe</div>
-    <div class="form-grid">
-      <div class="field">
-        <label>Vendeur</label>
-        <select id="f-vendeur">
-          <option value="">Sélectionner...</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Helper</label>
-        <select id="f-helper">
-          <option value="">Aucun</option>
-        </select>
+    <!-- Tracker shortcut (terminé only) -->
+    <div class="tracker-link" id="tracker-link" style="display:none" onclick="openTracker()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      <span><strong>Break terminé</strong> — Cliquez pour l'enregistrer dans le Break Tracker</span>
+    </div>
+
+    <!-- Date & Heure -->
+    <div class="form-section">
+      <div class="form-section-label">Date &amp; Heure</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="f-date" onchange="updatePanelDateDisplay()" />
+        </div>
+        <div class="field">
+          <label>Heure estimée</label>
+          <input type="time" id="f-heure" />
+        </div>
       </div>
     </div>
 
-    <div class="form-section-label">Contenu</div>
-    <div class="form-grid">
-      <div class="field span2">
-        <label>Produit</label>
-        <input type="text" id="f-produit" placeholder="Ex: 2024-25 The Cup Hockey" />
-      </div>
-      <div class="field">
-        <label>Catégorie</label>
-        <select id="f-categorie">
-          <option value="">Sélectionner...</option>
-          <option>Wax</option>
-          <option>Repacks</option>
-          <option>Mix (Wax x Repacks)</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Sport / Licence</label>
-        <select id="f-sport">
-          <option value="">Sélectionner...</option>
-          <option>Hockey</option>
-          <option>Football</option>
-          <option>Basketball</option>
-          <option>Baseball</option>
-          <option>Multi sports</option>
-          <option>Pokémon</option>
-        </select>
-      </div>
-      <div class="field span2">
-        <label>Type de break</label>
-        <select id="f-typebreak">
-          <option value="">Sélectionner...</option>
-          <option>Team Random</option>
-          <option>Hybrid</option>
-          <option>Player Random</option>
-          <option>Numeral</option>
-          <option>Wheel</option>
-        </select>
+    <!-- Équipe -->
+    <div class="form-section">
+      <div class="form-section-label">Équipe</div>
+      <div class="form-row">
+        <div class="field">
+          <label>Vendeur</label>
+          <select id="f-vendeur"><option value="">Sélectionner...</option></select>
+        </div>
+        <div class="field">
+          <label>Helper</label>
+          <select id="f-helper"><option value="">Aucun</option></select>
+        </div>
       </div>
     </div>
 
-    <div class="form-section-label">Notes</div>
-    <div class="form-grid full">
-      <div class="field">
-        <label>Notes internes</label>
-        <textarea id="f-notes" placeholder="Notes sur le break, produits spéciaux, rappels..."></textarea>
+    <!-- Contenu -->
+    <div class="form-section">
+      <div class="form-section-label">Contenu du break</div>
+      <div class="form-row single">
+        <div class="field">
+          <label>Produit</label>
+          <input type="text" id="f-produit" placeholder="Ex: 2024-25 The Cup Hockey" />
+        </div>
       </div>
-    </div>
-
-    <div id="f-statut-section" style="display:none">
-      <div class="form-section-label">Statut</div>
-      <div class="form-grid">
+      <div class="form-row" style="margin-top:12px">
+        <div class="field">
+          <label>Catégorie</label>
+          <select id="f-categorie">
+            <option value="">Sélectionner...</option>
+            <option>Wax</option>
+            <option>Repacks</option>
+            <option>Mix (Wax x Repacks)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Sport / Licence</label>
+          <select id="f-sport">
+            <option value="">Sélectionner...</option>
+            <option>Hockey</option>
+            <option>Football</option>
+            <option>Basketball</option>
+            <option>Baseball</option>
+            <option>Multi sports</option>
+            <option>Pokémon</option>
+          </select>
+        </div>
         <div class="field span2">
-          <label>Statut du break</label>
-          <select id="f-statut">
-            <option value="planifie">Planifié</option>
-            <option value="en_direct">🔴 En direct</option>
-            <option value="termine">✓ Terminé</option>
-            <option value="annule">Annulé</option>
+          <label>Type de break</label>
+          <select id="f-typebreak">
+            <option value="">Sélectionner...</option>
+            <option>Team Random</option>
+            <option>Hybrid</option>
+            <option>Player Random</option>
+            <option>Numeral</option>
+            <option>Wheel</option>
           </select>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- Notes -->
+    <div class="form-section">
+      <div class="form-section-label">Notes internes</div>
+      <div class="form-row single">
+        <div class="field">
+          <textarea id="f-notes" placeholder="Rappels, produits spéciaux, instructions..."></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /panel-body -->
+
   <div class="panel-footer">
     <button class="save-btn" id="save-btn" onclick="saveItem()">Enregistrer</button>
-    <button class="del-btn" id="del-btn" style="display:none" onclick="deleteItem()">Supprimer</button>
+    <button class="del-btn"  id="del-btn"  onclick="deleteItem()" style="display:none">Supprimer</button>
   </div>
 </div>
 
@@ -292,15 +327,17 @@
 
 <script>
 // ── Constants ─────────────────────────────────────────────────────────────────
-const JOURS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-const MOIS_SHORT = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
-const MOIS_LONG  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MOIS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const JOURS_COURT = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const JOURS_FR = { Sunday:'Dimanche', Monday:'Lundi', Tuesday:'Mardi', Wednesday:'Mercredi', Thursday:'Jeudi', Friday:'Vendredi', Saturday:'Samedi' };
 const SETTINGS_KEY = 'he_settings';
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let weekStart   = getMonday(new Date());
-let weekItems   = [];   // loaded from API
-let editingId   = null; // null = new, number = update
+let currentYear  = new Date().getFullYear();
+let currentMonth = new Date().getMonth(); // 0-based
+let monthItems   = [];
+let editingId    = null;
+let currentStatut = 'planifie';
 
 // ── Settings ──────────────────────────────────────────────────────────────────
 function getSettings() {
@@ -310,233 +347,212 @@ function getSettings() {
     return JSON.parse(raw);
   } catch(e) { return { vendeurs:[], helpers:[] }; }
 }
-
 function populateTeamSelects() {
   const s = getSettings();
-  const vSel = document.getElementById('f-vendeur');
-  const hSel = document.getElementById('f-helper');
-  vSel.innerHTML = '<option value="">Sélectionner...</option>';
-  hSel.innerHTML = '<option value="">Aucun</option>';
-  (s.vendeurs || []).forEach(v => { vSel.innerHTML += `<option>${v}</option>`; });
-  (s.helpers  || []).forEach(h => { hSel.innerHTML += `<option>${h}</option>`; });
+  const vs = document.getElementById('f-vendeur');
+  const hs = document.getElementById('f-helper');
+  vs.innerHTML = '<option value="">Sélectionner...</option>';
+  hs.innerHTML = '<option value="">Aucun</option>';
+  (s.vendeurs||[]).forEach(v => { vs.innerHTML += `<option>${v}</option>`; });
+  (s.helpers ||[]).forEach(h => { hs.innerHTML += `<option>${h}</option>`; });
 }
 
-// ── Week helpers ──────────────────────────────────────────────────────────────
-function getMonday(d) {
-  const day  = d.getDay();
-  const diff = (day === 0) ? -6 : 1 - day;
-  const m    = new Date(d);
-  m.setDate(d.getDate() + diff);
-  m.setHours(0,0,0,0);
-  return m;
-}
+// ── Date helpers ──────────────────────────────────────────────────────────────
+function isoDate(d) { return d.toISOString().slice(0,10); }
+function todayISO() { return isoDate(new Date()); }
 
-function isoDate(d) {
-  return d.toISOString().slice(0,10);
-}
-
-function addDays(d, n) {
-  const r = new Date(d);
-  r.setDate(r.getDate() + n);
-  return r;
-}
-
-function isToday(d) {
-  const t = new Date();
-  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
-}
-
-function fmtWeekLabel(start) {
-  const end = addDays(start, 6);
-  if (start.getMonth() === end.getMonth()) {
-    return `${start.getDate()} – ${end.getDate()} ${MOIS_LONG[end.getMonth()]} ${end.getFullYear()}`;
-  }
-  return `${start.getDate()} ${MOIS_SHORT[start.getMonth()]} – ${end.getDate()} ${MOIS_SHORT[end.getMonth()]} ${end.getFullYear()}`;
+function fmtDateLong(iso) {
+  if (!iso) return '';
+  const [y,m,d] = iso.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  return `${jours[dt.getDay()]} ${d} ${MOIS[m-1]} ${y}`;
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────────
-function shiftWeek(n) {
-  weekStart = addDays(weekStart, n * 7);
-  loadWeek();
+function shiftMonth(n) {
+  currentMonth += n;
+  if (currentMonth > 11) { currentMonth = 0;  currentYear++; }
+  if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+  loadMonth();
 }
 function goToday() {
-  weekStart = getMonday(new Date());
-  loadWeek();
+  const now    = new Date();
+  currentYear  = now.getFullYear();
+  currentMonth = now.getMonth();
+  loadMonth();
 }
 
-// ── Load week ─────────────────────────────────────────────────────────────────
-async function loadWeek() {
-  document.getElementById('week-label').textContent = fmtWeekLabel(weekStart);
-  buildGrid(); // render skeleton first
+// ── Load month data ───────────────────────────────────────────────────────────
+async function loadMonth() {
+  document.getElementById('month-label').textContent = MOIS[currentMonth];
+  document.getElementById('year-label').textContent  = ' ' + currentYear;
 
-  const from = isoDate(weekStart);
-  const to   = isoDate(addDays(weekStart, 6));
+  // Show skeleton
+  document.getElementById('cal-wrap').innerHTML = '<div class="cal-loading"><span class="spin"></span>Chargement...</div>';
+
+  const from = isoDate(new Date(currentYear, currentMonth, 1));
+  const to   = isoDate(new Date(currentYear, currentMonth + 1, 0));
 
   try {
     const res = await fetch(`/api/schedule?from=${from}&to=${to}`);
-    if (!res.ok) throw new Error('API error ' + res.status);
-    weekItems = await res.json();
+    if (!res.ok) throw new Error('API ' + res.status);
+    monthItems = await res.json();
   } catch(e) {
     showToast('Erreur de chargement : ' + e.message, true);
-    weekItems = [];
+    monthItems = [];
   }
-
-  renderCards();
+  renderCalendar();
 }
 
-// ── Build 7-column skeleton ───────────────────────────────────────────────────
-function buildGrid() {
-  const grid = document.getElementById('week-grid');
-  grid.innerHTML = '';
-  for (let i = 0; i < 7; i++) {
-    const d = addDays(weekStart, i);
-    const todayCls = isToday(d) ? ' today' : '';
-    grid.innerHTML += `
-      <div class="day-col${todayCls}" id="day-${i}">
-        <div class="day-header">
-          <div class="day-name">${JOURS[i]}</div>
-          <div class="day-number">${d.getDate()}</div>
-          <div class="day-month">${MOIS_LONG[d.getMonth()]}</div>
-        </div>
-        <div class="day-body" id="body-${i}">
-          <div class="day-loading"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="animation:spin .9s linear infinite;display:block;margin:0 auto;color:var(--line)"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg></div>
-        </div>
-        <button class="add-day-btn" onclick="openPanel('${isoDate(d)}')">+ Planifier</button>
-      </div>`;
-  }
-}
+// ── Build & render calendar ───────────────────────────────────────────────────
+function renderCalendar() {
+  const today     = new Date();
+  const firstDay  = new Date(currentYear, currentMonth, 1);
+  const lastDay   = new Date(currentYear, currentMonth + 1, 0);
 
-// ── Render cards for the loaded week ─────────────────────────────────────────
-function renderCards() {
-  for (let i = 0; i < 7; i++) {
-    const d     = isoDate(addDays(weekStart, i));
-    const items = weekItems.filter(x => x.date === d);
-    const body  = document.getElementById('body-' + i);
-    if (!items.length) {
-      body.innerHTML = '<div class="day-empty">Rien de prévu</div>';
-    } else {
-      body.innerHTML = items.map(item => cardHTML(item)).join('');
-    }
-  }
-}
+  // Monday-first: find the Monday on or before the 1st
+  const startDow  = firstDay.getDay(); // 0=Sun,1=Mon,...
+  const offset    = (startDow === 0) ? -6 : 1 - startDow;
+  const gridStart = new Date(firstDay);
+  gridStart.setDate(firstDay.getDate() + offset);
 
-function cardHTML(item) {
-  const s      = item.statut || 'planifie';
-  const sLabel = { planifie:'Planifié', en_direct:'En direct', termine:'Terminé', annule:'Annulé' }[s] || s;
-  const liveDot = s === 'en_direct' ? '<span class="live-dot"></span>' : '';
-
-  // Action buttons based on status
-  let actions = '';
-  if (s === 'planifie') {
-    actions = `
-      <button class="scard-btn primary" onclick="quickStatus(${item.id},'en_direct',event)">▶ Démarrer</button>
-      <button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>
-      <button class="scard-btn danger" onclick="quickStatus(${item.id},'annule',event)">✕</button>`;
-  } else if (s === 'en_direct') {
-    actions = `
-      <button class="scard-btn success" onclick="quickStatus(${item.id},'termine',event)">✓ Terminer</button>
-      <button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>`;
-  } else if (s === 'termine') {
-    actions = `
-      <button class="scard-btn success" onclick="openTracker(${JSON.stringify(item).replace(/"/g,'&quot;')},event)">📊 Tracker</button>
-      <button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>`;
-  } else {
-    actions = `<button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>`;
+  // Always 6 rows × 7 cols = 42 cells
+  const cells = [];
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(gridStart);
+    d.setDate(gridStart.getDate() + i);
+    cells.push(d);
   }
 
-  return `
-    <div class="sched-card ${s}" id="sc-${item.id}">
-      ${item.heureEstimee ? `<div class="scard-time">${item.heureEstimee}</div>` : ''}
-      ${item.vendeur ? `<div class="scard-vendeur">${item.vendeur}</div>` : ''}
-      ${item.helper  ? `<div class="scard-helper">+ ${item.helper}</div>` : ''}
-      ${item.produit ? `<div class="scard-produit">${item.produit}</div>` : ''}
-      ${(item.sport || item.typeBreak || item.categorie) ? `
-        <div class="scard-tags">
-          ${item.sport     ? `<span class="scard-tag">${item.sport}</span>` : ''}
-          ${item.typeBreak ? `<span class="scard-tag">${item.typeBreak}</span>` : ''}
-          ${item.categorie ? `<span class="scard-tag">${item.categorie}</span>` : ''}
-        </div>` : ''}
-      ${item.notes ? `<div class="scard-notes">${item.notes}</div>` : ''}
-      <div class="scard-status ${s}">${liveDot}${sLabel}</div>
-      <div class="scard-actions">${actions}</div>
-    </div>`;
-}
+  // DOW header row
+  const dowHTML = JOURS_COURT.map((j,i) =>
+    `<div class="cal-dow${i>=5?' weekend':''}">${j}</div>`
+  ).join('');
 
-// ── Quick status change ───────────────────────────────────────────────────────
-async function quickStatus(id, statut, ev) {
-  ev.stopPropagation();
-  const item = weekItems.find(x => x.id === id);
-  if (!item) return;
-  try {
-    const res = await fetch('/api/schedule', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...item, id, statut }),
+  // Grid cells
+  const cellsHTML = cells.map(d => {
+    const iso       = isoDate(d);
+    const isOther   = d.getMonth() !== currentMonth;
+    const isToday   = iso === isoDate(today);
+    const isSat     = d.getDay() === 6;
+    const isSun     = d.getDay() === 0;
+    const isWeekend = isSat || isSun;
+    const items     = monthItems.filter(x => x.date === iso);
+
+    let cls = 'cal-cell';
+    if (isOther)   cls += ' other-month';
+    else if (isToday) cls += ' today';
+    else if (isWeekend) cls += ' weekend';
+
+    // Break chips (max 3 visible, rest as "+N")
+    let chipsHTML = '';
+    const visible = items.slice(0, 3);
+    const hidden  = items.length - 3;
+
+    visible.forEach(item => {
+      const s    = item.statut || 'planifie';
+      const name = item.vendeur || item.produit || '—';
+      const dot  = s === 'en_direct' ? '<span class="live-dot"></span>' : '';
+      const time = item.heureEstimee ? `<span class="chip-time">${item.heureEstimee}</span>` : '';
+      chipsHTML += `
+        <div class="break-chip ${s}" onclick="openEdit(${item.id}, event)">
+          ${dot}${time}
+          <span class="chip-name">${name}</span>
+        </div>`;
     });
-    if (!res.ok) throw new Error('Erreur API');
-    item.statut = statut;
-    renderCards();
-    showToast(statut === 'termine' ? '✓ Break terminé !' : '✓ Statut mis à jour');
-  } catch(e) {
-    showToast('Erreur : ' + e.message, true);
-  }
-}
+    if (hidden > 0) chipsHTML += `<div class="chip-more">+${hidden} autre${hidden>1?'s':''}</div>`;
 
-// ── Open Break Tracker pre-filled ────────────────────────────────────────────
-function openTracker(item, ev) {
-  ev.stopPropagation();
-  const p = new URLSearchParams();
-  if (item.date)     p.set('date',     item.date);
-  if (item.vendeur)  p.set('vendeur',  item.vendeur);
-  if (item.helper)   p.set('helper',   item.helper);
-  if (item.produit)  p.set('nomBreak', item.produit);
-  if (item.categorie) p.set('categorie', item.categorie);
-  if (item.sport)    p.set('sport',    item.sport);
-  if (item.typeBreak) p.set('typeBreak', item.typeBreak);
-  window.open('/break-builder.html?' + p.toString(), '_blank');
+    const clickFn = isOther ? '' : `onclick="openPanel('${iso}')"`;
+
+    return `
+      <div class="${cls}" ${clickFn}>
+        <div class="cell-date">
+          <span class="cell-num">${d.getDate()}</span>
+          ${!isOther ? '<span class="cell-add-hint">+</span>' : ''}
+        </div>
+        <div class="cell-breaks">${chipsHTML}</div>
+      </div>`;
+  }).join('');
+
+  document.getElementById('cal-wrap').innerHTML = `
+    <div class="cal-dow-row">${dowHTML}</div>
+    <div class="cal-grid">${cellsHTML}</div>
+  `;
 }
 
 // ── Panel ─────────────────────────────────────────────────────────────────────
 function openPanel(date) {
   editingId = null;
+  currentStatut = 'planifie';
   populateTeamSelects();
-  document.getElementById('panel-title').textContent = 'Planifier un break';
-  document.getElementById('f-date').value      = date || isoDate(new Date());
-  document.getElementById('f-heure').value     = '';
-  document.getElementById('f-vendeur').value   = '';
-  document.getElementById('f-helper').value    = '';
-  document.getElementById('f-produit').value   = '';
-  document.getElementById('f-categorie').value = '';
-  document.getElementById('f-sport').value     = '';
-  document.getElementById('f-typebreak').value = '';
-  document.getElementById('f-notes').value     = '';
-  document.getElementById('f-statut-section').style.display = 'none';
-  document.getElementById('del-btn').style.display = 'none';
-  document.getElementById('save-btn').textContent = 'Enregistrer';
-  document.getElementById('overlay').classList.add('open');
-  document.getElementById('panel').classList.add('open');
+  document.getElementById('panel-title').textContent      = 'Nouveau break';
+  document.getElementById('f-date').value                 = date || todayISO();
+  document.getElementById('f-heure').value                = '';
+  document.getElementById('f-vendeur').value              = '';
+  document.getElementById('f-helper').value               = '';
+  document.getElementById('f-produit').value              = '';
+  document.getElementById('f-categorie').value            = '';
+  document.getElementById('f-sport').value                = '';
+  document.getElementById('f-typebreak').value            = '';
+  document.getElementById('f-notes').value                = '';
+  document.getElementById('status-strip').style.display  = 'none';
+  document.getElementById('tracker-link').style.display  = 'none';
+  document.getElementById('del-btn').style.display       = 'none';
+  document.getElementById('save-btn').textContent        = 'Enregistrer';
+  updatePanelDateDisplay();
+  showPanel();
 }
 
 function openEdit(id, ev) {
   if (ev) ev.stopPropagation();
-  const item = weekItems.find(x => x.id === id);
+  const item = monthItems.find(x => x.id === id);
   if (!item) return;
-  editingId = id;
+  editingId     = id;
+  currentStatut = item.statut || 'planifie';
   populateTeamSelects();
-  document.getElementById('panel-title').textContent = 'Modifier le break';
-  document.getElementById('f-date').value      = item.date        || '';
-  document.getElementById('f-heure').value     = item.heureEstimee|| '';
-  document.getElementById('f-vendeur').value   = item.vendeur     || '';
-  document.getElementById('f-helper').value    = item.helper      || '';
-  document.getElementById('f-produit').value   = item.produit     || '';
-  document.getElementById('f-categorie').value = item.categorie   || '';
-  document.getElementById('f-sport').value     = item.sport       || '';
-  document.getElementById('f-typebreak').value = item.typeBreak   || '';
-  document.getElementById('f-notes').value     = item.notes       || '';
-  document.getElementById('f-statut').value    = item.statut      || 'planifie';
-  document.getElementById('f-statut-section').style.display = 'block';
-  document.getElementById('del-btn').style.display = 'inline-block';
-  document.getElementById('save-btn').textContent = 'Mettre à jour';
+  document.getElementById('panel-title').textContent      = 'Modifier le break';
+  document.getElementById('f-date').value                 = item.date         || '';
+  document.getElementById('f-heure').value                = item.heureEstimee || '';
+  document.getElementById('f-vendeur').value              = item.vendeur      || '';
+  document.getElementById('f-helper').value               = item.helper       || '';
+  document.getElementById('f-produit').value              = item.produit      || '';
+  document.getElementById('f-categorie').value            = item.categorie    || '';
+  document.getElementById('f-sport').value                = item.sport        || '';
+  document.getElementById('f-typebreak').value            = item.typeBreak    || '';
+  document.getElementById('f-notes').value                = item.notes        || '';
+  document.getElementById('status-strip').style.display  = 'block';
+  document.getElementById('del-btn').style.display       = 'inline-block';
+  document.getElementById('save-btn').textContent        = 'Mettre à jour';
+  renderStatusStrip();
+  updateTrackerLink();
+  updatePanelDateDisplay();
+  showPanel();
+}
+
+function selectStatut(s) {
+  currentStatut = s;
+  renderStatusStrip();
+  updateTrackerLink();
+}
+
+function renderStatusStrip() {
+  ['planifie','en_direct','termine','annule'].forEach(s => {
+    const el = document.getElementById('sc-' + s);
+    el.classList.toggle('selected', s === currentStatut);
+  });
+}
+
+function updateTrackerLink() {
+  document.getElementById('tracker-link').style.display = currentStatut === 'termine' ? 'flex' : 'none';
+}
+
+function updatePanelDateDisplay() {
+  const iso = document.getElementById('f-date').value;
+  document.getElementById('panel-date-display').textContent = fmtDateLong(iso);
+}
+
+function showPanel() {
   document.getElementById('overlay').classList.add('open');
   document.getElementById('panel').classList.add('open');
 }
@@ -550,7 +566,7 @@ function closePanel() {
 async function saveItem() {
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
-  btn.textContent = 'Sauvegarde...';
+  btn.textContent = editingId ? 'Mise à jour...' : 'Enregistrement...';
 
   const payload = {
     date:         document.getElementById('f-date').value      || null,
@@ -562,30 +578,31 @@ async function saveItem() {
     sport:        document.getElementById('f-sport').value     || null,
     typeBreak:    document.getElementById('f-typebreak').value || null,
     notes:        document.getElementById('f-notes').value     || null,
-    statut:       document.getElementById('f-statut').value    || 'planifie',
+    statut:       currentStatut,
   };
 
   if (!payload.date) {
-    showToast('La date est requise.', true);
+    showToast('La date est obligatoire.', true);
     btn.disabled = false;
     btn.textContent = editingId ? 'Mettre à jour' : 'Enregistrer';
     return;
   }
 
   try {
-    const isEdit = editingId !== null;
+    const method = editingId ? 'PUT' : 'POST';
+    const body   = editingId ? { ...payload, id: editingId } : payload;
     const res = await fetch('/api/schedule', {
-      method: isEdit ? 'PUT' : 'POST',
+      method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(isEdit ? { ...payload, id: editingId } : payload),
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || 'Erreur serveur');
     }
     closePanel();
-    showToast(isEdit ? '✓ Break mis à jour' : '✓ Break planifié !');
-    await loadWeek(); // refresh
+    showToast(editingId ? '✓ Break mis à jour !' : '✓ Break planifié !');
+    await loadMonth();
   } catch(e) {
     showToast('Erreur : ' + e.message, true);
   }
@@ -599,21 +616,36 @@ async function deleteItem() {
   if (!editingId || !confirm('Supprimer ce break planifié ?')) return;
   try {
     const res = await fetch('/api/schedule?id=' + editingId, { method: 'DELETE' });
-    if (!res.ok) throw new Error('Erreur API');
+    if (!res.ok) throw new Error();
     closePanel();
     showToast('✓ Break supprimé');
-    await loadWeek();
+    await loadMonth();
   } catch(e) {
-    showToast('Erreur : ' + e.message, true);
+    showToast('Erreur lors de la suppression.', true);
   }
+}
+
+// ── Tracker link ──────────────────────────────────────────────────────────────
+function openTracker() {
+  const p = new URLSearchParams();
+  const item = monthItems.find(x => x.id === editingId);
+  if (!item) return;
+  if (item.date)      p.set('date',      item.date);
+  if (item.vendeur)   p.set('vendeur',   item.vendeur);
+  if (item.helper)    p.set('helper',    item.helper);
+  if (item.produit)   p.set('nomBreak',  item.produit);
+  if (item.categorie) p.set('categorie', item.categorie);
+  if (item.sport)     p.set('sport',     item.sport);
+  if (item.typeBreak) p.set('typeBreak', item.typeBreak);
+  window.open('/break-builder.html?' + p.toString(), '_blank');
 }
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
 let toastTimer;
-function showToast(msg, isError = false) {
+function showToast(msg, isErr = false) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.className = 'toast' + (isError ? ' error' : '');
+  t.className   = 'toast' + (isErr ? ' err' : '');
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
@@ -622,17 +654,14 @@ function showToast(msg, isError = false) {
 // ── Keyboard ──────────────────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closePanel();
-  if (e.key === 'ArrowLeft'  && !document.getElementById('panel').classList.contains('open')) shiftWeek(-1);
-  if (e.key === 'ArrowRight' && !document.getElementById('panel').classList.contains('open')) shiftWeek(1);
+  if (!document.getElementById('panel').classList.contains('open')) {
+    if (e.key === 'ArrowLeft')  shiftMonth(-1);
+    if (e.key === 'ArrowRight') shiftMonth(1);
+  }
 });
 
-// ── CSS animation for spinner ─────────────────────────────────────────────────
-const style = document.createElement('style');
-style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
-document.head.appendChild(style);
-
 // ── Boot ──────────────────────────────────────────────────────────────────────
-loadWeek();
+loadMonth();
 </script>
 </body>
 </html>
