@@ -6,8 +6,6 @@
 <title>Break Tracker — Hobby Empire</title>
 <link rel="stylesheet" href="tokens.css">
 <style>
-  /* Aliases : on garde les anciens noms de variables pour ne rien casser dans le CSS existant,
-     mais on les pointe vers les tokens Court. */
   .he-court {
     --gold:  var(--accent);
     --gold2: color-mix(in oklch, var(--accent), white 12%);
@@ -35,6 +33,12 @@
   .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
   .nav-link:hover { color: var(--text); background: var(--bg-2); }
   .nav-link.active { color: var(--ink); background: var(--bg-2); }
+
+  /* ── Tabs ── */
+  .page-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); background: var(--dark2); padding: 0 24px; }
+  .page-tab { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); padding: 16px 20px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; margin-bottom: -1px; }
+  .page-tab:hover { color: var(--text2); }
+  .page-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
   .page-head { padding: 32px 24px 24px; max-width: 760px; margin: 0 auto; }
   .page-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.02em; line-height: 0.92; color: var(--text); margin-bottom: 8px; }
@@ -76,6 +80,13 @@
   .submit-btn:hover { filter: brightness(1.05); }
   .submit-btn:active { transform: translateY(1px); }
   .submit-btn:disabled { background: var(--line); color: var(--mute); cursor: not-allowed; filter: none; }
+  .cancel-btn {
+    width: 100%; background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm);
+    color: var(--text3); font-size: 11px; font-weight: 600;
+    font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 14px; cursor: pointer; transition: all 0.12s; margin-top: 8px;
+  }
+  .cancel-btn:hover { border-color: var(--text3); color: var(--text2); }
 
   .success-box {
     background: color-mix(in oklch, var(--pos), transparent 88%);
@@ -92,9 +103,52 @@
     color: var(--neg); font-size: 13px;
     margin-top: 12px; display: none;
   }
+  .edit-banner {
+    background: color-mix(in oklch, var(--accent), transparent 88%);
+    border: 1px solid color-mix(in oklch, var(--accent), transparent 65%);
+    border-radius: var(--r-sm); padding: 14px 18px;
+    color: var(--accent); font-size: 12px;
+    font-family: var(--font-mono); letter-spacing: 0.05em;
+    margin-bottom: 16px; display: none;
+  }
 
-  .config-note { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 16px; font-size: 12px; color: var(--text3); line-height: 1.6; margin-bottom: 16px; }
-  .config-note strong { color: var(--accent); }
+  /* ── Historique ── */
+  .hist-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+  .hist-search { flex: 1; min-width: 180px; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text); font-size: 13px; font-family: var(--font-body); outline: none; transition: border-color 0.12s; }
+  .hist-search:focus { border-color: var(--accent); }
+  .hist-search::placeholder { color: var(--mute); }
+  .hist-filter { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text); font-size: 13px; font-family: var(--font-body); outline: none; cursor: pointer; }
+  .hist-refresh { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text3); font-size: 13px; cursor: pointer; transition: all 0.12s; }
+  .hist-refresh:hover { border-color: var(--text3); color: var(--text); }
+
+  .break-card { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: 10px; overflow: hidden; transition: border-color 0.15s; }
+  .break-card:hover { border-color: var(--line-strong, #333); }
+  .break-card-head { padding: 14px 18px; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
+  .break-card-date { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.1em; min-width: 80px; }
+  .break-card-name { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+  .break-card-vendeur { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.08em; }
+  .break-card-sport { font-family: var(--font-mono); font-size: 10px; padding: 3px 7px; border-radius: 3px; background: var(--dark3); color: var(--text3); letter-spacing: 0.08em; }
+  .break-card-amount { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--pos); min-width: 90px; text-align: right; }
+  .break-card-amount.neg { color: var(--neg); }
+  .break-card-chevron { color: var(--text3); font-size: 12px; transition: transform 0.2s; }
+  .break-card.open .break-card-chevron { transform: rotate(180deg); }
+
+  .break-card-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--line); }
+  .break-card.open .break-card-body { display: block; }
+  .break-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; margin-bottom: 16px; }
+  @media (max-width: 500px) { .break-detail-grid { grid-template-columns: 1fr 1fr; } }
+  .break-detail-cell { background: var(--dark3); border-radius: var(--r-sm); padding: 12px; }
+  .break-detail-lbl { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .break-detail-val { font-size: 14px; font-weight: 600; color: var(--text); }
+  .break-detail-val.pos { color: var(--pos); }
+  .break-detail-val.neg { color: var(--neg); }
+
+  .break-actions { display: flex; gap: 8px; }
+  .btn-edit { background: var(--gold); border: none; border-radius: var(--r-sm); color: var(--accent-ink); font-size: 10px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 18px; cursor: pointer; transition: filter 0.12s; }
+  .btn-edit:hover { filter: brightness(1.08); }
+
+  .hist-empty { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 14px; }
+  .hist-loading { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 13px; font-family: var(--font-mono); letter-spacing: 0.1em; }
 
   .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
 </style>
@@ -119,183 +173,236 @@
   </nav>
 </div>
 
-<div class="page-head">
-  <h1 class="page-title">Break Tracker</h1>
-  <p class="page-sub">Entrez les informations de votre break — les calculs se font automatiquement.</p>
+<!-- Tabs -->
+<div class="page-tabs">
+  <button class="page-tab active" id="tab-new" onclick="setTab('new')">Nouveau break</button>
+  <button class="page-tab" id="tab-history" onclick="setTab('history')">Historique</button>
 </div>
 
-<div class="main">
+<!-- ══ VIEW: NOUVEAU BREAK ══ -->
+<div id="view-new">
+  <div class="page-head">
+    <h1 class="page-title" id="form-title">Nouveau break</h1>
+    <p class="page-sub" id="form-sub">Entrez les informations de votre break — les calculs se font automatiquement.</p>
+  </div>
 
-  <!-- Section: Identification -->
-  <div class="section">
-    <div class="section-head">
-      <span class="section-label">Identification du break</span>
-    </div>
-    <div class="section-body">
-      <div class="field-grid field-grid-2">
-        <div class="field">
-          <label>Date</label>
-          <input type="date" id="date" />
-        </div>
-        <div class="field">
-          <label>Nom du break</label>
-          <input type="text" id="nom-break" placeholder="Ex: Live Lundi Soir" />
-        </div>
-        <div class="field">
-          <label>Vendeur</label>
-          <select id="vendeur" onchange="updateSalaireSection()">
-            <option value="">Sélectionner...</option>
-            <option>Charles</option>
-            <option>Chuck</option>
-            <option>Germain</option>
-            <option>Jeremi</option>
-            <option>Manu</option>
-            <option>Phobe</option>
-            <option>Sacha</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Helper</label>
-          <select id="helper" onchange="updateSalaireSection()">
-            <option value="">Aucun</option>
-            <option>Charles</option>
-            <option>Chuck</option>
-            <option>Germain</option>
-            <option>Jeremi</option>
-            <option>Manu</option>
-            <option>Phobe</option>
-            <option>Sacha</option>
-          </select>
-        </div>
+  <div class="main">
+
+    <!-- Edit banner -->
+    <div class="edit-banner" id="edit-banner">✏️ Mode correction — modifiez les champs et enregistrez pour mettre à jour ce break.</div>
+
+    <!-- Section: Identification -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-label">Identification du break</span>
       </div>
-
-      <!-- Salaires — apparaissent dynamiquement -->
-      <div id="salaire-section" style="display:none; margin-top:12px;">
+      <div class="section-body">
         <div class="field-grid field-grid-2">
           <div class="field">
-            <label id="salaire-vendeur-lbl">Salaire / heure — Vendeur ($)</label>
-            <input type="number" id="salaire-vendeur" placeholder="Ex: 25.00" min="0" step="0.01" oninput="calculate()" />
+            <label>Date</label>
+            <input type="date" id="date" />
           </div>
-          <div class="field" id="salaire-helper-wrap" style="display:none;">
-            <label id="salaire-helper-lbl">Salaire / heure — Helper ($)</label>
-            <input type="number" id="salaire-helper" placeholder="Ex: 20.00" min="0" step="0.01" oninput="calculate()" />
+          <div class="field">
+            <label>Nom du break</label>
+            <input type="text" id="nom-break" placeholder="Ex: Live Lundi Soir" />
+          </div>
+          <div class="field">
+            <label>Vendeur</label>
+            <select id="vendeur" onchange="updateSalaireSection()">
+              <option value="">Sélectionner...</option>
+              <option>Charles</option>
+              <option>Chuck</option>
+              <option>Germain</option>
+              <option>Jeremi</option>
+              <option>Manu</option>
+              <option>Phobe</option>
+              <option>Sacha</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Helper</label>
+            <select id="helper" onchange="updateSalaireSection()">
+              <option value="">Aucun</option>
+              <option>Charles</option>
+              <option>Chuck</option>
+              <option>Germain</option>
+              <option>Jeremi</option>
+              <option>Manu</option>
+              <option>Phobe</option>
+              <option>Sacha</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="salaire-section" style="display:none; margin-top:12px;">
+          <div class="field-grid field-grid-2">
+            <div class="field">
+              <label id="salaire-vendeur-lbl">Salaire / heure — Vendeur ($)</label>
+              <input type="number" id="salaire-vendeur" placeholder="Ex: 25.00" min="0" step="0.01" oninput="calculate()" />
+            </div>
+            <div class="field" id="salaire-helper-wrap" style="display:none;">
+              <label id="salaire-helper-lbl">Salaire / heure — Helper ($)</label>
+              <input type="number" id="salaire-helper" placeholder="Ex: 20.00" min="0" step="0.01" oninput="calculate()" />
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Section: Catégorie -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-label">Catégorie</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid field-grid-3">
+          <div class="field">
+            <label>Catégorie</label>
+            <select id="categorie">
+              <option value="">Sélectionner...</option>
+              <option>Wax</option>
+              <option>Repacks</option>
+              <option>Mix (Wax x Repacks)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Sport / Licence</label>
+            <select id="sport">
+              <option value="">Sélectionner...</option>
+              <option>Hockey</option>
+              <option>Football</option>
+              <option>Multi sports</option>
+              <option>Pokémon</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Type break</label>
+            <select id="type-break">
+              <option value="">Sélectionner...</option>
+              <option>Team Random</option>
+              <option>Hybrid</option>
+              <option>Player Random</option>
+              <option>Numeral</option>
+              <option>Wheel</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Finances -->
+    <div class="section">
+      <div class="section-head">
+        <span class="section-label">Finances</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid field-grid-2" style="margin-bottom: 16px;">
+          <div class="field">
+            <label>Ventes brutes ($)</label>
+            <input type="number" id="ventes-brutes" placeholder="Ex: 12500" min="0" step="0.01" oninput="calculate()" />
+          </div>
+          <div class="field">
+            <label>Durée (min)</label>
+            <input type="number" id="duree" placeholder="Ex: 260" min="0" oninput="calculate()" />
+          </div>
+        </div>
+
+        <div class="field-grid field-grid-2" style="margin-bottom: 16px;">
+          <div class="field">
+            <label>Coût des produits ($)</label>
+            <input type="number" id="cout-produits" placeholder="Ex: 8500" min="0" step="0.01" oninput="calculate()" />
+          </div>
+          <div class="field">
+            <label>Heure de début</label>
+            <input type="time" id="heure-debut" />
+          </div>
+        </div>
+
+        <div class="calc-row" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="calc-cell">
+            <div class="calc-lbl">Bénéfice net</div>
+            <div class="calc-val green" id="benefice-net">$0.00</div>
+          </div>
+          <div class="calc-cell">
+            <div class="calc-lbl">Marge</div>
+            <div class="calc-val green" id="marge-calc">0.0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitBreak()">Enregistrer le break</button>
+    <button class="cancel-btn" id="cancel-btn" style="display:none" onclick="cancelEdit()">Annuler la modification</button>
+    <div class="success-box" id="success-box"></div>
+    <div class="error-box" id="error-box"></div>
+
   </div>
+</div>
 
-  <!-- Section: Catégorie -->
-  <div class="section">
-    <div class="section-head">
-      <span class="section-label">Catégorie</span>
-    </div>
-    <div class="section-body">
-      <div class="field-grid field-grid-3">
-        <div class="field">
-          <label>Catégorie</label>
-          <select id="categorie">
-            <option value="">Sélectionner...</option>
-            <option>Wax</option>
-            <option>Repacks</option>
-            <option>Mix (Wax x Repacks)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Sport / Licence</label>
-          <select id="sport">
-            <option value="">Sélectionner...</option>
-            <option>Hockey</option>
-            <option>Football</option>
-            <option>Multi sports</option>
-            <option>Pokémon</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Type break</label>
-          <select id="type-break">
-            <option value="">Sélectionner...</option>
-            <option>Team Random</option>
-            <option>Hybrid</option>
-            <option>Player Random</option>
-            <option>Numeral</option>
-            <option>Wheel</option>
-          </select>
-        </div>
-      </div>
-    </div>
+<!-- ══ VIEW: HISTORIQUE ══ -->
+<div id="view-history" style="display:none">
+  <div class="page-head">
+    <h1 class="page-title">Historique</h1>
+    <p class="page-sub">Tous les breaks enregistrés — cliquez pour voir les détails ou modifier.</p>
   </div>
-
-  <!-- Section: Finances -->
-  <div class="section">
-    <div class="section-head">
-      <span class="section-label">Finances</span>
+  <div class="main">
+    <div class="hist-controls">
+      <input class="hist-search" id="hist-search" type="text" placeholder="Rechercher un break..." oninput="filterBreaks()" />
+      <select class="hist-filter" id="hist-filter-vendeur" onchange="filterBreaks()">
+        <option value="">Tous les vendeurs</option>
+        <option>Charles</option>
+        <option>Chuck</option>
+        <option>Germain</option>
+        <option>Jeremi</option>
+        <option>Manu</option>
+        <option>Phobe</option>
+        <option>Sacha</option>
+      </select>
+      <select class="hist-filter" id="hist-filter-sport" onchange="filterBreaks()">
+        <option value="">Tous les sports</option>
+        <option>Hockey</option>
+        <option>Football</option>
+        <option>Multi sports</option>
+        <option>Pokémon</option>
+      </select>
+      <button class="hist-refresh" onclick="loadHistory(true)">↻</button>
     </div>
-    <div class="section-body">
-      <div class="field-grid field-grid-2" style="margin-bottom: 16px;">
-        <div class="field">
-          <label>Ventes brutes ($)</label>
-          <input type="number" id="ventes-brutes" placeholder="Ex: 12500" min="0" step="0.01" oninput="calculate()" />
-        </div>
-        <div class="field">
-          <label>Durée (min)</label>
-          <input type="number" id="duree" placeholder="Ex: 260" min="0" oninput="calculate()" />
-        </div>
-      </div>
-
-      <div class="field-grid field-grid-2" style="margin-bottom: 16px;">
-        <div class="field">
-          <label>Coût des produits ($)</label>
-          <input type="number" id="cout-produits" placeholder="Ex: 8500" min="0" step="0.01" oninput="calculate()" />
-        </div>
-        <div class="field">
-          <label>Heure de début</label>
-          <input type="time" id="heure-debut" />
-        </div>
-      </div>
-
-      <div class="calc-row" style="grid-template-columns: repeat(2, 1fr);">
-        <div class="calc-cell">
-          <div class="calc-lbl">Bénéfice net</div>
-          <div class="calc-val green" id="benefice-net">$0.00</div>
-        </div>
-        <div class="calc-cell">
-          <div class="calc-lbl">Marge</div>
-          <div class="calc-val green" id="marge-calc">0.0%</div>
-        </div>
-      </div>
-    </div>
+    <div id="hist-list"><div class="hist-loading">Chargement...</div></div>
   </div>
-
-  <!-- Submit -->
-  <button class="submit-btn" id="submit-btn" onclick="submitBreak()">Enregistrer le break</button>
-  <div class="success-box" id="success-box">✓ Break enregistré avec succès dans Google Sheets</div>
-  <div class="error-box" id="error-box"></div>
-
 </div>
 
 <div class="footer">Hobby Empire &mdash; Break Tracker</div>
 
 <script>
-// Set today's date by default
+// ── State ────────────────────────────────────────────────────────────────────
+let allBreaks = [];
+let editingRowIndex = null;
+
+// ── Tab management ───────────────────────────────────────────────────────────
+function setTab(tab) {
+  document.getElementById('view-new').style.display      = tab === 'new'     ? 'block' : 'none';
+  document.getElementById('view-history').style.display  = tab === 'history' ? 'block' : 'none';
+  document.getElementById('tab-new').classList.toggle('active',     tab === 'new');
+  document.getElementById('tab-history').classList.toggle('active', tab === 'history');
+  if (tab === 'history') loadHistory();
+}
+
+// ── Form helpers ─────────────────────────────────────────────────────────────
 document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
 function fmt(n) {
   return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
+function fmtNum(n) { return '$' + (n||0).toLocaleString('fr-CA', {minimumFractionDigits:2}); }
 
 function updateSalaireSection() {
   const vendeur = document.getElementById('vendeur').value;
-  const helper = document.getElementById('helper').value;
-  const section = document.getElementById('salaire-section');
-  const helperWrap = document.getElementById('salaire-helper-wrap');
-
-  // Show salary section when vendeur is selected
+  const helper  = document.getElementById('helper').value;
+  const section     = document.getElementById('salaire-section');
+  const helperWrap  = document.getElementById('salaire-helper-wrap');
   section.style.display = vendeur ? 'block' : 'none';
   if (!vendeur) document.getElementById('salaire-vendeur').value = '';
   else document.getElementById('salaire-vendeur-lbl').textContent = 'Salaire / heure — ' + vendeur + ' ($)';
-
-  // Show helper salary only if a helper is selected
   if (helper) {
     helperWrap.style.display = 'block';
     document.getElementById('salaire-helper-lbl').textContent = 'Salaire / heure — ' + helper + ' ($)';
@@ -307,119 +414,280 @@ function updateSalaireSection() {
 }
 
 function calculate() {
-  const ventesBrutes = parseFloat(document.getElementById('ventes-brutes').value) || 0;
-  const duree = parseFloat(document.getElementById('duree').value) || 0;
-  const coutProduits = parseFloat(document.getElementById('cout-produits').value) || 0;
+  const ventesBrutes  = parseFloat(document.getElementById('ventes-brutes').value)  || 0;
+  const duree         = parseFloat(document.getElementById('duree').value)           || 0;
+  const coutProduits  = parseFloat(document.getElementById('cout-produits').value)   || 0;
   const salaireVendeur = parseFloat(document.getElementById('salaire-vendeur').value) || 0;
-  const salaireHelper = parseFloat(document.getElementById('salaire-helper').value) || 0;
-
+  const salaireHelper  = parseFloat(document.getElementById('salaire-helper').value)  || 0;
   const coutSalaires = (salaireVendeur + salaireHelper) * (duree / 60);
-  const beneficeNet = ventesBrutes - coutProduits - coutSalaires;
-  const marge = ventesBrutes > 0 ? (beneficeNet / ventesBrutes * 100) : 0;
-
+  const beneficeNet  = ventesBrutes - coutProduits - coutSalaires;
+  const marge        = ventesBrutes > 0 ? (beneficeNet / ventesBrutes * 100) : 0;
   document.getElementById('benefice-net').textContent = fmt(beneficeNet);
-  document.getElementById('marge-calc').textContent = marge.toFixed(1) + '%';
-
-  const bn = document.getElementById('benefice-net');
-  bn.className = 'calc-val ' + (beneficeNet > 0 ? 'green' : beneficeNet < 0 ? 'red' : '');
-  const mc = document.getElementById('marge-calc');
-  mc.className = 'calc-val ' + (marge > 0 ? 'green' : marge < 0 ? 'red' : '');
+  document.getElementById('marge-calc').textContent   = marge.toFixed(1) + '%';
+  document.getElementById('benefice-net').className = 'calc-val ' + (beneficeNet >= 0 ? 'green' : 'red');
+  document.getElementById('marge-calc').className   = 'calc-val ' + (marge >= 0 ? 'green' : 'red');
 }
 
-async function submitBreak() {
-  const btn = document.getElementById('submit-btn');
-  const successBox = document.getElementById('success-box');
-  const errorBox = document.getElementById('error-box');
+function getWeekNumber(d) {
+  const onejan = new Date(d.getFullYear(), 0, 1);
+  return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+}
 
-  // Gather data
-  const date = document.getElementById('date').value;
-  const nomBreak = document.getElementById('nom-break').value.trim();
-  const vendeur = document.getElementById('vendeur').value;
-  const helper = document.getElementById('helper').value;
-  const categorie = document.getElementById('categorie').value;
-  const sport = document.getElementById('sport').value;
-  const typeBreak = document.getElementById('type-break').value;
-  const duree = parseFloat(document.getElementById('duree').value) || 0;
+function buildPayload() {
+  const date         = document.getElementById('date').value;
+  const nomBreak     = document.getElementById('nom-break').value.trim();
+  const vendeur      = document.getElementById('vendeur').value;
+  const helper       = document.getElementById('helper').value;
+  const categorie    = document.getElementById('categorie').value;
+  const sport        = document.getElementById('sport').value;
+  const typeBreak    = document.getElementById('type-break').value;
+  const duree        = parseFloat(document.getElementById('duree').value) || 0;
   const ventesBrutes = parseFloat(document.getElementById('ventes-brutes').value) || 0;
+  const coutProduits = parseFloat(document.getElementById('cout-produits').value) || 0;
+  const heureDebut   = document.getElementById('heure-debut').value || '';
+  const salaireVendeur = parseFloat(document.getElementById('salaire-vendeur').value) || 0;
+  const salaireHelper  = parseFloat(document.getElementById('salaire-helper').value)  || 0;
+  const revHeure       = duree > 0 ? (ventesBrutes / (duree / 60)) : 0;
+  const coutSalaires   = (salaireVendeur + salaireHelper) * (duree / 60);
+  const beneficeNet    = ventesBrutes - coutProduits - coutSalaires;
+  const marge          = ventesBrutes > 0 ? (beneficeNet / ventesBrutes * 100) : 0;
+  const d = new Date(date + 'T12:00:00');
+  const jours = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  return {
+    date, vendeur, helper, categorie, sport,
+    typeBreak, nomBreak, duree, revHeure,
+    coutProduits, heureDebut, salaireVendeur, salaireHelper, coutSalaires,
+    semaine: getWeekNumber(d), mois: d.getMonth() + 1, annee: d.getFullYear(), jour: jours[d.getDay()],
+    ventesBrutes: ventesBrutes.toFixed(2),
+    revenuReel: ventesBrutes.toFixed(2),
+    beneficeNet: beneficeNet.toFixed(2),
+    marge: marge.toFixed(2)
+  };
+}
 
-  // Validation
-  if (!date || !nomBreak || !vendeur || !categorie || !sport || !typeBreak || !duree || !ventesBrutes) {
+// ── Submit (new or update) ───────────────────────────────────────────────────
+async function submitBreak() {
+  const btn        = document.getElementById('submit-btn');
+  const successBox = document.getElementById('success-box');
+  const errorBox   = document.getElementById('error-box');
+
+  const payload = buildPayload();
+  const { date, nomBreak, vendeur, categorie, sport, typeBreak, duree, ventesBrutes } = {
+    date: payload.date, nomBreak: payload.nomBreak, vendeur: payload.vendeur,
+    categorie: payload.categorie, sport: payload.sport, typeBreak: payload.typeBreak,
+    duree: payload.duree, ventesBrutes: payload.ventesBrutes
+  };
+
+  if (!payload.date || !payload.nomBreak || !payload.vendeur || !payload.categorie
+      || !payload.sport || !payload.typeBreak || !payload.duree || !parseFloat(payload.ventesBrutes)) {
     errorBox.textContent = 'Veuillez remplir tous les champs obligatoires.';
     errorBox.style.display = 'block';
     successBox.style.display = 'none';
     return;
   }
 
-  const coutProduits = parseFloat(document.getElementById('cout-produits').value) || 0;
-  const heureDebut = document.getElementById('heure-debut').value || '';
-  const salaireVendeur = parseFloat(document.getElementById('salaire-vendeur').value) || 0;
-  const salaireHelper = parseFloat(document.getElementById('salaire-helper').value) || 0;
-  // Back-calculate rev/heure for Hub stats
-  const revHeure = duree > 0 ? (ventesBrutes / (duree / 60)) : 0;
-  const coutSalaires = (salaireVendeur + salaireHelper) * (duree / 60);
-  const beneficeNet = ventesBrutes - coutProduits - coutSalaires;
-  const marge = ventesBrutes > 0 ? (beneficeNet / ventesBrutes * 100) : 0;
-
-  // Date parsing
-  const d = new Date(date + 'T12:00:00');
-  const jours = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const jour = jours[d.getDay()];
-  const semaine = getWeekNumber(d);
-  const mois = d.getMonth() + 1;
-  const annee = d.getFullYear();
-
-  const payload = {
-    date, vendeur, helper, categorie, sport,
-    typeBreak, nomBreak, duree, revHeure,
-    coutProduits, heureDebut, salaireVendeur, salaireHelper, coutSalaires,
-    semaine, mois, annee, jour,
-    ventesBrutes: ventesBrutes.toFixed(2),
-    revenuReel: ventesBrutes.toFixed(2),
-    beneficeNet: beneficeNet.toFixed(2),
-    marge: marge.toFixed(2)
-  };
-
   btn.disabled = true;
-  btn.textContent = 'Enregistrement...';
+  btn.textContent = editingRowIndex !== null ? 'Mise à jour...' : 'Enregistrement...';
   errorBox.style.display = 'none';
   successBox.style.display = 'none';
 
   try {
+    const isEdit = editingRowIndex !== null;
+    const body   = isEdit ? { ...payload, _rowIndex: editingRowIndex } : payload;
+    const method = isEdit ? 'PUT' : 'POST';
+
     const res = await fetch('/api/sheets', {
-      method: 'POST',
+      method,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(body)
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      if (err.error === 'SHEETS_WEBAPP_URL not configured') {
-        throw new Error('Google Sheets non encore configuré — break non enregistré.');
-      }
-      throw new Error('Erreur serveur: ' + res.status);
+      throw new Error(err.error || 'Erreur serveur: ' + res.status);
     }
 
+    successBox.textContent = isEdit
+      ? '✓ Break mis à jour avec succès'
+      : '✓ Break enregistré avec succès dans Google Sheets';
     successBox.style.display = 'block';
-    // Reset form
-    document.getElementById('nom-break').value = '';
-    document.getElementById('ventes-brutes').value = '';
-    document.getElementById('duree').value = '';
-    document.getElementById('cout-produits').value = '';
-    document.getElementById('heure-debut').value = '';
-    document.getElementById('salaire-vendeur').value = '';
-    document.getElementById('salaire-helper').value = '';
-    calculate();
+    allBreaks = []; // invalidate cache
+    resetForm();
   } catch(e) {
     errorBox.textContent = e.message;
     errorBox.style.display = 'block';
   }
 
   btn.disabled = false;
-  btn.textContent = 'Enregistrer le break';
+  btn.textContent = editingRowIndex !== null ? 'Mettre à jour le break' : 'Enregistrer le break';
 }
 
-function getWeekNumber(d) {
-  const onejan = new Date(d.getFullYear(), 0, 1);
-  return Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+function resetForm() {
+  editingRowIndex = null;
+  document.getElementById('nom-break').value    = '';
+  document.getElementById('ventes-brutes').value = '';
+  document.getElementById('duree').value         = '';
+  document.getElementById('cout-produits').value  = '';
+  document.getElementById('heure-debut').value   = '';
+  document.getElementById('salaire-vendeur').value = '';
+  document.getElementById('salaire-helper').value  = '';
+  document.getElementById('vendeur').value    = '';
+  document.getElementById('helper').value     = '';
+  document.getElementById('categorie').value  = '';
+  document.getElementById('sport').value      = '';
+  document.getElementById('type-break').value = '';
+  document.getElementById('date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('form-title').textContent  = 'Nouveau break';
+  document.getElementById('form-sub').textContent    = 'Entrez les informations de votre break — les calculs se font automatiquement.';
+  document.getElementById('submit-btn').textContent  = 'Enregistrer le break';
+  document.getElementById('cancel-btn').style.display = 'none';
+  document.getElementById('edit-banner').style.display = 'none';
+  updateSalaireSection();
+  calculate();
+}
+
+function cancelEdit() {
+  resetForm();
+  document.getElementById('success-box').style.display = 'none';
+  document.getElementById('error-box').style.display   = 'none';
+}
+
+// ── Historique ───────────────────────────────────────────────────────────────
+async function loadHistory(force = false) {
+  if (allBreaks.length && !force) { renderHistory(allBreaks); return; }
+  document.getElementById('hist-list').innerHTML = '<div class="hist-loading">Chargement...</div>';
+  try {
+    const res = await fetch('/api/sheets');
+    if (!res.ok) throw new Error('Erreur ' + res.status);
+    const data = await res.json();
+    allBreaks = Array.isArray(data) ? [...data].reverse() : []; // most recent first
+    renderHistory(allBreaks);
+  } catch(e) {
+    document.getElementById('hist-list').innerHTML = '<div class="hist-empty">Erreur de chargement : ' + e.message + '</div>';
+  }
+}
+
+function filterBreaks() {
+  const q       = document.getElementById('hist-search').value.toLowerCase();
+  const vendeur = document.getElementById('hist-filter-vendeur').value;
+  const sport   = document.getElementById('hist-filter-sport').value;
+  const filtered = allBreaks.filter(b => {
+    const matchQ = !q || (b.nomBreak||'').toLowerCase().includes(q) || (b.vendeur||'').toLowerCase().includes(q);
+    const matchV = !vendeur || b.vendeur === vendeur;
+    const matchS = !sport   || b.sport   === sport;
+    return matchQ && matchV && matchS;
+  });
+  renderHistory(filtered);
+}
+
+function renderHistory(breaks) {
+  const list = document.getElementById('hist-list');
+  if (!breaks.length) {
+    list.innerHTML = '<div class="hist-empty">Aucun break trouvé.</div>';
+    return;
+  }
+  list.innerHTML = breaks.map((b, i) => {
+    const benefice  = parseFloat(b.beneficeNet) || 0;
+    const marge     = parseFloat(b.marge) || 0;
+    const ventes    = parseFloat(b.ventesBrutes) || 0;
+    const posNeg    = benefice >= 0 ? 'pos' : 'neg';
+    const rowIdx    = b._rowIndex ?? (allBreaks.length - 1 - i);
+    return `
+    <div class="break-card" id="bcard-${i}">
+      <div class="break-card-head" onclick="toggleCard(${i})">
+        <span class="break-card-date">${b.date || '—'}</span>
+        <span class="break-card-name">${b.nomBreak || '—'}</span>
+        <span class="break-card-vendeur">${b.vendeur || ''}</span>
+        <span class="break-card-sport">${b.sport || ''}</span>
+        <span class="break-card-amount ${benefice < 0 ? 'neg' : ''}">${fmtNum(benefice)}</span>
+        <span class="break-card-chevron">▼</span>
+      </div>
+      <div class="break-card-body">
+        <div class="break-detail-grid">
+          <div class="break-detail-cell">
+            <div class="break-detail-lbl">Ventes brutes</div>
+            <div class="break-detail-val">${fmtNum(ventes)}</div>
+          </div>
+          <div class="break-detail-cell">
+            <div class="break-detail-lbl">Bénéfice net</div>
+            <div class="break-detail-val ${posNeg}">${fmtNum(benefice)}</div>
+          </div>
+          <div class="break-detail-cell">
+            <div class="break-detail-lbl">Marge</div>
+            <div class="break-detail-val ${posNeg}">${marge.toFixed(1)}%</div>
+          </div>
+          <div class="break-detail-cell">
+            <div class="break-detail-lbl">Durée</div>
+            <div class="break-detail-val">${b.duree || 0} min</div>
+          </div>
+          <div class="break-detail-cell">
+            <div class="break-detail-lbl">Type</div>
+            <div class="break-detail-val">${b.typeBreak || '—'}</div>
+          </div>
+          <div class="break-detail-cell">
+            <div class="break-detail-lbl">Catégorie</div>
+            <div class="break-detail-val">${b.categorie || '—'}</div>
+          </div>
+          ${b.helper ? `<div class="break-detail-cell">
+            <div class="break-detail-lbl">Helper</div>
+            <div class="break-detail-val">${b.helper}</div>
+          </div>` : ''}
+          ${b.coutProduits ? `<div class="break-detail-cell">
+            <div class="break-detail-lbl">Coût produits</div>
+            <div class="break-detail-val">${fmtNum(parseFloat(b.coutProduits))}</div>
+          </div>` : ''}
+          ${b.heureDebut ? `<div class="break-detail-cell">
+            <div class="break-detail-lbl">Début</div>
+            <div class="break-detail-val">${b.heureDebut}</div>
+          </div>` : ''}
+        </div>
+        <div class="break-actions">
+          <button class="btn-edit" onclick="editBreak(${JSON.stringify(b).replace(/"/g,'&quot;')}, ${rowIdx})">✏️ Modifier ce break</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(i) {
+  const card = document.getElementById('bcard-' + i);
+  card.classList.toggle('open');
+}
+
+function editBreak(b, rowIndex) {
+  // Switch to form tab
+  setTab('new');
+
+  // Pre-fill all fields
+  document.getElementById('date').value          = b.date || '';
+  document.getElementById('nom-break').value     = b.nomBreak || '';
+  document.getElementById('categorie').value     = b.categorie || '';
+  document.getElementById('sport').value         = b.sport || '';
+  document.getElementById('type-break').value    = b.typeBreak || '';
+  document.getElementById('duree').value         = b.duree || '';
+  document.getElementById('ventes-brutes').value = b.ventesBrutes || '';
+  document.getElementById('cout-produits').value = b.coutProduits || '';
+  document.getElementById('heure-debut').value   = b.heureDebut || '';
+
+  // Vendeur & helper (triggers salary section)
+  document.getElementById('vendeur').value = b.vendeur || '';
+  document.getElementById('helper').value  = b.helper  || '';
+  updateSalaireSection();
+  document.getElementById('salaire-vendeur').value = b.salaireVendeur || '';
+  document.getElementById('salaire-helper').value  = b.salaireHelper  || '';
+  calculate();
+
+  // Edit mode UI
+  editingRowIndex = rowIndex;
+  document.getElementById('form-title').textContent   = 'Modifier le break';
+  document.getElementById('form-sub').textContent     = b.nomBreak + ' — ' + b.date;
+  document.getElementById('submit-btn').textContent   = 'Mettre à jour le break';
+  document.getElementById('cancel-btn').style.display = 'block';
+  document.getElementById('edit-banner').style.display = 'block';
+  document.getElementById('success-box').style.display = 'none';
+  document.getElementById('error-box').style.display   = 'none';
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 </script>
 </body>

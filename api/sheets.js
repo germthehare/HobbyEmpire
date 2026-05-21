@@ -6,7 +6,6 @@ function fixDate(val) {
   if (typeof val === 'string' && val.match(/^\d{4}-\d{2}-\d{2}/)) return val;
   const num = Number(val);
   if (!isNaN(num) && num > 40000) {
-    // Google Sheets epoch: Dec 30, 1899 → convert to Unix
     const d = new Date((num - 25569) * 86400 * 1000);
     const y = d.getUTCFullYear();
     const m = String(d.getUTCMonth() + 1).padStart(2, '0');
@@ -20,23 +19,20 @@ const SHEETS_URL = process.env.SHEETS_WEBAPP_URL || 'https://script.google.com/m
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
-
-  if (!SHEETS_URL) {
-    return res.status(503).json({ error: 'SHEETS_WEBAPP_URL not configured' });
-  }
+  if (!SHEETS_URL) return res.status(503).json({ error: 'SHEETS_WEBAPP_URL not configured' });
 
   try {
     if (req.method === 'GET') {
       const response = await fetch(SHEETS_URL, { redirect: 'follow' });
       const data = await response.json();
-      // Fix date serial numbers (e.g. 46146 → "2026-05-04")
-      const fixed = Array.isArray(data) ? data.map(b => ({
+      const fixed = Array.isArray(data) ? data.map((b, i) => ({
         ...b,
-        date: fixDate(b.date)
+        date: fixDate(b.date),
+        _rowIndex: i   // 0-based index for updates
       })) : data;
       return res.status(200).json(fixed);
     }
@@ -46,6 +42,18 @@ export default async function handler(req, res) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(req.body),
+        redirect: 'follow'
+      });
+      const data = await response.json();
+      return res.status(200).json(data);
+    }
+
+    // PUT — update an existing row (requires Apps Script to handle _action:'update')
+    if (req.method === 'PUT') {
+      const response = await fetch(SHEETS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...req.body, _action: 'update' }),
         redirect: 'follow'
       });
       const data = await response.json();
