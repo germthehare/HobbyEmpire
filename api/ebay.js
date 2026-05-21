@@ -72,20 +72,25 @@ export default async function handler(req, res) {
   const appId = process.env.EBAY_CLIENT_ID;
 
   try {
+    const debug = {};
+
     // Try Marketplace Insights API first (modern, 5000/day, sold items)
     let items = null;
     try {
       const token = await getAppToken();
+      debug.token = 'ok';
       items = await tryMarketplaceInsights(q, limit, token);
-    } catch (_) {}
+      debug.insights = items ? `${items.length} items` : 'null';
+    } catch (e) { debug.insightsErr = e.message; }
 
     // Fall back to Finding API if Marketplace Insights fails
     if (!items && appId) {
       items = await tryFindingAPI(q, limit, appId);
+      debug.finding = items ? `${items.length} items` : 'null (rate limited?)';
     }
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
-    return res.status(200).json({ itemSummaries: items || [] });
+    return res.status(200).json({ itemSummaries: items || [], _debug: debug });
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
