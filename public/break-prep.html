@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hobby Empire — Break Prep</title>
 <script src="/auth-guard.js" data-role="any"></script>
+<script src="/lang-toggle.js"></script>
 <link rel="stylesheet" href="tokens.css">
 <style>
   /* Aliases Court : les anciens noms restent valides, ils pointent vers les nouveaux tokens. */
@@ -33,9 +34,6 @@
   .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 7px 13px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
   .nav-link:hover { color: var(--text2); border-color: var(--line); }
   .nav-link.active { color: var(--gold3); border-color: var(--accent-soft); background: color-mix(in oklch, var(--accent), transparent 94%); }
-  .lang-toggle { display: flex; background: var(--dark3); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin-left: 6px; }
-  .lang-btn { padding: 5px 11px; font-size: 11px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 1px; color: var(--text3); cursor: pointer; border: none; background: transparent; transition: all 0.15s; }
-  .lang-btn.active { background: var(--gold); color: var(--accent-ink); }
   .tabs { display: flex; background: var(--dark2); border-bottom: 1px solid var(--line); }
   .tab { flex: 1; padding: 14px 0; text-align: center; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
   .tab.active { color: var(--gold3); border-bottom-color: var(--gold); }
@@ -290,10 +288,6 @@
     <a class="nav-link" href="/planner.html">Planificateur</a>
     <a class="nav-link" href="/team.html">Équipe</a>
     <a class="nav-link" href="/settings.html">Settings</a>
-    <div class="lang-toggle">
-      <button class="lang-btn active" id="lang-fr" onclick="setLang('fr')">FR</button>
-      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
-    </div>
   </nav>
 </div>
 <div class="tabs">
@@ -343,7 +337,7 @@
 </div>
 <div class="footer" id="footer-text">Hobby Empire Break Prep — Propulsé par Claude AI</div>
 <script>
-let lang = 'fr';
+let lang = localStorage.getItem('he_lang') || 'fr';
 let checklistKeys = [];
 let selectorOpen = false;
 let selSport = null, selYear = null;
@@ -543,8 +537,7 @@ function renderEbayResults(data, container) {
 
 function setLang(l) {
   lang = l;
-  document.getElementById('lang-fr').classList.toggle('active', l==='fr');
-  document.getElementById('lang-en').classList.toggle('active', l==='en');
+  if (window.setHELang) window.setHELang(l); // sync le toggle partagé
   document.getElementById('tab-prep').textContent = t('tabPrep');
   document.getElementById('tab-live').textContent = t('tabLive');
   document.getElementById('lbl-products').textContent = t('products');
@@ -559,6 +552,9 @@ function setLang(l) {
   const et = document.getElementById('empty-title'); if(et) et.textContent = t('emptyTitle');
   const es = document.getElementById('empty-sub'); if(es) es.textContent = t('emptySub');
 }
+
+// Écoute le toggle partagé lang-toggle.js
+document.addEventListener('he-lang-change', function(e) { setLang(e.detail.lang); });
 
 function setMode(m) {
   document.getElementById('mode-prep').style.display = m==='prep'?'block':'none';
