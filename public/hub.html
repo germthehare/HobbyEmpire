@@ -86,6 +86,21 @@
   .config-banner code { background: var(--bg-3); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; font-size: 12px; color: var(--text2); font-family: var(--font-mono); }
 
   .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
+
+  /* FILTER BAR */
+  .filter-bar { padding: 0 24px 20px; max-width: 1100px; margin: 0 auto; }
+  .filter-inner { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .filter-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); white-space: nowrap; }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-select { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--ink); font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; padding: 7px 10px; cursor: pointer; transition: border-color 0.12s; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235C5650' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 26px; min-width: 120px; }
+  .filter-select:focus { outline: none; border-color: var(--accent); }
+  .filter-select.active { border-color: var(--accent); color: var(--accent); }
+  .filter-divider { width: 1px; height: 22px; background: var(--line); flex-shrink: 0; }
+  .filter-badge { font-family: var(--font-mono); font-size: 10px; color: var(--text3); white-space: nowrap; margin-left: auto; }
+  .filter-badge strong { color: var(--ink); }
+  .reset-btn { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 6px 10px; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
+  .reset-btn:hover { color: var(--ink); border-color: var(--line-strong); background: var(--bg-2); }
+  .reset-btn.has-filter { color: var(--accent); border-color: var(--accent); }
 </style>
 </head>
 <body class="he-root he-court">
@@ -113,6 +128,48 @@
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" style="vertical-align:-2px;margin-right:6px"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
     Actualiser
   </button>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="filter-label">Filtrer par</span>
+    <div class="filter-group">
+      <select class="filter-select" id="filter-annee" onchange="onFilterChange()">
+        <option value="">Toutes les années</option>
+      </select>
+    </div>
+    <div class="filter-divider"></div>
+    <div class="filter-group">
+      <select class="filter-select" id="filter-mois" onchange="onFilterChange()">
+        <option value="">Tous les mois</option>
+        <option value="1">Janvier</option>
+        <option value="2">Février</option>
+        <option value="3">Mars</option>
+        <option value="4">Avril</option>
+        <option value="5">Mai</option>
+        <option value="6">Juin</option>
+        <option value="7">Juillet</option>
+        <option value="8">Août</option>
+        <option value="9">Septembre</option>
+        <option value="10">Octobre</option>
+        <option value="11">Novembre</option>
+        <option value="12">Décembre</option>
+      </select>
+    </div>
+    <div class="filter-divider"></div>
+    <div class="filter-group">
+      <select class="filter-select" id="filter-trimestre" onchange="onFilterChange()">
+        <option value="">Tous les trimestres</option>
+        <option value="1">T1 — Jan · Fév · Mar</option>
+        <option value="2">T2 — Avr · Mai · Jun</option>
+        <option value="3">T3 — Jul · Aoû · Sep</option>
+        <option value="4">T4 — Oct · Nov · Déc</option>
+      </select>
+    </div>
+    <button class="reset-btn" id="reset-btn" onclick="resetFilters()">✕ Réinitialiser</button>
+    <span class="filter-badge" id="filter-badge"></span>
+  </div>
 </div>
 
 <div class="main">
@@ -294,6 +351,7 @@ const DEMO = {
 };
 
 let chartJours = null;
+let allBreaksRaw = [];
 
 async function loadData() {
   let data;
@@ -308,7 +366,73 @@ async function loadData() {
     data = DEMO.breaks;
   }
 
-  renderAll(data);
+  allBreaksRaw = data;
+  populateAnneeFilter(data);
+  applyFilters();
+}
+
+function populateAnneeFilter(data) {
+  const years = [...new Set(data.map(b => b.annee).filter(Boolean))].sort((a,b) => b - a);
+  const sel = document.getElementById('filter-annee');
+  // Keep first option, replace rest
+  while (sel.options.length > 1) sel.remove(1);
+  years.forEach(y => {
+    const opt = document.createElement('option');
+    opt.value = y;
+    opt.textContent = y;
+    sel.appendChild(opt);
+  });
+}
+
+function applyFilters() {
+  const annee = document.getElementById('filter-annee').value;
+  const mois  = document.getElementById('filter-mois').value;
+  const trim  = document.getElementById('filter-trimestre').value;
+
+  const TRIM_MOIS = { '1':[1,2,3], '2':[4,5,6], '3':[7,8,9], '4':[10,11,12] };
+
+  let filtered = allBreaksRaw.filter(b => {
+    if (annee && String(b.annee) !== annee) return false;
+    if (mois  && String(b.mois)  !== mois)  return false;
+    if (trim  && !TRIM_MOIS[trim].includes(+b.mois)) return false;
+    return true;
+  });
+
+  // Update reset button style
+  const hasFilter = annee || mois || trim;
+  document.getElementById('reset-btn').classList.toggle('has-filter', !!hasFilter);
+
+  // Update badge
+  const badge = document.getElementById('filter-badge');
+  if (hasFilter) {
+    badge.innerHTML = `<strong>${filtered.length}</strong> break${filtered.length !== 1 ? 's' : ''} affiché${filtered.length !== 1 ? 's' : ''}`;
+  } else {
+    badge.innerHTML = '';
+  }
+
+  // Disable mois if trimestre is selected (they're mutually exclusive)
+  const moisSel = document.getElementById('filter-mois');
+  moisSel.disabled = !!trim;
+  moisSel.style.opacity = trim ? '0.4' : '1';
+
+  renderAll(filtered);
+}
+
+function onFilterChange() {
+  // If trimestre changed, clear mois
+  const trim = document.getElementById('filter-trimestre').value;
+  if (trim) document.getElementById('filter-mois').value = '';
+  // If mois changed, clear trimestre
+  const mois = document.getElementById('filter-mois').value;
+  if (mois) document.getElementById('filter-trimestre').value = '';
+  applyFilters();
+}
+
+function resetFilters() {
+  document.getElementById('filter-annee').value = '';
+  document.getElementById('filter-mois').value = '';
+  document.getElementById('filter-trimestre').value = '';
+  applyFilters();
 }
 
 function renderAll(breaks) {
