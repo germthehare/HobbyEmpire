@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Équipe — Hobby Empire</title>
+<link rel="stylesheet" href="tokens.css">
+<script src="/auth-guard.js" data-role="admin"></script>
+<style>
+  .he-court {
+    --gold:  var(--accent);
+    --dark:  var(--bg);
+    --dark2: var(--bg-3);
+    --dark3: var(--bg-2);
+    --dark4: var(--line);
+    --text:  var(--ink);
+    --text2: var(--ink-2);
+    --text3: var(--ink-3);
+    --red:   var(--neg);
+    --green: var(--pos);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--dark); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+
+  /* ── HEADER ─────────────────────────────────────────────────────── */
+  .header { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 2px; align-self: center; }
+  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1; }
+  .logo-sub { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-top: 2px; }
+  .header-nav { display: flex; gap: 4px; }
+  .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: var(--text); background: var(--bg-2); }
+  .nav-link.active { color: var(--ink); background: var(--bg-2); }
+
+  /* ── LAYOUT ─────────────────────────────────────────────────────── */
+  .page-head { padding: 32px 24px 20px; max-width: 1100px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .page-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.02em; line-height: 0.92; color: var(--text); }
+  .page-sub { font-size: 13px; color: var(--text3); margin-top: 8px; }
+  .main { padding: 0 24px 60px; max-width: 1100px; margin: 0 auto; }
+  .main-narrow { padding: 0 24px 60px; max-width: 860px; margin: 0 auto; }
+
+  /* ── LOADING ─────────────────────────────────────────────────────── */
+  .loading { text-align: center; padding: 72px 20px; color: var(--text3); }
+  .spinner { width: 28px; height: 28px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 13px; font-family: var(--font-mono); letter-spacing: 0.06em; }
+
+  /* ── GRID ────────────────────────────────────────────────────────── */
+  .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 16px; }
+
+  .member-card { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 22px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; box-shadow: var(--shadow-card); position: relative; overflow: hidden; }
+  .member-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0; transition: opacity 0.15s; }
+  .member-card:hover { transform: translateY(-3px); box-shadow: 0 8px 32px rgba(0,0,0,0.18); border-color: var(--line-strong, var(--line)); }
+  .member-card:hover::before { opacity: 1; }
+
+  .member-card-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .avatar { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 20px; font-weight: 800; color: #fff; flex-shrink: 0; letter-spacing: -0.01em; }
+  .member-card-meta { flex: 1; min-width: 0; }
+  .member-fullname { font-family: var(--font-display); font-size: 16px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .member-surnom { font-family: var(--font-mono); font-size: 11px; color: var(--text3); letter-spacing: 0.04em; margin-top: 2px; }
+  .member-role-badge { display: inline-flex; align-items: center; margin-top: 6px; font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+  .role-vendeur { background: color-mix(in oklch, var(--accent), transparent 86%); color: var(--accent); }
+  .role-helper  { background: color-mix(in oklch, var(--pos), transparent 86%); color: var(--pos); }
+  .role-both    { background: color-mix(in oklch, #8B5CF6, transparent 86%); color: #8B5CF6; }
+
+  .member-card-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+  .stat-item { background: var(--dark3); border-radius: var(--r-sm); padding: 10px 8px; text-align: center; }
+  .stat-lbl { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 5px; }
+  .stat-val { font-family: var(--font-display); font-size: 17px; font-weight: 800; color: var(--ink); line-height: 1; }
+  .stat-val.green { color: var(--pos); }
+
+  .member-card-cta { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); text-align: right; transition: color 0.12s; }
+  .member-card:hover .member-card-cta { color: var(--accent); }
+
+  /* ── PROFILE HEADER ──────────────────────────────────────────────── */
+  .back-btn { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 14px; cursor: pointer; transition: all 0.12s; margin-bottom: 24px; }
+  .back-btn:hover { color: var(--ink); border-color: var(--line-strong, var(--line)); }
+
+  .profile-hero { display: flex; align-items: flex-start; gap: 22px; margin-bottom: 28px; }
+  .avatar-lg { width: 88px; height: 88px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 34px; font-weight: 800; color: #fff; flex-shrink: 0; letter-spacing: -0.01em; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  .profile-hero-info { flex: 1; padding-top: 4px; }
+  .profile-fullname-display { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); line-height: 0.95; }
+  .profile-surnom-display { font-family: var(--font-mono); font-size: 13px; color: var(--text3); letter-spacing: 0.06em; margin-top: 6px; }
+  .profile-meta-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+  .meta-pill { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 5px 11px; border-radius: 5px; }
+  .meta-dot { color: var(--text3); font-size: 12px; }
+  .meta-info { font-family: var(--font-mono); font-size: 12px; color: var(--text3); }
+
+  /* ── SECTIONS ────────────────────────────────────────────────────── */
+  .section { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
+  .section-head { padding: 14px 20px; border-bottom: 1px solid var(--line); }
+  .section-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
+  .section-body { padding: 20px; }
+
+  /* ── PROFILE FORM ────────────────────────────────────────────────── */
+  .pf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .pf-grid { grid-template-columns: 1fr; } }
+  .pf-field { display: flex; flex-direction: column; gap: 6px; }
+  .pf-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
+  .pf-input { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 11px 13px; color: var(--ink); font-size: 14px; font-family: var(--font-body); outline: none; transition: border-color 0.12s; width: 100%; }
+  .pf-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
+
+  /* ── KPI STRIP ───────────────────────────────────────────────────── */
+  .kpi-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+  @media (max-width: 700px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+  .kpi { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 18px 20px; box-shadow: var(--shadow-card); }
+  .kpi-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+  .kpi-val { font-family: var(--font-display); font-variant-numeric: tabular-nums; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); line-height: 1; }
+  .kpi-val.green { color: var(--pos); }
+  .kpi-sub { font-family: var(--font-mono); font-size: 10px; color: var(--mute); margin-top: 6px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ── OBJECTIVES ──────────────────────────────────────────────────── */
+  .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 540px) { .obj-grid { grid-template-columns: 1fr; } }
+  .obj-card { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 18px; }
+  .obj-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
+  .obj-wrap { position: relative; margin-bottom: 10px; }
+  .obj-sym { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 14px; pointer-events: none; font-family: var(--font-mono); }
+  .obj-input { width: 100%; background: var(--dark); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 11px 12px 11px 25px; color: var(--ink); font-size: 20px; font-family: var(--font-display); font-weight: 800; outline: none; transition: border-color 0.12s; }
+  .obj-input:focus { border-color: var(--accent); }
+  .obj-bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin: 10px 0 6px; }
+  .obj-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; background: var(--accent); max-width: 100%; }
+  .obj-fill.over { background: var(--pos); }
+  .obj-note { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.05em; }
+
+  /* ── TABLES ──────────────────────────────────────────────────────── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { text-align: left; padding: 10px 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--line); font-weight: 600; white-space: nowrap; background: var(--dark3); }
+  .data-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); color: var(--text); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; }
+  .data-table td.gold { color: var(--ink); font-weight: 700; }
+  .data-table td.green { color: var(--pos); }
+  .data-table td.dim { color: var(--text3); }
+  .table-empty { text-align: center; padding: 32px 20px; color: var(--text3); font-size: 13px; }
+
+  /* ── TWO COL ─────────────────────────────────────────────────────── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── TOAST ───────────────────────────────────────────────────────── */
+  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--dark2); border: 1px solid var(--pos); border-radius: var(--r-sm); padding: 11px 18px; color: var(--pos); font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.08em; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
+</style>
+</head>
+<body class="he-root he-court">
+
+<div class="header">
+  <a class="logo-wrap" href="/">
+    <span class="logo-dot"></span>
+    <div>
+      <div class="logo">Hobby Empire</div>
+      <div class="logo-sub" id="header-sub">Équipe</div>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a class="nav-link" href="/">Home</a>
+    <a class="nav-link" href="/break-builder.html">Break Tracker</a>
+    <a class="nav-link" href="/hub.html">Hub</a>
+    <a class="nav-link" href="/break-prep.html">Break Prep</a>
+    <a class="nav-link" href="/releases.html">Sorties</a>
+    <a class="nav-link active" href="/team.html">Équipe</a>
+    <a class="nav-link" href="/settings.html">Settings</a>
+  </nav>
+</div>
+
+<!-- ── LOADING ── -->
+<div id="loading-state">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">Chargement de l'équipe...</div>
+  </div>
+</div>
+
+<!-- ── GRID VIEW ── -->
+<div id="view-grid" style="display:none">
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">Équipe</h1>
+      <p class="page-sub" id="grid-sub">Cliquez sur une fiche pour voir le profil complet et les statistiques.</p>
+    </div>
+  </div>
+  <div class="main">
+    <div class="member-grid" id="member-grid"></div>
+  </div>
+</div>
+
+<!-- ── PROFILE VIEW ── -->
+<div id="view-profile" style="display:none">
+  <div class="page-head" style="padding-bottom:0">
+    <button class="back-btn" onclick="showGrid()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Équipe
+    </button>
+  </div>
+  <div class="main-narrow">
+    <div id="profile-content"></div>
+  </div>
+</div>
+
+<div class="footer">Hobby Empire &mdash; Équipe &copy; 2026</div>
+<div class="toast" id="toast">✓ Profil sauvegardé</div>
+
+<script>
+// ── Settings ──────────────────────────────────────────────────────────────────
+const SETTINGS_KEY = 'he_settings';
+const MEMBER_DEFAULTS = { prenom: '', nom: '', surnom: '', dateNaissance: '', objectifs: { revenu: 0, benefice: 0 } };
+const AVATAR_COLORS = ['#E84A1D','#3B82F6','#8B5CF6','#10B981','#F59E0B','#EC4899','#06B6D4','#84CC16','#F97316','#14B8A6'];
+const MOIS_FR = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const JOURS_FR = { Monday:'Lun', Tuesday:'Mar', Wednesday:'Mer', Thursday:'Jeu', Friday:'Ven', Saturday:'Sam', Sunday:'Dim' };
+
+function getSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return { vendeurs:[], helpers:[], salaires:{}, objectifs:{}, membres:{} };
+    const p = JSON.parse(raw);
+    return { vendeurs:[], helpers:[], salaires:{}, objectifs:{}, membres:{}, ...p };
+  } catch(e) { return { vendeurs:[], helpers:[], salaires:{}, objectifs:{}, membres:{} }; }
+}
+function saveSettings(s) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  showToast();
+}
+
+function getAllMembers(s) {
+  return [...new Set([...s.vendeurs, ...s.helpers])].sort();
+}
+function getMembre(s, nom) {
+  return { ...MEMBER_DEFAULTS, surnom: nom, prenom: nom, ...(s.membres?.[nom] || {}) };
+}
+function getRole(s, nom) {
+  const v = s.vendeurs.includes(nom);
+  const h = s.helpers.includes(nom);
+  if (v && h) return 'both';
+  if (v) return 'vendeur';
+  return 'helper';
+}
+function roleLabel(r) {
+  return r === 'both' ? 'Vendeur & Helper' : r === 'vendeur' ? 'Vendeur' : 'Helper';
+}
+function roleCls(r) {
+  return r === 'both' ? 'role-both' : r === 'vendeur' ? 'role-vendeur' : 'role-helper';
+}
+
+function avatarColor(nom) {
+  let h = 0;
+  for (let i = 0; i < nom.length; i++) h = nom.charCodeAt(i) + ((h << 5) - h);
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+function avatarInitials(m) {
+  const p = (m.prenom || m.surnom || '').charAt(0).toUpperCase();
+  const n = (m.nom || '').charAt(0).toUpperCase();
+  return n ? p + n : (m.surnom || m.prenom || '?').slice(0,2).toUpperCase();
+}
+
+function fmt(n) { return '$' + (n||0).toLocaleString('fr-CA', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtK(n) { return n >= 1000 ? '$' + (n/1000).toFixed(1) + 'K' : fmt(n); }
+function pct(n) { return (n||0).toFixed(1) + '%'; }
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let allBreaks = [];
+let settings  = getSettings();
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    const res = await fetch('/api/breaks');
+    if (res.ok) allBreaks = await res.json();
+  } catch(e) {}
+
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('m');
+  if (m && getAllMembers(settings).includes(m)) {
+    showProfile(m, false);
+  } else {
+    showGrid(false);
+  }
+}
+
+// ── GRID VIEW ─────────────────────────────────────────────────────────────────
+function showGrid(push = true) {
+  if (push) history.pushState(null, '', '/team.html');
+  document.getElementById('loading-state').style.display  = 'none';
+  document.getElementById('view-grid').style.display      = 'block';
+  document.getElementById('view-profile').style.display   = 'none';
+  document.getElementById('header-sub').textContent = 'Équipe';
+  document.title = 'Équipe — Hobby Empire';
+  settings = getSettings();
+  renderGrid();
+}
+
+function renderGrid() {
+  const members = getAllMembers(settings);
+  const sub = document.getElementById('grid-sub');
+
+  if (!members.length) {
+    document.getElementById('member-grid').innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--text3)">
+        <div style="font-size:32px;margin-bottom:12px">👥</div>
+        <div style="font-size:15px;margin-bottom:8px;color:var(--text2)">Aucun membre configuré</div>
+        <a href="/settings.html" style="font-family:var(--font-mono);font-size:11px;letter-spacing:0.12em;color:var(--accent)">→ Aller dans Settings pour ajouter l'équipe</a>
+      </div>`;
+    return;
+  }
+
+  sub.textContent = members.length + ' membre' + (members.length > 1 ? 's' : '') + ' — cliquez sur une fiche pour voir le profil complet.';
+
+  document.getElementById('member-grid').innerHTML = members.map(nom => {
+    const m      = getMembre(settings, nom);
+    const role   = getRole(settings, nom);
+    const color  = avatarColor(nom);
+    const inits  = avatarInitials(m);
+    const breaks = allBreaks.filter(b => b.vendeur === nom || b.helper === nom);
+    const asVend = allBreaks.filter(b => b.vendeur === nom);
+    const totalRev = asVend.reduce((s,b) => s + (+b.revenuReel||0), 0);
+    const totalBen = asVend.reduce((s,b) => s + (+b.beneficeNet||0), 0);
+    const marge    = totalRev > 0 ? (totalBen / totalRev * 100) : 0;
+    const fullName = [m.prenom, m.nom].filter(Boolean).join(' ') || nom;
+    const sal      = settings.salaires?.[nom];
+
+    // DOB / age
+    let ageStr = '';
+    if (m.dateNaissance) {
+      const dob = new Date(m.dateNaissance);
+      const now = new Date();
+      const age = now.getFullYear() - dob.getFullYear() - (now < new Date(now.getFullYear(), dob.getMonth(), dob.getDate()) ? 1 : 0);
+      ageStr = age + ' ans';
+    }
+
+    return `
+      <div class="member-card" onclick="navigateToProfile('${nom}')" style="--card-color:${color}">
+        <style>.member-card[onclick*="${nom}"]::before { background: ${color}; }</style>
+        <div class="member-card-top">
+          <div class="avatar" style="background:${color}">${inits}</div>
+          <div class="member-card-meta">
+            <div class="member-fullname">${fullName}</div>
+            ${m.surnom && m.surnom !== m.prenom ? `<div class="member-surnom">"${m.surnom}"</div>` : ''}
+            <div class="member-role-badge ${roleCls(role)}">${roleLabel(role)}</div>
+          </div>
+        </div>
+        ${ageStr || sal ? `<div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+          ${ageStr ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">${ageStr}</span>` : ''}
+          ${sal ? `<span style="font-family:var(--font-mono);font-size:11px;color:var(--text3)">${sal}$/h</span>` : ''}
+        </div>` : ''}
+        <div class="member-card-stats">
+          <div class="stat-item">
+            <div class="stat-lbl">Breaks</div>
+            <div class="stat-val">${asVend.length || '—'}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-lbl">Revenu</div>
+            <div class="stat-val">${totalRev > 0 ? fmtK(totalRev) : '—'}</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-lbl">Marge</div>
+            <div class="stat-val ${asVend.length ? 'green' : ''}">${asVend.length ? pct(marge) : '—'}</div>
+          </div>
+        </div>
+        <div class="member-card-cta">Voir la fiche →</div>
+      </div>`;
+  }).join('');
+}
+
+function navigateToProfile(nom) {
+  history.pushState({ membre: nom }, '', `/team.html?m=${encodeURIComponent(nom)}`);
+  showProfile(nom, false);
+}
+
+// ── PROFILE VIEW ──────────────────────────────────────────────────────────────
+function showProfile(nom, push = true) {
+  if (push) history.pushState({ membre: nom }, '', `/team.html?m=${encodeURIComponent(nom)}`);
+  settings = getSettings();
+  document.getElementById('loading-state').style.display  = 'none';
+  document.getElementById('view-grid').style.display      = 'none';
+  document.getElementById('view-profile').style.display   = 'block';
+  document.getElementById('header-sub').textContent = nom;
+  document.title = nom + ' — Hobby Empire';
+  renderProfile(nom);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderProfile(nom) {
+  const m     = getMembre(settings, nom);
+  const role  = getRole(settings, nom);
+  const color = avatarColor(nom);
+  const inits = avatarInitials(m);
+  const sal   = settings.salaires?.[nom] || 0;
+
+  // Breaks as vendeur (for financial stats)
+  const breaksV  = allBreaks.filter(b => b.vendeur === nom);
+  // Breaks as helper
+  const breaksH  = allBreaks.filter(b => b.helper === nom);
+
+  // Aggregates
+  const total     = breaksV.length;
+  const totalRev  = breaksV.reduce((s,b) => s + (+b.revenuReel||0), 0);
+  const totalBen  = breaksV.reduce((s,b) => s + (+b.beneficeNet||0), 0);
+  const totalDur  = breaksV.reduce((s,b) => s + (+b.duree||0), 0);
+  const marge     = totalRev > 0 ? (totalBen / totalRev * 100) : 0;
+  const revHeure  = totalDur > 0 ? (totalRev / (totalDur / 60)) : 0;
+  const heuresLive = Math.round(totalDur / 60);
+
+  // DOB / age
+  let ageStr = '', dobFr = '';
+  if (m.dateNaissance) {
+    const dob = new Date(m.dateNaissance);
+    const now = new Date();
+    const age = now.getFullYear() - dob.getFullYear() - (now < new Date(now.getFullYear(), dob.getMonth(), dob.getDate()) ? 1 : 0);
+    ageStr = age + ' ans';
+    dobFr  = dob.toLocaleDateString('fr-CA', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  const fullName = [m.prenom, m.nom].filter(Boolean).join(' ') || nom;
+
+  // Objectives
+  const objRev = +(m.objectifs?.revenu)   || 0;
+  const objBen = +(m.objectifs?.benefice) || 0;
+  const pctRev = objRev > 0 ? Math.min(totalRev / objRev * 100, 100) : 0;
+  const pctBen = objBen > 0 ? Math.min(totalBen / objBen * 100, 100) : 0;
+
+  // By month
+  const byMois = {};
+  breaksV.forEach(b => {
+    const k = (b.annee||2026) + '-' + String(b.mois||1).padStart(2,'0');
+    if (!byMois[k]) byMois[k] = { mois:b.mois, annee:b.annee, n:0, rev:0, ben:0 };
+    byMois[k].n++;
+    byMois[k].rev += (+b.revenuReel||0);
+    byMois[k].ben += (+b.beneficeNet||0);
+  });
+
+  // By sport
+  const bySport = {};
+  breaksV.forEach(b => {
+    const k = b.sport || 'Autre';
+    if (!bySport[k]) bySport[k] = { n:0, rev:0, ben:0 };
+    bySport[k].n++; bySport[k].rev += (+b.revenuReel||0); bySport[k].ben += (+b.beneficeNet||0);
+  });
+
+  // By day of week
+  const byJour = {};
+  breaksV.forEach(b => {
+    const j = b.jour || 'Unknown';
+    if (!byJour[j]) byJour[j] = { n:0, rev:0 };
+    byJour[j].n++; byJour[j].rev += (+b.revenuReel||0);
+  });
+  const bestJour = Object.entries(byJour).sort((a,b) => b[1].rev - a[1].rev)[0];
+
+  // Top 5 breaks
+  const top5 = [...breaksV].sort((a,b) => (+b.beneficeNet||0) - (+a.beneficeNet||0)).slice(0,5);
+
+  document.getElementById('profile-content').innerHTML = `
+
+    <!-- ── Hero ── -->
+    <div class="profile-hero">
+      <div class="avatar-lg" style="background:${color}">${inits}</div>
+      <div class="profile-hero-info">
+        <div class="profile-fullname-display">${fullName}</div>
+        ${m.surnom && m.surnom !== m.prenom ? `<div class="profile-surnom-display">"${m.surnom}"</div>` : ''}
+        <div class="profile-meta-row">
+          <span class="meta-pill ${roleCls(role)}">${roleLabel(role)}</span>
+          ${dobFr ? `<span class="meta-dot">·</span><span class="meta-info">${dobFr}${ageStr ? ' (' + ageStr + ')' : ''}</span>` : ''}
+          ${sal ? `<span class="meta-dot">·</span><span class="meta-info">${sal}$/h</span>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Profil (éditable) ── -->
+    <div class="section">
+      <div class="section-head"><span class="section-label">Profil</span></div>
+      <div class="section-body">
+        <div class="pf-grid">
+          <div class="pf-field">
+            <label class="pf-lbl">Prénom</label>
+            <input class="pf-input" type="text" value="${escHtml(m.prenom)}" placeholder="Prénom"
+              oninput="saveMembre('${nom}', 'prenom', this.value)" />
+          </div>
+          <div class="pf-field">
+            <label class="pf-lbl">Nom de famille</label>
+            <input class="pf-input" type="text" value="${escHtml(m.nom)}" placeholder="Nom"
+              oninput="saveMembre('${nom}', 'nom', this.value)" />
+          </div>
+          <div class="pf-field">
+            <label class="pf-lbl">Surnom (affiché dans le Break Tracker)</label>
+            <input class="pf-input" type="text" value="${escHtml(m.surnom || nom)}" placeholder="Surnom"
+              oninput="saveMembre('${nom}', 'surnom', this.value)" />
+          </div>
+          <div class="pf-field">
+            <label class="pf-lbl">Date de naissance</label>
+            <input class="pf-input" type="date" value="${m.dateNaissance || ''}"
+              oninput="saveMembre('${nom}', 'dateNaissance', this.value); refreshHero('${nom}')" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── KPIs ── -->
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-lbl">Breaks vendeur</div>
+        <div class="kpi-val">${total}</div>
+        <div class="kpi-sub">${breaksH.length ? breaksH.length + ' comme helper' : 'au total'}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Revenu total</div>
+        <div class="kpi-val">${totalRev ? fmtK(totalRev) : '—'}</div>
+        <div class="kpi-sub">ventes brutes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Bénéfice net</div>
+        <div class="kpi-val ${totalBen >= 0 ? 'green' : ''}">${totalBen ? fmtK(totalBen) : '—'}</div>
+        <div class="kpi-sub">${total ? pct(marge) + ' de marge' : '—'}</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Rev / heure</div>
+        <div class="kpi-val">${totalDur ? fmtK(revHeure) : '—'}</div>
+        <div class="kpi-sub">moyenne</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-lbl">Heures de live</div>
+        <div class="kpi-val">${heuresLive || '—'}</div>
+        <div class="kpi-sub">${bestJour ? 'Meilleur : ' + (JOURS_FR[bestJour[0]]||bestJour[0]) : 'au total'}</div>
+      </div>
+    </div>
+
+    <!-- ── Objectifs personnels ── -->
+    <div class="section">
+      <div class="section-head"><span class="section-label">Objectifs personnels (mensuel)</span></div>
+      <div class="section-body">
+        <div class="obj-grid">
+          <div class="obj-card">
+            <div class="obj-lbl">Revenu mensuel cible</div>
+            <div class="obj-wrap">
+              <span class="obj-sym">$</span>
+              <input class="obj-input" type="number" min="0" step="1000" value="${objRev || ''}" placeholder="0"
+                oninput="saveMembreObj('${nom}', 'revenu', this.value)" />
+            </div>
+            ${objRev > 0 ? `
+              <div class="obj-bar"><div class="obj-fill${pctRev>=100?' over':''}" style="width:${pctRev}%"></div></div>
+              <div class="obj-note">${fmt(totalRev)} / ${fmt(objRev)} &nbsp;·&nbsp; ${pctRev.toFixed(0)}%</div>
+            ` : `<div class="obj-note" style="color:var(--mute)">Définissez une cible pour voir la progression</div>`}
+          </div>
+          <div class="obj-card">
+            <div class="obj-lbl">Bénéfice mensuel cible</div>
+            <div class="obj-wrap">
+              <span class="obj-sym">$</span>
+              <input class="obj-input" type="number" min="0" step="500" value="${objBen || ''}" placeholder="0"
+                oninput="saveMembreObj('${nom}', 'benefice', this.value)" />
+            </div>
+            ${objBen > 0 ? `
+              <div class="obj-bar"><div class="obj-fill${pctBen>=100?' over':''}" style="width:${pctBen}%"></div></div>
+              <div class="obj-note">${fmt(totalBen)} / ${fmt(objBen)} &nbsp;·&nbsp; ${pctBen.toFixed(0)}%</div>
+            ` : `<div class="obj-note" style="color:var(--mute)">Définissez une cible pour voir la progression</div>`}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Évolution mensuelle + Par sport ── -->
+    <div class="two-col">
+      <div class="section" style="margin-bottom:0">
+        <div class="section-head"><span class="section-label">Évolution mensuelle</span></div>
+        <div class="section-body" style="padding:0">
+          ${Object.keys(byMois).length ? `
+            <table class="data-table">
+              <thead><tr><th>Mois</th><th>Breaks</th><th>Revenu</th><th>Bénéfice</th><th>Marge</th></tr></thead>
+              <tbody>
+                ${Object.keys(byMois).sort().reverse().map(k => {
+                  const d = byMois[k];
+                  const mg = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+                  return `<tr>
+                    <td>${MOIS_FR[d.mois]||d.mois} ${d.annee}</td>
+                    <td class="num dim">${d.n}</td>
+                    <td class="num gold">${fmtK(d.rev)}</td>
+                    <td class="num green">${fmtK(d.ben)}</td>
+                    <td class="num dim">${pct(mg)}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          ` : '<div class="table-empty">Aucune donnée</div>'}
+        </div>
+      </div>
+      <div class="section" style="margin-bottom:0">
+        <div class="section-head"><span class="section-label">Par sport / licence</span></div>
+        <div class="section-body" style="padding:0">
+          ${Object.keys(bySport).length ? `
+            <table class="data-table">
+              <thead><tr><th>Sport</th><th>Breaks</th><th>Revenu</th><th>Marge</th></tr></thead>
+              <tbody>
+                ${Object.entries(bySport).sort((a,b)=>b[1].rev-a[1].rev).map(([k,d]) => {
+                  const mg = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+                  return `<tr>
+                    <td>${k}</td>
+                    <td class="num dim">${d.n}</td>
+                    <td class="num gold">${fmtK(d.rev)}</td>
+                    <td class="num dim">${pct(mg)}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          ` : '<div class="table-empty">Aucune donnée</div>'}
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Top 5 breaks ── -->
+    ${top5.length ? `
+      <div class="section">
+        <div class="section-head"><span class="section-label">Top 5 meilleurs breaks</span></div>
+        <div class="section-body" style="padding:0">
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Break</th><th>Date</th><th>Sport</th><th>Revenu</th><th>Bénéfice</th><th>Marge</th></tr></thead>
+            <tbody>
+              ${top5.map((b, i) => {
+                const ben = +b.beneficeNet || 0;
+                const rev = +b.revenuReel  || 0;
+                const mg  = rev > 0 ? (ben/rev*100) : 0;
+                return `<tr>
+                  <td class="num dim">${i+1}</td>
+                  <td><strong>${b.nomBreak || '—'}</strong></td>
+                  <td class="dim">${b.date || '—'}</td>
+                  <td class="dim">${b.sport || '—'}</td>
+                  <td class="num gold">${fmt(rev)}</td>
+                  <td class="num green">${fmt(ben)}</td>
+                  <td class="num dim">${pct(mg)}</td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+// ── Save member profile ────────────────────────────────────────────────────────
+let saveDebounce;
+function saveMembre(nom, field, value) {
+  if (!settings.membres) settings.membres = {};
+  if (!settings.membres[nom]) settings.membres[nom] = { ...MEMBER_DEFAULTS, surnom: nom, prenom: nom };
+  settings.membres[nom][field] = value;
+  clearTimeout(saveDebounce);
+  saveDebounce = setTimeout(() => saveSettings(settings), 600);
+}
+
+function saveMembreObj(nom, key, value) {
+  if (!settings.membres) settings.membres = {};
+  if (!settings.membres[nom]) settings.membres[nom] = { ...MEMBER_DEFAULTS, surnom: nom, prenom: nom };
+  if (!settings.membres[nom].objectifs) settings.membres[nom].objectifs = {};
+  settings.membres[nom].objectifs[key] = parseFloat(value) || 0;
+  clearTimeout(saveDebounce);
+  saveDebounce = setTimeout(() => saveSettings(settings), 600);
+}
+
+// Refresh the hero (fullname/age) after DOB edit without full re-render
+function refreshHero(nom) {
+  const m = getMembre(settings, nom);
+  const fullName = [m.prenom, m.nom].filter(Boolean).join(' ') || nom;
+  const el = document.querySelector('.profile-fullname-display');
+  if (el) el.textContent = fullName;
+}
+
+// ── Escape HTML ───────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Browser back ──────────────────────────────────────────────────────────────
+window.addEventListener('popstate', () => {
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get('m');
+  if (m) showProfile(m, false);
+  else showGrid(false);
+});
+
+// ── Start ─────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
