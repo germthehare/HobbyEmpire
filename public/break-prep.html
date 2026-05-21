@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hobby Empire — Break Prep</title>
+<title>Break Prep — Speloosh</title>
 <script src="/auth-guard.js" data-role="any"></script>
 <script src="/lang-toggle.js"></script>
+<script src="/speloosh-shell.js"></script>
 <link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="/speloosh-shell.css">
 <style>
   /* Aliases Court : les anciens noms restent valides, ils pointent vers les nouveaux tokens. */
   .he-court {
@@ -270,12 +272,15 @@
   .footer { text-align: center; padding: 22px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); border-top: 1px solid var(--line); margin-top: 20px; }
 </style>
 </head>
-<body class="he-root he-court">
+<body class="he-root he-court"
+  data-sp-breadcrumb="■ SPELOOSH › OPÉRATIONS › BREAK PREP"
+  data-sp-cert="SPLSH·26·05·P004"
+  data-sp-meta="PREP · CLAUDE AI · EBAY">
 <div class="header">
   <a class="logo-wrap" href="/">
     <span class="logo-dot"></span>
     <div>
-      <div class="logo">Hobby Empire</div>
+      <div class="logo">Speloosh</div>
       <div class="logo-sub">Break Prep</div>
     </div>
   </a>
@@ -335,7 +340,7 @@
   </div>
   <!-- Onglet Actualités déplacé vers la Home (voir public/index.html + news.js) -->
 </div>
-<div class="footer" id="footer-text">Hobby Empire Break Prep — Propulsé par Claude AI</div>
+<div class="footer" id="footer-text">Speloosh Break Prep — Propulsé par Claude AI</div>
 <script>
 let lang = localStorage.getItem('he_lang') || 'fr';
 let checklistKeys = [];
@@ -486,7 +491,7 @@ const T = {
     generating:'Analyse en cours...', cardLabel:'Chercher une carte', cardBtn:'Valeur',
     liveHint:"Entre le nom d'une carte pour voir sa valeur Raw / PSA 9 / PSA 10 et la tendance du marché.",
     emptyTitle:'Tes fiches apparaîtront ici', emptySub:'Ajoute tes produits et génère les fiches de préparation.',
-    tabPrep:'Avant le live', tabLive:'Pendant le live', footer:'Hobby Empire Break Prep — Propulsé par Claude AI',
+    tabPrep:'Avant le live', tabLive:'Pendant le live', footer:'Speloosh Break Prep — Propulsé par Claude AI',
     topCards:'Cartes à surveiller', rookies:'Top Rookies', legends:'Légendes', hotPlayers:'Joueurs en feu',
     facts:'Faits pour ton chat', compare:'Comparatif', hits:'Hits',
     raw:'Raw', up:'En hausse', down:'En baisse', stable:'Stable',
@@ -498,7 +503,7 @@ const T = {
     generating:'Analyzing...', cardLabel:'Look up a card', cardBtn:'Value',
     liveHint:'Enter a card name to see its Raw / PSA 9 / PSA 10 value and market trend.',
     emptyTitle:'Your prep sheets will appear here', emptySub:'Add your products and generate break prep sheets.',
-    tabPrep:'Before the live', tabLive:'During the live', footer:'Hobby Empire Break Prep — Powered by Claude AI',
+    tabPrep:'Before the live', tabLive:'During the live', footer:'Speloosh Break Prep — Powered by Claude AI',
     topCards:'Cards to watch', rookies:'Top Rookies', legends:'Legends', hotPlayers:'Hot players',
     facts:'Chat facts', compare:'Comparison', hits:'Hits',
     raw:'Raw', up:'Trending up', down:'Trending down', stable:'Stable',

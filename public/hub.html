@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hub — Hobby Empire</title>
+<title>Hub — Speloosh</title>
 <link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="/speloosh-shell.css">
 <script src="/auth-guard.js" data-role="admin"></script>
 <script src="/lang-toggle.js"></script>
+<script src="/speloosh-shell.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
   /* Aliases : on garde les anciens noms, on les pointe vers les tokens Court. */
@@ -109,13 +111,16 @@
   .reset-btn.has-filter { color: var(--accent); border-color: var(--accent); }
 </style>
 </head>
-<body class="he-root he-court">
+<body class="he-root he-court"
+  data-sp-breadcrumb="■ SPELOOSH › ANALYTICS › HUB"
+  data-sp-cert="SPLSH·26·05·HUB003"
+  data-sp-meta="ANALYTICS · CHARTS · KPI">
 
 <div class="header">
   <a class="logo-wrap" href="/">
     <span class="logo-dot"></span>
     <div>
-      <div class="logo">Hobby Empire</div>
+      <div class="logo">Speloosh</div>
       <div class="logo-sub">Hub</div>
     </div>
   </a>
@@ -341,7 +346,7 @@
 
 </div>
 
-<div class="footer">Hobby Empire &mdash; Hub &copy; 2026</div>
+<div class="footer">Speloosh &mdash; Hub &copy; 2026</div>
 
 <script>
 // ── Settings ─────────────────────────────────────────────────────────────────

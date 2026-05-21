@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Équipe — Hobby Empire</title>
+<title>Équipe — Speloosh</title>
 <link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="/speloosh-shell.css">
 <script src="/auth-guard.js" data-role="admin"></script>
 <script src="/lang-toggle.js"></script>
+<script src="/speloosh-shell.js"></script>
 <style>
   .he-court {
     --gold:  var(--accent);
@@ -148,13 +150,16 @@
   .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
 </style>
 </head>
-<body class="he-root he-court">
+<body class="he-root he-court"
+  data-sp-breadcrumb="■ SPELOOSH › SYSTÈME › ÉQUIPE"
+  data-sp-cert="SPLSH·26·05·EQ008"
+  data-sp-meta="TEAM · PROFILES · STATS">
 
 <div class="header">
   <a class="logo-wrap" href="/">
     <span class="logo-dot"></span>
     <div>
-      <div class="logo">Hobby Empire</div>
+      <div class="logo">Speloosh</div>
       <div class="logo-sub" id="header-sub">Équipe</div>
     </div>
   </a>
@@ -204,7 +209,7 @@
   </div>
 </div>
 
-<div class="footer">Hobby Empire &mdash; Équipe &copy; 2026</div>
+<div class="footer">Speloosh &mdash; Équipe &copy; 2026</div>
 <div class="toast" id="toast">✓ Profil sauvegardé</div>
 
 <script>
@@ -314,7 +319,7 @@ function showGrid(push = true) {
   document.getElementById('view-grid').style.display      = 'block';
   document.getElementById('view-profile').style.display   = 'none';
   document.getElementById('header-sub').textContent = 'Équipe';
-  document.title = 'Équipe — Hobby Empire';
+  document.title = 'Équipe — Speloosh';
   settings = getSettings();
   renderGrid();
 }
@@ -406,7 +411,7 @@ function showProfile(nom, push = true) {
   document.getElementById('view-grid').style.display      = 'none';
   document.getElementById('view-profile').style.display   = 'block';
   document.getElementById('header-sub').textContent = nom;
-  document.title = nom + ' — Hobby Empire';
+  document.title = nom + ' — Speloosh';
   renderProfile(nom);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planificateur — Hobby Empire</title>
+<title>Planificateur — Speloosh</title>
 <link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="/speloosh-shell.css">
 <script src="/auth-guard.js" data-role="admin"></script>
 <script src="/lang-toggle.js"></script>
+<script src="/speloosh-shell.js"></script>
 <style>
   .he-court {
     --gold:  var(--accent);
@@ -157,14 +159,17 @@
   .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 12px; }
 </style>
 </head>
-<body class="he-root he-court">
+<body class="he-root he-court"
+  data-sp-breadcrumb="■ SPELOOSH › OPÉRATIONS › PLANIFICATEUR"
+  data-sp-cert="SPLSH·26·05·PL006"
+  data-sp-meta="PLANNING · SCHEDULE · CAL">
 
 <!-- ── HEADER ── -->
 <div class="header">
   <a class="logo-wrap" href="/">
     <span class="logo-dot"></span>
     <div>
-      <div class="logo">Hobby Empire</div>
+      <div class="logo">Speloosh</div>
       <div class="logo-sub">Planificateur</div>
     </div>
   </a>
@@ -200,7 +205,7 @@
   <div class="cal-loading"><span class="spin"></span>Chargement...</div>
 </div>
 
-<div class="footer">Hobby Empire &mdash; Planificateur &copy; 2026</div>
+<div class="footer">Speloosh &mdash; Planificateur &copy; 2026</div>
 
 <!-- ── OVERLAY + PANEL ── -->
 <div class="overlay" id="overlay" onclick="closePanel()"></div>

@@ -1,0 +1,625 @@
+/* ============================================================
+   Speloosh — App Shell
+   Sidebar + Cert strips + Utility components
+   Include AFTER tokens.css
+   ============================================================ */
+
+/* ── Shell layout ──────────────────────────────────────────── */
+body.sp-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+  margin: 0;
+}
+
+/* ── Sidebar ───────────────────────────────────────────────── */
+.sp-sidebar {
+  width: 232px;
+  min-width: 232px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--bg-3);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  scrollbar-width: none;
+}
+.sp-sidebar::-webkit-scrollbar { display: none; }
+
+/* Brand */
+.sp-brand {
+  padding: 22px 20px 16px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.sp-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+/* Foil droplet — splash icon left of wordmark */
+.sp-droplet {
+  width: 10px;
+  height: 13px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  transform: rotate(-14deg);
+  background:
+    linear-gradient(145deg,
+      color-mix(in oklch, oklch(85% 0.12 320), transparent 20%) 0%,
+      color-mix(in oklch, oklch(82% 0.14 200), transparent 25%) 35%,
+      color-mix(in oklch, oklch(88% 0.12 100), transparent 20%) 60%,
+      oklch(62% 0.18 30) 100%
+    );
+  box-shadow:
+    inset 0 -2px 4px rgba(0,0,0,.18),
+    inset 0 1px 2px rgba(255,255,255,.35);
+  flex-shrink: 0;
+}
+.sp-wordmark-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sp-wordmark {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1;
+  font-stretch: 75%;
+}
+.sp-tagline {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Search */
+.sp-search-wrap {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  flex-shrink: 0;
+}
+.sp-search-input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 7px 34px 7px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  outline: none;
+  transition: border-color 0.12s, color 0.12s;
+}
+.sp-search-input::placeholder { color: var(--mute); }
+.sp-search-input:focus { border-color: var(--accent); color: var(--ink); }
+.sp-kbd {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink-3);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1px 5px;
+  pointer-events: none;
+}
+
+/* Nav sections */
+.sp-nav-section {
+  padding: 14px 14px 4px;
+  flex-shrink: 0;
+}
+.sp-nav-label {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 4px;
+  padding: 0 4px;
+}
+.sp-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+  position: relative;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sp-nav-item:hover {
+  background: var(--bg-2);
+  color: var(--ink);
+}
+.sp-nav-item.is-active {
+  background: var(--bg-2);
+  color: var(--ink);
+}
+.sp-nav-item.is-active::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.sp-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--bg-2);
+  color: var(--ink-3);
+  padding: 1px 6px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+/* Spacer pushes user-card to bottom */
+.sp-spacer { flex: 1; min-height: 12px; }
+
+/* User card */
+.sp-user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.sp-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--bg-ink);
+  color: oklch(85% 0.01 75);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sp-user-name {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.sp-user-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--ink-3);
+}
+.sp-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pos);
+  animation: he-pulse 2s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+/* ── Main content area ─────────────────────────────────────── */
+.sp-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Cert strips (slab-style frame) ────────────────────────── */
+.sp-cert-strip {
+  background: var(--bg-ink);
+  padding: 10px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Top strip — accent border on bottom + foil overlay */
+.sp-cert-top {
+  border-bottom: 3px solid var(--accent);
+}
+.sp-cert-top::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0; right: 0;
+  height: 3px;
+  background: var(--foil-gradient);
+  mix-blend-mode: screen;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* Bottom strip — accent border on top + foil overlay */
+.sp-cert-bot {
+  margin-top: auto;
+  border-top: 3px solid var(--accent);
+}
+.sp-cert-bot::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0; right: 0;
+  height: 3px;
+  background: var(--foil-gradient);
+  mix-blend-mode: screen;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+/* Cert strip text */
+.sp-cert-breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: oklch(50% 0.01 75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sp-cert-breadcrumb strong {
+  color: oklch(88% 0.008 80);
+  font-weight: 700;
+}
+.sp-cert-id {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sp-cert-meta {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.sp-cert-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+.sp-cert-pill + .sp-cert-pill::before {
+  content: ' · ';
+  white-space: pre;
+}
+
+/* ── Page content wrapper ──────────────────────────────────── */
+.sp-page-content {
+  flex: 1;
+}
+
+/* ── Toolbar row (optional, below cert-top) ─────────────────── */
+.sp-toolbar {
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.sp-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.sp-toolbar-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.sp-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Holo line (40-80px accent stripe under eyebrows) ─────── */
+.sp-holo-line {
+  height: 2px;
+  width: 44px;
+  background: var(--foil-gradient);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* ── Cert badge (two-segment pill) ─────────────────────────── */
+.sp-cert-badge {
+  display: inline-flex;
+  align-items: stretch;
+  height: 22px;
+  border-radius: 4px;
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+.sp-cert-badge .cb-label {
+  background: var(--bg-ink);
+  color: oklch(62% 0.01 75);
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.sp-cert-badge .cb-grade {
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  font-stretch: 75%;
+}
+
+/* ── Foil-edge cards (2px top holo stripe) ─────────────────── */
+.sp-foil-edge {
+  position: relative;
+}
+.sp-foil-edge::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--foil-gradient);
+  opacity: 0.5;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ── Print marks (artboard corner crosses) ─────────────────── */
+.sp-print-marks {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+.sp-print-mark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0.35;
+}
+.sp-print-mark::before,
+.sp-print-mark::after {
+  content: '';
+  position: absolute;
+  background: var(--ink-3);
+}
+.sp-print-mark::before { width: 14px; height: 1px; top: 6px; left: 0; }
+.sp-print-mark::after  { width: 1px; height: 14px; left: 6px; top: 0; }
+.sp-print-mark.tl { top: 10px;    left: 244px; } /* 232px sidebar + gap */
+.sp-print-mark.tr { top: 10px;    right: 10px; }
+.sp-print-mark.bl { bottom: 10px; left: 244px; }
+.sp-print-mark.br { bottom: 10px; right: 10px; }
+
+/* ── Live indicator ────────────────────────────────────────── */
+.sp-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+.sp-live-pill::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: he-pulse 1.4s ease-in-out infinite;
+}
+
+/* ── Mini slab card ────────────────────────────────────────── */
+.mini-slab {
+  width: 196px;
+  border-radius: 9px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.10),
+    0 12px 40px rgba(0,0,0,.18);
+  position: absolute;
+  transform-origin: center 65%;
+}
+.ms-cert-top {
+  background: var(--bg-ink);
+  padding: 7px 11px;
+  border-bottom: 2px solid var(--accent);
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ms-cert-top::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0; right: 0;
+  height: 2px;
+  background: var(--foil-gradient);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.ms-cert-txt {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: oklch(52% 0.01 75);
+}
+.ms-body {
+  background: var(--bg-2);
+  padding: 18px 14px 14px;
+  position: relative;
+  overflow: hidden;
+  min-height: 106px;
+}
+.ms-body.ms-featured {
+  background: var(--accent);
+}
+.ms-halftone {
+  position: absolute;
+  inset: 0;
+  background-image: var(--halftone);
+  background-size: 6px 6px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+.ms-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+  position: relative;
+}
+.ms-body.ms-featured .ms-eyebrow {
+  color: oklch(98% 0.01 75);
+  opacity: 0.75;
+}
+.ms-label {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+  line-height: 0.88;
+  color: var(--ink);
+  position: relative;
+  font-stretch: 75%;
+}
+.ms-body.ms-featured .ms-label {
+  color: #fff;
+}
+.ms-foil-corner {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 52px;
+  height: 52px;
+  background: var(--foil-gradient);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.ms-bottom {
+  background: var(--bg-ink);
+  padding: 7px 11px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.ms-grade-num {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 900;
+  font-stretch: 75%;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.ms-grade-label {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: oklch(48% 0.01 75);
+  flex: 1;
+  line-height: 1.35;
+}
+.ms-serial {
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: oklch(36% 0.01 75);
+}
+
+/* ── Stamp seal (circular SVG frame) ───────────────────────── */
+.sp-stamp {
+  transform: rotate(-11deg);
+  flex-shrink: 0;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .sp-sidebar { display: none; }
+  body.sp-shell { display: block; }
+  .sp-print-mark.tl,
+  .sp-print-mark.bl { left: 10px; }
+  .sp-cert-strip { padding: 10px 16px; }
+}
+@media (max-width: 640px) {
+  .sp-cert-breadcrumb { font-size: 8.5px; }
+  .sp-cert-id { display: none; }
+}
