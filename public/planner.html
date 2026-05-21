@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planificateur — Hobby Empire</title>
+<link rel="stylesheet" href="tokens.css">
+<script src="/auth-guard.js" data-role="admin"></script>
+<style>
+  .he-court {
+    --gold:  var(--accent);
+    --dark:  var(--bg);
+    --dark2: var(--bg-3);
+    --dark3: var(--bg-2);
+    --dark4: var(--line);
+    --text:  var(--ink);
+    --text2: var(--ink-2);
+    --text3: var(--ink-3);
+    --red:   var(--neg);
+    --green: var(--pos);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--dark); color: var(--text); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+  /* ── HEADER ── */
+  .header { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 200; }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 2px; align-self: center; }
+  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1; }
+  .logo-sub { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-top: 2px; }
+  .header-nav { display: flex; gap: 4px; }
+  .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: var(--text); background: var(--bg-2); }
+  .nav-link.active { color: var(--ink); background: var(--bg-2); }
+
+  /* ── WEEK NAV ── */
+  .week-nav { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; gap: 12px; height: 56px; position: sticky; top: 64px; z-index: 100; }
+  .week-nav-btn { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); font-size: 13px; padding: 6px 12px; cursor: pointer; transition: all 0.12s; display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); }
+  .week-nav-btn:hover { border-color: var(--text3); color: var(--ink); }
+  .week-label { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; flex: 1; text-align: center; }
+  .today-btn { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: color-mix(in oklch, var(--accent), transparent 88%); border: 1px solid color-mix(in oklch, var(--accent), transparent 65%); color: var(--accent); border-radius: var(--r-sm); padding: 6px 12px; cursor: pointer; transition: all 0.12s; }
+  .today-btn:hover { background: color-mix(in oklch, var(--accent), transparent 78%); }
+  .add-global-btn { background: var(--accent); border: none; border-radius: var(--r-sm); color: var(--accent-ink, #fff); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px 16px; cursor: pointer; transition: filter 0.12s; white-space: nowrap; }
+  .add-global-btn:hover { filter: brightness(1.08); }
+
+  /* ── WEEK GRID ── */
+  .week-wrap { padding: 0 24px 60px; overflow-x: auto; }
+  .week-grid { display: grid; grid-template-columns: repeat(7, minmax(140px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; margin-top: 20px; min-width: 980px; }
+
+  .day-col { background: var(--dark); display: flex; flex-direction: column; }
+  .day-col.today .day-header { background: color-mix(in oklch, var(--accent), transparent 92%); }
+  .day-col.today .day-number { color: var(--accent); }
+
+  .day-header { background: var(--dark2); padding: 12px 14px 10px; border-bottom: 1px solid var(--line); }
+  .day-name { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
+  .day-number { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--ink); line-height: 1; }
+  .day-month { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.06em; margin-top: 2px; }
+
+  .day-body { flex: 1; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 180px; }
+
+  /* ── BREAK CARD ── */
+  .sched-card { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; position: relative; transition: border-color 0.12s; border-left: 3px solid var(--line); }
+  .sched-card.planifie  { border-left-color: var(--accent); }
+  .sched-card.en_direct { border-left-color: var(--neg); }
+  .sched-card.termine   { border-left-color: var(--pos); opacity: 0.75; }
+  .sched-card.annule    { border-left-color: var(--line); opacity: 0.45; }
+
+  .scard-time { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--text2); letter-spacing: 0.06em; margin-bottom: 3px; }
+  .scard-vendeur { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+  .scard-helper { font-family: var(--font-mono); font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+  .scard-produit { font-size: 11px; color: var(--text2); margin-bottom: 6px; line-height: 1.35; }
+  .scard-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px; }
+  .scard-tag { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border-radius: 3px; background: var(--dark3); color: var(--text3); }
+
+  .scard-status { font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+  .scard-status.planifie  { color: var(--accent); }
+  .scard-status.en_direct { color: var(--neg); }
+  .scard-status.termine   { color: var(--pos); }
+  .scard-status.annule    { color: var(--text3); }
+
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .live-dot { display: inline-block; width: 6px; height: 6px; background: var(--neg); border-radius: 50%; margin-right: 5px; animation: pulse-dot 1.2s ease-in-out infinite; vertical-align: middle; }
+
+  .scard-actions { display: flex; gap: 5px; flex-wrap: wrap; }
+  .scard-btn { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 9px; border-radius: 4px; cursor: pointer; transition: all 0.12s; border: 1px solid var(--line); background: transparent; color: var(--text3); }
+  .scard-btn:hover { color: var(--ink); border-color: var(--text3); }
+  .scard-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .scard-btn.primary:hover { filter: brightness(1.08); }
+  .scard-btn.success { background: color-mix(in oklch, var(--pos), transparent 88%); border-color: var(--pos); color: var(--pos); }
+  .scard-btn.danger { color: var(--neg); border-color: color-mix(in oklch, var(--neg), transparent 55%); }
+  .scard-btn.danger:hover { background: color-mix(in oklch, var(--neg), transparent 88%); }
+
+  .scard-notes { font-size: 11px; color: var(--text3); font-style: italic; margin-bottom: 8px; border-left: 2px solid var(--line); padding-left: 8px; line-height: 1.4; }
+
+  /* ── ADD DAY BUTTON ── */
+  .add-day-btn { margin: 4px 10px 10px; background: transparent; border: 1px dashed var(--line); border-radius: var(--r-sm); color: var(--text3); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 8px; cursor: pointer; transition: all 0.12s; text-align: center; }
+  .add-day-btn:hover { border-color: var(--accent); color: var(--accent); background: color-mix(in oklch, var(--accent), transparent 94%); }
+
+  /* ── SLIDE-IN PANEL ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .overlay.open { opacity: 1; pointer-events: all; }
+  .panel { position: fixed; top: 0; right: -480px; width: 460px; max-width: 100vw; height: 100dvh; background: var(--dark2); border-left: 1px solid var(--line); z-index: 400; display: flex; flex-direction: column; transition: right 0.28s cubic-bezier(0.4,0,0.2,1); box-shadow: -8px 0 40px rgba(0,0,0,0.25); }
+  .panel.open { right: 0; }
+  .panel-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .panel-title { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; }
+  .panel-close { background: none; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); font-size: 18px; width: 34px; height: 34px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.12s; }
+  .panel-close:hover { color: var(--ink); border-color: var(--text3); }
+  .panel-body { flex: 1; overflow-y: auto; padding: 20px 22px; }
+  .panel-footer { padding: 16px 22px; border-top: 1px solid var(--line); display: flex; gap: 10px; flex-shrink: 0; }
+
+  /* ── FORM ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid.full { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field.span2 { grid-column: span 2; }
+  .field label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
+  .field input, .field select, .field textarea { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 11px 13px; color: var(--ink); font-size: 14px; font-family: var(--font-body); outline: none; transition: border-color 0.12s; width: 100%; resize: none; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
+  .field select option { background: var(--dark3); }
+  .field textarea { min-height: 72px; }
+
+  .form-section-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin: 18px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+
+  .save-btn { flex: 1; background: var(--accent); border: none; border-radius: var(--r-sm); color: #fff; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 14px; cursor: pointer; transition: filter 0.12s; }
+  .save-btn:hover { filter: brightness(1.07); }
+  .save-btn:disabled { background: var(--line); color: var(--mute); cursor: not-allowed; filter: none; }
+  .del-btn { background: transparent; border: 1px solid color-mix(in oklch, var(--neg), transparent 55%); border-radius: var(--r-sm); color: var(--neg); font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 14px 18px; cursor: pointer; transition: all 0.12s; }
+  .del-btn:hover { background: color-mix(in oklch, var(--neg), transparent 88%); }
+
+  /* ── LOADING / EMPTY ── */
+  .day-loading { text-align: center; padding: 24px 10px; }
+  .day-empty { text-align: center; padding: 16px 10px; color: var(--text3); font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.06em; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--dark2); border: 1px solid var(--pos); border-radius: var(--r-sm); padding: 11px 18px; color: var(--pos); font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.08em; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: var(--neg); color: var(--neg); }
+
+  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); }
+</style>
+</head>
+<body class="he-root he-court">
+
+<!-- HEADER -->
+<div class="header">
+  <a class="logo-wrap" href="/">
+    <span class="logo-dot"></span>
+    <div>
+      <div class="logo">Hobby Empire</div>
+      <div class="logo-sub">Planificateur</div>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a class="nav-link" href="/">Home</a>
+    <a class="nav-link" href="/break-builder.html">Break Tracker</a>
+    <a class="nav-link" href="/hub.html">Hub</a>
+    <a class="nav-link" href="/break-prep.html">Break Prep</a>
+    <a class="nav-link active" href="/planner.html">Planificateur</a>
+    <a class="nav-link" href="/team.html">Équipe</a>
+    <a class="nav-link" href="/settings.html">Settings</a>
+  </nav>
+</div>
+
+<!-- WEEK NAV -->
+<div class="week-nav">
+  <button class="week-nav-btn" onclick="shiftWeek(-1)">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Préc.
+  </button>
+  <div class="week-label" id="week-label">—</div>
+  <button class="week-nav-btn" onclick="shiftWeek(1)">
+    Suiv.
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+  <button class="today-btn" onclick="goToday()">Aujourd'hui</button>
+  <button class="add-global-btn" onclick="openPanel(null)">+ Planifier un break</button>
+</div>
+
+<!-- WEEK GRID -->
+<div class="week-wrap">
+  <div class="week-grid" id="week-grid"></div>
+</div>
+
+<div class="footer">Hobby Empire &mdash; Planificateur &copy; 2026</div>
+
+<!-- OVERLAY + PANEL -->
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <div class="panel-header">
+    <div class="panel-title" id="panel-title">Planifier un break</div>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="form-section-label">Date &amp; Heure</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="f-date" />
+      </div>
+      <div class="field">
+        <label>Heure estimée</label>
+        <input type="time" id="f-heure" />
+      </div>
+    </div>
+
+    <div class="form-section-label">Équipe</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Vendeur</label>
+        <select id="f-vendeur">
+          <option value="">Sélectionner...</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Helper</label>
+        <select id="f-helper">
+          <option value="">Aucun</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-section-label">Contenu</div>
+    <div class="form-grid">
+      <div class="field span2">
+        <label>Produit</label>
+        <input type="text" id="f-produit" placeholder="Ex: 2024-25 The Cup Hockey" />
+      </div>
+      <div class="field">
+        <label>Catégorie</label>
+        <select id="f-categorie">
+          <option value="">Sélectionner...</option>
+          <option>Wax</option>
+          <option>Repacks</option>
+          <option>Mix (Wax x Repacks)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sport / Licence</label>
+        <select id="f-sport">
+          <option value="">Sélectionner...</option>
+          <option>Hockey</option>
+          <option>Football</option>
+          <option>Basketball</option>
+          <option>Baseball</option>
+          <option>Multi sports</option>
+          <option>Pokémon</option>
+        </select>
+      </div>
+      <div class="field span2">
+        <label>Type de break</label>
+        <select id="f-typebreak">
+          <option value="">Sélectionner...</option>
+          <option>Team Random</option>
+          <option>Hybrid</option>
+          <option>Player Random</option>
+          <option>Numeral</option>
+          <option>Wheel</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-section-label">Notes</div>
+    <div class="form-grid full">
+      <div class="field">
+        <label>Notes internes</label>
+        <textarea id="f-notes" placeholder="Notes sur le break, produits spéciaux, rappels..."></textarea>
+      </div>
+    </div>
+
+    <div id="f-statut-section" style="display:none">
+      <div class="form-section-label">Statut</div>
+      <div class="form-grid">
+        <div class="field span2">
+          <label>Statut du break</label>
+          <select id="f-statut">
+            <option value="planifie">Planifié</option>
+            <option value="en_direct">🔴 En direct</option>
+            <option value="termine">✓ Terminé</option>
+            <option value="annule">Annulé</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-footer">
+    <button class="save-btn" id="save-btn" onclick="saveItem()">Enregistrer</button>
+    <button class="del-btn" id="del-btn" style="display:none" onclick="deleteItem()">Supprimer</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Constants ─────────────────────────────────────────────────────────────────
+const JOURS = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+const MOIS_SHORT = ['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
+const MOIS_LONG  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const SETTINGS_KEY = 'he_settings';
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let weekStart   = getMonday(new Date());
+let weekItems   = [];   // loaded from API
+let editingId   = null; // null = new, number = update
+
+// ── Settings ──────────────────────────────────────────────────────────────────
+function getSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return { vendeurs:['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'], helpers:['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'] };
+    return JSON.parse(raw);
+  } catch(e) { return { vendeurs:[], helpers:[] }; }
+}
+
+function populateTeamSelects() {
+  const s = getSettings();
+  const vSel = document.getElementById('f-vendeur');
+  const hSel = document.getElementById('f-helper');
+  vSel.innerHTML = '<option value="">Sélectionner...</option>';
+  hSel.innerHTML = '<option value="">Aucun</option>';
+  (s.vendeurs || []).forEach(v => { vSel.innerHTML += `<option>${v}</option>`; });
+  (s.helpers  || []).forEach(h => { hSel.innerHTML += `<option>${h}</option>`; });
+}
+
+// ── Week helpers ──────────────────────────────────────────────────────────────
+function getMonday(d) {
+  const day  = d.getDay();
+  const diff = (day === 0) ? -6 : 1 - day;
+  const m    = new Date(d);
+  m.setDate(d.getDate() + diff);
+  m.setHours(0,0,0,0);
+  return m;
+}
+
+function isoDate(d) {
+  return d.toISOString().slice(0,10);
+}
+
+function addDays(d, n) {
+  const r = new Date(d);
+  r.setDate(r.getDate() + n);
+  return r;
+}
+
+function isToday(d) {
+  const t = new Date();
+  return d.getFullYear() === t.getFullYear() && d.getMonth() === t.getMonth() && d.getDate() === t.getDate();
+}
+
+function fmtWeekLabel(start) {
+  const end = addDays(start, 6);
+  if (start.getMonth() === end.getMonth()) {
+    return `${start.getDate()} – ${end.getDate()} ${MOIS_LONG[end.getMonth()]} ${end.getFullYear()}`;
+  }
+  return `${start.getDate()} ${MOIS_SHORT[start.getMonth()]} – ${end.getDate()} ${MOIS_SHORT[end.getMonth()]} ${end.getFullYear()}`;
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function shiftWeek(n) {
+  weekStart = addDays(weekStart, n * 7);
+  loadWeek();
+}
+function goToday() {
+  weekStart = getMonday(new Date());
+  loadWeek();
+}
+
+// ── Load week ─────────────────────────────────────────────────────────────────
+async function loadWeek() {
+  document.getElementById('week-label').textContent = fmtWeekLabel(weekStart);
+  buildGrid(); // render skeleton first
+
+  const from = isoDate(weekStart);
+  const to   = isoDate(addDays(weekStart, 6));
+
+  try {
+    const res = await fetch(`/api/schedule?from=${from}&to=${to}`);
+    if (!res.ok) throw new Error('API error ' + res.status);
+    weekItems = await res.json();
+  } catch(e) {
+    showToast('Erreur de chargement : ' + e.message, true);
+    weekItems = [];
+  }
+
+  renderCards();
+}
+
+// ── Build 7-column skeleton ───────────────────────────────────────────────────
+function buildGrid() {
+  const grid = document.getElementById('week-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(weekStart, i);
+    const todayCls = isToday(d) ? ' today' : '';
+    grid.innerHTML += `
+      <div class="day-col${todayCls}" id="day-${i}">
+        <div class="day-header">
+          <div class="day-name">${JOURS[i]}</div>
+          <div class="day-number">${d.getDate()}</div>
+          <div class="day-month">${MOIS_LONG[d.getMonth()]}</div>
+        </div>
+        <div class="day-body" id="body-${i}">
+          <div class="day-loading"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="animation:spin .9s linear infinite;display:block;margin:0 auto;color:var(--line)"><path d="M21 12a9 9 0 1 1-6.2-8.6"/></svg></div>
+        </div>
+        <button class="add-day-btn" onclick="openPanel('${isoDate(d)}')">+ Planifier</button>
+      </div>`;
+  }
+}
+
+// ── Render cards for the loaded week ─────────────────────────────────────────
+function renderCards() {
+  for (let i = 0; i < 7; i++) {
+    const d     = isoDate(addDays(weekStart, i));
+    const items = weekItems.filter(x => x.date === d);
+    const body  = document.getElementById('body-' + i);
+    if (!items.length) {
+      body.innerHTML = '<div class="day-empty">Rien de prévu</div>';
+    } else {
+      body.innerHTML = items.map(item => cardHTML(item)).join('');
+    }
+  }
+}
+
+function cardHTML(item) {
+  const s      = item.statut || 'planifie';
+  const sLabel = { planifie:'Planifié', en_direct:'En direct', termine:'Terminé', annule:'Annulé' }[s] || s;
+  const liveDot = s === 'en_direct' ? '<span class="live-dot"></span>' : '';
+
+  // Action buttons based on status
+  let actions = '';
+  if (s === 'planifie') {
+    actions = `
+      <button class="scard-btn primary" onclick="quickStatus(${item.id},'en_direct',event)">▶ Démarrer</button>
+      <button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>
+      <button class="scard-btn danger" onclick="quickStatus(${item.id},'annule',event)">✕</button>`;
+  } else if (s === 'en_direct') {
+    actions = `
+      <button class="scard-btn success" onclick="quickStatus(${item.id},'termine',event)">✓ Terminer</button>
+      <button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>`;
+  } else if (s === 'termine') {
+    actions = `
+      <button class="scard-btn success" onclick="openTracker(${JSON.stringify(item).replace(/"/g,'&quot;')},event)">📊 Tracker</button>
+      <button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>`;
+  } else {
+    actions = `<button class="scard-btn" onclick="openEdit(${item.id},event)">✏️</button>`;
+  }
+
+  return `
+    <div class="sched-card ${s}" id="sc-${item.id}">
+      ${item.heureEstimee ? `<div class="scard-time">${item.heureEstimee}</div>` : ''}
+      ${item.vendeur ? `<div class="scard-vendeur">${item.vendeur}</div>` : ''}
+      ${item.helper  ? `<div class="scard-helper">+ ${item.helper}</div>` : ''}
+      ${item.produit ? `<div class="scard-produit">${item.produit}</div>` : ''}
+      ${(item.sport || item.typeBreak || item.categorie) ? `
+        <div class="scard-tags">
+          ${item.sport     ? `<span class="scard-tag">${item.sport}</span>` : ''}
+          ${item.typeBreak ? `<span class="scard-tag">${item.typeBreak}</span>` : ''}
+          ${item.categorie ? `<span class="scard-tag">${item.categorie}</span>` : ''}
+        </div>` : ''}
+      ${item.notes ? `<div class="scard-notes">${item.notes}</div>` : ''}
+      <div class="scard-status ${s}">${liveDot}${sLabel}</div>
+      <div class="scard-actions">${actions}</div>
+    </div>`;
+}
+
+// ── Quick status change ───────────────────────────────────────────────────────
+async function quickStatus(id, statut, ev) {
+  ev.stopPropagation();
+  const item = weekItems.find(x => x.id === id);
+  if (!item) return;
+  try {
+    const res = await fetch('/api/schedule', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...item, id, statut }),
+    });
+    if (!res.ok) throw new Error('Erreur API');
+    item.statut = statut;
+    renderCards();
+    showToast(statut === 'termine' ? '✓ Break terminé !' : '✓ Statut mis à jour');
+  } catch(e) {
+    showToast('Erreur : ' + e.message, true);
+  }
+}
+
+// ── Open Break Tracker pre-filled ────────────────────────────────────────────
+function openTracker(item, ev) {
+  ev.stopPropagation();
+  const p = new URLSearchParams();
+  if (item.date)     p.set('date',     item.date);
+  if (item.vendeur)  p.set('vendeur',  item.vendeur);
+  if (item.helper)   p.set('helper',   item.helper);
+  if (item.produit)  p.set('nomBreak', item.produit);
+  if (item.categorie) p.set('categorie', item.categorie);
+  if (item.sport)    p.set('sport',    item.sport);
+  if (item.typeBreak) p.set('typeBreak', item.typeBreak);
+  window.open('/break-builder.html?' + p.toString(), '_blank');
+}
+
+// ── Panel ─────────────────────────────────────────────────────────────────────
+function openPanel(date) {
+  editingId = null;
+  populateTeamSelects();
+  document.getElementById('panel-title').textContent = 'Planifier un break';
+  document.getElementById('f-date').value      = date || isoDate(new Date());
+  document.getElementById('f-heure').value     = '';
+  document.getElementById('f-vendeur').value   = '';
+  document.getElementById('f-helper').value    = '';
+  document.getElementById('f-produit').value   = '';
+  document.getElementById('f-categorie').value = '';
+  document.getElementById('f-sport').value     = '';
+  document.getElementById('f-typebreak').value = '';
+  document.getElementById('f-notes').value     = '';
+  document.getElementById('f-statut-section').style.display = 'none';
+  document.getElementById('del-btn').style.display = 'none';
+  document.getElementById('save-btn').textContent = 'Enregistrer';
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+}
+
+function openEdit(id, ev) {
+  if (ev) ev.stopPropagation();
+  const item = weekItems.find(x => x.id === id);
+  if (!item) return;
+  editingId = id;
+  populateTeamSelects();
+  document.getElementById('panel-title').textContent = 'Modifier le break';
+  document.getElementById('f-date').value      = item.date        || '';
+  document.getElementById('f-heure').value     = item.heureEstimee|| '';
+  document.getElementById('f-vendeur').value   = item.vendeur     || '';
+  document.getElementById('f-helper').value    = item.helper      || '';
+  document.getElementById('f-produit').value   = item.produit     || '';
+  document.getElementById('f-categorie').value = item.categorie   || '';
+  document.getElementById('f-sport').value     = item.sport       || '';
+  document.getElementById('f-typebreak').value = item.typeBreak   || '';
+  document.getElementById('f-notes').value     = item.notes       || '';
+  document.getElementById('f-statut').value    = item.statut      || 'planifie';
+  document.getElementById('f-statut-section').style.display = 'block';
+  document.getElementById('del-btn').style.display = 'inline-block';
+  document.getElementById('save-btn').textContent = 'Mettre à jour';
+  document.getElementById('overlay').classList.add('open');
+  document.getElementById('panel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('panel').classList.remove('open');
+}
+
+// ── Save ──────────────────────────────────────────────────────────────────────
+async function saveItem() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sauvegarde...';
+
+  const payload = {
+    date:         document.getElementById('f-date').value      || null,
+    heureEstimee: document.getElementById('f-heure').value     || null,
+    vendeur:      document.getElementById('f-vendeur').value   || null,
+    helper:       document.getElementById('f-helper').value    || null,
+    produit:      document.getElementById('f-produit').value   || null,
+    categorie:    document.getElementById('f-categorie').value || null,
+    sport:        document.getElementById('f-sport').value     || null,
+    typeBreak:    document.getElementById('f-typebreak').value || null,
+    notes:        document.getElementById('f-notes').value     || null,
+    statut:       document.getElementById('f-statut').value    || 'planifie',
+  };
+
+  if (!payload.date) {
+    showToast('La date est requise.', true);
+    btn.disabled = false;
+    btn.textContent = editingId ? 'Mettre à jour' : 'Enregistrer';
+    return;
+  }
+
+  try {
+    const isEdit = editingId !== null;
+    const res = await fetch('/api/schedule', {
+      method: isEdit ? 'PUT' : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(isEdit ? { ...payload, id: editingId } : payload),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Erreur serveur');
+    }
+    closePanel();
+    showToast(isEdit ? '✓ Break mis à jour' : '✓ Break planifié !');
+    await loadWeek(); // refresh
+  } catch(e) {
+    showToast('Erreur : ' + e.message, true);
+  }
+
+  btn.disabled = false;
+  btn.textContent = editingId ? 'Mettre à jour' : 'Enregistrer';
+}
+
+// ── Delete ────────────────────────────────────────────────────────────────────
+async function deleteItem() {
+  if (!editingId || !confirm('Supprimer ce break planifié ?')) return;
+  try {
+    const res = await fetch('/api/schedule?id=' + editingId, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Erreur API');
+    closePanel();
+    showToast('✓ Break supprimé');
+    await loadWeek();
+  } catch(e) {
+    showToast('Erreur : ' + e.message, true);
+  }
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── Keyboard ──────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePanel();
+  if (e.key === 'ArrowLeft'  && !document.getElementById('panel').classList.contains('open')) shiftWeek(-1);
+  if (e.key === 'ArrowRight' && !document.getElementById('panel').classList.contains('open')) shiftWeek(1);
+});
+
+// ── CSS animation for spinner ─────────────────────────────────────────────────
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+loadWeek();
+</script>
+</body>
+</html>

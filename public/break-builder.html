@@ -174,6 +174,7 @@
     <a class="nav-link" href="/hub.html">Hub</a>
     <a class="nav-link" href="/break-prep.html">Break Prep</a>
     <a class="nav-link" href="/releases.html">Sorties</a>
+    <a class="nav-link" href="/planner.html">Planificateur</a>
     <a class="nav-link" href="/team.html">Équipe</a>
     <a class="nav-link" href="/settings.html">Settings</a>
   </nav>
@@ -421,8 +422,24 @@ function setTab(tab) {
 // ── Init ─────────────────────────────────────────────────────────────────────
 populateDropdowns();
 
+// Pre-fill from Planner URL params (e.g. ?date=2026-05-19&vendeur=Jeremi...)
+(function prefillFromURL() {
+  const p = new URLSearchParams(window.location.search);
+  if (!p.has('date') && !p.has('vendeur')) return; // nothing to pre-fill
+  if (p.get('date'))      document.getElementById('date').value          = p.get('date');
+  if (p.get('nomBreak'))  document.getElementById('nom-break').value     = p.get('nomBreak');
+  if (p.get('categorie')) document.getElementById('categorie').value     = p.get('categorie');
+  if (p.get('sport'))     document.getElementById('sport').value         = p.get('sport');
+  if (p.get('typeBreak')) document.getElementById('type-break').value    = p.get('typeBreak');
+  if (p.get('vendeur'))   document.getElementById('vendeur').value       = p.get('vendeur');
+  if (p.get('helper'))    document.getElementById('helper').value        = p.get('helper');
+  updateSalaireSection();
+  // Clean URL without reloading
+  history.replaceState(null, '', '/break-builder.html');
+})();
+
 // ── Form helpers ─────────────────────────────────────────────────────────────
-document.getElementById('date').value = new Date().toISOString().split('T')[0];
+document.getElementById('date').value = document.getElementById('date').value || new Date().toISOString().split('T')[0];
 
 function fmt(n) {
   return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
