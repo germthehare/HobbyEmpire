@@ -371,13 +371,17 @@ const SETTING_DEFAULTS = {
 function getSettings() {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return JSON.parse(JSON.stringify(SETTING_DEFAULTS));
+    if (!raw) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(SETTING_DEFAULTS));
+      return JSON.parse(JSON.stringify(SETTING_DEFAULTS));
+    }
     const p = JSON.parse(raw);
     return {
-      vendeurs:  p.vendeurs  || [...SETTING_DEFAULTS.vendeurs],
-      helpers:   p.helpers   || [...SETTING_DEFAULTS.helpers],
+      vendeurs:  p.vendeurs?.length ? p.vendeurs : [...SETTING_DEFAULTS.vendeurs],
+      helpers:   p.helpers?.length  ? p.helpers  : [...SETTING_DEFAULTS.helpers],
       salaires:  p.salaires  || {},
       objectifs: { ...SETTING_DEFAULTS.objectifs, ...(p.objectifs || {}) },
+      membres:   p.membres   || {},
     };
   } catch(e) { return JSON.parse(JSON.stringify(SETTING_DEFAULTS)); }
 }

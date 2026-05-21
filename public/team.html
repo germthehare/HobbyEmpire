@@ -213,13 +213,28 @@ const AVATAR_COLORS = ['#E84A1D','#3B82F6','#8B5CF6','#10B981','#F59E0B','#EC489
 const MOIS_FR = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const JOURS_FR = { Monday:'Lun', Tuesday:'Mar', Wednesday:'Mer', Thursday:'Jeu', Friday:'Ven', Saturday:'Sam', Sunday:'Dim' };
 
+const TEAM_DEFAULTS = {
+  vendeurs: ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  helpers:  ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  salaires: {}, objectifs: {}, membres: {}
+};
 function getSettings() {
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return { vendeurs:[], helpers:[], salaires:{}, objectifs:{}, membres:{} };
+    if (!raw) {
+      // First visit — persist defaults so other pages stay in sync
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(TEAM_DEFAULTS));
+      return JSON.parse(JSON.stringify(TEAM_DEFAULTS));
+    }
     const p = JSON.parse(raw);
-    return { vendeurs:[], helpers:[], salaires:{}, objectifs:{}, membres:{}, ...p };
-  } catch(e) { return { vendeurs:[], helpers:[], salaires:{}, objectifs:{}, membres:{} }; }
+    return {
+      vendeurs: p.vendeurs?.length ? p.vendeurs : [...TEAM_DEFAULTS.vendeurs],
+      helpers:  p.helpers?.length  ? p.helpers  : [...TEAM_DEFAULTS.helpers],
+      salaires: p.salaires  || {},
+      objectifs: p.objectifs || {},
+      membres:  p.membres   || {},
+    };
+  } catch(e) { return JSON.parse(JSON.stringify(TEAM_DEFAULTS)); }
 }
 function saveSettings(s) {
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));

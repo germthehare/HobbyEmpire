@@ -335,6 +335,10 @@ function saveObjectif() {
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
+// Persist defaults to localStorage on first visit so other pages can read them
+if (!localStorage.getItem(SETTINGS_KEY)) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
 renderAll();
 </script>
 </body>
