@@ -298,7 +298,7 @@ let chartJours = null;
 async function loadData() {
   let data;
   try {
-    const res = await fetch('/api/sheets');
+    const res = await fetch('/api/breaks');
     if (!res.ok) throw new Error('not configured');
     data = await res.json();
     if (!Array.isArray(data) || data.length === 0) throw new Error('empty');

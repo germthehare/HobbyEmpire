@@ -120,6 +120,10 @@
   .hist-filter { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text); font-size: 13px; font-family: var(--font-body); outline: none; cursor: pointer; }
   .hist-refresh { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text3); font-size: 13px; cursor: pointer; transition: all 0.12s; }
   .hist-refresh:hover { border-color: var(--text3); color: var(--text); }
+  .export-btn { background: transparent; border: 1px solid var(--accent); border-radius: var(--r-sm); padding: 10px 16px; color: var(--accent); font-size: 11px; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.12s; }
+  .export-btn:hover { background: color-mix(in oklch, var(--accent), transparent 88%); }
+  .btn-delete { background: transparent; border: 1px solid color-mix(in oklch, var(--neg), transparent 60%); border-radius: var(--r-sm); color: var(--neg); font-size: 10px; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 14px; cursor: pointer; transition: all 0.12s; }
+  .btn-delete:hover { background: color-mix(in oklch, var(--neg), transparent 88%); }
 
   .break-card { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: 10px; overflow: hidden; transition: border-color 0.15s; }
   .break-card:hover { border-color: var(--line-strong, #333); }
@@ -365,7 +369,8 @@
         <option>Multi sports</option>
         <option>Pokémon</option>
       </select>
-      <button class="hist-refresh" onclick="loadHistory(true)">↻</button>
+      <button class="hist-refresh" onclick="loadHistory(true)" title="Rafraîchir">↻</button>
+      <button class="export-btn" onclick="exportCSV()">↓ CSV</button>
     </div>
     <div id="hist-list"><div class="hist-loading">Chargement...</div></div>
   </div>
@@ -493,10 +498,10 @@ async function submitBreak() {
 
   try {
     const isEdit = editingRowIndex !== null;
-    const body   = isEdit ? { ...payload, _rowIndex: editingRowIndex } : payload;
+    const body   = isEdit ? { ...payload, id: editingRowIndex } : payload;
     const method = isEdit ? 'PUT' : 'POST';
 
-    const res = await fetch('/api/sheets', {
+    const res = await fetch('/api/breaks', {
       method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -508,7 +513,7 @@ async function submitBreak() {
 
     successBox.textContent = isEdit
       ? '✓ Break mis à jour avec succès'
-      : '✓ Break enregistré avec succès dans Google Sheets';
+      : '✓ Break enregistré avec succès';
     successBox.style.display = 'block';
     allBreaks = []; // invalidate cache
     resetForm();
@@ -556,7 +561,7 @@ async function loadHistory(force = false) {
   if (allBreaks.length && !force) { renderHistory(allBreaks); return; }
   document.getElementById('hist-list').innerHTML = '<div class="hist-loading">Chargement...</div>';
   try {
-    const res = await fetch('/api/sheets');
+    const res = await fetch('/api/breaks');
     if (!res.ok) throw new Error('Erreur ' + res.status);
     const data = await res.json();
     allBreaks = Array.isArray(data) ? [...data].reverse() : []; // most recent first
@@ -590,7 +595,7 @@ function renderHistory(breaks) {
     const marge     = parseFloat(b.marge) || 0;
     const ventes    = parseFloat(b.ventesBrutes) || 0;
     const posNeg    = benefice >= 0 ? 'pos' : 'neg';
-    const rowIdx    = b._rowIndex ?? (allBreaks.length - 1 - i);
+    const rowIdx    = b.id;
     return `
     <div class="break-card" id="bcard-${i}">
       <div class="break-card-head" onclick="toggleCard(${i})">
@@ -641,7 +646,8 @@ function renderHistory(breaks) {
           </div>` : ''}
         </div>
         <div class="break-actions">
-          <button class="btn-edit" onclick="editBreak(${JSON.stringify(b).replace(/"/g,'&quot;')}, ${rowIdx})">✏️ Modifier ce break</button>
+          <button class="btn-edit" onclick="editBreak(${JSON.stringify(b).replace(/"/g,'&quot;')}, ${rowIdx})">✏️ Modifier</button>
+          <button class="btn-delete" onclick="deleteBreak(${rowIdx}, ${i})">🗑 Supprimer</button>
         </div>
       </div>
     </div>`;
@@ -651,6 +657,22 @@ function renderHistory(breaks) {
 function toggleCard(i) {
   const card = document.getElementById('bcard-' + i);
   card.classList.toggle('open');
+}
+
+async function deleteBreak(id, idx) {
+  if (!confirm('Supprimer ce break définitivement ?')) return;
+  try {
+    const res = await fetch('/api/breaks?id=' + id, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Erreur ' + res.status);
+    allBreaks = allBreaks.filter(b => b.id !== id);
+    filterBreaks();
+  } catch(e) {
+    alert('Erreur lors de la suppression : ' + e.message);
+  }
+}
+
+function exportCSV() {
+  window.open('/api/breaks?format=csv', '_blank');
 }
 
 function editBreak(b, rowIndex) {
