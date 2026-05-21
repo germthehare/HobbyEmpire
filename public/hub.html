@@ -75,6 +75,11 @@
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
 
+  /* PROGRESS BAR */
+  .kpi-progress { height: 3px; background: var(--line); border-radius: 2px; margin: 10px 0 8px; overflow: hidden; }
+  .kpi-progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; background: var(--accent); max-width: 100%; }
+  .kpi-progress-fill.over { background: var(--pos); }
+
   /* LOADING */
   .loading { text-align: center; padding: 48px 20px; color: var(--text3); }
   .spinner { width: 26px; height: 26px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 14px; }
@@ -119,6 +124,7 @@
     <a class="nav-link active" href="/hub.html">Hub</a>
     <a class="nav-link" href="/break-prep.html">Break Prep</a>
     <a class="nav-link" href="/releases.html">Sorties</a>
+    <a class="nav-link" href="/settings.html">Settings</a>
   </nav>
 </div>
 
@@ -185,11 +191,13 @@
     <div class="kpi">
       <div class="kpi-lbl">Revenu total</div>
       <div class="kpi-val" id="kpi-revenu">—</div>
+      <div class="kpi-progress" id="prog-revenu-wrap" style="display:none"><div class="kpi-progress-fill" id="prog-revenu" style="width:0%"></div></div>
       <div class="kpi-sub" id="kpi-revenu-sub">chargement...</div>
     </div>
     <div class="kpi">
       <div class="kpi-lbl">Bénéfice net</div>
       <div class="kpi-val" id="kpi-benefice">—</div>
+      <div class="kpi-progress" id="prog-benefice-wrap" style="display:none"><div class="kpi-progress-fill" id="prog-benefice" style="width:0%"></div></div>
       <div class="kpi-sub" id="kpi-benefice-sub">chargement...</div>
     </div>
     <div class="kpi">
@@ -333,6 +341,17 @@
 <div class="footer">Hobby Empire &mdash; Hub &copy; 2026</div>
 
 <script>
+// ── Settings ─────────────────────────────────────────────────────────────────
+const SETTINGS_KEY = 'he_settings';
+function getSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return { objectifs: { revenu: 0, benefice: 0 } };
+    const p = JSON.parse(raw);
+    return { objectifs: { revenu: 0, benefice: 0, ...(p.objectifs || {}) }, ...p };
+  } catch(e) { return { objectifs: { revenu: 0, benefice: 0 } }; }
+}
+
 const JOURS_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const JOURS_FR = { Monday:'Lundi', Tuesday:'Mardi', Wednesday:'Mercredi', Thursday:'Jeudi', Friday:'Vendredi', Saturday:'Samedi', Sunday:'Dimanche' };
 const MOIS_FR = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
@@ -442,13 +461,38 @@ function renderAll(breaks) {
   const margeMoy = totalRevenu > 0 ? (totalBenefice / totalRevenu * 100) : 0;
 
   document.getElementById('kpi-revenu').textContent = fmt(totalRevenu);
-  document.getElementById('kpi-revenu-sub').textContent = total + ' breaks au total';
   document.getElementById('kpi-benefice').textContent = fmt(totalBenefice);
-  document.getElementById('kpi-benefice-sub').textContent = pct(margeMoy) + ' de marge';
   document.getElementById('kpi-breaks').textContent = total;
   document.getElementById('kpi-breaks-sub').textContent = 'breaks enregistrés';
   document.getElementById('kpi-marge').textContent = pct(margeMoy);
   document.getElementById('kpi-marge-sub').textContent = 'marge moyenne';
+
+  // Progress bars vs monthly objectives
+  const s = getSettings();
+  const objRevenu   = parseFloat(s.objectifs?.revenu)   || 0;
+  const objBenefice = parseFloat(s.objectifs?.benefice) || 0;
+
+  if (objRevenu > 0) {
+    const pctRev = Math.min(totalRevenu / objRevenu * 100, 100);
+    document.getElementById('prog-revenu-wrap').style.display = 'block';
+    document.getElementById('prog-revenu').style.width = pctRev + '%';
+    document.getElementById('prog-revenu').className = 'kpi-progress-fill' + (pctRev >= 100 ? ' over' : '');
+    document.getElementById('kpi-revenu-sub').textContent = fmt(totalRevenu) + ' / ' + fmt(objRevenu) + ' objectif (' + pctRev.toFixed(0) + '%)';
+  } else {
+    document.getElementById('prog-revenu-wrap').style.display = 'none';
+    document.getElementById('kpi-revenu-sub').textContent = total + ' breaks au total';
+  }
+
+  if (objBenefice > 0) {
+    const pctBen = Math.min(totalBenefice / objBenefice * 100, 100);
+    document.getElementById('prog-benefice-wrap').style.display = 'block';
+    document.getElementById('prog-benefice').style.width = pctBen + '%';
+    document.getElementById('prog-benefice').className = 'kpi-progress-fill' + (pctBen >= 100 ? ' over' : '');
+    document.getElementById('kpi-benefice-sub').textContent = fmt(totalBenefice) + ' / ' + fmt(objBenefice) + ' objectif (' + pctBen.toFixed(0) + '%)';
+  } else {
+    document.getElementById('prog-benefice-wrap').style.display = 'none';
+    document.getElementById('kpi-benefice-sub').textContent = pct(margeMoy) + ' de marge';
+  }
 
   renderChartJours(breaks);
   renderHoraire(breaks);

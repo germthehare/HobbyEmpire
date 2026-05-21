@@ -174,6 +174,7 @@
     <a class="nav-link" href="/hub.html">Hub</a>
     <a class="nav-link" href="/break-prep.html">Break Prep</a>
     <a class="nav-link" href="/releases.html">Sorties</a>
+    <a class="nav-link" href="/settings.html">Settings</a>
   </nav>
 </div>
 
@@ -214,26 +215,12 @@
             <label>Vendeur</label>
             <select id="vendeur" onchange="updateSalaireSection()">
               <option value="">Sélectionner...</option>
-              <option>Charles</option>
-              <option>Chuck</option>
-              <option>Germain</option>
-              <option>Jeremi</option>
-              <option>Manu</option>
-              <option>Phobe</option>
-              <option>Sacha</option>
             </select>
           </div>
           <div class="field">
             <label>Helper</label>
             <select id="helper" onchange="updateSalaireSection()">
               <option value="">Aucun</option>
-              <option>Charles</option>
-              <option>Chuck</option>
-              <option>Germain</option>
-              <option>Jeremi</option>
-              <option>Manu</option>
-              <option>Phobe</option>
-              <option>Sacha</option>
             </select>
           </div>
         </div>
@@ -354,13 +341,6 @@
       <input class="hist-search" id="hist-search" type="text" placeholder="Rechercher un break..." oninput="filterBreaks()" />
       <select class="hist-filter" id="hist-filter-vendeur" onchange="filterBreaks()">
         <option value="">Tous les vendeurs</option>
-        <option>Charles</option>
-        <option>Chuck</option>
-        <option>Germain</option>
-        <option>Jeremi</option>
-        <option>Manu</option>
-        <option>Phobe</option>
-        <option>Sacha</option>
       </select>
       <select class="hist-filter" id="hist-filter-sport" onchange="filterBreaks()">
         <option value="">Tous les sports</option>
@@ -379,6 +359,47 @@
 <div class="footer">Hobby Empire &mdash; Break Tracker</div>
 
 <script>
+// ── Settings ─────────────────────────────────────────────────────────────────
+const SETTINGS_KEY = 'he_settings';
+const SETTING_DEFAULTS = {
+  vendeurs: ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  helpers:  ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  salaires: {},
+  objectifs: { revenu: 0, benefice: 0 }
+};
+function getSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(SETTING_DEFAULTS));
+    const p = JSON.parse(raw);
+    return {
+      vendeurs:  p.vendeurs  || [...SETTING_DEFAULTS.vendeurs],
+      helpers:   p.helpers   || [...SETTING_DEFAULTS.helpers],
+      salaires:  p.salaires  || {},
+      objectifs: { ...SETTING_DEFAULTS.objectifs, ...(p.objectifs || {}) },
+    };
+  } catch(e) { return JSON.parse(JSON.stringify(SETTING_DEFAULTS)); }
+}
+
+function populateDropdowns() {
+  const s = getSettings();
+
+  // Form dropdowns
+  const vendeurSel = document.getElementById('vendeur');
+  const helperSel  = document.getElementById('helper');
+  vendeurSel.innerHTML = '<option value="">Sélectionner...</option>';
+  helperSel.innerHTML  = '<option value="">Aucun</option>';
+  s.vendeurs.forEach(v => { vendeurSel.innerHTML += `<option>${v}</option>`; });
+  s.helpers.forEach(h => {
+    helperSel.innerHTML  += `<option>${h}</option>`;
+  });
+
+  // Historique filter dropdown
+  const histSel = document.getElementById('hist-filter-vendeur');
+  histSel.innerHTML = '<option value="">Tous les vendeurs</option>';
+  s.vendeurs.forEach(v => { histSel.innerHTML += `<option>${v}</option>`; });
+}
+
 // ── State ────────────────────────────────────────────────────────────────────
 let allBreaks = [];
 let editingRowIndex = null;
@@ -391,6 +412,9 @@ function setTab(tab) {
   document.getElementById('tab-history').classList.toggle('active', tab === 'history');
   if (tab === 'history') loadHistory();
 }
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+populateDropdowns();
 
 // ── Form helpers ─────────────────────────────────────────────────────────────
 document.getElementById('date').value = new Date().toISOString().split('T')[0];
@@ -405,12 +429,26 @@ function updateSalaireSection() {
   const helper  = document.getElementById('helper').value;
   const section     = document.getElementById('salaire-section');
   const helperWrap  = document.getElementById('salaire-helper-wrap');
+  const s = getSettings();
+
   section.style.display = vendeur ? 'block' : 'none';
-  if (!vendeur) document.getElementById('salaire-vendeur').value = '';
-  else document.getElementById('salaire-vendeur-lbl').textContent = 'Salaire / heure — ' + vendeur + ' ($)';
+  if (!vendeur) {
+    document.getElementById('salaire-vendeur').value = '';
+  } else {
+    document.getElementById('salaire-vendeur-lbl').textContent = 'Salaire / heure — ' + vendeur + ' ($)';
+    // Auto-fill from settings if field is currently empty (don't overwrite manual edits)
+    const salaireInput = document.getElementById('salaire-vendeur');
+    if (!salaireInput.value && s.salaires[vendeur]) {
+      salaireInput.value = s.salaires[vendeur];
+    }
+  }
   if (helper) {
     helperWrap.style.display = 'block';
     document.getElementById('salaire-helper-lbl').textContent = 'Salaire / heure — ' + helper + ' ($)';
+    const helperInput = document.getElementById('salaire-helper');
+    if (!helperInput.value && s.salaires[helper]) {
+      helperInput.value = s.salaires[helper];
+    }
   } else {
     helperWrap.style.display = 'none';
     document.getElementById('salaire-helper').value = '';
