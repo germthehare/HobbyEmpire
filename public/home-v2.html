@@ -859,10 +859,10 @@ body {
 }
 .meneur-row {
   display: grid;
-  grid-template-columns: 30px 1fr auto;
+  grid-template-columns: 26px 36px 1fr auto;
   align-items: center;
   gap: 10px;
-  padding: 9px 14px;
+  padding: 8px 14px;
   font-size: 13px;
 }
 .meneur-row + .meneur-row { border-top: 1px solid var(--line); }
@@ -871,6 +871,14 @@ body {
   font-variant-numeric: tabular-nums;
   color: var(--ink-3);
   text-align: center;
+}
+.meneur-headshot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  object-fit: cover;
+  object-position: center top;
+  border: 1px solid var(--line);
 }
 .meneur-row.top .meneur-rank { color: var(--accent); }
 .meneur-name { font-weight: 700; }
@@ -1790,20 +1798,23 @@ function renderMeneurs() {
   if (!players.length) { el.innerHTML = notAvailableHTML('Données non disponibles'); return; }
 
   const top10 = players.slice(0, 10);
-  const col = arr => arr.map((p, i) => {
-    const rank = arr === top10.slice(0,5) ? i + 1 : i + 6;
+  const renderRow = (p, rank) => {
     const isTop = rank <= 3;
     const first = (p.firstName?.default || '').slice(0,1);
     const last  = p.lastName?.default || p.firstName?.default || '';
     const team  = typeof p.teamAbbrev === 'object' ? (p.teamAbbrev?.default || '') : (p.teamAbbrev || '');
     const pos   = p.position || '';
+    const photo = p.headshot ? `<img class="meneur-headshot" src="${escHtml(p.headshot)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : `<div class="meneur-headshot"></div>`;
     return `<div class="meneur-row${isTop?' top':''}">
       <div class="meneur-rank">${rank}</div>
+      ${photo}
       <div><div class="meneur-name">${escHtml(first)}. ${escHtml(last)}</div><div class="meneur-team">${escHtml(team)}${pos?' · '+escHtml(pos):''}</div></div>
       <div class="meneur-stat">${p.value || 0}</div>
     </div>`;
-  }).join('');
-  el.innerHTML = `<div class="meneurs-col">${col(top10.slice(0,5))}</div><div class="meneurs-col">${col(top10.slice(5,10))}</div>`;
+  };
+  const colA = top10.slice(0, 5).map((p, i) => renderRow(p, i + 1)).join('');
+  const colB = top10.slice(5, 10).map((p, i) => renderRow(p, i + 6)).join('');
+  el.innerHTML = `<div class="meneurs-col">${colA}</div><div class="meneurs-col">${colB}</div>`;
 }
 
 /* ── Bracket (4 colonnes par playoffRound) */
