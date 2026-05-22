@@ -4,796 +4,1160 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hub — Speloosh</title>
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="/speloosh-shell.css">
 <script src="/auth-guard.js" data-role="admin"></script>
-<script src="/lang-toggle.js"></script>
-<script src="/speloosh-shell.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  /* Aliases : on garde les anciens noms, on les pointe vers les tokens Court. */
-  .he-court {
-    --gold:  var(--accent);
-    --gold2: color-mix(in oklch, var(--accent), white 12%);
-    --gold3: color-mix(in oklch, var(--accent), white 22%);
-    --dark:  var(--bg);
-    --dark2: var(--bg-3);
-    --dark3: var(--bg-2);
-    --dark4: var(--line);
-    --text:  var(--ink);
-    --text2: var(--ink-2);
-    --text3: var(--ink-3);
-    --red:   var(--neg);
-    --green: var(--pos);
-  }
+/* ════════════════════ Grift ════════════════════ */
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Regular.woff2')   format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-SemiBold.woff2')  format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Bold.woff2')      format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-ExtraBold.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Black.woff2')     format('woff2'); font-weight: 900; font-style: normal; font-display: swap; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--dark); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; }
+a { color: inherit; text-decoration: none; }
 
-  .header { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
-  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 2px; align-self: center; }
-  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.01em; line-height: 1; color: var(--ink); }
-  .logo-sub { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-top: 2px; }
-  .header-nav { display: flex; gap: 4px; }
-  .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
-  .nav-link:hover { color: var(--text); background: var(--bg-2); }
-  .nav-link.active { color: var(--ink); background: var(--bg-2); }
-
-  .page-head { padding: 32px 24px 24px; max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-  .page-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.02em; line-height: 0.92; color: var(--text); }
-  .refresh-btn { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); background: transparent; border: 1px solid var(--line-strong); border-radius: var(--r-sm); padding: 10px 14px; cursor: pointer; transition: all 0.12s; }
-  .refresh-btn:hover { background: var(--bg-2); }
-
-  .main { padding: 0 24px 60px; max-width: 1100px; margin: 0 auto; }
-
-  /* KPI STRIP */
-  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-  @media (max-width: 700px) { .kpi-strip { grid-template-columns: repeat(2,1fr); } }
-  .kpi { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 20px 22px; box-shadow: var(--shadow-card); }
-  .kpi-lbl { font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
-  .kpi-val { font-family: var(--font-display); font-variant-numeric: tabular-nums; font-size: 32px; font-weight: 800; letter-spacing: -0.02em; line-height: 0.92; color: var(--ink); }
-  .kpi-sub { font-family: var(--font-mono); font-size: 10px; color: var(--mute); margin-top: 6px; letter-spacing: 0.1em; text-transform: uppercase; }
-
-  /* SECTIONS */
-  .section { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
-  .section-head { padding: 16px 20px; border-bottom: 1px solid var(--line); }
-  .section-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
-  .section-body { padding: 20px; }
-
-  /* TABLE */
-  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .data-table th { text-align: left; padding: 10px 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); border-bottom: 1px solid var(--line); font-weight: 600; white-space: nowrap; background: var(--bg-2); }
-  .data-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); color: var(--text); }
-  .data-table tr:last-child td { border-bottom: none; }
-  .data-table td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; }
-  .data-table td.green { color: var(--pos); }
-  .data-table td.gold { color: var(--ink); font-weight: 700; }
-  .data-table td.dim { color: var(--text3); }
-
-  /* CHART */
-  .chart-wrap { position: relative; height: 220px; }
-
-  /* TWO COL */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
-
-  /* PROGRESS BAR */
-  .kpi-progress { height: 3px; background: var(--line); border-radius: 2px; margin: 10px 0 8px; overflow: hidden; }
-  .kpi-progress-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; background: var(--accent); max-width: 100%; }
-  .kpi-progress-fill.over { background: var(--pos); }
-
-  /* LOADING */
-  .loading { text-align: center; padding: 48px 20px; color: var(--text3); }
-  .spinner { width: 26px; height: 26px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 14px; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; font-family: var(--font-mono); letter-spacing: 0.05em; }
-
-  .config-banner { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-md); padding: 20px 24px; margin-bottom: 20px; font-size: 13px; color: var(--text3); line-height: 1.7; }
-  .config-banner strong { color: var(--accent); }
-  .config-banner code { background: var(--bg-3); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; font-size: 12px; color: var(--text2); font-family: var(--font-mono); }
-
-  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
-
-  /* FILTER BAR */
-  .filter-bar { padding: 0 24px 20px; max-width: 1100px; margin: 0 auto; }
-  .filter-inner { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .filter-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); white-space: nowrap; }
-  .filter-group { display: flex; align-items: center; gap: 8px; }
-  .filter-select { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--ink); font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; padding: 7px 10px; cursor: pointer; transition: border-color 0.12s; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235C5650' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 26px; min-width: 120px; }
-  .filter-select:focus { outline: none; border-color: var(--accent); }
-  .filter-select.active { border-color: var(--accent); color: var(--accent); }
-  .filter-divider { width: 1px; height: 22px; background: var(--line); flex-shrink: 0; }
-  .filter-badge { font-family: var(--font-mono); font-size: 10px; color: var(--text3); white-space: nowrap; margin-left: auto; }
-  .filter-badge strong { color: var(--ink); }
-  .reset-btn { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 6px 10px; cursor: pointer; transition: all 0.12s; white-space: nowrap; }
-  .reset-btn:hover { color: var(--ink); border-color: var(--line-strong); background: var(--bg-2); }
-  .reset-btn.has-filter { color: var(--accent); border-color: var(--accent); }
-</style>
-</head>
-<body class="he-root he-court"
-  data-sp-breadcrumb="■ SPELOOSH › ANALYTICS › HUB"
-  data-sp-cert="SPLSH·26·05·HUB003"
-  data-sp-meta="ANALYTICS · CHARTS · KPI">
-
-<div class="header">
-  <a class="logo-wrap" href="/">
-    <span class="logo-dot"></span>
-    <div>
-      <div class="logo">Speloosh</div>
-      <div class="logo-sub">Hub</div>
-    </div>
-  </a>
-  <nav class="header-nav">
-    <a class="nav-link" href="/">Home</a>
-    <a class="nav-link" href="/break-builder.html">Break Tracker</a>
-    <a class="nav-link active" href="/hub.html">Hub</a>
-    <a class="nav-link" href="/break-prep.html">Break Prep</a>
-    <a class="nav-link" href="/releases.html">Sorties</a>
-    <a class="nav-link" href="/planner.html">Planificateur</a>
-    <a class="nav-link" href="/team.html">Équipe</a>
-    <a class="nav-link" href="/settings.html">Settings</a>
-  </nav>
-</div>
-
-<div class="page-head">
-  <h1 class="page-title">Hub — Stats</h1>
-  <button class="refresh-btn" onclick="loadData()">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square" style="vertical-align:-2px;margin-right:6px"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
-    Actualiser
-  </button>
-</div>
-
-<!-- FILTER BAR -->
-<div class="filter-bar">
-  <div class="filter-inner">
-    <span class="filter-label">Filtrer par</span>
-    <div class="filter-group">
-      <select class="filter-select" id="filter-annee" onchange="onFilterChange()">
-        <option value="">Toutes les années</option>
-      </select>
-    </div>
-    <div class="filter-divider"></div>
-    <div class="filter-group">
-      <select class="filter-select" id="filter-mois" onchange="onFilterChange()">
-        <option value="">Tous les mois</option>
-        <option value="1">Janvier</option>
-        <option value="2">Février</option>
-        <option value="3">Mars</option>
-        <option value="4">Avril</option>
-        <option value="5">Mai</option>
-        <option value="6">Juin</option>
-        <option value="7">Juillet</option>
-        <option value="8">Août</option>
-        <option value="9">Septembre</option>
-        <option value="10">Octobre</option>
-        <option value="11">Novembre</option>
-        <option value="12">Décembre</option>
-      </select>
-    </div>
-    <div class="filter-divider"></div>
-    <div class="filter-group">
-      <select class="filter-select" id="filter-trimestre" onchange="onFilterChange()">
-        <option value="">Tous les trimestres</option>
-        <option value="1">T1 — Jan · Fév · Mar</option>
-        <option value="2">T2 — Avr · Mai · Jun</option>
-        <option value="3">T3 — Jul · Aoû · Sep</option>
-        <option value="4">T4 — Oct · Nov · Déc</option>
-      </select>
-    </div>
-    <button class="reset-btn" id="reset-btn" onclick="resetFilters()">✕ Réinitialiser</button>
-    <span class="filter-badge" id="filter-badge"></span>
-  </div>
-</div>
-
-<div class="main">
-
-  <div id="config-banner" class="config-banner" style="display:none">
-    <strong>Configuration requise</strong><br>
-    Pour connecter le Hub à votre Google Sheets, ajoutez l'URL de votre Apps Script Web App dans <code>window.SHEETS_READ_URL</code>.<br>
-    En attendant, les données de démonstration sont affichées.
-  </div>
-
-  <!-- KPIs -->
-  <div class="kpi-strip">
-    <div class="kpi">
-      <div class="kpi-lbl">Revenu total</div>
-      <div class="kpi-val" id="kpi-revenu">—</div>
-      <div class="kpi-progress" id="prog-revenu-wrap" style="display:none"><div class="kpi-progress-fill" id="prog-revenu" style="width:0%"></div></div>
-      <div class="kpi-sub" id="kpi-revenu-sub">chargement...</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-lbl">Bénéfice net</div>
-      <div class="kpi-val" id="kpi-benefice">—</div>
-      <div class="kpi-progress" id="prog-benefice-wrap" style="display:none"><div class="kpi-progress-fill" id="prog-benefice" style="width:0%"></div></div>
-      <div class="kpi-sub" id="kpi-benefice-sub">chargement...</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-lbl">Nb breaks</div>
-      <div class="kpi-val" id="kpi-breaks">—</div>
-      <div class="kpi-sub" id="kpi-breaks-sub">chargement...</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-lbl">Marge moy.</div>
-      <div class="kpi-val" id="kpi-marge">—</div>
-      <div class="kpi-sub" id="kpi-marge-sub">chargement...</div>
-    </div>
-  </div>
-
-  <!-- CHART + PAR PLAGE -->
-  <div class="two-col">
-    <div class="section">
-      <div class="section-head"><span class="section-label">Revenu par jour</span></div>
-      <div class="section-body">
-        <div class="chart-wrap"><canvas id="chart-jours"></canvas></div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="section-head"><span class="section-label">Par plage horaire</span></div>
-      <div class="section-body">
-        <table class="data-table">
-          <thead><tr><th>Plage</th><th>Heure</th><th>Breaks</th><th>Revenu</th><th>Bénéfice</th></tr></thead>
-          <tbody id="table-horaire">
-            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAR JOUR DE LA SEMAINE -->
-  <div class="section" style="margin-bottom:16px">
-    <div class="section-head"><span class="section-label">Par jour de la semaine</span></div>
-    <div class="section-body">
-      <table class="data-table">
-        <thead><tr><th>Jour</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Bén. moyen</th><th>Rev / heure moy.</th><th>Marge moy.</th><th>Meilleur vendeur</th></tr></thead>
-        <tbody id="table-jours">
-          <tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- PAR MOIS -->
-  <div class="section" style="margin-bottom:16px">
-    <div class="section-head"><span class="section-label">Par mois</span></div>
-    <div class="section-body">
-      <table class="data-table">
-        <thead><tr><th>Mois</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Bén. moyen</th><th>Marge moy.</th></tr></thead>
-        <tbody id="table-mois">
-          <tr><td colspan="6" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- STATS ÉQUIPE -->
-  <div class="section" style="margin-bottom:16px">
-    <div class="section-head"><span class="section-label">Vendeurs</span></div>
-    <div class="section-body">
-      <table class="data-table">
-        <thead><tr><th>Vendeur</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Rev / heure moy.</th><th>Temps moy. (min)</th><th>Marge moy.</th><th>Sport dominant</th></tr></thead>
-        <tbody id="table-vendeurs">
-          <tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="two-col">
-    <div class="section">
-      <div class="section-head"><span class="section-label">Helpers</span></div>
-      <div class="section-body">
-        <table class="data-table">
-          <thead><tr><th>Helper</th><th>Breaks aidés</th><th>Revenu total</th><th>Marge moy.</th></tr></thead>
-          <tbody id="table-helpers">
-            <tr><td colspan="4" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="section">
-      <div class="section-head"><span class="section-label">Duos Vendeur + Helper</span></div>
-      <div class="section-body">
-        <table class="data-table">
-          <thead><tr><th>Vendeur</th><th>Helper</th><th>Breaks</th><th>Revenu total</th><th>Marge moy.</th></tr></thead>
-          <tbody id="table-duos">
-            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAR TYPE DE BREAK -->
-  <div class="section" style="margin-bottom:16px">
-    <div class="section-head"><span class="section-label">Par type de break</span></div>
-    <div class="section-body">
-      <table class="data-table">
-        <thead><tr><th>Type</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Bén. moyen</th><th>Rev / heure moy.</th><th>Marge moy.</th></tr></thead>
-        <tbody id="table-typebreak">
-          <tr><td colspan="7" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- PAR CATÉGORIE + PAR SPORT -->
-  <div class="two-col">
-    <div class="section">
-      <div class="section-head"><span class="section-label">Par catégorie</span></div>
-      <div class="section-body">
-        <table class="data-table">
-          <thead><tr><th>Catégorie</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Marge</th></tr></thead>
-          <tbody id="table-cat">
-            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="section">
-      <div class="section-head"><span class="section-label">Par sport / licence</span></div>
-      <div class="section-body">
-        <table class="data-table">
-          <thead><tr><th>Sport</th><th>Breaks</th><th>Revenu total</th><th>Bénéfice total</th><th>Marge</th></tr></thead>
-          <tbody id="table-sport">
-            <tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Chargement...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<div class="footer">Speloosh &mdash; Hub &copy; 2026</div>
-
-<script>
-// ── Settings ─────────────────────────────────────────────────────────────────
-const SETTINGS_KEY = 'he_settings';
-function getSettings() {
-  try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return { objectifs: { revenu: 0, benefice: 0 } };
-    const p = JSON.parse(raw);
-    return { objectifs: { revenu: 0, benefice: 0, ...(p.objectifs || {}) }, ...p };
-  } catch(e) { return { objectifs: { revenu: 0, benefice: 0 } }; }
+:root {
+  --bg:          oklch(96.5% 0.012 75);
+  --bg-2:        oklch(93%   0.016 75);
+  --bg-3:        oklch(99%   0.005 80);
+  --bg-ink:      oklch(16%   0.018 260);
+  --line:        oklch(86%   0.014 75);
+  --line-strong: oklch(70%   0.02  75);
+  --ink:         oklch(16%   0.018 260);
+  --ink-2:       oklch(32%   0.014 260);
+  --ink-3:       oklch(50%   0.012 260);
+  --mute:        oklch(62%   0.01  75);
+  --accent:      oklch(72%   0.13  200);
+  --accent-2:    oklch(65%   0.14  195);
+  --accent-ink:  oklch(16%   0.018 260);
+  --pos:         oklch(54%   0.16  152);
+  --neg:         oklch(56%   0.21  22);
+  --warn:        oklch(72%   0.16  80);
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+  --foil: linear-gradient(110deg,
+    transparent 0%,
+    color-mix(in oklch, oklch(82% 0.14 320), transparent 60%) 18%,
+    color-mix(in oklch, oklch(80% 0.12 200), transparent 55%) 35%,
+    color-mix(in oklch, oklch(86% 0.14 100), transparent 60%) 52%,
+    color-mix(in oklch, oklch(78% 0.14 30),  transparent 50%) 70%,
+    transparent 100%);
 }
 
-const JOURS_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-const JOURS_FR = { Monday:'Lundi', Tuesday:'Mardi', Wednesday:'Mercredi', Thursday:'Jeudi', Friday:'Vendredi', Saturday:'Samedi', Sunday:'Dimanche' };
+body {
+  font-family: 'Grift', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ════════════════════ Sidebar ════════════════════ */
+.sb {
+  width: 232px; min-width: 232px; height: 100vh;
+  position: sticky; top: 0;
+  background: var(--bg-3); border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; z-index: 200;
+  overflow-y: auto; scrollbar-width: none;
+}
+.sb::-webkit-scrollbar { display: none; }
+.sb-section { padding: 14px 14px 4px; }
+.sb-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+  position: relative;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-first { color: var(--accent); font-weight: 700; }
+.sb-item:hover { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active::before {
+  content: ''; position: absolute; left: -14px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.sb-spacer { flex: 1; min-height: 12px; }
+.sb-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-top: 1px solid var(--line);
+}
+.sb-avatar {
+  width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: var(--bg-ink); color: oklch(85% 0.01 75);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.sb-uname { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; line-height: 1.2; }
+.sb-ustatus {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9px; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px;
+}
+.sb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pos); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.3; } }
+
+/* ════════════════════ Main ════════════════════ */
+.main {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Cert strips */
+.cert {
+  background: var(--bg-ink);
+  padding: 10px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; position: relative;
+}
+.cert-top { border-bottom: 3px solid var(--accent); }
+.cert-top::after, .cert-bot::before {
+  content: ''; position: absolute; left: 0; right: 0; height: 3px;
+  background: var(--foil); mix-blend-mode: screen;
+  opacity: 0.65; pointer-events: none;
+}
+.cert-top::after { bottom: -3px; }
+.cert-bot { margin-top: auto; border-top: 3px solid var(--accent); }
+.cert-bot::before { top: -3px; }
+.cert-bc {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: oklch(50% 0.01 75);
+}
+.cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
+.cert-bc .sep { opacity: 0.5; }
+.cert-splash {
+  height: 56px; width: auto; display: block;
+  margin: -14px 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+}
+.cert-right {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--accent);
+}
+.cert-meta { display: flex; }
+.cert-pill {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+.cert-pill + .cert-pill::before { content: ' · '; white-space: pre; }
+.cert-id {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+
+/* Toolbar */
+.toolbar {
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
+}
+.toolbar-left { display: flex; align-items: center; gap: 14px; }
+.tb-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.holo { height: 2px; width: 44px; background: var(--foil); border-radius: 1px; }
+.tb-sub {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.toolbar-actions { display: flex; align-items: center; gap: 8px; }
+
+.month-select {
+  font-family: inherit;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.06em;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 8px 28px 8px 12px;
+  color: var(--ink);
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23596' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.month-select:focus { border-color: var(--accent); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: filter .12s, background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.btn-ghost { background: var(--bg-3); color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { background: var(--bg-2); }
+.btn-dark { background: var(--ink); color: var(--bg); }
+.btn-dark:hover { filter: brightness(1.15); }
+
+/* ════════════════════ Page ════════════════════ */
+.page {
+  padding: 28px 36px 48px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+
+/* Card */
+.card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.card.accent::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.card-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px; margin-bottom: 14px;
+}
+.card-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+.card-title {
+  font-size: 22px; font-weight: 700;
+  letter-spacing: -0.018em; line-height: 1;
+  color: var(--ink);
+}
+.card-title .first { color: var(--accent); }
+.card-title .hl    { color: var(--accent); font-weight: 700; }
+.card-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.card-badge .ct {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+.card-link {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* KPI grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.kpi-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px 20px 16px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card.primary::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.kpi-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.kpi-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.delta-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.delta-chip.pos { color: var(--pos); background: color-mix(in oklch, var(--pos), transparent 88%); }
+.delta-chip.neg { color: var(--neg); background: color-mix(in oklch, var(--neg), transparent 88%); }
+.kpi-value-row {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 12px;
+}
+.kpi-value {
+  font-size: 44px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.92;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.kpi-suffix {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.spark-bars {
+  display: flex; align-items: flex-end; gap: 4px;
+  height: 28px;
+}
+.spark-bars rect, .spark-bars .b {
+  flex: 1;
+  background: var(--ink-3);
+  opacity: 0.32;
+  border-radius: 2px 2px 0 0;
+}
+.kpi-card.primary .spark-bars .b { background: var(--accent); opacity: 0.95; }
+
+/* Grid layouts */
+.split-1-4-1 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+}
+
+/* Chart bar (Revenu par jour) */
+.chart-wrap {
+  height: 240px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: end;
+  gap: 14px;
+  padding-top: 24px;
+  position: relative;
+}
+.chart-col {
+  display: flex; flex-direction: column; align-items: center;
+}
+.chart-bar {
+  width: 100%;
+  max-width: 84px;
+  background: var(--ink-2);
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  min-height: 0;
+}
+.chart-col.hl .chart-bar {
+  background: var(--accent);
+}
+.chart-col.zero .chart-bar {
+  background: var(--bg-2);
+  border: 1px dashed var(--line);
+  height: 0 !important;
+  min-height: 0;
+}
+.chart-bar-val {
+  position: absolute; top: -22px;
+  left: 50%; transform: translateX(-50%);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.chart-col.hl .chart-bar-val { color: var(--accent); }
+.chart-col.zero .chart-bar-val { color: var(--mute); }
+.chart-axis {
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  border-top: 1px solid var(--line);
+}
+.chart-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+  margin-top: 8px;
+}
+.chart-label {
+  text-align: center;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Pills filter */
+.pills {
+  display: inline-flex;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 3px;
+}
+.pill {
+  padding: 6px 12px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border-radius: 4px;
+  transition: background .12s, color .12s;
+}
+.pill:hover { color: var(--ink); }
+.pill.active { background: var(--ink); color: var(--bg); }
+
+/* DataTable */
+.dt { width: 100%; border-collapse: collapse; }
+.dt thead th {
+  background: var(--bg-2);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 10px 14px;
+  text-align: left;
+}
+.dt thead th.num { text-align: right; }
+.dt td {
+  padding: 11px 14px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.dt tbody tr:first-child td { border-top: 0; }
+.dt td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.dt td.mono {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.dt td.bold { font-weight: 700; }
+.dt td.mute { color: var(--ink-3); }
+.dt td.pos { color: var(--pos); }
+.dt td.accent { color: var(--accent); }
+
+/* Vendeur avatar */
+.av {
+  display: inline-flex; align-items: center; gap: 12px;
+}
+.av-circle {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--bg-ink);
+  color: oklch(96% 0.008 80);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Progress bar (Part) */
+.part-bar {
+  display: inline-block;
+  width: 120px; height: 6px;
+  background: var(--bg-2);
+  border-radius: 3px;
+  position: relative;
+  vertical-align: middle;
+}
+.part-bar .fill {
+  position: absolute;
+  top: 0; left: 0; height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+@media (max-width: 1100px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .split-1-4-1 { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .sb { display: none; }
+  body { display: block; }
+  .page { padding: 24px 18px 36px; }
+  .toolbar { padding: 12px 18px; }
+  .cert { padding: 10px 18px; }
+  .kpi-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════ SIDEBAR ═════════════════════ -->
+<aside class="sb" aria-label="Navigation principale">
+  <div class="sb-section" style="padding-top:22px">
+    <a class="sb-item" href="/"><span><span class="sb-first">H</span>ome</span></a>
+    <a class="sb-item" href="/break-builder.html"><span><span class="sb-first">B</span>reak Tracker</span></a>
+    <a class="sb-item is-active" href="/hub.html"><span><span class="sb-first">H</span>ub</span></a>
+    <a class="sb-item" href="/break-prep.html"><span><span class="sb-first">B</span>reak Prep</span></a>
+    <a class="sb-item" href="/planner.html"><span><span class="sb-first">P</span>lanificateur</span></a>
+    <a class="sb-item" href="/releases.html"><span><span class="sb-first">S</span>orties</span></a>
+    <a class="sb-item" href="/team.html"><span><span class="sb-first">É</span>quipe</span></a>
+    <a class="sb-item" href="/settings.html"><span><span class="sb-first">S</span>ettings</span></a>
+  </div>
+  <div class="sb-spacer"></div>
+  <div class="sb-user">
+    <div class="sb-avatar">GL</div>
+    <div>
+      <div class="sb-uname">Germain</div>
+      <div class="sb-ustatus"><span class="sb-dot"></span>En ligne</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═════════════════════ MAIN ═════════════════════ -->
+<div class="main">
+
+  <!-- Top cert strip -->
+  <div class="cert cert-top">
+    <span class="cert-bc">
+      <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
+      <span class="sep">›</span><strong>HUB</strong>
+    </span>
+    <span class="cert-right">Weather the Storm</span>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="tb-eyebrow">Hub · Stats</span>
+      <span class="holo"></span>
+      <span class="tb-sub" id="tb-sub">Chargement…</span>
+    </div>
+    <div class="toolbar-actions">
+      <select class="month-select" id="month-select" onchange="onMonthChange()">
+        <option value="">Tous les mois</option>
+      </select>
+      <button class="btn btn-ghost" onclick="exportCSV()">Exporter CSV</button>
+      <button class="btn btn-dark" onclick="loadData(true)">↻ Actualiser</button>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div class="page">
+
+    <!-- 1. KPI grid -->
+    <div class="kpi-grid">
+      <div class="kpi-card primary">
+        <div class="kpi-head">
+          <span class="kpi-label">Revenu total</span>
+          <span class="delta-chip pos" id="kpi-revenu-delta" style="display:none"></span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-revenu">$0</span>
+          <span class="kpi-suffix" id="kpi-revenu-sub">ce mois</span>
+        </div>
+        <div class="spark-bars" id="spark-revenu"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Bénéfice net</span>
+          <span class="delta-chip pos" id="kpi-benefice-delta" style="display:none"></span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-benefice">$0</span>
+          <span class="kpi-suffix" id="kpi-benefice-sub">marge</span>
+        </div>
+        <div class="spark-bars" id="spark-benefice"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Breaks</span>
+          <span class="delta-chip pos" id="kpi-breaks-delta" style="display:none"></span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-breaks">0</span>
+          <span class="kpi-suffix">Terminés</span>
+        </div>
+        <div class="spark-bars" id="spark-breaks"></div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-head">
+          <span class="kpi-label">Marge moy.</span>
+          <span class="delta-chip pos" id="kpi-marge-delta" style="display:none"></span>
+        </div>
+        <div class="kpi-value-row">
+          <span class="kpi-value" id="kpi-marge">0%</span>
+          <span class="kpi-suffix" id="kpi-marge-sub">vs précédent</span>
+        </div>
+        <div class="spark-bars" id="spark-marge"></div>
+      </div>
+    </div>
+
+    <!-- 2. Chart + Horaire -->
+    <div class="split-1-4-1">
+      <div class="card accent">
+        <div class="card-head">
+          <div>
+            <div class="card-eyebrow">Revenu par jour</div>
+            <div class="card-title" id="chart-title">Semaine du <span class="hl" id="chart-week">—</span></div>
+          </div>
+          <div class="pills" id="chart-pills">
+            <button class="pill active" data-range="semaine">Semaine</button>
+            <button class="pill" data-range="mois">Mois</button>
+            <button class="pill" data-range="3m">3M</button>
+          </div>
+        </div>
+        <div class="chart-wrap" id="chart-wrap"></div>
+        <div class="chart-labels" id="chart-labels"></div>
+      </div>
+
+      <div class="card accent">
+        <div class="card-head">
+          <div>
+            <div class="card-eyebrow">Par plage horaire</div>
+            <div class="card-title" id="horaire-title"><span class="first">S</span>oir gagne.</div>
+          </div>
+          <div class="card-badge"><span>Plages</span><span class="ct" id="horaire-count">0</span></div>
+        </div>
+        <table class="dt">
+          <thead><tr>
+            <th>Plage</th><th>Horaire</th><th class="num">Breaks</th>
+            <th class="num">Revenu</th><th class="num">Bénéfice</th>
+          </tr></thead>
+          <tbody id="tbl-horaire"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 3. Vendeurs -->
+    <div class="card accent">
+      <div class="card-head">
+        <div>
+          <div class="card-eyebrow">Vendeurs</div>
+          <div class="card-title"><span class="first">P</span>erformance par vendeur</div>
+        </div>
+        <a class="card-link" href="/team.html">Détail →</a>
+      </div>
+      <table class="dt">
+        <thead><tr>
+          <th>Vendeur</th>
+          <th class="num">Breaks</th>
+          <th class="num">Revenu total</th>
+          <th class="num">Bénéfice</th>
+          <th class="num">Marge moy.</th>
+          <th class="num">Temps moy.</th>
+        </tr></thead>
+        <tbody id="tbl-vendeurs"></tbody>
+      </table>
+    </div>
+
+    <!-- 4. Types + (Cat + Sport) -->
+    <div class="split-1-4-1">
+      <div class="card accent">
+        <div class="card-head">
+          <div>
+            <div class="card-eyebrow">Par type de break</div>
+            <div class="card-title"><span class="first">F</span>ormat vainqueur</div>
+          </div>
+        </div>
+        <table class="dt">
+          <thead><tr>
+            <th>Type</th>
+            <th class="num">Breaks</th>
+            <th class="num">Revenu</th>
+            <th class="num">Marge</th>
+            <th>Part</th>
+          </tr></thead>
+          <tbody id="tbl-types"></tbody>
+        </table>
+      </div>
+
+      <div style="display:grid; gap:14px">
+        <div class="card accent">
+          <div class="card-head">
+            <div>
+              <div class="card-eyebrow">Par catégorie</div>
+              <div class="card-title" id="cat-title"><span class="first">S</span>ealed domine</div>
+            </div>
+          </div>
+          <table class="dt">
+            <thead><tr>
+              <th>Catégorie</th>
+              <th class="num">Breaks</th>
+              <th class="num">Revenu</th>
+              <th class="num">Marge</th>
+            </tr></thead>
+            <tbody id="tbl-cat"></tbody>
+          </table>
+        </div>
+
+        <div class="card accent">
+          <div class="card-head">
+            <div>
+              <div class="card-eyebrow">Par sport · licence</div>
+              <div class="card-title" id="sport-title"><span class="first">H</span>ockey en tête</div>
+            </div>
+          </div>
+          <table class="dt">
+            <thead><tr>
+              <th>Sport</th>
+              <th class="num">Breaks</th>
+              <th class="num">Revenu</th>
+              <th class="num">Marge</th>
+            </tr></thead>
+            <tbody id="tbl-sport"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom cert strip -->
+  <div class="cert cert-bot">
+    <div class="cert-meta">
+      <span class="cert-pill" id="bottom-revenu">Revenu · —</span>
+      <span class="cert-pill" id="bottom-marge">Marge · —</span>
+    </div>
+    <span class="cert-id">SPELOOSH © 2026</span>
+  </div>
+
+</div>
+
+<script>
+// ════════════════════ Helpers ════════════════════
 const MOIS_FR = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const JOURS_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const JOURS_LBL   = { Monday:'Lun', Tuesday:'Mar', Wednesday:'Mer', Thursday:'Jeu', Friday:'Ven', Saturday:'Sam', Sunday:'Dim' };
 
-function fmt(n) { return '$' + (n||0).toLocaleString('fr-CA', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmt(n)    { return '$' + (n||0).toLocaleString('fr-CA', { maximumFractionDigits: 0 }); }
+function fmt2(n)   { return '$' + (n||0).toLocaleString('fr-CA', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+function fmtShort(n) {
+  if (Math.abs(n) >= 1000) return '$' + (n/1000).toFixed(1) + 'k';
+  return '$' + Math.round(n);
+}
 function pct(n) { return (n||0).toFixed(1) + '%'; }
+function pct0(n) { return Math.round(n||0) + '%'; }
+function esc(s) { return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-// Demo data (used when no Sheets URL configured)
 const DEMO = {
   breaks: [
-    { date:'2026-05-04', vendeur:'Jeremi', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Hockey', nomBreak:'LIVE BREAK AM', duree:277, revHeure:1297.55, pctWN:0, ventesBrutes:5987, revenuReel:5987, beneficeNet:1632, jour:'Monday', mois:5, annee:2026, semaine:19 },
-    { date:'2026-05-05', vendeur:'Phobe', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Hockey', nomBreak:'Live Lundi Soir', duree:260, revHeure:2905.62, pctWN:0, ventesBrutes:12591, revenuReel:12591, beneficeNet:2107, jour:'Tuesday', mois:5, annee:2026, semaine:19 },
-    { date:'2026-05-05', vendeur:'Jeremi', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Hockey', nomBreak:'MARDI AM', duree:339, revHeure:630.97, pctWN:0, ventesBrutes:3565, revenuReel:3565, beneficeNet:320, jour:'Tuesday', mois:5, annee:2026, semaine:19 },
-    { date:'2026-05-06', vendeur:'Chuck', helper:'Phobe', categorie:'Repacks', sport:'Hockey', typeBreak:'Hockey', nomBreak:'Repacks', duree:255, revHeure:3787.06, pctWN:0, ventesBrutes:16095, revenuReel:16095, beneficeNet:4224, jour:'Wednesday', mois:5, annee:2026, semaine:19 },
+    { date:'2026-05-04', vendeur:'Jeremi', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Team Random', nomBreak:'LIVE BREAK AM', duree:277, ventesBrutes:5987, revenuReel:5987, beneficeNet:1632, jour:'Monday', mois:5, annee:2026 },
+    { date:'2026-05-05', vendeur:'Phebe', helper:'', categorie:'Wax', sport:'Hockey', typeBreak:'Hybrid', nomBreak:'Live Lundi Soir', duree:260, ventesBrutes:12591, revenuReel:12591, beneficeNet:2107, jour:'Tuesday', mois:5, annee:2026 },
+    { date:'2026-05-05', vendeur:'Jeremi', helper:'', categorie:'Wax', sport:'Basket', typeBreak:'Team Random', nomBreak:'MARDI AM', duree:339, ventesBrutes:2645, revenuReel:2645, beneficeNet:320, jour:'Tuesday', mois:5, annee:2026 },
+    { date:'2026-05-06', vendeur:'Chuck', helper:'Phebe', categorie:'Personal', sport:'Hockey', typeBreak:'Team Random', nomBreak:'Repacks', duree:255, ventesBrutes:16095, revenuReel:16095, beneficeNet:4224, jour:'Wednesday', mois:5, annee:2026 },
   ]
 };
 
-let chartJours = null;
-let allBreaksRaw = [];
+let allBreaks = [];
+let chartRange = 'semaine';
 
-async function loadData() {
+// ════════════════════ Load ════════════════════
+async function loadData(force) {
+  document.getElementById('tb-sub').textContent = 'Chargement…';
   let data;
   try {
     const res = await fetch('/api/breaks');
-    if (!res.ok) throw new Error('not configured');
+    if (!res.ok) throw new Error('empty');
     data = await res.json();
     if (!Array.isArray(data) || data.length === 0) throw new Error('empty');
-    document.getElementById('config-banner').style.display = 'none';
-  } catch(e) {
-    document.getElementById('config-banner').style.display = 'block';
+  } catch (e) {
     data = DEMO.breaks;
   }
-
-  allBreaksRaw = data;
-  populateAnneeFilter(data);
-  applyFilters();
+  allBreaks = data;
+  populateMonths();
+  // default = most recent month with data
+  const monthsAvailable = monthKeys(allBreaks);
+  const sel = document.getElementById('month-select');
+  if (monthsAvailable.length && !sel.value) {
+    sel.value = monthsAvailable[0]; // most recent first
+  }
+  render();
 }
 
-function populateAnneeFilter(data) {
-  const years = [...new Set(data.map(b => b.annee).filter(Boolean))].sort((a,b) => b - a);
-  const sel = document.getElementById('filter-annee');
-  // Keep first option, replace rest
-  while (sel.options.length > 1) sel.remove(1);
-  years.forEach(y => {
+function monthKeys(breaks) {
+  const set = new Set();
+  breaks.forEach(b => {
+    if (b.annee && b.mois) set.add(`${b.annee}-${String(b.mois).padStart(2,'0')}`);
+  });
+  return [...set].sort().reverse();
+}
+
+function populateMonths() {
+  const sel = document.getElementById('month-select');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Tous les mois</option>';
+  monthKeys(allBreaks).forEach(k => {
+    const [y, m] = k.split('-');
     const opt = document.createElement('option');
-    opt.value = y;
-    opt.textContent = y;
+    opt.value = k;
+    opt.textContent = `${MOIS_FR[+m]} ${y}`;
     sel.appendChild(opt);
   });
+  if (current) sel.value = current;
 }
 
-function applyFilters() {
-  const annee = document.getElementById('filter-annee').value;
-  const mois  = document.getElementById('filter-mois').value;
-  const trim  = document.getElementById('filter-trimestre').value;
+function onMonthChange() { render(); }
 
-  const TRIM_MOIS = { '1':[1,2,3], '2':[4,5,6], '3':[7,8,9], '4':[10,11,12] };
+function selectedMonthBreaks() {
+  const k = document.getElementById('month-select').value;
+  if (!k) return [...allBreaks];
+  const [y, m] = k.split('-').map(Number);
+  return allBreaks.filter(b => +b.annee === y && +b.mois === m);
+}
 
-  let filtered = allBreaksRaw.filter(b => {
-    if (annee && String(b.annee) !== annee) return false;
-    if (mois  && String(b.mois)  !== mois)  return false;
-    if (trim  && !TRIM_MOIS[trim].includes(+b.mois)) return false;
-    return true;
+function previousMonthBreaks() {
+  const k = document.getElementById('month-select').value;
+  if (!k) return [];
+  const [y, m] = k.split('-').map(Number);
+  let pm = m - 1, py = y;
+  if (pm < 1) { pm = 12; py -= 1; }
+  return allBreaks.filter(b => +b.annee === py && +b.mois === pm);
+}
+
+// ════════════════════ Render ════════════════════
+function render() {
+  const current = selectedMonthBreaks();
+  const previous = previousMonthBreaks();
+  const k = document.getElementById('month-select').value;
+  const monthLabel = k ? `${MOIS_FR[+k.split('-')[1]]} ${k.split('-')[0]}` : 'Tous les mois';
+  document.getElementById('tb-sub').textContent = `${monthLabel} · ${current.length} break${current.length !== 1 ? 's' : ''}`;
+
+  renderKPIs(current, previous);
+  renderChart(current);
+  renderHoraire(current);
+  renderVendeurs(current);
+  renderTypes(current);
+  renderCat(current);
+  renderSport(current);
+
+  // Bottom cert
+  const rev = current.reduce((s,b) => s + (+b.revenuReel||0), 0);
+  const ben = current.reduce((s,b) => s + (+b.beneficeNet||0), 0);
+  const marge = rev > 0 ? (ben/rev*100) : 0;
+  document.getElementById('bottom-revenu').textContent = `Revenu · ${fmt(rev)}`;
+  document.getElementById('bottom-marge').textContent  = `Marge · ${pct(marge)}`;
+}
+
+function deltaPct(current, previous) {
+  if (!previous) return null;
+  if (previous === 0 && current === 0) return null;
+  if (previous === 0) return 100;
+  return Math.round(((current - previous) / Math.abs(previous)) * 100);
+}
+
+function setDelta(el, val, suffix = '%', isPts = false) {
+  if (val === null || val === undefined) { el.style.display = 'none'; return; }
+  el.style.display = 'inline-flex';
+  const sign = val >= 0 ? '▲' : '▼';
+  el.classList.toggle('pos', val >= 0);
+  el.classList.toggle('neg', val < 0);
+  el.textContent = `${sign} ${Math.abs(val)}${isPts ? ' pts' : suffix}`;
+}
+
+function renderKPIs(current, previous) {
+  const rev  = current.reduce((s,b) => s + (+b.revenuReel||0), 0);
+  const ben  = current.reduce((s,b) => s + (+b.beneficeNet||0), 0);
+  const n    = current.length;
+  const marg = rev > 0 ? (ben/rev*100) : 0;
+
+  const pRev = previous.reduce((s,b) => s + (+b.revenuReel||0), 0);
+  const pBen = previous.reduce((s,b) => s + (+b.beneficeNet||0), 0);
+  const pN   = previous.length;
+  const pMarg = pRev > 0 ? (pBen/pRev*100) : 0;
+
+  document.getElementById('kpi-revenu').textContent   = fmt(rev);
+  document.getElementById('kpi-benefice').textContent = fmt(ben);
+  document.getElementById('kpi-breaks').textContent   = n;
+  document.getElementById('kpi-marge').textContent    = pct(marg);
+
+  document.getElementById('kpi-benefice-sub').textContent = pct(marg) + ' marge';
+
+  setDelta(document.getElementById('kpi-revenu-delta'),   deltaPct(rev, pRev));
+  setDelta(document.getElementById('kpi-benefice-delta'), deltaPct(ben, pBen));
+  // Breaks delta = absolute diff
+  const nDelta = pN ? n - pN : null;
+  if (nDelta !== null) {
+    const el = document.getElementById('kpi-breaks-delta');
+    el.style.display = 'inline-flex';
+    el.classList.toggle('pos', nDelta >= 0);
+    el.classList.toggle('neg', nDelta < 0);
+    el.textContent = `${nDelta >= 0 ? '▲' : '▼'} ${Math.abs(nDelta)}`;
+  } else {
+    document.getElementById('kpi-breaks-delta').style.display = 'none';
+  }
+  // Marge delta = absolute pts diff
+  if (previous.length) {
+    setDelta(document.getElementById('kpi-marge-delta'), (marg - pMarg).toFixed(1), '', true);
+  } else {
+    document.getElementById('kpi-marge-delta').style.display = 'none';
+  }
+
+  // Sparklines (last 7 days within the dataset)
+  const dailyRev = last7Daily(current, 'revenuReel');
+  const dailyBen = last7Daily(current, 'beneficeNet');
+  const dailyN   = last7Daily(current, '__count');
+  const dailyM   = last7DailyMarge(current);
+
+  renderSpark('spark-revenu',   dailyRev, true);
+  renderSpark('spark-benefice', dailyBen, false);
+  renderSpark('spark-breaks',   dailyN,   false);
+  renderSpark('spark-marge',    dailyM,   false);
+}
+
+function last7Daily(breaks, field) {
+  if (!breaks.length) return [0,0,0,0,0,0,0];
+  const sorted = [...breaks].sort((a,b) => (a.date||'').localeCompare(b.date||''));
+  const days = {};
+  sorted.forEach(b => {
+    const k = b.date;
+    if (!k) return;
+    if (!days[k]) days[k] = 0;
+    if (field === '__count') days[k] += 1;
+    else days[k] += (+b[field]||0);
+  });
+  const keys = Object.keys(days).sort();
+  const last = keys.slice(-7);
+  return last.map(k => days[k]);
+}
+function last7DailyMarge(breaks) {
+  if (!breaks.length) return [0,0,0,0,0,0,0];
+  const days = {};
+  breaks.forEach(b => {
+    const k = b.date; if (!k) return;
+    if (!days[k]) days[k] = { rev: 0, ben: 0 };
+    days[k].rev += (+b.revenuReel||0);
+    days[k].ben += (+b.beneficeNet||0);
+  });
+  return Object.keys(days).sort().slice(-7).map(k => days[k].rev > 0 ? (days[k].ben/days[k].rev*100) : 0);
+}
+
+function renderSpark(id, values, isAccent) {
+  const max = Math.max(...values, 1);
+  const el = document.getElementById(id);
+  el.innerHTML = values.map(v => {
+    const h = Math.max(2, Math.round((v / max) * 26));
+    return `<div class="b" style="height:${h}px"></div>`;
+  }).join('');
+}
+
+function renderChart(current) {
+  // Week: Monday-Sunday of current week (or most recent week in data)
+  const sortedDates = [...new Set(current.map(b => b.date).filter(Boolean))].sort();
+  if (!sortedDates.length) {
+    document.getElementById('chart-wrap').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);font-size:12px;padding:60px 0">Aucune donnée</div>';
+    document.getElementById('chart-labels').innerHTML = '';
+    document.getElementById('chart-week').textContent = '—';
+    return;
+  }
+  const latestDate = new Date(sortedDates[sortedDates.length - 1] + 'T12:00:00');
+  // Find Monday of that week
+  const day = latestDate.getDay();
+  const mondayOffset = day === 0 ? -6 : 1 - day;
+  const monday = new Date(latestDate);
+  monday.setDate(latestDate.getDate() + mondayOffset);
+
+  const weekISO = monday.toISOString().slice(0, 10);
+  const weekLabel = `${monday.getDate()} ${MOIS_FR[monday.getMonth()+1].toLowerCase().slice(0,3)}`;
+  document.getElementById('chart-week').textContent = weekLabel;
+
+  const byDay = JOURS_ORDER.map((j, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const iso = d.toISOString().slice(0, 10);
+    const dayBreaks = current.filter(b => b.date === iso);
+    const rev = dayBreaks.reduce((s,b) => s + (+b.revenuReel||0), 0);
+    return { day: j, iso, rev };
   });
 
-  // Update reset button style
-  const hasFilter = annee || mois || trim;
-  document.getElementById('reset-btn').classList.toggle('has-filter', !!hasFilter);
+  const max = Math.max(...byDay.map(d => d.rev), 1);
+  // Today = highest revenue day = highlighted; if none, no highlight
+  const maxRev = Math.max(...byDay.map(d => d.rev));
+  const today = new Date().toISOString().slice(0, 10);
+  const todayIdx = byDay.findIndex(d => d.iso === today);
 
-  // Update badge
-  const badge = document.getElementById('filter-badge');
-  if (hasFilter) {
-    badge.innerHTML = `<strong>${filtered.length}</strong> break${filtered.length !== 1 ? 's' : ''} affiché${filtered.length !== 1 ? 's' : ''}`;
-  } else {
-    badge.innerHTML = '';
+  document.getElementById('chart-wrap').innerHTML = byDay.map((d, i) => {
+    const h = d.rev > 0 ? Math.max(8, Math.round((d.rev / max) * 200)) : 0;
+    const isHl = d.rev > 0 && (todayIdx === i || (todayIdx === -1 && d.rev === maxRev && maxRev > 0));
+    return `<div class="chart-col ${d.rev === 0 ? 'zero' : ''} ${isHl ? 'hl' : ''}">
+      <div class="chart-bar" style="height:${h}px">
+        ${d.rev > 0 ? `<div class="chart-bar-val">${fmtShort(d.rev)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('chart-labels').innerHTML = JOURS_ORDER.map(j => `<div class="chart-label">${JOURS_LBL[j]}</div>`).join('');
+}
+
+function renderHoraire(current) {
+  const plages = [
+    { label: 'Matin',      lbl: '6h → 12h',  start: 6,  end: 12 },
+    { label: 'Après-midi', lbl: '12h → 17h', start: 12, end: 17 },
+    { label: 'Soir',       lbl: '17h → 00h', start: 17, end: 24 },
+  ];
+
+  function heureOf(b) {
+    if (b.heureDebut) {
+      const h = parseInt(String(b.heureDebut).split(':')[0], 10);
+      if (!isNaN(h)) return h;
+    }
+    const n = (b.nomBreak||'').toLowerCase();
+    if (n.includes('am') || n.includes('matin')) return 9;
+    if (n.includes('pm') || n.includes('soir')) return 19;
+    return 19;
   }
 
-  // Disable mois if trimestre is selected (they're mutually exclusive)
-  const moisSel = document.getElementById('filter-mois');
-  moisSel.disabled = !!trim;
-  moisSel.style.opacity = trim ? '0.4' : '1';
+  let active = 0;
+  let bestRev = -1;
+  let bestLabel = 'Soir';
+  const rows = plages.map(p => {
+    const f = current.filter(b => {
+      const h = heureOf(b);
+      return h >= p.start && h < p.end;
+    });
+    if (f.length) active++;
+    const rev = f.reduce((s,b) => s+(+b.revenuReel||0), 0);
+    const ben = f.reduce((s,b) => s+(+b.beneficeNet||0), 0);
+    if (rev > bestRev) { bestRev = rev; bestLabel = p.label; }
+    return { ...p, n: f.length, rev, ben };
+  });
 
-  renderAll(filtered);
+  document.getElementById('horaire-count').textContent = active;
+  document.getElementById('horaire-title').innerHTML = `<span class="first">${bestLabel.charAt(0)}</span>${bestLabel.slice(1)} gagne.`;
+
+  document.getElementById('tbl-horaire').innerHTML = rows.map(r => `<tr>
+    <td class="bold">${r.label}</td>
+    <td class="mono">${r.lbl}</td>
+    <td class="num">${r.n}</td>
+    <td class="num bold">${r.rev ? fmt(r.rev) : '—'}</td>
+    <td class="num pos">${r.ben ? fmt(r.ben) : '—'}</td>
+  </tr>`).join('');
 }
 
-function onFilterChange() {
-  // If trimestre changed, clear mois
-  const trim = document.getElementById('filter-trimestre').value;
-  if (trim) document.getElementById('filter-mois').value = '';
-  // If mois changed, clear trimestre
-  const mois = document.getElementById('filter-mois').value;
-  if (mois) document.getElementById('filter-trimestre').value = '';
-  applyFilters();
-}
-
-function resetFilters() {
-  document.getElementById('filter-annee').value = '';
-  document.getElementById('filter-mois').value = '';
-  document.getElementById('filter-trimestre').value = '';
-  applyFilters();
-}
-
-function renderAll(breaks) {
-  const total = breaks.length;
-  const totalRevenu = breaks.reduce((s,b) => s + (+b.revenuReel||0), 0);
-  const totalBenefice = breaks.reduce((s,b) => s + (+b.beneficeNet||0), 0);
-  const margeMoy = totalRevenu > 0 ? (totalBenefice / totalRevenu * 100) : 0;
-
-  document.getElementById('kpi-revenu').textContent = fmt(totalRevenu);
-  document.getElementById('kpi-benefice').textContent = fmt(totalBenefice);
-  document.getElementById('kpi-breaks').textContent = total;
-  document.getElementById('kpi-breaks-sub').textContent = 'breaks enregistrés';
-  document.getElementById('kpi-marge').textContent = pct(margeMoy);
-  document.getElementById('kpi-marge-sub').textContent = 'marge moyenne';
-
-  // Progress bars vs monthly objectives
-  const s = getSettings();
-  const objRevenu   = parseFloat(s.objectifs?.revenu)   || 0;
-  const objBenefice = parseFloat(s.objectifs?.benefice) || 0;
-
-  if (objRevenu > 0) {
-    const pctRev = Math.min(totalRevenu / objRevenu * 100, 100);
-    document.getElementById('prog-revenu-wrap').style.display = 'block';
-    document.getElementById('prog-revenu').style.width = pctRev + '%';
-    document.getElementById('prog-revenu').className = 'kpi-progress-fill' + (pctRev >= 100 ? ' over' : '');
-    document.getElementById('kpi-revenu-sub').textContent = fmt(totalRevenu) + ' / ' + fmt(objRevenu) + ' objectif (' + pctRev.toFixed(0) + '%)';
-  } else {
-    document.getElementById('prog-revenu-wrap').style.display = 'none';
-    document.getElementById('kpi-revenu-sub').textContent = total + ' breaks au total';
-  }
-
-  if (objBenefice > 0) {
-    const pctBen = Math.min(totalBenefice / objBenefice * 100, 100);
-    document.getElementById('prog-benefice-wrap').style.display = 'block';
-    document.getElementById('prog-benefice').style.width = pctBen + '%';
-    document.getElementById('prog-benefice').className = 'kpi-progress-fill' + (pctBen >= 100 ? ' over' : '');
-    document.getElementById('kpi-benefice-sub').textContent = fmt(totalBenefice) + ' / ' + fmt(objBenefice) + ' objectif (' + pctBen.toFixed(0) + '%)';
-  } else {
-    document.getElementById('prog-benefice-wrap').style.display = 'none';
-    document.getElementById('kpi-benefice-sub').textContent = pct(margeMoy) + ' de marge';
-  }
-
-  renderChartJours(breaks);
-  renderHoraire(breaks);
-  renderJours(breaks);
-  renderMois(breaks);
-  renderVendeurs(breaks);
-  renderHelpers(breaks);
-  renderDuos(breaks);
-  renderTypeBreak(breaks);
-  renderCat(breaks);
-  renderSport(breaks);
-}
-
-function renderVendeurs(breaks) {
+function renderVendeurs(current) {
   const byV = {};
-  breaks.forEach(b => {
+  current.forEach(b => {
     const v = b.vendeur || '—';
-    if (!byV[v]) byV[v] = { n:0, rev:0, ben:0, duree:0, sports:{} };
+    if (!byV[v]) byV[v] = { n:0, rev:0, ben:0, duree:0 };
     byV[v].n++;
     byV[v].rev += (+b.revenuReel||0);
     byV[v].ben += (+b.beneficeNet||0);
     byV[v].duree += (+b.duree||0);
-    if (b.sport) byV[v].sports[b.sport] = (byV[v].sports[b.sport]||0)+1;
   });
   const rows = Object.entries(byV).sort((a,b) => b[1].rev - a[1].rev).map(([v,d]) => {
     const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-    const revH = d.duree > 0 ? (d.rev/(d.duree/60)) : 0;
     const tempsMoy = d.n > 0 ? Math.round(d.duree/d.n) : 0;
-    const sportDom = Object.entries(d.sports).sort((a,b)=>b[1]-a[1])[0];
+    const initial = (v.charAt(0) || '?').toUpperCase();
     return `<tr>
-      <td><strong>${v}</strong></td>
+      <td><div class="av"><span class="av-circle">${esc(initial)}</span><span class="bold">${esc(v)}</span></div></td>
       <td class="num">${d.n}</td>
-      <td class="num gold">${fmt(d.rev)}</td>
-      <td class="num green">${fmt(d.ben)}</td>
-      <td class="num">${fmt(revH)}</td>
-      <td class="num dim">${tempsMoy}</td>
-      <td class="num dim">${pct(marge)}</td>
-      <td class="dim">${sportDom ? sportDom[0] : '—'}</td>
+      <td class="num bold">${fmt(d.rev)}</td>
+      <td class="num pos">${fmt(d.ben)}</td>
+      <td class="num">${pct(marge)}</td>
+      <td class="num mute">${tempsMoy} min</td>
     </tr>`;
   });
-  document.getElementById('table-vendeurs').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+  document.getElementById('tbl-vendeurs').innerHTML = rows.length
+    ? rows.join('')
+    : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--ink-3);font-size:11px;letter-spacing:.16em;text-transform:uppercase">Aucune donnée</td></tr>';
 }
 
-function renderHelpers(breaks) {
-  const byH = {};
-  breaks.filter(b => b.helper).forEach(b => {
-    const h = b.helper;
-    if (!byH[h]) byH[h] = { n:0, rev:0, ben:0 };
-    byH[h].n++;
-    byH[h].rev += (+b.revenuReel||0);
-    byH[h].ben += (+b.beneficeNet||0);
-  });
-  const rows = Object.entries(byH).sort((a,b) => b[1].rev - a[1].rev).map(([h,d]) => {
-    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-    return `<tr>
-      <td><strong>${h}</strong></td>
-      <td class="num">${d.n}</td>
-      <td class="num gold">${fmt(d.rev)}</td>
-      <td class="num dim">${pct(marge)}</td>
-    </tr>`;
-  });
-  document.getElementById('table-helpers').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" class="dim" style="text-align:center;padding:20px">Aucun helper enregistré</td></tr>';
-}
-
-function renderDuos(breaks) {
-  const byDuo = {};
-  breaks.filter(b => b.helper).forEach(b => {
-    const key = (b.vendeur||'—') + '|' + b.helper;
-    if (!byDuo[key]) byDuo[key] = { vendeur: b.vendeur||'—', helper: b.helper, n:0, rev:0, ben:0 };
-    byDuo[key].n++;
-    byDuo[key].rev += (+b.revenuReel||0);
-    byDuo[key].ben += (+b.beneficeNet||0);
-  });
-  const rows = Object.values(byDuo).sort((a,b) => b.rev - a.rev).map(d => {
-    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-    return `<tr>
-      <td><strong>${d.vendeur}</strong></td>
-      <td>${d.helper}</td>
-      <td class="num">${d.n}</td>
-      <td class="num gold">${fmt(d.rev)}</td>
-      <td class="num dim">${pct(marge)}</td>
-    </tr>`;
-  });
-  document.getElementById('table-duos').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Aucun duo enregistré</td></tr>';
-}
-
-function renderChartJours(breaks) {
-  const byJour = {};
-  JOURS_ORDER.forEach(j => byJour[j] = 0);
-  breaks.forEach(b => { if (byJour[b.jour] !== undefined) byJour[b.jour] += (+b.revenuReel||0); });
-
-  const labels = JOURS_ORDER.map(j => JOURS_FR[j]);
-  const vals = JOURS_ORDER.map(j => byJour[j]);
-
-  if (chartJours) chartJours.destroy();
-  const ctx = document.getElementById('chart-jours').getContext('2d');
-  chartJours = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        data: vals,
-        backgroundColor: vals.map(v => v > 0 ? 'rgba(232, 74, 29, 0.85)' : 'rgba(176, 167, 143, 0.35)'),
-        borderColor: vals.map(v => v > 0 ? '#E84A1D' : '#DDD7C9'),
-        borderWidth: 1,
-        borderRadius: 4,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: '#DDD7C9' }, ticks: { color: '#737380', font: { family: 'JetBrains Mono', size: 10 } } },
-        y: { grid: { color: '#DDD7C9' }, ticks: { color: '#737380', font: { family: 'JetBrains Mono', size: 10 }, callback: v => '$' + v.toLocaleString() } }
-      }
+function renderTypes(current) {
+  const TYPES = ['Team Random','Hybrid','Player Random','Numeral','Wheel'];
+  const byT = {};
+  TYPES.forEach(t => byT[t] = { n:0, rev:0, ben:0 });
+  current.forEach(b => {
+    const t = b.typeBreak;
+    if (t && byT[t]) {
+      byT[t].n++;
+      byT[t].rev += (+b.revenuReel||0);
+      byT[t].ben += (+b.beneficeNet||0);
     }
   });
+  const totalN = TYPES.reduce((s,t) => s + byT[t].n, 0);
+  const rows = TYPES.map(t => {
+    const d = byT[t];
+    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
+    const part = totalN > 0 ? d.n / totalN : 0;
+    return `<tr>
+      <td class="bold">${esc(t)}</td>
+      <td class="num">${d.n}</td>
+      <td class="num">${d.rev ? fmt(d.rev) : '<span class="mute">—</span>'}</td>
+      <td class="num ${marge > 0 ? 'pos' : 'mute'}">${marge > 0 ? pct(marge) : '—'}</td>
+      <td><span class="part-bar"><span class="fill" style="width:${(part*100).toFixed(1)}%"></span></span></td>
+    </tr>`;
+  });
+  document.getElementById('tbl-types').innerHTML = rows.join('');
 }
 
-function renderHoraire(breaks) {
-  const plages = [
-    { label: 'Matin', start: 6, end: 12 },
-    { label: 'Après-midi', start: 12, end: 17 },
-    { label: 'Soir', start: 17, end: 24 },
-  ];
-  const horaireLabel = ['6h → 12h', '12h → 17h', '17h → 00h'];
-
-  // For demo, assign breaks based on name keywords
-  function guessHeure(b) {
-    const n = (b.nomBreak||'').toLowerCase();
-    if (n.includes('am') || n.includes('matin')) return 9;
-    if (n.includes('soir') || n.includes('pm')) return 19;
-    return 19;
+function renderCat(current) {
+  const byC = {};
+  current.forEach(b => {
+    const c = b.categorie || 'Autre';
+    if (!byC[c]) byC[c] = { n:0, rev:0, ben:0 };
+    byC[c].n++;
+    byC[c].rev += (+b.revenuReel||0);
+    byC[c].ben += (+b.beneficeNet||0);
+  });
+  const sorted = Object.entries(byC).sort((a,b) => b[1].rev - a[1].rev);
+  if (sorted.length) {
+    const best = sorted[0][0];
+    document.getElementById('cat-title').innerHTML = `<span class="first">${esc(best.charAt(0))}</span>${esc(best.slice(1))} domine`;
+  } else {
+    document.getElementById('cat-title').innerHTML = `<span class="first">A</span>ucune donnée`;
   }
-
-  const rows = plages.map((p, i) => {
-    const filtered = breaks.filter(b => {
-      const h = guessHeure(b);
-      return h >= p.start && h < p.end;
-    });
-    const rev = filtered.reduce((s,b) => s+(+b.revenuReel||0), 0);
-    const ben = filtered.reduce((s,b) => s+(+b.beneficeNet||0), 0);
-    return { label: p.label, heure: horaireLabel[i], n: filtered.length, rev, ben };
-  });
-
-  document.getElementById('table-horaire').innerHTML = rows.map(r =>
-    `<tr>
-      <td>${r.label}</td>
-      <td class="dim">${r.heure}</td>
-      <td class="num">${r.n}</td>
-      <td class="num gold">${fmt(r.rev)}</td>
-      <td class="num green">${fmt(r.ben)}</td>
-    </tr>`
-  ).join('');
-}
-
-function renderJours(breaks) {
-  const byJour = {};
-  breaks.forEach(b => {
-    const j = b.jour || 'Unknown';
-    if (!byJour[j]) byJour[j] = { n:0, rev:0, ben:0, vendeurs:{} };
-    byJour[j].n++;
-    byJour[j].rev += (+b.revenuReel||0);
-    byJour[j].ben += (+b.beneficeNet||0);
-    if (b.vendeur) byJour[j].vendeurs[b.vendeur] = (byJour[j].vendeurs[b.vendeur]||0)+1;
-  });
-
-  const rows = JOURS_ORDER.filter(j => byJour[j]).map(j => {
-    const d = byJour[j];
-    const bestV = Object.entries(d.vendeurs).sort((a,b)=>b[1]-a[1])[0];
-    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-    const revHMoy = d.rev / (breaks.filter(b=>b.jour===j).reduce((s,b)=>s+(+b.duree||0),0)/60||1);
-    return `<tr>
-      <td>${JOURS_FR[j]||j}</td>
-      <td class="num">${d.n}</td>
-      <td class="num gold">${fmt(d.rev)}</td>
-      <td class="num green">${fmt(d.ben)}</td>
-      <td class="num green">${fmt(d.ben/d.n)}</td>
-      <td class="num">${fmt(revHMoy)}</td>
-      <td class="num dim">${pct(marge)}</td>
-      <td class="dim">${bestV ? bestV[0] : '—'}</td>
-    </tr>`;
-  });
-
-  document.getElementById('table-jours').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="8" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
-}
-
-function renderMois(breaks) {
-  const byMois = {};
-  breaks.forEach(b => {
-    const k = (b.annee||2026) + '-' + String(b.mois||1).padStart(2,'0');
-    if (!byMois[k]) byMois[k] = { mois:b.mois, annee:b.annee, n:0, rev:0, ben:0 };
-    byMois[k].n++;
-    byMois[k].rev += (+b.revenuReel||0);
-    byMois[k].ben += (+b.beneficeNet||0);
-  });
-
-  const rows = Object.keys(byMois).sort().map(k => {
-    const d = byMois[k];
+  const rows = sorted.map(([c, d]) => {
     const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
     return `<tr>
-      <td>${MOIS_FR[d.mois]||d.mois} ${d.annee}</td>
+      <td class="bold">${esc(c)}</td>
       <td class="num">${d.n}</td>
-      <td class="num gold">${fmt(d.rev)}</td>
-      <td class="num green">${fmt(d.ben)}</td>
-      <td class="num green">${fmt(d.ben/d.n)}</td>
-      <td class="num dim">${pct(marge)}</td>
+      <td class="num bold">${fmt(d.rev)}</td>
+      <td class="num pos">${pct(marge)}</td>
     </tr>`;
   });
-
-  document.getElementById('table-mois').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="6" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
+  document.getElementById('tbl-cat').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" class="mute" style="text-align:center;padding:18px">—</td></tr>';
 }
 
-function renderTypeBreak(breaks) {
-  const TYPES = ['Team Random','Hybrid','Player Random','Numeral','Wheel'];
-  const byType = {};
-  TYPES.forEach(t => byType[t] = { n:0, rev:0, ben:0, duree:0 });
-
-  breaks.forEach(b => {
-    const t = b.typeBreak || 'Autre';
-    if (!byType[t]) byType[t] = { n:0, rev:0, ben:0, duree:0 };
-    byType[t].n++;
-    byType[t].rev += (+b.revenuReel||0);
-    byType[t].ben += (+b.beneficeNet||0);
-    byType[t].duree += (+b.duree||0);
+function renderSport(current) {
+  const byS = {};
+  current.forEach(b => {
+    const s = b.sport || 'Autre';
+    if (!byS[s]) byS[s] = { n:0, rev:0, ben:0 };
+    byS[s].n++;
+    byS[s].rev += (+b.revenuReel||0);
+    byS[s].ben += (+b.beneficeNet||0);
   });
-
-  const rows = Object.entries(byType)
-    .filter(([,d]) => d.n > 0)
-    .sort((a,b) => b[1].rev - a[1].rev)
-    .map(([type, d]) => {
-      const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-      const revH = d.duree > 0 ? (d.rev/(d.duree/60)) : 0;
-      return `<tr>
-        <td><strong>${type}</strong></td>
-        <td class="num">${d.n}</td>
-        <td class="num gold">${fmt(d.rev)}</td>
-        <td class="num green">${fmt(d.ben)}</td>
-        <td class="num green">${fmt(d.n > 0 ? d.ben/d.n : 0)}</td>
-        <td class="num">${fmt(revH)}</td>
-        <td class="num dim">${pct(marge)}</td>
-      </tr>`;
-    });
-
-  // Show all 5 types even with 0 breaks
-  const allRows = TYPES.map(type => {
-    const d = byType[type];
-    if (d.n === 0) return `<tr><td>${type}</td><td class="num dim">0</td><td class="num dim">—</td><td class="num dim">—</td><td class="num dim">—</td><td class="num dim">—</td><td class="num dim">—</td></tr>`;
+  const sorted = Object.entries(byS).sort((a,b) => b[1].rev - a[1].rev);
+  if (sorted.length) {
+    const best = sorted[0][0];
+    document.getElementById('sport-title').innerHTML = `<span class="first">${esc(best.charAt(0))}</span>${esc(best.slice(1))} en tête`;
+  }
+  const rows = sorted.map(([s, d]) => {
     const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-    const revH = d.duree > 0 ? (d.rev/(d.duree/60)) : 0;
     return `<tr>
-      <td><strong>${type}</strong></td>
+      <td class="bold">${esc(s)}</td>
       <td class="num">${d.n}</td>
-      <td class="num gold">${fmt(d.rev)}</td>
-      <td class="num green">${fmt(d.ben)}</td>
-      <td class="num green">${fmt(d.n > 0 ? d.ben/d.n : 0)}</td>
-      <td class="num">${fmt(revH)}</td>
-      <td class="num dim">${pct(marge)}</td>
+      <td class="num bold">${fmt(d.rev)}</td>
+      <td class="num pos">${pct(marge)}</td>
     </tr>`;
   });
-
-  document.getElementById('table-typebreak').innerHTML = allRows.join('');
+  document.getElementById('tbl-sport').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" class="mute" style="text-align:center;padding:18px">—</td></tr>';
 }
 
-function renderCat(breaks) {
-  const byCat = {};
-  breaks.forEach(b => {
-    const k = b.categorie || 'Autre';
-    if (!byCat[k]) byCat[k] = { n:0, rev:0, ben:0 };
-    byCat[k].n++; byCat[k].rev += (+b.revenuReel||0); byCat[k].ben += (+b.beneficeNet||0);
-  });
-  const rows = Object.entries(byCat).sort((a,b)=>b[1].rev-a[1].rev).map(([k,d]) => {
-    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-    return `<tr><td>${k}</td><td class="num">${d.n}</td><td class="num gold">${fmt(d.rev)}</td><td class="num green">${fmt(d.ben)}</td><td class="num dim">${pct(marge)}</td></tr>`;
-  });
-  document.getElementById('table-cat').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
-}
+function exportCSV() { window.open('/api/breaks?format=csv', '_blank'); }
 
-function renderSport(breaks) {
-  const bySport = {};
-  breaks.forEach(b => {
-    const k = b.sport || 'Autre';
-    if (!bySport[k]) bySport[k] = { n:0, rev:0, ben:0 };
-    bySport[k].n++; bySport[k].rev += (+b.revenuReel||0); bySport[k].ben += (+b.beneficeNet||0);
+// Chart range pills (currently visual only — range stays 'semaine')
+document.querySelectorAll('#chart-pills .pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#chart-pills .pill').forEach(x => x.classList.toggle('active', x === p));
+    chartRange = p.dataset.range;
+    // For now only 'semaine' fully implemented — placeholder for future
+    render();
   });
-  const rows = Object.entries(bySport).sort((a,b)=>b[1].rev-a[1].rev).map(([k,d]) => {
-    const marge = d.rev > 0 ? (d.ben/d.rev*100) : 0;
-    return `<tr><td>${k}</td><td class="num">${d.n}</td><td class="num gold">${fmt(d.rev)}</td><td class="num green">${fmt(d.ben)}</td><td class="num dim">${pct(marge)}</td></tr>`;
-  });
-  document.getElementById('table-sport').innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" class="dim" style="text-align:center;padding:20px">Aucune donnée</td></tr>';
-}
+});
 
-// Load on startup
 loadData();
 </script>
 </body>
