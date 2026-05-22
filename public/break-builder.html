@@ -215,9 +215,9 @@ body {
 
 /* ════════════════════ Page content ════════════════════ */
 .page {
-  max-width: 880px;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 32px 36px 56px;
+  padding: 36px 48px 56px;
   width: 100%;
 }
 
@@ -386,7 +386,7 @@ body {
 .sp-save-btn:hover { filter: brightness(1.05); }
 .sp-save-btn:active { transform: translateY(1px); }
 .sp-save-btn img {
-  width: 44px; height: 44px;
+  width: 30px; height: 30px;
   object-fit: contain;
   filter: drop-shadow(0 2px 3px rgba(0,0,0,.25));
 }
@@ -611,8 +611,8 @@ body {
       <button class="toolbar-tab" data-tab="history" onclick="setTab('history')">Historique</button>
     </div>
     <div class="toolbar-actions" id="toolbar-actions-new">
-      <button class="btn btn-ghost btn-sm" id="cancel-btn" style="display:none" onclick="cancelEdit()">Annuler</button>
-      <button class="btn btn-ghost btn-sm" onclick="resetForm()">Vider</button>
+      <button class="btn btn-ghost btn-sm" onclick="saveDraft()">Sauvegarder en brouillon</button>
+      <button class="btn btn-ghost btn-sm" id="cancel-btn" onclick="cancelEdit()">Annuler</button>
     </div>
     <div class="toolbar-actions" id="toolbar-actions-history" style="display:none">
       <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ CSV</button>
@@ -651,6 +651,7 @@ body {
           <select id="helper" onchange="updateSalaireSection()">
             <option value="">Aucun</option>
           </select>
+          <span class="field-hint">Optionnel</span>
         </label>
       </div>
 
@@ -764,6 +765,7 @@ body {
         <span id="submit-label">Enregistrer le break</span>
         <img src="/images/speloosh-splash.png" alt="">
       </button>
+      <button class="btn-secondary" onclick="saveDraft()">Brouillon</button>
     </div>
 
   </div>
@@ -799,9 +801,8 @@ body {
   <!-- Bottom cert strip -->
   <div class="cert cert-bot">
     <div class="cert-meta">
-      <span class="cert-pill">POP</span>
-      <span class="cert-pill">GRADED</span>
-      <span class="cert-pill">BUILD</span>
+      <span class="cert-pill" id="cert-draft">Draft · Non enregistré</span>
+      <span class="cert-pill">Auto-calc</span>
     </div>
     <span class="cert-id">SPELOOSH © 2026</span>
   </div>
@@ -1048,6 +1049,66 @@ function resetForm() {
 }
 
 function cancelEdit() { resetForm(); }
+
+// ════════════════════ Brouillon (localStorage) ════════════════════
+const DRAFT_KEY = 'break_draft_v1';
+
+function saveDraft() {
+  const data = {
+    date: document.getElementById('date').value,
+    nomBreak: document.getElementById('nom-break').value,
+    vendeur: document.getElementById('vendeur').value,
+    helper: document.getElementById('helper').value,
+    salaireVendeur: document.getElementById('salaire-vendeur').value,
+    salaireHelper:  document.getElementById('salaire-helper').value,
+    categorie: document.getElementById('categorie').value,
+    sport:     document.getElementById('sport').value,
+    typeBreak: document.getElementById('type-break').value,
+    ventesBrutes: document.getElementById('ventes-brutes').value,
+    duree:        document.getElementById('duree').value,
+    coutProduits: document.getElementById('cout-produits').value,
+    heureDebut:   document.getElementById('heure-debut').value,
+    savedAt: Date.now(),
+  };
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  const cert = document.getElementById('cert-draft');
+  if (cert) cert.textContent = 'Draft · Sauvegardé';
+  showToast('Brouillon sauvegardé');
+}
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.date)         document.getElementById('date').value          = d.date;
+    if (d.nomBreak)     document.getElementById('nom-break').value     = d.nomBreak;
+    if (d.vendeur)      document.getElementById('vendeur').value       = d.vendeur;
+    if (d.helper)       document.getElementById('helper').value        = d.helper;
+    if (d.categorie)    document.getElementById('categorie').value     = d.categorie;
+    if (d.sport)        document.getElementById('sport').value         = d.sport;
+    if (d.typeBreak)    document.getElementById('type-break').value    = d.typeBreak;
+    if (d.ventesBrutes) document.getElementById('ventes-brutes').value = d.ventesBrutes;
+    if (d.duree)        document.getElementById('duree').value         = d.duree;
+    if (d.coutProduits) document.getElementById('cout-produits').value = d.coutProduits;
+    if (d.heureDebut)   document.getElementById('heure-debut').value   = d.heureDebut;
+    updateSalaireSection();
+    if (d.salaireVendeur) document.getElementById('salaire-vendeur').value = d.salaireVendeur;
+    if (d.salaireHelper)  document.getElementById('salaire-helper').value  = d.salaireHelper;
+    calculate();
+    const cert = document.getElementById('cert-draft');
+    if (cert) cert.textContent = 'Draft · Restauré';
+  } catch (e) {}
+}
+
+// Auto-save mark as dirty on any change
+['date','nom-break','vendeur','helper','categorie','sport','type-break','ventes-brutes','duree','cout-produits','heure-debut'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', () => {
+    const cert = document.getElementById('cert-draft');
+    if (cert) cert.textContent = 'Draft · Non enregistré';
+  });
+});
 
 // ════════════════════ Historique ════════════════════
 async function loadHistory(force = false) {
