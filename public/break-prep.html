@@ -1067,10 +1067,16 @@ async function fetchChecklist(key) {
 }
 
 function buildSearchQuery(playerName, productKey, extra = '') {
-  // Build eBay query with brand + year + player + card type if any
-  const { sport, year } = parseKey(productKey);
-  const productClean = productKey.replace(/\s+(Hockey|Football|Basketball|Baseball|Pokémon|Multi sports)\s*$/i, '');
-  return [playerName, productClean, extra].filter(Boolean).join(' ').trim();
+  // Strategy: keep the query SHORT so eBay finds matches.
+  // Format: "<Player> <Year> <ProductShort> [<Extra>]"
+  // We strip "Hockey/Football/etc." suffix and use a brand abbreviation.
+  const { year, name: productName } = parseKey(productKey);
+  // Drop "Upper Deck" → "UD" for brevity in queries (matches listing titles better)
+  const shortProduct = (productName || '').replace(/^Upper Deck\s+/i, '').trim();
+  // Strip "Auto" if extra already contains it
+  const parts = [playerName, year, shortProduct];
+  if (extra && extra.trim()) parts.push(extra.trim());
+  return parts.filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
 }
 
 async function generatePrep() {
@@ -1090,19 +1096,30 @@ async function generatePrep() {
     for (const p of products) {
       // 1. Fetch curated checklist (no AI)
       const d = await fetchChecklist(p);
-      // 2. Build eBay price queries in parallel
       const productKey = d.key || p;
+
+      // 2. Sort rookies: hotPlayers first, then alphabetical
+      const hotSet = new Set((d.hotPlayers || []).map(n => String(n).toLowerCase()));
+      const allRookies = [...(d.rookies || [])];
+      allRookies.sort((a, b) => {
+        const aHot = hotSet.has(String(a.name || '').toLowerCase());
+        const bHot = hotSet.has(String(b.name || '').toLowerCase());
+        if (aHot !== bHot) return aHot ? -1 : 1;
+        return String(a.name || '').localeCompare(String(b.name || ''));
+      });
+
       const topCardsArr = (d.topCards || []).slice(0, 8);
-      const rookiesArr  = (d.rookies  || []).slice(0, 16);
-      const legendsArr  = (d.legends  || []);
+      const rookiesArr  = allRookies.slice(0, 16);
+      const legendsArr  = (d.legends || []);
 
       const topCardPrices = await Promise.all(topCardsArr.map(c => {
         const playerName = String(c.name).split(' - ')[0].trim();
         const cardType   = String(c.name).split(' - ')[1] || '';
         return fetchEbayPrice(buildSearchQuery(playerName, productKey, cardType));
       }));
+      // For rookies: broader query (player + year only) — gets any of their cards from this season
       const rookiePrices = await Promise.all(rookiesArr.map(r =>
-        fetchEbayPrice(buildSearchQuery(r.name, productKey, 'rookie'))
+        fetchEbayPrice(buildSearchQuery(r.name, productKey))
       ));
       const legendPrices = await Promise.all(legendsArr.map(l =>
         fetchEbayPrice(buildSearchQuery(l.name, productKey, l.cardType || ''))
@@ -1111,6 +1128,7 @@ async function generatePrep() {
       results.push({
         ...d,
         productKey,
+        _sortedRookies: rookiesArr,
         _topCardPrices: topCardPrices,
         _rookiePrices: rookiePrices,
         _legendPrices: legendPrices,
@@ -1165,7 +1183,7 @@ function renderPrep(results) {
       </div>`;
     }).join('');
 
-    const rookies = (d.rookies || []).slice(0, 16);
+    const rookies = (d._sortedRookies || d.rookies || []).slice(0, 16);
     const halfR = Math.ceil(rookies.length / 2);
     const renderRookieRow = (r, rank) => {
       const price = d._rookiePrices?.[rank - 1];
