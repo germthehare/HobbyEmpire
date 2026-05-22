@@ -1021,7 +1021,7 @@ async function callClaude(msg, sys) {
   const r = await fetch('/api/claude', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 4000, system: sys, messages: [{ role: 'user', content: msg }] }),
+    body: JSON.stringify({ model: 'claude-opus-4-7', max_tokens: 4000, system: sys, messages: [{ role: 'user', content: msg }] }),
   });
   if (!r.ok) {
     const e = await r.json().catch(() => ({}));
@@ -1051,8 +1051,31 @@ async function generatePrep() {
     const results = [];
     for (const p of products) {
       const d = await callClaude(
-        `Generate a precise prep sheet for this trading card product: "${p}". Be extremely accurate about the official checklist, hits per box, and rookie class. Respond in French.`,
-        'You are a professional trading card expert with encyclopedic knowledge of card sets. You MUST be factually accurate. CRITICAL: 1) hitsPerBox must be REAL. 2) Rookies must ONLY be players who had FIRST cards in THIS specific set. 3) Never invent players. 4) Realistic USD prices. Respond with ONLY valid JSON, no markdown:\n{"name":"Full official set name","brand":"Brand","year":"Season year","sport":"Sport","hitsPerBox":"X hits per box","summary":"Accurate 1-2 sentence French description","topCards":[{"name":"Player - Card type","value":"$XX-$XXX","tag":"rookie|hot|rare|auto|legend","player":"First Last"}],"rookies":[{"rank":1,"name":"Full name","team":"NHL/NFL team","position":"POS","value":"$XX-$XXX"}],"legends":[{"name":"Full name","cardType":"Exact insert name","value":"$XX-$XXX"}]}'
+        `Generate a precise prep sheet for this trading card product: "${p}". Be extremely accurate. Respond in French.`,
+        `You are a trading card accuracy specialist. FACTUAL ACCURACY IS THE TOP PRIORITY — NEVER invent, NEVER guess.
+
+CRITICAL RULES:
+1) hitsPerBox: this is the number of GUARANTEED HITS (autos + memorabilia + 1/1s) per Hobby box. Be exact. Examples to anchor:
+   - Upper Deck Clear Cut Hockey: 1 hit per box (ONE autograph)
+   - Upper Deck SP Authentic Hockey: 3 hits per box (1 auto + 2 memorabilia)
+   - Upper Deck The Cup Hockey: 4-6 hits per box (premium product)
+   - Upper Deck Series 1/2 Hockey: 0 guaranteed hits (1 Young Guns per box, no autos)
+   - Upper Deck SPx Hockey: 1 rookie auto per box
+   - Upper Deck Ice Hockey: 1 hit per box
+   - Upper Deck Ultimate Collection: 5 hits per box
+   - Upper Deck Trilogy Hockey: 2 hits per box
+   If you are NOT certain for the exact product, say "Variable" or "À vérifier" — DO NOT INVENT.
+
+2) Rookies: ONLY players who had their FIRST official NHL/NFL/NBA/MLB licensed card in THIS specific set+season. If unsure for a player, OMIT them. Better to return 5 confirmed rookies than 15 with errors.
+
+3) Legends: ONLY veterans/legends actually printed in this set's checklist (Connor McDavid won't appear in 2023-24 Clear Cut if he's not a Clear Cut subject for that year).
+
+4) Values: realistic current USD market ranges. If a card is rare/hot, range like "$150-$400" is fine.
+
+5) summary: 1-2 sentences in French describing the product, key insert sets and hit ratios. Be specific (e.g. "1 acétate autograph par boîte" not "plusieurs hits").
+
+Respond with ONLY valid JSON, no markdown, no preamble:
+{"name":"Full official set name","brand":"Brand","year":"Season year","sport":"Hockey|Football|Basketball|Baseball","hitsPerBox":"Exact number — e.g. 1 hit par boîte / 3 hits par boîte / Variable","summary":"Accurate 1-2 sentence French description","topCards":[{"name":"Player - Card type","value":"$XX-$XXX","tag":"rookie|hot|rare|auto|legend","player":"First Last"}],"rookies":[{"rank":1,"name":"Full name","team":"NHL team","position":"POS","value":"$XX-$XXX"}],"legends":[{"name":"Full name","cardType":"Exact insert name","value":"$XX-$XXX"}]}`
       );
       results.push(d);
     }
