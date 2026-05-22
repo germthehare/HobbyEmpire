@@ -235,12 +235,24 @@ body {
 .cert-bot { margin-top: auto; border-top: 3px solid var(--accent); }
 .cert-bot::before { top: -3px; }
 .cert-bc {
+  display: flex; align-items: center; gap: 12px;
   font-size: 10px; font-weight: 600;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: oklch(50% 0.01 75);
 }
 .cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
-.cert-bc .sep { margin: 0 8px; opacity: 0.5; }
+.cert-bc .sep { opacity: 0.5; }
+.cert-logo {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding-right: 12px;
+  border-right: 1px solid rgba(255,255,255,.10);
+}
+.cert-logo .sb-droplet { width: 11px; height: 14px; }
+.cert-logo .wm {
+  font-size: 13px; font-weight: 900; letter-spacing: -0.005em;
+  color: oklch(94% 0.008 80);
+  line-height: 1;
+}
 .cert-right {
   display: flex; align-items: center; gap: 10px;
   font-size: 10px; font-weight: 700;
@@ -1238,7 +1250,11 @@ body {
   <!-- Top cert strip -->
   <div class="cert cert-top">
     <span class="cert-bc">
-      ■ SPELOOSH<span class="sep">›</span>OPÉRATIONS<span class="sep">›</span><strong>HOME</strong>
+      <span class="cert-logo">
+        <span class="sb-droplet" aria-hidden="true"></span>
+        <span class="wm">SPELOOSH</span>
+      </span>
+      OPÉRATIONS<span class="sep">›</span><strong>HOME</strong>
     </span>
     <span class="cert-right">Weather the Storm</span>
   </div>
