@@ -136,8 +136,8 @@
 .announce-grid {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  max-width: 520px;
+  gap: 32px;
+  max-width: 400px; /* largeur proche du carré de la note originale */
 }
 .announce-empty {
   padding: 52px 20px;
@@ -156,7 +156,7 @@
   border-radius: 0;
   box-shadow: none;
   overflow: visible;
-  min-height: 240px;
+  aspect-ratio: 1 / 0.88; /* carré proche de l'image originale 2000×2000 */
   transition: transform 0.2s;
 }
 /* L'image en pseudo-élément avec multiply :
@@ -194,7 +194,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 66px 46px 0 48px;
+  padding: 58px 40px 0 40px; /* centré dans la zone jaune */
 }
 .announce-type-badge {
   font-family: var(--font-mono);
@@ -226,7 +226,7 @@
 
 /* Grand titre — comme écrit au marqueur */
 .announce-card-body {
-  padding: 6px 46px 8px 48px;
+  padding: 6px 40px 8px 40px;
 }
 .announce-titre {
   font-family: var(--font-display);
@@ -252,7 +252,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 46px 42px 48px;
+  padding: 6px 40px 38px 40px;
   /* PAS de border-top — le papier n'a pas de ligne */
   gap: 10px;
 }
