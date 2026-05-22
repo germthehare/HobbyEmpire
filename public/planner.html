@@ -4,399 +4,872 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Planificateur — Speloosh</title>
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="/speloosh-shell.css">
 <script src="/auth-guard.js" data-role="admin"></script>
-<script src="/lang-toggle.js"></script>
-<script src="/speloosh-shell.js"></script>
 <style>
-  .he-court {
-    --gold:  var(--accent);
-    --dark:  var(--bg);
-    --dark2: var(--bg-3);
-    --dark3: var(--bg-2);
-    --dark4: var(--line);
-    --text:  var(--ink);
-    --text2: var(--ink-2);
-    --text3: var(--ink-3);
-    --red:   var(--neg);
-    --green: var(--pos);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--dark); color: var(--text); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+/* ════════════════════ Grift ════════════════════ */
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Regular.woff2')   format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-SemiBold.woff2')  format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Bold.woff2')      format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Black.woff2')     format('woff2'); font-weight: 900; font-display: swap; }
 
-  /* ── HEADER ── */
-  .header { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 200; }
-  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 2px; align-self: center; }
-  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1; }
-  .logo-sub { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-top: 2px; }
-  .header-nav { display: flex; gap: 4px; }
-  .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
-  .nav-link:hover { color: var(--text); background: var(--bg-2); }
-  .nav-link.active { color: var(--ink); background: var(--bg-2); }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; }
+a { color: inherit; text-decoration: none; }
 
-  /* ── CALENDAR NAV ── */
-  .cal-nav { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; height: 64px; display: flex; align-items: center; gap: 14px; position: sticky; top: 64px; z-index: 100; }
-  .cal-nav-btn { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); padding: 7px 14px; cursor: pointer; transition: all 0.12s; display: flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; }
-  .cal-nav-btn:hover { border-color: var(--text3); color: var(--ink); }
-  .cal-month-label { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; flex: 1; }
-  .cal-year-label  { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: var(--text3); letter-spacing: -0.02em; margin-left: -6px; }
-  .today-btn { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; background: color-mix(in oklch, var(--accent), transparent 88%); border: 1px solid color-mix(in oklch, var(--accent), transparent 60%); color: var(--accent); border-radius: var(--r-sm); padding: 7px 14px; cursor: pointer; transition: all 0.12s; }
-  .today-btn:hover { background: color-mix(in oklch, var(--accent), transparent 78%); }
-  .add-btn-main { background: var(--accent); border: none; border-radius: var(--r-sm); color: #fff; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 9px 18px; cursor: pointer; transition: filter 0.12s; white-space: nowrap; }
-  .add-btn-main:hover { filter: brightness(1.08); }
+:root {
+  --bg:          oklch(96.5% 0.012 75);
+  --bg-2:        oklch(93%   0.016 75);
+  --bg-3:        oklch(99%   0.005 80);
+  --bg-ink:      oklch(16%   0.018 260);
+  --line:        oklch(86%   0.014 75);
+  --line-strong: oklch(70%   0.02  75);
+  --ink:         oklch(16%   0.018 260);
+  --ink-2:       oklch(32%   0.014 260);
+  --ink-3:       oklch(50%   0.012 260);
+  --mute:        oklch(62%   0.01  75);
+  --accent:      oklch(72%   0.13  200);
+  --accent-ink:  oklch(16%   0.018 260);
+  --pos:         oklch(54%   0.16  152);
+  --neg:         oklch(56%   0.21  22);
+  --warn:        oklch(72%   0.16  80);
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+  --foil: linear-gradient(110deg,
+    transparent 0%,
+    color-mix(in oklch, oklch(82% 0.14 320), transparent 60%) 18%,
+    color-mix(in oklch, oklch(80% 0.12 200), transparent 55%) 35%,
+    color-mix(in oklch, oklch(86% 0.14 100), transparent 60%) 52%,
+    color-mix(in oklch, oklch(78% 0.14 30),  transparent 50%) 70%,
+    transparent 100%);
 
-  /* ── CALENDAR WRAPPER ── */
-  .cal-wrap { padding: 0 24px 40px; }
+  /* Sport palette */
+  --sport-hockey:  var(--accent);
+  --sport-football: oklch(70% 0.16 60);
+  --sport-basket:  oklch(64% 0.18 290);
+  --sport-baseball: oklch(75% 0.13 80);
+  --sport-personal: var(--pos);
+  --sport-release: var(--ink);
+}
 
-  /* ── DAY-OF-WEEK HEADERS ── */
-  .cal-dow-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-bottom: none; border-radius: var(--r-md) var(--r-md) 0 0; overflow: hidden; margin-top: 20px; }
-  .cal-dow { background: var(--dark2); padding: 10px 14px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); }
-  .cal-dow.weekend { color: color-mix(in oklch, var(--accent), var(--text3) 55%); }
+body {
+  font-family: 'Grift', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  min-height: 100vh;
+  display: flex;
+}
 
-  /* ── CALENDAR GRID ── */
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-top: none; border-radius: 0 0 var(--r-md) var(--r-md); overflow: hidden; }
+/* ════════════════════ Sidebar ════════════════════ */
+.sb {
+  width: 232px; min-width: 232px; height: 100vh;
+  position: sticky; top: 0;
+  background: var(--bg-3); border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; z-index: 200;
+  overflow-y: auto; scrollbar-width: none;
+}
+.sb::-webkit-scrollbar { display: none; }
+.sb-section { padding: 14px 14px 4px; }
+.sb-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+  position: relative;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-first { color: var(--accent); font-weight: 700; }
+.sb-item:hover { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active::before {
+  content: ''; position: absolute; left: -14px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.sb-spacer { flex: 1; min-height: 12px; }
+.sb-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-top: 1px solid var(--line);
+}
+.sb-avatar {
+  width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: var(--bg-ink); color: oklch(85% 0.01 75);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.sb-uname { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; line-height: 1.2; }
+.sb-ustatus {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9px; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px;
+}
+.sb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pos); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.3; } }
 
-  /* ── DAY CELL ── */
-  .cal-cell { background: var(--dark); min-height: 130px; padding: 10px; cursor: pointer; position: relative; transition: background 0.1s; display: flex; flex-direction: column; }
-  .cal-cell:hover { background: var(--dark2); }
-  .cal-cell:hover .cell-add-hint { opacity: 1; }
-  .cal-cell.other-month { background: var(--dark3); opacity: 0.55; cursor: default; pointer-events: none; }
-  .cal-cell.today { background: color-mix(in oklch, var(--accent), var(--dark) 91%); }
-  .cal-cell.weekend { background: color-mix(in oklch, var(--dark3), var(--dark) 60%); }
-  .cal-cell.weekend:hover { background: var(--dark2); }
+/* ════════════════════ Main ════════════════════ */
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
 
-  /* ── DATE NUMBER ── */
-  .cell-date { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .cell-num { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1; }
-  .cal-cell.today .cell-num { background: var(--accent); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-  .cal-cell.other-month .cell-num { color: var(--text3); }
-  .cell-add-hint { font-size: 16px; color: var(--text3); opacity: 0; transition: opacity 0.12s; line-height: 1; }
+/* Cert strips */
+.cert {
+  background: var(--bg-ink);
+  padding: 10px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; position: relative;
+}
+.cert-top { border-bottom: 3px solid var(--accent); }
+.cert-top::after, .cert-bot::before {
+  content: ''; position: absolute; left: 0; right: 0; height: 3px;
+  background: var(--foil); mix-blend-mode: screen;
+  opacity: 0.65; pointer-events: none;
+}
+.cert-top::after { bottom: -3px; }
+.cert-bot { margin-top: auto; border-top: 3px solid var(--accent); }
+.cert-bot::before { top: -3px; }
+.cert-bc {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: oklch(50% 0.01 75);
+}
+.cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
+.cert-bc .sep { opacity: 0.5; }
+.cert-splash {
+  height: 56px; width: auto; display: block;
+  margin: -14px 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+}
+.cert-right {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--accent);
+}
+.cert-meta { display: flex; }
+.cert-pill {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+.cert-pill + .cert-pill::before { content: ' · '; white-space: pre; }
+.cert-id {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
 
-  /* ── BREAK CHIPS IN CELL ── */
-  .cell-breaks { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-  .break-chip { display: flex; align-items: center; gap: 5px; padding: 4px 7px; border-radius: 5px; border-left: 3px solid transparent; font-size: 11px; cursor: pointer; transition: filter 0.1s; overflow: hidden; min-width: 0; }
-  .break-chip:hover { filter: brightness(1.12); }
-  .break-chip.planifie  { background: color-mix(in oklch, var(--accent), var(--dark2) 82%); border-left-color: var(--accent); }
-  .break-chip.en_direct { background: color-mix(in oklch, var(--neg), var(--dark2) 82%); border-left-color: var(--neg); }
-  .break-chip.termine   { background: color-mix(in oklch, var(--pos), var(--dark2) 82%); border-left-color: var(--pos); }
-  .break-chip.annule    { background: var(--dark3); border-left-color: var(--line); opacity: 0.6; }
-  .chip-time    { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--text3); white-space: nowrap; flex-shrink: 0; }
-  .chip-name    { font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-  .chip-more    { font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--text3); padding: 2px 6px; border-radius: 3px; background: var(--dark3); align-self: flex-start; margin-top: 1px; }
+/* ════════════════════ Toolbar ════════════════════ */
+.toolbar {
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+}
+.tb-left { display: flex; align-items: center; gap: 14px; }
+.nav-arrow {
+  width: 30px; height: 30px;
+  border-radius: var(--r-sm);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  color: var(--ink);
+  transition: background .12s, border-color .12s;
+}
+.nav-arrow:hover { background: var(--bg-2); border-color: var(--line-strong); }
+.month-display {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  margin: 0 6px;
+}
+.month-name {
+  font-size: 32px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 1;
+}
+.month-name .first { color: var(--accent); }
+.year-num {
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+.today-btn {
+  padding: 7px 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-2);
+  transition: background .12s, color .12s;
+}
+.today-btn:hover { background: var(--bg-3); color: var(--ink); border-color: var(--line-strong); }
 
-  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  .live-dot { width: 6px; height: 6px; background: var(--neg); border-radius: 50%; animation: pulse-dot 1.2s ease-in-out infinite; flex-shrink: 0; }
+.tb-right { display: flex; align-items: center; gap: 10px; }
+.view-seg {
+  display: inline-flex;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 3px;
+}
+.view-seg button {
+  padding: 7px 14px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border-radius: 4px;
+  transition: background .12s, color .12s;
+}
+.view-seg button:hover { color: var(--ink); }
+.view-seg button.active { background: var(--ink); color: var(--bg); }
 
-  /* ── SLIDE-IN PANEL ── */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(2px); }
-  .overlay.open { opacity: 1; pointer-events: all; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: filter .12s, background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { background: var(--bg-2); }
+.btn-sm { padding: 7px 11px; font-size: 10px; }
 
-  .panel { position: fixed; top: 0; right: -520px; width: 500px; max-width: 100vw; height: 100dvh; background: var(--dark2); border-left: 1px solid var(--line); z-index: 400; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4,0,0.2,1); box-shadow: -12px 0 48px rgba(0,0,0,0.3); }
-  .panel.open { right: 0; }
+/* ════════════════════ Calendar ════════════════════ */
+.cal-page { padding: 20px 36px 32px; }
 
-  .panel-header { padding: 22px 24px 18px; border-bottom: 1px solid var(--line); flex-shrink: 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-  .panel-title { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1; }
-  .panel-date-display { font-family: var(--font-mono); font-size: 11px; color: var(--text3); letter-spacing: 0.1em; margin-top: 5px; }
-  .panel-close { background: none; border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--text3); font-size: 16px; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.12s; flex-shrink: 0; }
-  .panel-close:hover { color: var(--ink); border-color: var(--text3); }
+.cal-dow-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.cal-dow {
+  padding: 8px 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.cal-dow.weekend { color: var(--accent); }
 
-  .panel-body { flex: 1; overflow-y: auto; padding: 22px 24px; }
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: minmax(132px, auto);
+  gap: 4px;
+}
 
-  /* Status strip (edit mode) */
-  .status-strip { display: flex; gap: 6px; margin-bottom: 20px; }
-  .status-chip { flex: 1; padding: 9px 4px; border-radius: var(--r-sm); border: 2px solid transparent; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-align: center; cursor: pointer; transition: all 0.12s; }
-  .status-chip.planifie  { border-color: var(--accent); color: var(--accent); background: color-mix(in oklch, var(--accent), transparent 90%); }
-  .status-chip.en_direct { border-color: var(--neg);    color: var(--neg);    background: color-mix(in oklch, var(--neg),    transparent 90%); }
-  .status-chip.termine   { border-color: var(--pos);    color: var(--pos);    background: color-mix(in oklch, var(--pos),    transparent 90%); }
-  .status-chip.annule    { border-color: var(--line);   color: var(--text3);  background: var(--dark3); }
-  .status-chip:not(.selected) { opacity: 0.35; }
-  .status-chip.selected  { opacity: 1; }
+.cell {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex; flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .08s;
+  position: relative;
+  min-height: 132px;
+}
+.cell:hover {
+  border-color: var(--line-strong);
+}
+.cell.other-month {
+  background: var(--bg-2);
+  opacity: 0.5;
+  cursor: default;
+}
+.cell.other-month:hover { border-color: var(--line); }
+.cell.today {
+  border: 2px solid var(--accent);
+  box-shadow: 0 8px 22px -10px color-mix(in oklch, var(--accent), transparent 50%);
+}
+.cell-head {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cell-num {
+  font-size: 16px; font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.cell.other-month .cell-num { color: var(--ink-3); }
+.cell.today .cell-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 900;
+}
+.cell-add {
+  font-size: 14px;
+  color: var(--mute);
+  opacity: 0;
+  transition: opacity .12s;
+  font-weight: 600;
+}
+.cell:not(.other-month):hover .cell-add { opacity: 0.6; }
 
-  /* Form */
-  .form-section { margin-bottom: 22px; }
-  .form-section-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .form-row.single { grid-template-columns: 1fr; }
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field.span2 { grid-column: span 2; }
-  .field label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
-  .field input, .field select, .field textarea { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 13px; color: var(--ink); font-size: 14px; font-family: var(--font-body); outline: none; transition: border-color 0.12s, box-shadow 0.12s; width: 100%; }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
-  .field select option { background: var(--dark3); }
-  .field textarea { min-height: 80px; resize: none; line-height: 1.5; }
+.chip {
+  padding: 5px 8px;
+  background: color-mix(in oklch, var(--chip-color, var(--accent)), transparent 86%);
+  border-left: 3px solid var(--chip-color, var(--accent));
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex; flex-direction: column;
+  gap: 2px;
+  transition: filter .12s, transform .08s;
+}
+.chip:hover { filter: brightness(0.97); }
+.chip:active { transform: translateY(1px); }
+.chip-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 4px;
+}
+.chip-sport {
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--chip-color, var(--accent));
+}
+.chip-time {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+.chip-live {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--neg);
+  animation: pulse 1.4s ease-in-out infinite;
+  margin-right: auto;
+  margin-left: 4px;
+}
+.chip-name {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: -0.005em; line-height: 1.2;
+  color: var(--ink);
+}
+.chip-vendor {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.chip-more {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  padding: 2px 8px;
+}
 
-  /* Time + Date row */
-  .date-time-row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; }
-  .big-date { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; padding: 10px 14px; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); cursor: pointer; transition: border-color 0.12s; }
-  .big-date::-webkit-calendar-picker-indicator { opacity: 0; position: absolute; }
-  .field input[type="date"] { font-size: 16px; font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em; }
-  .field input[type="time"] { font-size: 20px; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; text-align: center; }
+/* ════════════════════ Footer legend ════════════════════ */
+.legend {
+  margin-top: 16px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+}
+.legend-left {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.legend-eyebrow {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.legend-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+}
+.legend-right {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.legend-right .hl { color: var(--accent); }
 
-  /* Tracker link */
-  .tracker-link { display: flex; align-items: center; gap: 10px; background: color-mix(in oklch, var(--pos), transparent 90%); border: 1px solid color-mix(in oklch, var(--pos), transparent 65%); border-radius: var(--r-sm); padding: 12px 16px; font-size: 13px; color: var(--pos); margin-bottom: 16px; cursor: pointer; transition: all 0.12s; }
-  .tracker-link:hover { background: color-mix(in oklch, var(--pos), transparent 82%); }
-  .tracker-link strong { font-weight: 700; }
+/* ════════════════════ Side panel ════════════════════ */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(20,15,10,.40);
+  z-index: 800;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+.overlay.open { opacity: 1; pointer-events: auto; }
 
-  .panel-footer { padding: 16px 24px; border-top: 1px solid var(--line); display: flex; gap: 10px; flex-shrink: 0; }
-  .save-btn { flex: 1; background: var(--accent); border: none; border-radius: var(--r-sm); color: #fff; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 15px; cursor: pointer; transition: filter 0.12s; }
-  .save-btn:hover { filter: brightness(1.07); }
-  .save-btn:disabled { background: var(--line); color: var(--mute); cursor: not-allowed; filter: none; }
-  .del-btn { background: transparent; border: 1px solid color-mix(in oklch, var(--neg), transparent 55%); border-radius: var(--r-sm); color: var(--neg); font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 15px 18px; cursor: pointer; transition: all 0.12s; }
-  .del-btn:hover { background: color-mix(in oklch, var(--neg), transparent 88%); }
+.panel {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 440px; max-width: 92vw;
+  background: var(--bg);
+  border-left: 1px solid var(--line);
+  z-index: 900;
+  transform: translateX(100%);
+  transition: transform .25s ease;
+  display: flex; flex-direction: column;
+  box-shadow: -20px 0 50px -20px rgba(0,0,0,.20);
+}
+.panel.open { transform: translateX(0); }
+.panel-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
+.panel-date {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
+.panel-close {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink-3);
+  font-size: 18px;
+  transition: background .12s;
+}
+.panel-close:hover { background: var(--bg-2); color: var(--ink); }
+.panel-body {
+  flex: 1; overflow-y: auto;
+  padding: 20px 24px 12px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.status-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.status-chip {
+  padding: 8px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg-3);
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--ink-3);
+  text-align: center;
+}
+.status-chip.selected { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.status-chip.selected.live { background: var(--neg); border-color: var(--neg); }
+.status-chip.selected.done { background: var(--pos); border-color: var(--pos); }
 
-  /* ── TOAST ── */
-  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--dark2); border: 1px solid var(--pos); border-radius: var(--r-sm); padding: 12px 20px; color: var(--pos); font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.08em; box-shadow: 0 4px 24px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 999; white-space: nowrap; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast.err  { border-color: var(--neg); color: var(--neg); }
+.field {
+  background: var(--bg-3);
+  border: 1.5px solid transparent;
+  border-radius: 12px;
+  padding: 10px 14px 9px;
+  transition: border-color .18s, box-shadow .18s;
+  position: relative;
+}
+.field:hover { border-color: var(--line); }
+.field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 85%);
+}
+.field-label {
+  display: block;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: 4px;
+}
+.field:focus-within .field-label { color: var(--accent); }
+.field input,
+.field select,
+.field textarea {
+  font-family: inherit;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 15px; font-weight: 600;
+  color: var(--ink);
+}
+.field textarea { resize: vertical; min-height: 60px; }
+.field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' stroke='%23728' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  padding-right: 18px;
+  cursor: pointer;
+}
+.field-row {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.tracker-link {
+  display: none;
+  align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: color-mix(in oklch, var(--accent), transparent 88%);
+  border: 1px solid color-mix(in oklch, var(--accent), transparent 70%);
+  color: var(--accent);
+  border-radius: 8px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  cursor: pointer;
+  margin-bottom: 6px;
+}
+.tracker-link:hover { filter: brightness(0.96); }
+.panel-actions {
+  padding: 14px 24px 20px;
+  border-top: 1px solid var(--line);
+  display: flex; gap: 8px;
+  background: var(--bg-3);
+}
+.panel-actions .save {
+  flex: 1;
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+.panel-actions .save:hover { filter: brightness(1.05); }
+.panel-actions .save:disabled { opacity: 0.6; }
+.panel-actions .del {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in oklch, var(--neg), transparent 70%);
+  color: var(--neg);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.panel-actions .del:hover { background: color-mix(in oklch, var(--neg), transparent 90%); }
 
-  /* ── LOADING ── */
-  .cal-loading { padding: 60px 24px; text-align: center; color: var(--text3); font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spin { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; margin-right: 8px; }
+/* Toast */
+.toast {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--bg-ink); color: oklch(96% 0.008 80);
+  padding: 12px 18px; border-radius: 10px;
+  border-left: 3px solid var(--pos);
+  font-size: 12.5px; font-weight: 600;
+  box-shadow: 0 16px 40px -12px rgba(0,0,0,.40);
+  z-index: 1000;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .25s, transform .25s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.err { border-left-color: var(--neg); }
 
-  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 12px; }
+.cal-loading {
+  text-align: center; padding: 80px 20px;
+  color: var(--ink-3);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+
+@media (max-width: 1000px) {
+  .toolbar { gap: 12px; }
+  .tb-left, .tb-right { gap: 8px; }
+  .cell { min-height: 110px; }
+}
+@media (max-width: 900px) {
+  .sb { display: none; }
+  body { display: block; }
+  .cal-page { padding: 16px 14px 24px; }
+  .toolbar { padding: 12px 14px; }
+  .cert { padding: 10px 14px; }
+  .month-name { font-size: 26px; }
+  .cell { min-height: 96px; padding: 6px; }
+  .cell-num { font-size: 14px; }
+}
 </style>
 </head>
-<body class="he-root he-court"
-  data-sp-breadcrumb="■ SPELOOSH › OPÉRATIONS › PLANIFICATEUR"
-  data-sp-cert="SPLSH·26·05·PL006"
-  data-sp-meta="PLANNING · SCHEDULE · CAL">
+<body>
 
-<!-- ── HEADER ── -->
-<div class="header">
-  <a class="logo-wrap" href="/">
-    <span class="logo-dot"></span>
+<!-- ═════════════════════ SIDEBAR ═════════════════════ -->
+<aside class="sb" aria-label="Navigation principale">
+  <div class="sb-section" style="padding-top:22px">
+    <a class="sb-item" href="/"><span><span class="sb-first">H</span>ome</span></a>
+    <a class="sb-item" href="/break-builder.html"><span><span class="sb-first">B</span>reak Tracker</span></a>
+    <a class="sb-item" href="/hub.html"><span><span class="sb-first">H</span>ub</span></a>
+    <a class="sb-item" href="/break-prep.html"><span><span class="sb-first">B</span>reak Prep</span></a>
+    <a class="sb-item is-active" href="/planner.html"><span><span class="sb-first">P</span>lanificateur</span></a>
+    <a class="sb-item" href="/releases.html"><span><span class="sb-first">S</span>orties</span></a>
+    <a class="sb-item" href="/team.html"><span><span class="sb-first">É</span>quipe</span></a>
+    <a class="sb-item" href="/settings.html"><span><span class="sb-first">S</span>ettings</span></a>
+  </div>
+  <div class="sb-spacer"></div>
+  <div class="sb-user">
+    <div class="sb-avatar">GL</div>
     <div>
-      <div class="logo">Speloosh</div>
-      <div class="logo-sub">Planificateur</div>
+      <div class="sb-uname">Germain</div>
+      <div class="sb-ustatus"><span class="sb-dot"></span>En ligne</div>
     </div>
-  </a>
-  <nav class="header-nav">
-    <a class="nav-link" href="/">Home</a>
-    <a class="nav-link" href="/break-builder.html">Break Tracker</a>
-    <a class="nav-link" href="/hub.html">Hub</a>
-    <a class="nav-link" href="/break-prep.html">Break Prep</a>
-    <a class="nav-link" href="/releases.html">Sorties</a>
-    <a class="nav-link active" href="/planner.html">Planificateur</a>
-    <a class="nav-link" href="/team.html">Équipe</a>
-    <a class="nav-link" href="/settings.html">Settings</a>
-  </nav>
+  </div>
+</aside>
+
+<!-- ═════════════════════ MAIN ═════════════════════ -->
+<div class="main">
+
+  <!-- Top cert strip -->
+  <div class="cert cert-top">
+    <span class="cert-bc">
+      <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
+      <span class="sep">›</span><strong>PLANIFICATEUR</strong>
+    </span>
+    <span class="cert-right">Weather the Storm</span>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="tb-left">
+      <button class="nav-arrow" onclick="shiftMonth(-1)" title="Mois précédent">‹</button>
+      <button class="nav-arrow" onclick="shiftMonth(1)" title="Mois suivant">›</button>
+      <div class="month-display">
+        <span class="month-name" id="month-name">—</span>
+        <span class="year-num" id="year-num">—</span>
+      </div>
+      <button class="today-btn" onclick="goToday()">Aujourd'hui</button>
+    </div>
+    <div class="tb-right">
+      <div class="view-seg" role="tablist">
+        <button class="active" data-view="mois">Mois</button>
+        <button data-view="semaine">Semaine</button>
+        <button data-view="jour">Jour</button>
+      </div>
+      <button class="btn btn-primary" onclick="openPanel(todayISO())">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Planifier un break
+      </button>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="cal-page">
+    <div id="cal-wrap">
+      <div class="cal-loading">Chargement…</div>
+    </div>
+
+    <!-- Footer legend -->
+    <div class="legend">
+      <div class="legend-left">
+        <span class="legend-eyebrow">Légende</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--sport-hockey)"></span>NHL</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--sport-football)"></span>AHL · NFL</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--sport-basket)"></span>NBA</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--sport-personal)"></span>Personal</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--sport-release)"></span>Release</span>
+      </div>
+      <div class="legend-right">
+        <span>Ce mois</span>
+        <span><span class="hl" id="legend-breaks">0</span> breaks</span>
+        <span>· <span id="legend-lives">0</span> lives</span>
+        <span>· <span id="legend-vendeurs">0</span> vendeurs assignés</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom cert strip -->
+  <div class="cert cert-bot">
+    <div class="cert-meta">
+      <span class="cert-pill" id="bottom-month">—</span>
+      <span class="cert-pill">Planificateur</span>
+    </div>
+    <span class="cert-id">SPELOOSH © 2026</span>
+  </div>
+
 </div>
 
-<!-- ── CALENDAR NAV ── -->
-<div class="cal-nav">
-  <button class="cal-nav-btn" onclick="shiftMonth(-1)">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-  </button>
-  <span class="cal-month-label" id="month-label">—</span>
-  <span class="cal-year-label"  id="year-label"></span>
-  <button class="cal-nav-btn" onclick="shiftMonth(1)">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
-  </button>
-  <button class="today-btn" onclick="goToday()">Aujourd'hui</button>
-  <div style="flex:1"></div>
-  <button class="add-btn-main" onclick="openPanel(todayISO())">+ Planifier un break</button>
-</div>
-
-<!-- ── CALENDAR ── -->
-<div class="cal-wrap" id="cal-wrap">
-  <div class="cal-loading"><span class="spin"></span>Chargement...</div>
-</div>
-
-<div class="footer">Speloosh &mdash; Planificateur &copy; 2026</div>
-
-<!-- ── OVERLAY + PANEL ── -->
+<!-- ═════════════════════ SIDE PANEL ═════════════════════ -->
 <div class="overlay" id="overlay" onclick="closePanel()"></div>
-
-<div class="panel" id="panel">
-  <div class="panel-header">
+<aside class="panel" id="panel">
+  <div class="panel-head">
     <div>
       <div class="panel-title" id="panel-title">Nouveau break</div>
-      <div class="panel-date-display" id="panel-date-display"></div>
+      <div class="panel-date" id="panel-date-display">—</div>
     </div>
-    <button class="panel-close" onclick="closePanel()">✕</button>
+    <button class="panel-close" onclick="closePanel()" title="Fermer">×</button>
   </div>
 
   <div class="panel-body">
-
-    <!-- Status (edit mode only) -->
-    <div id="status-strip" style="display:none">
-      <div class="status-strip">
-        <div class="status-chip planifie"  id="sc-planifie"  onclick="selectStatut('planifie')">Planifié</div>
-        <div class="status-chip en_direct" id="sc-en_direct" onclick="selectStatut('en_direct')">🔴 En direct</div>
-        <div class="status-chip termine"   id="sc-termine"   onclick="selectStatut('termine')">✓ Terminé</div>
-        <div class="status-chip annule"    id="sc-annule"    onclick="selectStatut('annule')">Annulé</div>
-      </div>
+    <div class="status-strip" id="status-strip" style="display:none">
+      <button class="status-chip" id="sc-planifie"  onclick="selectStatut('planifie')">Planifié</button>
+      <button class="status-chip live" id="sc-en_direct" onclick="selectStatut('en_direct')">Live</button>
+      <button class="status-chip done" id="sc-termine"   onclick="selectStatut('termine')">Terminé</button>
+      <button class="status-chip" id="sc-annule"    onclick="selectStatut('annule')">Annulé</button>
     </div>
 
-    <!-- Tracker shortcut (terminé only) -->
-    <div class="tracker-link" id="tracker-link" style="display:none" onclick="openTracker()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-      <span><strong>Break terminé</strong> — Cliquez pour l'enregistrer dans le Break Tracker</span>
+    <div class="tracker-link" id="tracker-link" onclick="openTracker()">
+      Ouvrir dans Break Tracker →
     </div>
 
-    <!-- Date & Heure -->
-    <div class="form-section">
-      <div class="form-section-label">Date &amp; Heure</div>
-      <div class="form-row">
-        <div class="field">
-          <label>Date</label>
-          <input type="date" id="f-date" onchange="updatePanelDateDisplay()" />
-        </div>
-        <div class="field">
-          <label>Heure estimée</label>
-          <input type="time" id="f-heure" />
-        </div>
-      </div>
+    <div class="field-row">
+      <label class="field">
+        <span class="field-label">Date</span>
+        <input type="date" id="f-date" onchange="updatePanelDateDisplay()">
+      </label>
+      <label class="field">
+        <span class="field-label">Heure</span>
+        <input type="time" id="f-heure">
+      </label>
     </div>
 
-    <!-- Équipe -->
-    <div class="form-section">
-      <div class="form-section-label">Équipe</div>
-      <div class="form-row">
-        <div class="field">
-          <label>Vendeur</label>
-          <select id="f-vendeur"><option value="">Sélectionner...</option></select>
-        </div>
-        <div class="field">
-          <label>Helper</label>
-          <select id="f-helper"><option value="">Aucun</option></select>
-        </div>
-      </div>
+    <label class="field">
+      <span class="field-label">Nom / Produit</span>
+      <input type="text" id="f-produit" placeholder="Ex: Upper Deck CHL">
+    </label>
+
+    <div class="field-row">
+      <label class="field">
+        <span class="field-label">Vendeur</span>
+        <select id="f-vendeur"></select>
+      </label>
+      <label class="field">
+        <span class="field-label">Helper</span>
+        <select id="f-helper"></select>
+      </label>
     </div>
 
-    <!-- Contenu -->
-    <div class="form-section">
-      <div class="form-section-label">Contenu du break</div>
-      <div class="form-row single">
-        <div class="field">
-          <label>Produit</label>
-          <input type="text" id="f-produit" placeholder="Ex: 2024-25 The Cup Hockey" />
-        </div>
-      </div>
-      <div class="form-row" style="margin-top:12px">
-        <div class="field">
-          <label>Catégorie</label>
-          <select id="f-categorie">
-            <option value="">Sélectionner...</option>
-            <option>Wax</option>
-            <option>Repacks</option>
-            <option>Mix (Wax x Repacks)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Sport / Licence</label>
-          <select id="f-sport">
-            <option value="">Sélectionner...</option>
-            <option>Hockey</option>
-            <option>Football</option>
-            <option>Basketball</option>
-            <option>Baseball</option>
-            <option>Multi sports</option>
-            <option>Pokémon</option>
-          </select>
-        </div>
-        <div class="field span2">
-          <label>Type de break</label>
-          <select id="f-typebreak">
-            <option value="">Sélectionner...</option>
-            <option>Team Random</option>
-            <option>Hybrid</option>
-            <option>Player Random</option>
-            <option>Numeral</option>
-            <option>Wheel</option>
-          </select>
-        </div>
-      </div>
+    <div class="field-row">
+      <label class="field">
+        <span class="field-label">Sport</span>
+        <select id="f-sport">
+          <option value="">—</option>
+          <option>Hockey</option>
+          <option>Football</option>
+          <option>Basketball</option>
+          <option>Baseball</option>
+          <option>Multi sports</option>
+          <option>Pokémon</option>
+        </select>
+      </label>
+      <label class="field">
+        <span class="field-label">Catégorie</span>
+        <select id="f-categorie">
+          <option value="">—</option>
+          <option>Wax</option>
+          <option>Repacks</option>
+          <option>Mix (Wax x Repacks)</option>
+          <option>Personal</option>
+        </select>
+      </label>
     </div>
 
-    <!-- Notes -->
-    <div class="form-section">
-      <div class="form-section-label">Notes internes</div>
-      <div class="form-row single">
-        <div class="field">
-          <textarea id="f-notes" placeholder="Rappels, produits spéciaux, instructions..."></textarea>
-        </div>
-      </div>
-    </div>
+    <label class="field">
+      <span class="field-label">Type break</span>
+      <select id="f-typebreak">
+        <option value="">—</option>
+        <option>Team Random</option>
+        <option>Hybrid</option>
+        <option>Player Random</option>
+        <option>Numeral</option>
+        <option>Wheel</option>
+        <option>Release</option>
+      </select>
+    </label>
 
-  </div><!-- /panel-body -->
-
-  <div class="panel-footer">
-    <button class="save-btn" id="save-btn" onclick="saveItem()">Enregistrer</button>
-    <button class="del-btn"  id="del-btn"  onclick="deleteItem()" style="display:none">Supprimer</button>
+    <label class="field">
+      <span class="field-label">Notes</span>
+      <textarea id="f-notes" rows="2" placeholder="Notes optionnelles…"></textarea>
+    </label>
   </div>
-</div>
 
+  <div class="panel-actions">
+    <button class="del" id="del-btn" style="display:none" onclick="deleteItem()">Supprimer</button>
+    <button class="save" id="save-btn" onclick="saveItem()">Enregistrer</button>
+  </div>
+</aside>
+
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Constants ─────────────────────────────────────────────────────────────────
+// ════════════════════ Constants ════════════════════
 const MOIS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const JOURS_COURT = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
-const JOURS_FR = { Sunday:'Dimanche', Monday:'Lundi', Tuesday:'Mardi', Wednesday:'Mercredi', Thursday:'Jeudi', Friday:'Vendredi', Saturday:'Samedi' };
-const SETTINGS_KEY = 'he_settings';
 
-// ── State ─────────────────────────────────────────────────────────────────────
+// Sport → color CSS var
+const SPORT_COLOR = {
+  'Hockey':     'var(--sport-hockey)',
+  'NHL':        'var(--sport-hockey)',
+  'AHL':        'var(--sport-football)',
+  'Football':   'var(--sport-football)',
+  'NFL':        'var(--sport-football)',
+  'Basketball': 'var(--sport-basket)',
+  'NBA':        'var(--sport-basket)',
+  'Baseball':   'var(--sport-baseball)',
+  'MLB':        'var(--sport-baseball)',
+  'Personal':   'var(--sport-personal)',
+  'Release':    'var(--sport-release)',
+};
+
+// ════════════════════ Settings ════════════════════
+const SETTINGS_KEY = 'he_settings';
+function getSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return { vendeurs: ['Chuck','Phebe','Jeremi'], helpers: ['Chuck','Phebe','Jeremi'] };
+    return JSON.parse(raw);
+  } catch (e) { return { vendeurs: ['Chuck','Phebe','Jeremi'], helpers: ['Chuck','Phebe','Jeremi'] }; }
+}
+
+function populateTeamSelects() {
+  const s = getSettings();
+  const vSel = document.getElementById('f-vendeur');
+  const hSel = document.getElementById('f-helper');
+  vSel.innerHTML = '<option value="">—</option>';
+  hSel.innerHTML = '<option value="">Aucun</option>';
+  (s.vendeurs || []).forEach(v => { vSel.innerHTML += `<option>${v}</option>`; });
+  (s.helpers  || []).forEach(h => { hSel.innerHTML += `<option>${h}</option>`; });
+}
+
+// ════════════════════ State ════════════════════
+let currentMonth = new Date().getMonth();
 let currentYear  = new Date().getFullYear();
-let currentMonth = new Date().getMonth(); // 0-based
 let monthItems   = [];
 let editingId    = null;
 let currentStatut = 'planifie';
 
-// ── Settings ──────────────────────────────────────────────────────────────────
-function getSettings() {
-  try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
-    if (!raw) return { vendeurs:['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'], helpers:['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'] };
-    return JSON.parse(raw);
-  } catch(e) { return { vendeurs:[], helpers:[] }; }
-}
-function populateTeamSelects() {
-  const s = getSettings();
-  const vs = document.getElementById('f-vendeur');
-  const hs = document.getElementById('f-helper');
-  vs.innerHTML = '<option value="">Sélectionner...</option>';
-  hs.innerHTML = '<option value="">Aucun</option>';
-  (s.vendeurs||[]).forEach(v => { vs.innerHTML += `<option>${v}</option>`; });
-  (s.helpers ||[]).forEach(h => { hs.innerHTML += `<option>${h}</option>`; });
-}
-
-// ── Date helpers ──────────────────────────────────────────────────────────────
+// ════════════════════ Helpers ════════════════════
 function isoDate(d) { return d.toISOString().slice(0,10); }
 function todayISO() { return isoDate(new Date()); }
 
 function fmtDateLong(iso) {
-  if (!iso) return '';
-  const [y,m,d] = iso.split('-').map(Number);
-  const dt = new Date(y, m-1, d);
-  const jours = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-  return `${jours[dt.getDay()]} ${d} ${MOIS[m-1]} ${y}`;
+  if (!iso) return '—';
+  const d = new Date(iso + 'T12:00:00');
+  return JOURS_COURT[d.getDay() === 0 ? 6 : d.getDay() - 1] + ' ' + d.getDate() + ' ' + MOIS[d.getMonth()].toLowerCase().slice(0,3);
 }
 
-// ── Navigation ────────────────────────────────────────────────────────────────
 function shiftMonth(n) {
   currentMonth += n;
-  if (currentMonth > 11) { currentMonth = 0;  currentYear++; }
   if (currentMonth < 0)  { currentMonth = 11; currentYear--; }
+  if (currentMonth > 11) { currentMonth = 0;  currentYear++; }
   loadMonth();
 }
+
 function goToday() {
-  const now    = new Date();
-  currentYear  = now.getFullYear();
-  currentMonth = now.getMonth();
+  currentMonth = new Date().getMonth();
+  currentYear  = new Date().getFullYear();
   loadMonth();
 }
 
-// ── Load month data ───────────────────────────────────────────────────────────
+// ════════════════════ Load ════════════════════
 async function loadMonth() {
-  document.getElementById('month-label').textContent = MOIS[currentMonth];
-  document.getElementById('year-label').textContent  = ' ' + currentYear;
-
-  // Show skeleton
-  document.getElementById('cal-wrap').innerHTML = '<div class="cal-loading"><span class="spin"></span>Chargement...</div>';
+  const monthName = MOIS[currentMonth];
+  document.getElementById('month-name').innerHTML = `<span class="first">${monthName.charAt(0)}</span>${monthName.slice(1).toLowerCase()}`;
+  document.getElementById('year-num').textContent = currentYear;
+  document.getElementById('bottom-month').textContent = `${monthName} ${currentYear}`;
+  document.getElementById('cal-wrap').innerHTML = '<div class="cal-loading">Chargement…</div>';
 
   const from = isoDate(new Date(currentYear, currentMonth, 1));
   const to   = isoDate(new Date(currentYear, currentMonth + 1, 0));
@@ -407,11 +880,10 @@ async function loadMonth() {
       const err = await res.json().catch(() => ({}));
       if (JSON.stringify(err).includes('breaks_schedule')) {
         document.getElementById('cal-wrap').innerHTML = `
-          <div style="text-align:center;padding:60px 24px;color:var(--text3)">
+          <div style="text-align:center;padding:60px 24px;color:var(--ink-3)">
             <div style="font-size:28px;margin-bottom:14px">🗄️</div>
-            <div style="font-size:15px;color:var(--text2);font-weight:600;margin-bottom:8px">Table manquante dans Supabase</div>
-            <div style="font-size:13px;margin-bottom:16px">La table <code style="background:var(--dark3);padding:2px 8px;border-radius:4px;font-family:var(--font-mono)">breaks_schedule</code> n'existe pas encore.</div>
-            <div style="font-size:12px;color:var(--text3)">Allez dans Supabase → SQL Editor et exécutez le SQL fourni lors de l'installation.</div>
+            <div style="font-size:15px;font-weight:700;margin-bottom:8px">Table manquante dans Supabase</div>
+            <div style="font-size:13px;color:var(--ink-3)">La table <code style="background:var(--bg-2);padding:2px 8px;border-radius:4px">breaks_schedule</code> n'existe pas encore.</div>
           </div>`;
         return;
       }
@@ -419,26 +891,23 @@ async function loadMonth() {
     }
     if (!res.ok) throw new Error('API ' + res.status);
     monthItems = await res.json();
-  } catch(e) {
+  } catch (e) {
     showToast('Erreur de chargement : ' + e.message, true);
     monthItems = [];
   }
   renderCalendar();
 }
 
-// ── Build & render calendar ───────────────────────────────────────────────────
+// ════════════════════ Render ════════════════════
 function renderCalendar() {
   const today     = new Date();
   const firstDay  = new Date(currentYear, currentMonth, 1);
   const lastDay   = new Date(currentYear, currentMonth + 1, 0);
-
-  // Monday-first: find the Monday on or before the 1st
-  const startDow  = firstDay.getDay(); // 0=Sun,1=Mon,...
+  const startDow  = firstDay.getDay();
   const offset    = (startDow === 0) ? -6 : 1 - startDow;
   const gridStart = new Date(firstDay);
   gridStart.setDate(firstDay.getDate() + offset);
 
-  // Always 6 rows × 7 cols = 42 cells
   const cells = [];
   for (let i = 0; i < 42; i++) {
     const d = new Date(gridStart);
@@ -446,121 +915,133 @@ function renderCalendar() {
     cells.push(d);
   }
 
-  // DOW header row
   const dowHTML = JOURS_COURT.map((j,i) =>
     `<div class="cal-dow${i>=5?' weekend':''}">${j}</div>`
   ).join('');
 
-  // Grid cells
   const cellsHTML = cells.map(d => {
     const iso       = isoDate(d);
     const isOther   = d.getMonth() !== currentMonth;
     const isToday   = iso === isoDate(today);
-    const isSat     = d.getDay() === 6;
-    const isSun     = d.getDay() === 0;
-    const isWeekend = isSat || isSun;
     const items     = monthItems.filter(x => x.date === iso);
 
-    let cls = 'cal-cell';
-    if (isOther)   cls += ' other-month';
-    else if (isToday) cls += ' today';
-    else if (isWeekend) cls += ' weekend';
+    let cls = 'cell';
+    if (isOther) cls += ' other-month';
+    if (isToday) cls += ' today';
 
-    // Break chips (max 3 visible, rest as "+N")
     let chipsHTML = '';
     const visible = items.slice(0, 3);
     const hidden  = items.length - 3;
 
     visible.forEach(item => {
-      const s    = item.statut || 'planifie';
-      const name = item.vendeur || item.produit || '—';
-      const dot  = s === 'en_direct' ? '<span class="live-dot"></span>' : '';
-      const time = item.heureEstimee ? `<span class="chip-time">${item.heureEstimee}</span>` : '';
-      chipsHTML += `
-        <div class="break-chip ${s}" onclick="openEdit(${item.id}, event)">
-          ${dot}${time}
-          <span class="chip-name">${name}</span>
-        </div>`;
+      const sport  = item.sport || item.typeBreak || 'Hockey';
+      const isRelease = (item.typeBreak || '').toLowerCase().includes('release');
+      const isPersonal = (item.categorie || '').toLowerCase().includes('personal');
+      const colorKey = isRelease ? 'Release' : (isPersonal ? 'Personal' : sport);
+      const color = SPORT_COLOR[colorKey] || SPORT_COLOR.Hockey;
+      const name = item.produit || 'Break';
+      const time = item.heureEstimee || '';
+      const vendor = item.vendeur || '';
+      const isLive = item.statut === 'en_direct';
+      const sportTag = isRelease ? 'RELEASE' : (item.sport || 'NHL').toUpperCase();
+      const onclick = `onclick="event.stopPropagation(); openEdit(${item.id})"`;
+      chipsHTML += `<div class="chip" style="--chip-color:${color}" ${onclick}>
+        <div class="chip-head">
+          <span class="chip-sport">${escHtml(sportTag)}</span>
+          ${isLive ? '<span class="chip-live"></span>' : ''}
+          ${time ? `<span class="chip-time">${escHtml(time)}</span>` : ''}
+        </div>
+        <div class="chip-name">${escHtml(name)}</div>
+        ${vendor ? `<div class="chip-vendor">${escHtml(vendor)}</div>` : ''}
+      </div>`;
     });
     if (hidden > 0) chipsHTML += `<div class="chip-more">+${hidden} autre${hidden>1?'s':''}</div>`;
 
     const clickFn = isOther ? '' : `onclick="openPanel('${iso}')"`;
-
-    return `
-      <div class="${cls}" ${clickFn}>
-        <div class="cell-date">
-          <span class="cell-num">${d.getDate()}</span>
-          ${!isOther ? '<span class="cell-add-hint">+</span>' : ''}
-        </div>
-        <div class="cell-breaks">${chipsHTML}</div>
-      </div>`;
+    return `<div class="${cls}" ${clickFn}>
+      <div class="cell-head">
+        <span class="cell-num">${d.getDate()}</span>
+        ${!isOther && !chipsHTML ? '<span class="cell-add">+</span>' : ''}
+      </div>
+      ${chipsHTML}
+    </div>`;
   }).join('');
 
   document.getElementById('cal-wrap').innerHTML = `
     <div class="cal-dow-row">${dowHTML}</div>
     <div class="cal-grid">${cellsHTML}</div>
   `;
+
+  // Legend stats
+  const monthBreaks = monthItems.filter(x => {
+    const d = new Date(x.date + 'T12:00:00');
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+  const lives    = monthBreaks.filter(x => x.statut === 'en_direct').length;
+  const vendeurs = new Set(monthBreaks.map(x => x.vendeur).filter(Boolean)).size;
+  document.getElementById('legend-breaks').textContent   = monthBreaks.length;
+  document.getElementById('legend-lives').textContent    = lives;
+  document.getElementById('legend-vendeurs').textContent = vendeurs;
 }
 
-// ── Panel ─────────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ════════════════════ Panel ════════════════════
 function openPanel(date) {
   editingId = null;
   currentStatut = 'planifie';
   populateTeamSelects();
-  document.getElementById('panel-title').textContent      = 'Nouveau break';
-  document.getElementById('f-date').value                 = date || todayISO();
-  document.getElementById('f-heure').value                = '';
-  document.getElementById('f-vendeur').value              = '';
-  document.getElementById('f-helper').value               = '';
-  document.getElementById('f-produit').value              = '';
-  document.getElementById('f-categorie').value            = '';
-  document.getElementById('f-sport').value                = '';
-  document.getElementById('f-typebreak').value            = '';
-  document.getElementById('f-notes').value                = '';
-  document.getElementById('status-strip').style.display  = 'none';
-  document.getElementById('tracker-link').style.display  = 'none';
-  document.getElementById('del-btn').style.display       = 'none';
-  document.getElementById('save-btn').textContent        = 'Enregistrer';
+  document.getElementById('panel-title').textContent = 'Nouveau break';
+  document.getElementById('f-date').value      = date || todayISO();
+  document.getElementById('f-heure').value     = '';
+  document.getElementById('f-produit').value   = '';
+  document.getElementById('f-vendeur').value   = '';
+  document.getElementById('f-helper').value    = '';
+  document.getElementById('f-sport').value     = '';
+  document.getElementById('f-categorie').value = '';
+  document.getElementById('f-typebreak').value = '';
+  document.getElementById('f-notes').value     = '';
+  document.getElementById('status-strip').style.display = 'none';
+  document.getElementById('tracker-link').style.display = 'none';
+  document.getElementById('del-btn').style.display      = 'none';
+  document.getElementById('save-btn').textContent       = 'Enregistrer';
   updatePanelDateDisplay();
   showPanel();
 }
 
-function openEdit(id, ev) {
-  if (ev) ev.stopPropagation();
+function openEdit(id) {
   const item = monthItems.find(x => x.id === id);
   if (!item) return;
-  editingId     = id;
+  editingId = id;
   currentStatut = item.statut || 'planifie';
   populateTeamSelects();
-  document.getElementById('panel-title').textContent      = 'Modifier le break';
-  document.getElementById('f-date').value                 = item.date         || '';
-  document.getElementById('f-heure').value                = item.heureEstimee || '';
-  document.getElementById('f-vendeur').value              = item.vendeur      || '';
-  document.getElementById('f-helper').value               = item.helper       || '';
-  document.getElementById('f-produit').value              = item.produit      || '';
-  document.getElementById('f-categorie').value            = item.categorie    || '';
-  document.getElementById('f-sport').value                = item.sport        || '';
-  document.getElementById('f-typebreak').value            = item.typeBreak    || '';
-  document.getElementById('f-notes').value                = item.notes        || '';
-  document.getElementById('status-strip').style.display  = 'block';
-  document.getElementById('del-btn').style.display       = 'inline-block';
-  document.getElementById('save-btn').textContent        = 'Mettre à jour';
+  document.getElementById('panel-title').textContent = 'Modifier le break';
+  document.getElementById('f-date').value      = item.date         || '';
+  document.getElementById('f-heure').value     = item.heureEstimee || '';
+  document.getElementById('f-produit').value   = item.produit      || '';
+  document.getElementById('f-vendeur').value   = item.vendeur      || '';
+  document.getElementById('f-helper').value    = item.helper       || '';
+  document.getElementById('f-sport').value     = item.sport        || '';
+  document.getElementById('f-categorie').value = item.categorie    || '';
+  document.getElementById('f-typebreak').value = item.typeBreak    || '';
+  document.getElementById('f-notes').value     = item.notes        || '';
+  document.getElementById('status-strip').style.display = 'grid';
+  document.getElementById('del-btn').style.display      = 'inline-block';
+  document.getElementById('save-btn').textContent       = 'Mettre à jour';
   renderStatusStrip();
   updateTrackerLink();
   updatePanelDateDisplay();
   showPanel();
 }
 
-function selectStatut(s) {
-  currentStatut = s;
-  renderStatusStrip();
-  updateTrackerLink();
-}
+function selectStatut(s) { currentStatut = s; renderStatusStrip(); updateTrackerLink(); }
 
 function renderStatusStrip() {
   ['planifie','en_direct','termine','annule'].forEach(s => {
     const el = document.getElementById('sc-' + s);
-    el.classList.toggle('selected', s === currentStatut);
+    if (el) el.classList.toggle('selected', s === currentStatut);
   });
 }
 
@@ -569,25 +1050,23 @@ function updateTrackerLink() {
 }
 
 function updatePanelDateDisplay() {
-  const iso = document.getElementById('f-date').value;
-  document.getElementById('panel-date-display').textContent = fmtDateLong(iso);
+  document.getElementById('panel-date-display').textContent = fmtDateLong(document.getElementById('f-date').value);
 }
 
 function showPanel() {
   document.getElementById('overlay').classList.add('open');
   document.getElementById('panel').classList.add('open');
 }
-
 function closePanel() {
   document.getElementById('overlay').classList.remove('open');
   document.getElementById('panel').classList.remove('open');
 }
 
-// ── Save ──────────────────────────────────────────────────────────────────────
+// ════════════════════ Save / Delete ════════════════════
 async function saveItem() {
   const btn = document.getElementById('save-btn');
   btn.disabled = true;
-  btn.textContent = editingId ? 'Mise à jour...' : 'Enregistrement...';
+  btn.textContent = editingId ? 'Mise à jour…' : 'Enregistrement…';
 
   const payload = {
     date:         document.getElementById('f-date').value      || null,
@@ -601,7 +1080,6 @@ async function saveItem() {
     notes:        document.getElementById('f-notes').value     || null,
     statut:       currentStatut,
   };
-
   if (!payload.date) {
     showToast('La date est obligatoire.', true);
     btn.disabled = false;
@@ -622,31 +1100,28 @@ async function saveItem() {
       throw new Error(err.error || 'Erreur serveur');
     }
     closePanel();
-    showToast(editingId ? '✓ Break mis à jour !' : '✓ Break planifié !');
+    showToast(editingId ? 'Break mis à jour' : 'Break planifié');
     await loadMonth();
-  } catch(e) {
-    showToast('Erreur : ' + e.message, true);
+  } catch (e) {
+    showToast(e.message, true);
   }
-
   btn.disabled = false;
   btn.textContent = editingId ? 'Mettre à jour' : 'Enregistrer';
 }
 
-// ── Delete ────────────────────────────────────────────────────────────────────
 async function deleteItem() {
   if (!editingId || !confirm('Supprimer ce break planifié ?')) return;
   try {
     const res = await fetch('/api/schedule?id=' + editingId, { method: 'DELETE' });
     if (!res.ok) throw new Error();
     closePanel();
-    showToast('✓ Break supprimé');
+    showToast('Break supprimé');
     await loadMonth();
-  } catch(e) {
-    showToast('Erreur lors de la suppression.', true);
+  } catch (e) {
+    showToast('Erreur lors de la suppression', true);
   }
 }
 
-// ── Tracker link ──────────────────────────────────────────────────────────────
 function openTracker() {
   const p = new URLSearchParams();
   const item = monthItems.find(x => x.id === editingId);
@@ -661,18 +1136,18 @@ function openTracker() {
   window.open('/break-builder.html?' + p.toString(), '_blank');
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
+// ════════════════════ Toast ════════════════════
 let toastTimer;
-function showToast(msg, isErr = false) {
+function showToast(msg, isErr) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className   = 'toast' + (isErr ? ' err' : '');
+  t.textContent = (isErr ? '⚠ ' : '✓ ') + msg;
+  t.classList.toggle('err', !!isErr);
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// ── Keyboard ──────────────────────────────────────────────────────────────────
+// ════════════════════ Keyboard ════════════════════
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closePanel();
   if (!document.getElementById('panel').classList.contains('open')) {
@@ -681,7 +1156,18 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
+// View segmented (placeholder — Semaine/Jour not yet implemented)
+document.querySelectorAll('.view-seg button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.view-seg button').forEach(x => x.classList.toggle('active', x === b));
+    if (b.dataset.view !== 'mois') {
+      showToast('Vue ' + b.dataset.view + ' à venir', false);
+      document.querySelectorAll('.view-seg button').forEach(x => x.classList.toggle('active', x.dataset.view === 'mois'));
+    }
+  });
+});
+
+// ════════════════════ Boot ════════════════════
 loadMonth();
 </script>
 </body>
