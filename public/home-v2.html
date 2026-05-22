@@ -1776,63 +1776,12 @@ body {
         <div class="feed-eyebrow"><span class="holo"></span>Calendrier · Hockey</div>
         <h2 class="releases-title">Sorties à venir.</h2>
       </div>
-      <div class="releases-caption">6 prochaines · 14 jours</div>
+      <div class="releases-caption" id="releases-caption">Chargement…</div>
     </div>
 
-    <div class="timeline">
-      <div class="tl-col">
-        <div class="tl-dot"></div>
-        <div class="tl-date"><div class="tl-day">23</div><div class="tl-month">Mai</div></div>
-        <div class="tl-card">
-          <div class="tl-tags"><span class="tl-tag solid">UD</span><span class="tl-tag">Hobby</span></div>
-          <div class="tl-name">SP Authentic Hockey 24-25</div>
-        </div>
-      </div>
-
-      <div class="tl-col today">
-        <div class="tl-dot"></div>
-        <div class="tl-date"><div class="tl-day">22</div><div class="tl-month">Mai</div></div>
-        <div class="tl-card">
-          <div class="tl-tags"><span class="tl-tag solid">UD</span><span class="tl-tag">Tin</span></div>
-          <div class="tl-name">Upper Deck Tim Hortons 25-26</div>
-          <div class="tl-today-badge">Aujourd'hui</div>
-        </div>
-      </div>
-
-      <div class="tl-col">
-        <div class="tl-dot"></div>
-        <div class="tl-date"><div class="tl-day">28</div><div class="tl-month">Mai</div></div>
-        <div class="tl-card">
-          <div class="tl-tags"><span class="tl-tag solid">UD</span><span class="tl-tag">Hobby</span><span class="tl-tag">Premium</span></div>
-          <div class="tl-name">Ultimate Collection Hockey 24-25</div>
-        </div>
-      </div>
-
-      <div class="tl-col">
-        <div class="tl-dot"></div>
-        <div class="tl-date"><div class="tl-day">04</div><div class="tl-month">Juin</div></div>
-        <div class="tl-card">
-          <div class="tl-tags"><span class="tl-tag solid">UD</span><span class="tl-tag">Retail</span></div>
-          <div class="tl-name">O-Pee-Chee Hockey 25-26</div>
-        </div>
-      </div>
-
-      <div class="tl-col">
-        <div class="tl-dot"></div>
-        <div class="tl-date"><div class="tl-day">11</div><div class="tl-month">Juin</div></div>
-        <div class="tl-card">
-          <div class="tl-tags"><span class="tl-tag solid">UD</span><span class="tl-tag">Hobby</span></div>
-          <div class="tl-name">Synergy Hockey 24-25</div>
-        </div>
-      </div>
-
-      <div class="tl-col">
-        <div class="tl-dot"></div>
-        <div class="tl-date"><div class="tl-day">18</div><div class="tl-month">Juin</div></div>
-        <div class="tl-card">
-          <div class="tl-tags"><span class="tl-tag solid">UD</span><span class="tl-tag">Hobby</span><span class="tl-tag">Premium</span></div>
-          <div class="tl-name">The Cup Hockey 24-25</div>
-        </div>
+    <div class="timeline" id="timeline">
+      <div style="grid-column:1/-1;padding:18px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">
+        Chargement du calendrier…
       </div>
     </div>
   </section>
@@ -1919,6 +1868,75 @@ document.querySelectorAll('.mc-group').forEach(g => {
     });
   });
 });
+
+/* ─────────────────────────────────────────────────────────────
+   Sorties à venir — fetch api.hobbyempire.org/api/releases/upcoming
+   Render: timeline 6 colonnes, "aujourd'hui" si date == today
+   ───────────────────────────────────────────────────────────── */
+(function () {
+  const API = 'https://api.hobbyempire.org';
+  const tl = document.getElementById('timeline');
+  const cap = document.getElementById('releases-caption');
+
+  const MONTHS_FR = ['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC'];
+  const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dayOf   = iso => iso ? String(parseInt(iso.slice(8,10),10)).padStart(2,'0') : '—';
+  const monthOf = iso => iso ? MONTHS_FR[parseInt(iso.slice(5,7),10)-1] : 'TBD';
+  const todayISO = new Date().toISOString().slice(0,10);
+
+  const daysBetween = iso => {
+    if (!iso) return null;
+    const a = new Date(todayISO), b = new Date(iso);
+    return Math.round((b - a) / 86400000);
+  };
+
+  fetch(API + '/api/releases/upcoming')
+    .then(r => r.json())
+    .then(data => {
+      const all = data.releases || [];
+      const seen = new Set(), cards = [];
+      for (const r of all) {
+        if (!r.releaseDateConfirmed) continue;
+        const k = `${r.season}|${r.productLine}`;
+        if (seen.has(k)) continue;
+        seen.add(k); cards.push(r);
+        if (cards.length >= 6) break;
+      }
+      if (!cards.length) {
+        tl.innerHTML = '<div style="grid-column:1/-1;padding:18px;color:var(--mute);font-size:12px">Aucune sortie confirmée à venir.</div>';
+        cap.textContent = '';
+        return;
+      }
+
+      const lastISO = cards[cards.length - 1].releaseDate;
+      const span = daysBetween(lastISO);
+      cap.textContent = `${cards.length} prochaines · ${span} jours`;
+
+      tl.innerHTML = cards.map(r => {
+        const isToday = r.releaseDate === todayISO;
+        const tags = [];
+        if (r.brand)  tags.push(`<span class="tl-tag solid">${esc(r.brand)}</span>`);
+        if (r.format) tags.push(`<span class="tl-tag">${esc(r.format)}</span>`);
+        return `
+          <div class="tl-col${isToday ? ' today' : ''}">
+            <div class="tl-dot"></div>
+            <div class="tl-date">
+              <div class="tl-day">${dayOf(r.releaseDate)}</div>
+              <div class="tl-month">${monthOf(r.releaseDate)}</div>
+            </div>
+            <div class="tl-card">
+              <div class="tl-tags">${tags.join('')}</div>
+              <div class="tl-name">${esc(r.productName)}</div>
+              ${isToday ? '<div class="tl-today-badge">Aujourd\'hui</div>' : ''}
+            </div>
+          </div>`;
+      }).join('');
+    })
+    .catch(() => {
+      tl.innerHTML = '<div style="grid-column:1/-1;padding:18px;color:var(--mute);font-size:12px;font-style:italic">Calendrier indisponible pour le moment.</div>';
+      cap.textContent = '';
+    });
+})();
 </script>
 
 </body>
