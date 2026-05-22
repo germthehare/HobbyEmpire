@@ -162,6 +162,10 @@ body {
   position: relative;
   transition: background 0.12s, color 0.12s;
 }
+.sb-item::first-letter {
+  color: var(--accent);
+  font-weight: 700;
+}
 .sb-item:hover { background: var(--bg-2); color: var(--ink); }
 .sb-item.is-active { background: var(--bg-2); color: var(--ink); }
 .sb-item.is-active::before {
@@ -1217,11 +1221,6 @@ body {
       <div class="sb-wordmark">SPELOOSH</div>
       <div class="sb-tag">/ THE BREAK PLATFORM</div>
     </div>
-  </div>
-
-  <div class="sb-search">
-    <input type="search" placeholder="RECHERCHER…" aria-label="Rechercher dans l'app">
-    <kbd class="sb-kbd">⌘K</kbd>
   </div>
 
   <div class="sb-section">
