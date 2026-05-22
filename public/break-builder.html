@@ -4,370 +4,815 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Break Tracker — Speloosh</title>
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="/speloosh-shell.css">
-<style>
-  .he-court {
-    --gold:  var(--accent);
-    --gold2: color-mix(in oklch, var(--accent), white 12%);
-    --gold3: color-mix(in oklch, var(--accent), white 22%);
-    --dark:  var(--bg);
-    --dark2: var(--bg-3);
-    --dark3: var(--bg-2);
-    --dark4: var(--line);
-    --text:  var(--ink);
-    --text2: var(--ink-2);
-    --text3: var(--ink-3);
-    --red:   var(--neg);
-    --green: var(--pos);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--dark); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
-
-  .header { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
-  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 2px; align-self: center; }
-  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1; }
-  .logo-sub { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); margin-top: 2px; }
-  .header-nav { display: flex; gap: 4px; }
-  .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
-  .nav-link:hover { color: var(--text); background: var(--bg-2); }
-  .nav-link.active { color: var(--ink); background: var(--bg-2); }
-
-  /* ── Tabs ── */
-  .page-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); background: var(--dark2); padding: 0 24px; }
-  .page-tab { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); padding: 16px 20px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; margin-bottom: -1px; }
-  .page-tab:hover { color: var(--text2); }
-  .page-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-  .page-head { padding: 32px 24px 24px; max-width: 760px; margin: 0 auto; }
-  .page-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.02em; line-height: 0.92; color: var(--text); margin-bottom: 8px; }
-  .page-sub { font-size: 14px; color: var(--text3); font-family: var(--font-body); }
-
-  .main { padding: 0 24px 60px; max-width: 760px; margin: 0 auto; }
-
-  .section { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow-card); }
-  .section-head { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
-  .section-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
-  .section-body { padding: 20px; }
-
-  .field-grid { display: grid; gap: 12px; }
-  .field-grid-2 { grid-template-columns: 1fr 1fr; }
-  .field-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-  @media (max-width: 500px) { .field-grid-2, .field-grid-3 { grid-template-columns: 1fr; } }
-
-  .field { display: flex; flex-direction: column; gap: 6px; }
-  .field label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
-  .field input, .field select { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; color: var(--text); font-size: 14px; font-family: var(--font-body); outline: none; transition: border-color 0.12s, box-shadow 0.12s; width: 100%; }
-  .field input:focus, .field select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 80%); }
-  .field input::placeholder { color: var(--mute); }
-  .field select option { background: var(--dark3); }
-  .field input.readonly { color: var(--text3); cursor: default; }
-
-  .calc-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .calc-cell { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 16px; text-align: center; }
-  .calc-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
-  .calc-val { font-family: var(--font-display); font-variant-numeric: tabular-nums; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
-  .calc-val.green { color: var(--pos); }
-  .calc-val.red { color: var(--neg); }
-
-  .submit-btn {
-    width: 100%; background: var(--gold); border: none; border-radius: var(--r-sm);
-    color: var(--accent-ink); font-size: 11px; font-weight: 600;
-    font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase;
-    padding: 17px; cursor: pointer; transition: filter 0.12s, transform 0.12s; margin-top: 8px;
-  }
-  .submit-btn:hover { filter: brightness(1.05); }
-  .submit-btn:active { transform: translateY(1px); }
-  .submit-btn:disabled { background: var(--line); color: var(--mute); cursor: not-allowed; filter: none; }
-  .cancel-btn {
-    width: 100%; background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm);
-    color: var(--text3); font-size: 11px; font-weight: 600;
-    font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase;
-    padding: 14px; cursor: pointer; transition: all 0.12s; margin-top: 8px;
-  }
-  .cancel-btn:hover { border-color: var(--text3); color: var(--text2); }
-
-  .success-box {
-    background: color-mix(in oklch, var(--pos), transparent 88%);
-    border: 1px solid color-mix(in oklch, var(--pos), transparent 65%);
-    border-radius: var(--r-sm); padding: 16px 20px;
-    color: var(--pos); font-size: 13px;
-    font-family: var(--font-mono); letter-spacing: 0.05em;
-    margin-top: 12px; display: none; text-align: center;
-  }
-  .error-box {
-    background: color-mix(in oklch, var(--neg), transparent 88%);
-    border: 1px solid color-mix(in oklch, var(--neg), transparent 65%);
-    border-radius: var(--r-sm); padding: 16px 20px;
-    color: var(--neg); font-size: 13px;
-    margin-top: 12px; display: none;
-  }
-  .edit-banner {
-    background: color-mix(in oklch, var(--accent), transparent 88%);
-    border: 1px solid color-mix(in oklch, var(--accent), transparent 65%);
-    border-radius: var(--r-sm); padding: 14px 18px;
-    color: var(--accent); font-size: 12px;
-    font-family: var(--font-mono); letter-spacing: 0.05em;
-    margin-bottom: 16px; display: none;
-  }
-
-  /* ── Historique ── */
-  .hist-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  .hist-search { flex: 1; min-width: 180px; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text); font-size: 13px; font-family: var(--font-body); outline: none; transition: border-color 0.12s; }
-  .hist-search:focus { border-color: var(--accent); }
-  .hist-search::placeholder { color: var(--mute); }
-  .hist-filter { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text); font-size: 13px; font-family: var(--font-body); outline: none; cursor: pointer; }
-  .hist-refresh { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 14px; color: var(--text3); font-size: 13px; cursor: pointer; transition: all 0.12s; }
-  .hist-refresh:hover { border-color: var(--text3); color: var(--text); }
-  .export-btn { background: transparent; border: 1px solid var(--accent); border-radius: var(--r-sm); padding: 10px 16px; color: var(--accent); font-size: 11px; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.12s; }
-  .export-btn:hover { background: color-mix(in oklch, var(--accent), transparent 88%); }
-  .btn-delete { background: transparent; border: 1px solid color-mix(in oklch, var(--neg), transparent 60%); border-radius: var(--r-sm); color: var(--neg); font-size: 10px; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 14px; cursor: pointer; transition: all 0.12s; }
-  .btn-delete:hover { background: color-mix(in oklch, var(--neg), transparent 88%); }
-
-  .break-card { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: 10px; overflow: hidden; transition: border-color 0.15s; }
-  .break-card:hover { border-color: var(--line-strong, #333); }
-  .break-card-head { padding: 14px 18px; display: flex; align-items: center; gap: 12px; cursor: pointer; user-select: none; }
-  .break-card-date { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.1em; min-width: 80px; }
-  .break-card-name { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
-  .break-card-vendeur { font-family: var(--font-mono); font-size: 10px; color: var(--text3); letter-spacing: 0.08em; }
-  .break-card-sport { font-family: var(--font-mono); font-size: 10px; padding: 3px 7px; border-radius: 3px; background: var(--dark3); color: var(--text3); letter-spacing: 0.08em; }
-  .break-card-amount { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--pos); min-width: 90px; text-align: right; }
-  .break-card-amount.neg { color: var(--neg); }
-  .break-card-chevron { color: var(--text3); font-size: 12px; transition: transform 0.2s; }
-  .break-card.open .break-card-chevron { transform: rotate(180deg); }
-
-  .break-card-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--line); }
-  .break-card.open .break-card-body { display: block; }
-  .break-detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; margin-bottom: 16px; }
-  @media (max-width: 500px) { .break-detail-grid { grid-template-columns: 1fr 1fr; } }
-  .break-detail-cell { background: var(--dark3); border-radius: var(--r-sm); padding: 12px; }
-  .break-detail-lbl { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); margin-bottom: 4px; }
-  .break-detail-val { font-size: 14px; font-weight: 600; color: var(--text); }
-  .break-detail-val.pos { color: var(--pos); }
-  .break-detail-val.neg { color: var(--neg); }
-
-  .break-actions { display: flex; gap: 8px; }
-  .btn-edit { background: var(--gold); border: none; border-radius: var(--r-sm); color: var(--accent-ink); font-size: 10px; font-weight: 700; font-family: var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 18px; cursor: pointer; transition: filter 0.12s; }
-  .btn-edit:hover { filter: brightness(1.08); }
-
-  .hist-empty { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 14px; }
-  .hist-loading { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 13px; font-family: var(--font-mono); letter-spacing: 0.1em; }
-
-  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
-</style>
 <script src="/auth-guard.js" data-role="admin"></script>
-<script src="/lang-toggle.js"></script>
-<script src="/speloosh-shell.js"></script>
+<style>
+/* ════════════════════ Grift ════════════════════ */
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Regular.woff2')   format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-SemiBold.woff2')  format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Bold.woff2')      format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-ExtraBold.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Black.woff2')     format('woff2'); font-weight: 900; font-style: normal; font-display: swap; }
+
+/* ════════════════════ Reset + tokens ════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; }
+a { color: inherit; text-decoration: none; }
+
+:root {
+  --bg:          oklch(96.5% 0.012 75);
+  --bg-2:        oklch(93%   0.016 75);
+  --bg-3:        oklch(99%   0.005 80);
+  --bg-ink:      oklch(16%   0.018 260);
+  --line:        oklch(86%   0.014 75);
+  --line-strong: oklch(70%   0.02  75);
+  --ink:         oklch(16%   0.018 260);
+  --ink-2:       oklch(32%   0.014 260);
+  --ink-3:       oklch(50%   0.012 260);
+  --mute:        oklch(62%   0.01  75);
+  --accent:      oklch(72%   0.13  200);
+  --accent-2:    oklch(65%   0.14  195);
+  --accent-ink:  oklch(16%   0.018 260);
+  --pos:         oklch(54%   0.16  152);
+  --neg:         oklch(56%   0.21  22);
+  --warn:        oklch(72%   0.16  80);
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+  --shadow-card: 0 1px 0 rgba(20,15,10,.05), 0 10px 28px -16px rgba(20,15,10,.20);
+  --foil: linear-gradient(110deg,
+    transparent 0%,
+    color-mix(in oklch, oklch(82% 0.14 320), transparent 60%) 18%,
+    color-mix(in oklch, oklch(80% 0.12 200), transparent 55%) 35%,
+    color-mix(in oklch, oklch(86% 0.14 100), transparent 60%) 52%,
+    color-mix(in oklch, oklch(78% 0.14 30),  transparent 50%) 70%,
+    transparent 100%);
+}
+
+body {
+  font-family: 'Grift', system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  min-height: 100vh;
+  display: flex;
+}
+.mono { font-family: 'Grift', sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; }
+
+/* ════════════════════ Sidebar ════════════════════ */
+.sb {
+  width: 232px; min-width: 232px; height: 100vh;
+  position: sticky; top: 0;
+  background: var(--bg-3);
+  border-right: 1px solid var(--line);
+  display: flex; flex-direction: column;
+  z-index: 200;
+  overflow-y: auto; scrollbar-width: none;
+}
+.sb::-webkit-scrollbar { display: none; }
+.sb-section { padding: 14px 14px 4px; }
+.sb-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+  position: relative;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-first { color: var(--accent); font-weight: 700; }
+.sb-item:hover { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active::before {
+  content: ''; position: absolute; left: -14px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.sb-badge {
+  font-size: 9px; font-weight: 700;
+  background: var(--bg-2); color: var(--ink-3);
+  padding: 1px 6px; border-radius: 10px;
+  border: 1px solid var(--line);
+  letter-spacing: 0.04em;
+}
+.sb-spacer { flex: 1; min-height: 12px; }
+.sb-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-top: 1px solid var(--line);
+}
+.sb-avatar {
+  width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: var(--bg-ink); color: oklch(85% 0.01 75);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em;
+  display: flex; align-items: center; justify-content: center;
+}
+.sb-uname { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; line-height: 1.2; }
+.sb-ustatus {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9px; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+.sb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pos); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.3; } }
+
+/* ════════════════════ Main ════════════════════ */
+.main {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Cert strips */
+.cert {
+  background: var(--bg-ink);
+  padding: 10px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; position: relative;
+}
+.cert-top { border-bottom: 3px solid var(--accent); }
+.cert-top::after, .cert-bot::before {
+  content: ''; position: absolute; left: 0; right: 0; height: 3px;
+  background: var(--foil); mix-blend-mode: screen;
+  opacity: 0.65; pointer-events: none;
+}
+.cert-top::after { bottom: -3px; }
+.cert-bot { margin-top: auto; border-top: 3px solid var(--accent); }
+.cert-bot::before { top: -3px; }
+.cert-bc {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: oklch(50% 0.01 75);
+}
+.cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
+.cert-bc .sep { opacity: 0.5; }
+.cert-splash {
+  height: 56px; width: auto; display: block;
+  margin: -14px 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+}
+.cert-right {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--accent);
+}
+.cert-meta { display: flex; }
+.cert-pill {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+.cert-pill + .cert-pill::before { content: ' · '; white-space: pre; }
+.cert-id {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+
+/* Toolbar */
+.toolbar {
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--line);
+  padding: 12px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
+}
+.toolbar-tabs { display: flex; gap: 2px; }
+.toolbar-tab {
+  position: relative;
+  padding: 10px 16px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  transition: color .12s;
+}
+.toolbar-tab:hover { color: var(--ink); }
+.toolbar-tab.active { color: var(--ink); }
+.toolbar-tab.active::after {
+  content: '';
+  position: absolute; left: 14px; right: 14px; bottom: -13px;
+  height: 2px; background: var(--accent);
+}
+.toolbar-actions { display: flex; align-items: center; gap: 8px; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: transform .12s, filter .12s, background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { background: var(--bg-2); }
+.btn-sm { padding: 7px 11px; font-size: 10px; }
+
+/* ════════════════════ Page content ════════════════════ */
+.page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 36px 56px;
+  width: 100%;
+}
+
+/* Section header */
+.sec {
+  margin-bottom: 36px;
+}
+.sec-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 18px;
+}
+.sec-title {
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sec-title .first { color: var(--accent); }
+.sec-badge {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* 12-col grid */
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 14px;
+}
+.col-12 { grid-column: span 12; }
+.col-6  { grid-column: span 6; }
+.col-4  { grid-column: span 4; }
+.col-3  { grid-column: span 3; }
+@media (max-width: 700px) {
+  .col-6, .col-4, .col-3 { grid-column: span 12; }
+}
+
+/* Tile fields */
+.field {
+  background: var(--bg-3);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-lg);
+  padding: 12px 16px 11px;
+  cursor: text;
+  transition: border-color .18s, box-shadow .18s;
+  position: relative;
+}
+.field:hover { border-color: var(--line); }
+.field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--accent), transparent 85%);
+}
+.field-label {
+  display: block;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+  transition: color .18s;
+}
+.field:focus-within .field-label { color: var(--accent); }
+.field input,
+.field select,
+.field textarea {
+  font-family: inherit;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 18px; font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.field input::placeholder, .field textarea::placeholder { color: var(--mute); font-weight: 500; }
+.field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%23728' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+  background-size: 11px 7px;
+  padding-right: 22px;
+  cursor: pointer;
+}
+.field-hint {
+  font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--mute);
+  margin-top: 6px;
+}
+.field-prefix {
+  position: absolute; left: 16px; top: 30px;
+  font-size: 18px; font-weight: 700;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.field.has-prefix input { padding-left: 12px; }
+
+/* Live calc strip */
+.live-strip {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr 1fr;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--bg-2);
+  border-radius: 8px;
+  margin-bottom: 26px;
+  gap: 0;
+}
+.live-tag {
+  display: flex; align-items: center; gap: 8px;
+  padding-right: 22px;
+  border-right: 1px solid var(--line);
+  margin-right: 22px;
+}
+.live-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.live-tag .label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink);
+}
+.live-cell { padding-right: 14px; }
+.live-cell .lbl {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+.live-cell .val {
+  font-size: 26px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.live-cell .val.pos    { color: var(--pos); }
+.live-cell .val.neg    { color: var(--neg); }
+.live-cell .val.accent { color: var(--accent); }
+@media (max-width: 700px) {
+  .live-strip { grid-template-columns: 1fr 1fr; }
+  .live-tag { grid-column: 1 / -1; border-right: 0; padding-right: 0; margin: 0 0 12px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+}
+
+/* Save row */
+.save-row {
+  display: flex; gap: 12px;
+  margin-top: 8px;
+}
+.sp-save-btn {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 16px 24px;
+  background: var(--accent); color: var(--accent-ink);
+  border-radius: 10px;
+  font-size: 12px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  box-shadow: 0 6px 20px -8px color-mix(in oklch, var(--accent), transparent 30%);
+  transition: filter .12s, transform .08s;
+}
+.sp-save-btn:hover { filter: brightness(1.05); }
+.sp-save-btn:active { transform: translateY(1px); }
+.sp-save-btn img {
+  width: 44px; height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.25));
+}
+.sp-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-secondary {
+  padding: 16px 22px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--bg-3);
+  color: var(--ink);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  transition: background .12s, color .12s;
+}
+.btn-secondary:hover { background: var(--bg-2); }
+
+/* Toast / status */
+.toast {
+  position: fixed;
+  bottom: 32px; right: 32px;
+  background: var(--bg-ink); color: oklch(96% 0.008 80);
+  padding: 14px 20px;
+  border-radius: 10px;
+  border-left: 3px solid var(--pos);
+  font-size: 12.5px; font-weight: 600;
+  box-shadow: 0 16px 40px -12px rgba(0,0,0,.40);
+  z-index: 500;
+  display: flex; align-items: center; gap: 10px;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .25s, transform .25s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.error { border-left-color: var(--neg); }
+
+/* Edit banner */
+.edit-banner {
+  display: none;
+  background: color-mix(in oklch, var(--warn), transparent 86%);
+  border: 1px solid color-mix(in oklch, var(--warn), transparent 60%);
+  color: oklch(48% 0.16 80);
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  font-size: 12.5px; font-weight: 600;
+}
+.edit-banner.show { display: block; }
+
+/* ════════════════════ Historique ════════════════════ */
+.hist-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; margin-bottom: 24px;
+}
+.hist-title {
+  font-size: 56px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.88;
+  margin: 0;
+}
+.hist-sub {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 8px;
+}
+.hist-filters { display: flex; gap: 6px; flex-wrap: wrap; }
+.hist-pill {
+  padding: 8px 14px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+  background: var(--bg-3);
+  border-radius: var(--r-sm);
+  transition: background .12s, color .12s, border-color .12s;
+}
+.hist-pill:hover { background: var(--bg-2); color: var(--ink); }
+.hist-pill.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.hist-search-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.hist-search {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .12s, box-shadow .12s;
+}
+.hist-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 85%); }
+.hist-vendeur {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--ink-2);
+  outline: none;
+  cursor: pointer;
+}
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.tbl thead th {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--line);
+  padding: 11px 14px;
+  text-align: left;
+}
+.tbl thead th.num { text-align: right; }
+.tbl tbody tr { transition: background .12s; cursor: pointer; }
+.tbl tbody tr:hover { background: var(--bg-2); }
+.tbl tbody td {
+  padding: 11px 14px;
+  font-size: 12.5px;
+  border-top: 1px solid var(--line);
+  vertical-align: middle;
+}
+.tbl tbody tr:first-child td { border-top: 0; }
+.tbl td.num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.tbl td.date { color: var(--ink-3); font-size: 11px; letter-spacing: 0.06em; }
+.tbl td.name { font-weight: 700; }
+.tbl td.mono {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.tbl td.pos { color: var(--pos); }
+.tbl td.neg { color: var(--neg); }
+
+.tbl-actions {
+  text-align: right;
+  white-space: nowrap;
+}
+.tbl-actions button {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 5px 9px;
+  border-radius: 4px;
+  color: var(--ink-3);
+  transition: background .12s, color .12s;
+}
+.tbl-actions button:hover { background: var(--bg-2); color: var(--ink); }
+.tbl-actions button.del:hover { background: color-mix(in oklch, var(--neg), transparent 85%); color: var(--neg); }
+
+.hist-loading, .hist-empty {
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .sb { display: none; }
+  body { display: block; }
+  .page { padding: 24px 18px 48px; }
+  .toolbar { padding: 12px 18px; }
+  .cert { padding: 10px 18px; }
+  .hist-title { font-size: 38px; }
+  .tbl td.mono, .tbl td.date { font-size: 10px; }
+}
+</style>
 </head>
-<body class="he-root he-court"
-  data-sp-breadcrumb="■ SPELOOSH › OPÉRATIONS › BREAK TRACKER"
-  data-sp-cert="SPLSH·26·05·T002"
-  data-sp-meta="BREAKS · TRACKER · BUILD">
+<body>
 
-<div class="header">
-  <a class="logo-wrap" href="/">
-    <span class="logo-dot"></span>
+<!-- ═════════════════════ SIDEBAR ═════════════════════ -->
+<aside class="sb" aria-label="Navigation principale">
+  <div class="sb-section" style="padding-top:22px">
+    <a class="sb-item" href="/"><span><span class="sb-first">H</span>ome</span></a>
+    <a class="sb-item is-active" href="/break-builder.html"><span><span class="sb-first">B</span>reak Tracker</span></a>
+    <a class="sb-item" href="/hub.html"><span><span class="sb-first">H</span>ub</span></a>
+    <a class="sb-item" href="/break-prep.html"><span><span class="sb-first">B</span>reak Prep</span></a>
+    <a class="sb-item" href="/planner.html"><span><span class="sb-first">P</span>lanificateur</span></a>
+    <a class="sb-item" href="/releases.html"><span><span class="sb-first">S</span>orties</span></a>
+    <a class="sb-item" href="/team.html"><span><span class="sb-first">É</span>quipe</span></a>
+    <a class="sb-item" href="/settings.html"><span><span class="sb-first">S</span>ettings</span></a>
+  </div>
+  <div class="sb-spacer"></div>
+  <div class="sb-user">
+    <div class="sb-avatar">GL</div>
     <div>
-      <div class="logo">Speloosh</div>
-      <div class="logo-sub">Break Tracker</div>
+      <div class="sb-uname">Germain</div>
+      <div class="sb-ustatus"><span class="sb-dot"></span>En ligne</div>
     </div>
-  </a>
-  <nav class="header-nav">
-    <a class="nav-link" href="/">Home</a>
-    <a class="nav-link active" href="/break-builder.html">Break Tracker</a>
-    <a class="nav-link" href="/hub.html">Hub</a>
-    <a class="nav-link" href="/break-prep.html">Break Prep</a>
-    <a class="nav-link" href="/releases.html">Sorties</a>
-    <a class="nav-link" href="/planner.html">Planificateur</a>
-    <a class="nav-link" href="/team.html">Équipe</a>
-    <a class="nav-link" href="/settings.html">Settings</a>
-  </nav>
-</div>
+  </div>
+</aside>
 
-<!-- Tabs -->
-<div class="page-tabs">
-  <button class="page-tab active" id="tab-new" onclick="setTab('new')">Nouveau break</button>
-  <button class="page-tab" id="tab-history" onclick="setTab('history')">Historique</button>
-</div>
+<!-- ═════════════════════ MAIN ═════════════════════ -->
+<div class="main">
 
-<!-- ══ VIEW: NOUVEAU BREAK ══ -->
-<div id="view-new">
-  <div class="page-head">
-    <h1 class="page-title" id="form-title">Nouveau break</h1>
-    <p class="page-sub" id="form-sub">Entrez les informations de votre break — les calculs se font automatiquement.</p>
+  <!-- Top cert strip -->
+  <div class="cert cert-top">
+    <span class="cert-bc">
+      <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
+      <span class="sep">›</span><strong>BREAK TRACKER</strong>
+    </span>
+    <span class="cert-right">Weather the Storm</span>
   </div>
 
-  <div class="main">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-tabs" role="tablist">
+      <button class="toolbar-tab active" data-tab="new" onclick="setTab('new')">Nouveau break</button>
+      <button class="toolbar-tab" data-tab="history" onclick="setTab('history')">Historique</button>
+    </div>
+    <div class="toolbar-actions" id="toolbar-actions-new">
+      <button class="btn btn-ghost btn-sm" id="cancel-btn" style="display:none" onclick="cancelEdit()">Annuler</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetForm()">Vider</button>
+    </div>
+    <div class="toolbar-actions" id="toolbar-actions-history" style="display:none">
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ CSV</button>
+      <button class="btn btn-primary btn-sm" onclick="setTab('new')">+ Nouveau break</button>
+    </div>
+  </div>
 
-    <!-- Edit banner -->
+  <!-- VIEW: Nouveau break -->
+  <div class="page" id="view-new">
+
     <div class="edit-banner" id="edit-banner">✏️ Mode correction — modifiez les champs et enregistrez pour mettre à jour ce break.</div>
 
-    <!-- Section: Identification -->
-    <div class="section">
-      <div class="section-head">
-        <span class="section-label">Identification du break</span>
+    <!-- 01 · Identification -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-title"><span class="first">I</span>dentification</div>
+        <div class="sec-badge">01 · Requis</div>
       </div>
-      <div class="section-body">
-        <div class="field-grid field-grid-2">
-          <div class="field">
-            <label>Date</label>
-            <input type="date" id="date" />
-          </div>
-          <div class="field">
-            <label>Nom du break</label>
-            <input type="text" id="nom-break" placeholder="Ex: Live Lundi Soir" />
-          </div>
-          <div class="field">
-            <label>Vendeur</label>
-            <select id="vendeur" onchange="updateSalaireSection()">
-              <option value="">Sélectionner...</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Helper</label>
-            <select id="helper" onchange="updateSalaireSection()">
-              <option value="">Aucun</option>
-            </select>
-          </div>
-        </div>
+      <div class="grid12">
+        <label class="field col-6" for="date">
+          <span class="field-label">Date</span>
+          <input type="date" id="date">
+        </label>
+        <label class="field col-6" for="nom-break">
+          <span class="field-label">Nom du break</span>
+          <input type="text" id="nom-break" placeholder="Ex: Live Lundi Soir">
+        </label>
+        <label class="field col-6" for="vendeur">
+          <span class="field-label">Vendeur</span>
+          <select id="vendeur" onchange="updateSalaireSection()">
+            <option value="">Sélectionner…</option>
+          </select>
+        </label>
+        <label class="field col-6" for="helper">
+          <span class="field-label">Helper</span>
+          <select id="helper" onchange="updateSalaireSection()">
+            <option value="">Aucun</option>
+          </select>
+        </label>
+      </div>
 
-        <div id="salaire-section" style="display:none; margin-top:12px;">
-          <div class="field-grid field-grid-2">
-            <div class="field">
-              <label id="salaire-vendeur-lbl">Salaire / heure — Vendeur ($)</label>
-              <input type="number" id="salaire-vendeur" placeholder="Ex: 25.00" min="0" step="0.01" oninput="calculate()" />
-            </div>
-            <div class="field" id="salaire-helper-wrap" style="display:none;">
-              <label id="salaire-helper-lbl">Salaire / heure — Helper ($)</label>
-              <input type="number" id="salaire-helper" placeholder="Ex: 20.00" min="0" step="0.01" oninput="calculate()" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section: Catégorie -->
-    <div class="section">
-      <div class="section-head">
-        <span class="section-label">Catégorie</span>
-      </div>
-      <div class="section-body">
-        <div class="field-grid field-grid-3">
-          <div class="field">
-            <label>Catégorie</label>
-            <select id="categorie">
-              <option value="">Sélectionner...</option>
-              <option>Wax</option>
-              <option>Repacks</option>
-              <option>Mix (Wax x Repacks)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Sport / Licence</label>
-            <select id="sport">
-              <option value="">Sélectionner...</option>
-              <option>Hockey</option>
-              <option>Football</option>
-              <option>Multi sports</option>
-              <option>Pokémon</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Type break</label>
-            <select id="type-break">
-              <option value="">Sélectionner...</option>
-              <option>Team Random</option>
-              <option>Hybrid</option>
-              <option>Player Random</option>
-              <option>Numeral</option>
-              <option>Wheel</option>
-            </select>
-          </div>
+      <div id="salaire-section" style="display:none; margin-top:14px">
+        <div class="grid12">
+          <label class="field col-6 has-prefix" for="salaire-vendeur">
+            <span class="field-label" id="salaire-vendeur-lbl">Salaire / heure — Vendeur</span>
+            <span class="field-prefix">$</span>
+            <input type="number" id="salaire-vendeur" placeholder="25.00" min="0" step="0.01" oninput="calculate()">
+          </label>
+          <label class="field col-6 has-prefix" id="salaire-helper-wrap" for="salaire-helper" style="display:none">
+            <span class="field-label" id="salaire-helper-lbl">Salaire / heure — Helper</span>
+            <span class="field-prefix">$</span>
+            <input type="number" id="salaire-helper" placeholder="20.00" min="0" step="0.01" oninput="calculate()">
+          </label>
         </div>
       </div>
     </div>
 
-    <!-- Section: Finances -->
-    <div class="section">
-      <div class="section-head">
-        <span class="section-label">Finances</span>
+    <!-- 02 · Catégorie -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-title"><span class="first">C</span>atégorie</div>
+        <div class="sec-badge">02 · 3 champs</div>
       </div>
-      <div class="section-body">
-        <div class="field-grid field-grid-2" style="margin-bottom: 16px;">
-          <div class="field">
-            <label>Ventes brutes ($)</label>
-            <input type="number" id="ventes-brutes" placeholder="Ex: 12500" min="0" step="0.01" oninput="calculate()" />
-          </div>
-          <div class="field">
-            <label>Durée (min)</label>
-            <input type="number" id="duree" placeholder="Ex: 260" min="0" oninput="calculate()" />
-          </div>
-        </div>
+      <div class="grid12">
+        <label class="field col-4" for="categorie">
+          <span class="field-label">Catégorie</span>
+          <select id="categorie">
+            <option value="">Sélectionner…</option>
+            <option>Wax</option>
+            <option>Repacks</option>
+            <option>Mix (Wax x Repacks)</option>
+          </select>
+        </label>
+        <label class="field col-4" for="sport">
+          <span class="field-label">Sport / Licence</span>
+          <select id="sport">
+            <option value="">Sélectionner…</option>
+            <option>Hockey</option>
+            <option>Football</option>
+            <option>Multi sports</option>
+            <option>Pokémon</option>
+          </select>
+        </label>
+        <label class="field col-4" for="type-break">
+          <span class="field-label">Type break</span>
+          <select id="type-break">
+            <option value="">Sélectionner…</option>
+            <option>Team Random</option>
+            <option>Hybrid</option>
+            <option>Player Random</option>
+            <option>Numeral</option>
+            <option>Wheel</option>
+          </select>
+        </label>
+      </div>
+    </div>
 
-        <div class="field-grid field-grid-2" style="margin-bottom: 16px;">
-          <div class="field">
-            <label>Coût des produits ($)</label>
-            <input type="number" id="cout-produits" placeholder="Ex: 8500" min="0" step="0.01" oninput="calculate()" />
-          </div>
-          <div class="field">
-            <label>Heure de début</label>
-            <input type="time" id="heure-debut" />
-          </div>
-        </div>
+    <!-- 03 · Finances -->
+    <div class="sec">
+      <div class="sec-head">
+        <div class="sec-title"><span class="first">F</span>inances</div>
+        <div class="sec-badge">03 · Auto-calc live</div>
+      </div>
+      <div class="grid12" style="margin-bottom:14px">
+        <label class="field col-6 has-prefix" for="ventes-brutes">
+          <span class="field-label">Ventes brutes</span>
+          <span class="field-prefix">$</span>
+          <input type="number" id="ventes-brutes" placeholder="12 500" min="0" step="0.01" oninput="calculate()">
+        </label>
+        <label class="field col-6" for="duree">
+          <span class="field-label">Durée (min)</span>
+          <input type="number" id="duree" placeholder="260" min="0" oninput="calculate()">
+        </label>
+        <label class="field col-6 has-prefix" for="cout-produits">
+          <span class="field-label">Coût des produits</span>
+          <span class="field-prefix">$</span>
+          <input type="number" id="cout-produits" placeholder="8 500" min="0" step="0.01" oninput="calculate()">
+        </label>
+        <label class="field col-6" for="heure-debut">
+          <span class="field-label">Heure de début</span>
+          <input type="time" id="heure-debut">
+        </label>
+      </div>
 
-        <div class="calc-row" style="grid-template-columns: repeat(2, 1fr);">
-          <div class="calc-cell">
-            <div class="calc-lbl">Bénéfice net</div>
-            <div class="calc-val green" id="benefice-net">$0.00</div>
-          </div>
-          <div class="calc-cell">
-            <div class="calc-lbl">Marge</div>
-            <div class="calc-val green" id="marge-calc">0.0%</div>
-          </div>
+      <!-- Live calc strip -->
+      <div class="live-strip">
+        <div class="live-tag">
+          <span class="live-dot"></span>
+          <span class="label">Live</span>
+        </div>
+        <div class="live-cell">
+          <div class="lbl">Bénéfice</div>
+          <div class="val pos" id="calc-benefice">$0.00</div>
+        </div>
+        <div class="live-cell">
+          <div class="lbl">Marge</div>
+          <div class="val accent" id="calc-marge">0.0%</div>
+        </div>
+        <div class="live-cell">
+          <div class="lbl">$ / Min</div>
+          <div class="val" id="calc-perminute">$0.0</div>
         </div>
       </div>
     </div>
 
-    <button class="submit-btn" id="submit-btn" onclick="submitBreak()">Enregistrer le break</button>
-    <button class="cancel-btn" id="cancel-btn" style="display:none" onclick="cancelEdit()">Annuler la modification</button>
-    <div class="success-box" id="success-box"></div>
-    <div class="error-box" id="error-box"></div>
+    <!-- Save row -->
+    <div class="save-row">
+      <button class="sp-save-btn" id="submit-btn" onclick="submitBreak()">
+        <span id="submit-label">Enregistrer le break</span>
+        <img src="/images/speloosh-splash.png" alt="">
+      </button>
+    </div>
 
   </div>
-</div>
 
-<!-- ══ VIEW: HISTORIQUE ══ -->
-<div id="view-history" style="display:none">
-  <div class="page-head">
-    <h1 class="page-title">Historique</h1>
-    <p class="page-sub">Tous les breaks enregistrés — cliquez pour voir les détails ou modifier.</p>
-  </div>
-  <div class="main">
-    <div class="hist-controls">
-      <input class="hist-search" id="hist-search" type="text" placeholder="Rechercher un break..." oninput="filterBreaks()" />
-      <select class="hist-filter" id="hist-filter-vendeur" onchange="filterBreaks()">
+  <!-- VIEW: Historique -->
+  <div class="page" id="view-history" style="display:none">
+    <div class="hist-head">
+      <div>
+        <h1 class="hist-title">Historique.</h1>
+        <div class="hist-sub" id="hist-sub">Chargement…</div>
+      </div>
+      <div class="hist-filters" id="hist-sport-filters">
+        <button class="hist-pill active" data-sport="">Tous</button>
+        <button class="hist-pill" data-sport="Hockey">NHL</button>
+        <button class="hist-pill" data-sport="Football">NFL</button>
+        <button class="hist-pill" data-sport="Multi sports">Multi</button>
+        <button class="hist-pill" data-sport="Pokémon">Pokémon</button>
+      </div>
+    </div>
+
+    <div class="hist-search-row">
+      <input class="hist-search" id="hist-search" type="text" placeholder="Rechercher un break, un vendeur…" oninput="filterBreaks()">
+      <select class="hist-vendeur" id="hist-filter-vendeur" onchange="filterBreaks()">
         <option value="">Tous les vendeurs</option>
       </select>
-      <select class="hist-filter" id="hist-filter-sport" onchange="filterBreaks()">
-        <option value="">Tous les sports</option>
-        <option>Hockey</option>
-        <option>Football</option>
-        <option>Multi sports</option>
-        <option>Pokémon</option>
-      </select>
-      <button class="hist-refresh" onclick="loadHistory(true)" title="Rafraîchir">↻</button>
-      <button class="export-btn" onclick="exportCSV()">↓ CSV</button>
     </div>
-    <div id="hist-list"><div class="hist-loading">Chargement...</div></div>
+
+    <div id="hist-list">
+      <div class="hist-loading">Chargement…</div>
+    </div>
   </div>
+
+  <!-- Bottom cert strip -->
+  <div class="cert cert-bot">
+    <div class="cert-meta">
+      <span class="cert-pill">POP</span>
+      <span class="cert-pill">GRADED</span>
+      <span class="cert-pill">BUILD</span>
+    </div>
+    <span class="cert-id">SPELOOSH © 2026</span>
+  </div>
+
 </div>
 
-<div class="footer">Speloosh &mdash; Break Tracker</div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
-// ── Settings ─────────────────────────────────────────────────────────────────
+// ════════════════════ Settings ════════════════════
 const SETTINGS_KEY = 'he_settings';
 const SETTING_DEFAULTS = {
   vendeurs: ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
@@ -386,52 +831,49 @@ function getSettings() {
     return {
       vendeurs:  p.vendeurs?.length ? p.vendeurs : [...SETTING_DEFAULTS.vendeurs],
       helpers:   p.helpers?.length  ? p.helpers  : [...SETTING_DEFAULTS.helpers],
-      salaires:  p.salaires  || {},
+      salaires:  p.salaires || {},
       objectifs: { ...SETTING_DEFAULTS.objectifs, ...(p.objectifs || {}) },
-      membres:   p.membres   || {},
+      membres:   p.membres || {},
     };
-  } catch(e) { return JSON.parse(JSON.stringify(SETTING_DEFAULTS)); }
+  } catch (e) { return JSON.parse(JSON.stringify(SETTING_DEFAULTS)); }
 }
 
 function populateDropdowns() {
   const s = getSettings();
-
-  // Form dropdowns
   const vendeurSel = document.getElementById('vendeur');
   const helperSel  = document.getElementById('helper');
-  vendeurSel.innerHTML = '<option value="">Sélectionner...</option>';
+  vendeurSel.innerHTML = '<option value="">Sélectionner…</option>';
   helperSel.innerHTML  = '<option value="">Aucun</option>';
   s.vendeurs.forEach(v => { vendeurSel.innerHTML += `<option>${v}</option>`; });
-  s.helpers.forEach(h => {
-    helperSel.innerHTML  += `<option>${h}</option>`;
-  });
-
-  // Historique filter dropdown
+  s.helpers.forEach(h  => { helperSel.innerHTML  += `<option>${h}</option>`; });
   const histSel = document.getElementById('hist-filter-vendeur');
   histSel.innerHTML = '<option value="">Tous les vendeurs</option>';
   s.vendeurs.forEach(v => { histSel.innerHTML += `<option>${v}</option>`; });
 }
 
-// ── State ────────────────────────────────────────────────────────────────────
+// ════════════════════ State ════════════════════
 let allBreaks = [];
 let editingRowIndex = null;
+let histSportFilter = '';
 
-// ── Tab management ───────────────────────────────────────────────────────────
+// ════════════════════ Tab management ════════════════════
 function setTab(tab) {
-  document.getElementById('view-new').style.display      = tab === 'new'     ? 'block' : 'none';
-  document.getElementById('view-history').style.display  = tab === 'history' ? 'block' : 'none';
-  document.getElementById('tab-new').classList.toggle('active',     tab === 'new');
-  document.getElementById('tab-history').classList.toggle('active', tab === 'history');
+  document.getElementById('view-new').style.display     = tab === 'new'     ? '' : 'none';
+  document.getElementById('view-history').style.display = tab === 'history' ? '' : 'none';
+  document.getElementById('toolbar-actions-new').style.display     = tab === 'new'     ? '' : 'none';
+  document.getElementById('toolbar-actions-history').style.display = tab === 'history' ? '' : 'none';
+  document.querySelectorAll('.toolbar-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
   if (tab === 'history') loadHistory();
 }
 
-// ── Init ─────────────────────────────────────────────────────────────────────
+// ════════════════════ Init ════════════════════
 populateDropdowns();
+document.getElementById('date').value = new Date().toISOString().split('T')[0];
 
-// Pre-fill from Planner URL params (e.g. ?date=2026-05-19&vendeur=Jeremi...)
+// Pre-fill from Planner URL params
 (function prefillFromURL() {
   const p = new URLSearchParams(window.location.search);
-  if (!p.has('date') && !p.has('vendeur')) return; // nothing to pre-fill
+  if (!p.has('date') && !p.has('vendeur')) return;
   if (p.get('date'))      document.getElementById('date').value          = p.get('date');
   if (p.get('nomBreak'))  document.getElementById('nom-break').value     = p.get('nomBreak');
   if (p.get('categorie')) document.getElementById('categorie').value     = p.get('categorie');
@@ -440,43 +882,33 @@ populateDropdowns();
   if (p.get('vendeur'))   document.getElementById('vendeur').value       = p.get('vendeur');
   if (p.get('helper'))    document.getElementById('helper').value        = p.get('helper');
   updateSalaireSection();
-  // Clean URL without reloading
   history.replaceState(null, '', '/break-builder.html');
 })();
 
-// ── Form helpers ─────────────────────────────────────────────────────────────
-document.getElementById('date').value = document.getElementById('date').value || new Date().toISOString().split('T')[0];
-
-function fmt(n) {
-  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-function fmtNum(n) { return '$' + (n||0).toLocaleString('fr-CA', {minimumFractionDigits:2}); }
+// ════════════════════ Form helpers ════════════════════
+function fmt(n)    { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function fmtNum(n) { return '$' + (n||0).toLocaleString('fr-CA', { minimumFractionDigits: 2 }); }
 
 function updateSalaireSection() {
   const vendeur = document.getElementById('vendeur').value;
   const helper  = document.getElementById('helper').value;
-  const section     = document.getElementById('salaire-section');
-  const helperWrap  = document.getElementById('salaire-helper-wrap');
+  const section    = document.getElementById('salaire-section');
+  const helperWrap = document.getElementById('salaire-helper-wrap');
   const s = getSettings();
 
   section.style.display = vendeur ? 'block' : 'none';
   if (!vendeur) {
     document.getElementById('salaire-vendeur').value = '';
   } else {
-    document.getElementById('salaire-vendeur-lbl').textContent = 'Salaire / heure — ' + vendeur + ' ($)';
-    // Auto-fill from settings if field is currently empty (don't overwrite manual edits)
+    document.getElementById('salaire-vendeur-lbl').textContent = 'Salaire / heure — ' + vendeur;
     const salaireInput = document.getElementById('salaire-vendeur');
-    if (!salaireInput.value && s.salaires[vendeur]) {
-      salaireInput.value = s.salaires[vendeur];
-    }
+    if (!salaireInput.value && s.salaires[vendeur]) salaireInput.value = s.salaires[vendeur];
   }
   if (helper) {
     helperWrap.style.display = 'block';
-    document.getElementById('salaire-helper-lbl').textContent = 'Salaire / heure — ' + helper + ' ($)';
+    document.getElementById('salaire-helper-lbl').textContent = 'Salaire / heure — ' + helper;
     const helperInput = document.getElementById('salaire-helper');
-    if (!helperInput.value && s.salaires[helper]) {
-      helperInput.value = s.salaires[helper];
-    }
+    if (!helperInput.value && s.salaires[helper]) helperInput.value = s.salaires[helper];
   } else {
     helperWrap.style.display = 'none';
     document.getElementById('salaire-helper').value = '';
@@ -485,18 +917,26 @@ function updateSalaireSection() {
 }
 
 function calculate() {
-  const ventesBrutes  = parseFloat(document.getElementById('ventes-brutes').value)  || 0;
-  const duree         = parseFloat(document.getElementById('duree').value)           || 0;
-  const coutProduits  = parseFloat(document.getElementById('cout-produits').value)   || 0;
-  const salaireVendeur = parseFloat(document.getElementById('salaire-vendeur').value) || 0;
-  const salaireHelper  = parseFloat(document.getElementById('salaire-helper').value)  || 0;
-  const coutSalaires = (salaireVendeur + salaireHelper) * (duree / 60);
-  const beneficeNet  = ventesBrutes - coutProduits - coutSalaires;
-  const marge        = ventesBrutes > 0 ? (beneficeNet / ventesBrutes * 100) : 0;
-  document.getElementById('benefice-net').textContent = fmt(beneficeNet);
-  document.getElementById('marge-calc').textContent   = marge.toFixed(1) + '%';
-  document.getElementById('benefice-net').className = 'calc-val ' + (beneficeNet >= 0 ? 'green' : 'red');
-  document.getElementById('marge-calc').className   = 'calc-val ' + (marge >= 0 ? 'green' : 'red');
+  const ventesBrutes   = parseFloat(document.getElementById('ventes-brutes').value)   || 0;
+  const duree          = parseFloat(document.getElementById('duree').value)            || 0;
+  const coutProduits   = parseFloat(document.getElementById('cout-produits').value)    || 0;
+  const salaireVendeur = parseFloat(document.getElementById('salaire-vendeur').value)  || 0;
+  const salaireHelper  = parseFloat(document.getElementById('salaire-helper').value)   || 0;
+  const coutSalaires   = (salaireVendeur + salaireHelper) * (duree / 60);
+  const beneficeNet    = ventesBrutes - coutProduits - coutSalaires;
+  const marge          = ventesBrutes > 0 ? (beneficeNet / ventesBrutes * 100) : 0;
+  const perMin         = duree > 0 ? (beneficeNet / duree) : 0;
+
+  const benEl    = document.getElementById('calc-benefice');
+  const margeEl  = document.getElementById('calc-marge');
+  const perMinEl = document.getElementById('calc-perminute');
+
+  benEl.textContent    = fmt(beneficeNet);
+  margeEl.textContent  = marge.toFixed(1) + '%';
+  perMinEl.textContent = '$' + perMin.toFixed(1);
+
+  benEl.className   = 'val ' + (beneficeNet >= 0 ? 'pos' : 'neg');
+  margeEl.className = 'val ' + (marge       >= 0 ? 'accent' : 'neg');
 }
 
 function getWeekNumber(d) {
@@ -530,43 +970,41 @@ function buildPayload() {
     coutProduits, heureDebut, salaireVendeur, salaireHelper, coutSalaires,
     semaine: getWeekNumber(d), mois: d.getMonth() + 1, annee: d.getFullYear(), jour: jours[d.getDay()],
     ventesBrutes: ventesBrutes.toFixed(2),
-    revenuReel: ventesBrutes.toFixed(2),
-    beneficeNet: beneficeNet.toFixed(2),
-    marge: marge.toFixed(2)
+    revenuReel:   ventesBrutes.toFixed(2),
+    beneficeNet:  beneficeNet.toFixed(2),
+    marge:        marge.toFixed(2)
   };
 }
 
-// ── Submit (new or update) ───────────────────────────────────────────────────
-async function submitBreak() {
-  const btn        = document.getElementById('submit-btn');
-  const successBox = document.getElementById('success-box');
-  const errorBox   = document.getElementById('error-box');
+// ════════════════════ Toast ════════════════════
+function showToast(message, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = (isError ? '⚠ ' : '✓ ') + message;
+  t.classList.toggle('error', !!isError);
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
 
+// ════════════════════ Submit ════════════════════
+async function submitBreak() {
+  const btn   = document.getElementById('submit-btn');
+  const label = document.getElementById('submit-label');
   const payload = buildPayload();
-  const { date, nomBreak, vendeur, categorie, sport, typeBreak, duree, ventesBrutes } = {
-    date: payload.date, nomBreak: payload.nomBreak, vendeur: payload.vendeur,
-    categorie: payload.categorie, sport: payload.sport, typeBreak: payload.typeBreak,
-    duree: payload.duree, ventesBrutes: payload.ventesBrutes
-  };
 
   if (!payload.date || !payload.nomBreak || !payload.vendeur || !payload.categorie
       || !payload.sport || !payload.typeBreak || !payload.duree || !parseFloat(payload.ventesBrutes)) {
-    errorBox.textContent = 'Veuillez remplir tous les champs obligatoires.';
-    errorBox.style.display = 'block';
-    successBox.style.display = 'none';
+    showToast('Remplis tous les champs obligatoires.', true);
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = editingRowIndex !== null ? 'Mise à jour...' : 'Enregistrement...';
-  errorBox.style.display = 'none';
-  successBox.style.display = 'none';
+  label.textContent = editingRowIndex !== null ? 'Mise à jour…' : 'Enregistrement…';
 
   try {
     const isEdit = editingRowIndex !== null;
     const body   = isEdit ? { ...payload, id: editingRowIndex } : payload;
     const method = isEdit ? 'PUT' : 'POST';
-
     const res = await fetch('/api/breaks', {
       method,
       headers: { 'Content-Type': 'application/json' },
@@ -576,29 +1014,24 @@ async function submitBreak() {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || 'Erreur serveur: ' + res.status);
     }
-
-    successBox.textContent = isEdit
-      ? '✓ Break mis à jour avec succès'
-      : '✓ Break enregistré avec succès';
-    successBox.style.display = 'block';
-    allBreaks = []; // invalidate cache
+    showToast(isEdit ? 'Break mis à jour' : 'Break enregistré');
+    allBreaks = [];
     resetForm();
-  } catch(e) {
-    errorBox.textContent = e.message;
-    errorBox.style.display = 'block';
+    if (isEdit) setTab('history');
+  } catch (e) {
+    showToast(e.message, true);
   }
-
   btn.disabled = false;
-  btn.textContent = editingRowIndex !== null ? 'Mettre à jour le break' : 'Enregistrer le break';
+  label.textContent = editingRowIndex !== null ? 'Mettre à jour le break' : 'Enregistrer le break';
 }
 
 function resetForm() {
   editingRowIndex = null;
-  document.getElementById('nom-break').value    = '';
-  document.getElementById('ventes-brutes').value = '';
-  document.getElementById('duree').value         = '';
+  document.getElementById('nom-break').value      = '';
+  document.getElementById('ventes-brutes').value  = '';
+  document.getElementById('duree').value          = '';
   document.getElementById('cout-produits').value  = '';
-  document.getElementById('heure-debut').value   = '';
+  document.getElementById('heure-debut').value    = '';
   document.getElementById('salaire-vendeur').value = '';
   document.getElementById('salaire-helper').value  = '';
   document.getElementById('vendeur').value    = '';
@@ -607,48 +1040,52 @@ function resetForm() {
   document.getElementById('sport').value      = '';
   document.getElementById('type-break').value = '';
   document.getElementById('date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('form-title').textContent  = 'Nouveau break';
-  document.getElementById('form-sub').textContent    = 'Entrez les informations de votre break — les calculs se font automatiquement.';
-  document.getElementById('submit-btn').textContent  = 'Enregistrer le break';
+  document.getElementById('submit-label').textContent = 'Enregistrer le break';
   document.getElementById('cancel-btn').style.display = 'none';
-  document.getElementById('edit-banner').style.display = 'none';
+  document.getElementById('edit-banner').classList.remove('show');
   updateSalaireSection();
   calculate();
 }
 
-function cancelEdit() {
-  resetForm();
-  document.getElementById('success-box').style.display = 'none';
-  document.getElementById('error-box').style.display   = 'none';
-}
+function cancelEdit() { resetForm(); }
 
-// ── Historique ───────────────────────────────────────────────────────────────
+// ════════════════════ Historique ════════════════════
 async function loadHistory(force = false) {
-  if (allBreaks.length && !force) { renderHistory(allBreaks); return; }
-  document.getElementById('hist-list').innerHTML = '<div class="hist-loading">Chargement...</div>';
+  if (allBreaks.length && !force) { renderHistory(filteredBreaks()); return; }
+  document.getElementById('hist-list').innerHTML = '<div class="hist-loading">Chargement…</div>';
   try {
     const res = await fetch('/api/breaks');
     if (!res.ok) throw new Error('Erreur ' + res.status);
     const data = await res.json();
-    allBreaks = Array.isArray(data) ? [...data].reverse() : []; // most recent first
-    renderHistory(allBreaks);
-  } catch(e) {
+    allBreaks = Array.isArray(data) ? [...data].reverse() : [];
+    document.getElementById('hist-sub').textContent = `${allBreaks.length} breaks enregistrés`;
+    renderHistory(filteredBreaks());
+  } catch (e) {
     document.getElementById('hist-list').innerHTML = '<div class="hist-empty">Erreur de chargement : ' + e.message + '</div>';
   }
 }
 
-function filterBreaks() {
+function filteredBreaks() {
   const q       = document.getElementById('hist-search').value.toLowerCase();
   const vendeur = document.getElementById('hist-filter-vendeur').value;
-  const sport   = document.getElementById('hist-filter-sport').value;
-  const filtered = allBreaks.filter(b => {
+  const sport   = histSportFilter;
+  return allBreaks.filter(b => {
     const matchQ = !q || (b.nomBreak||'').toLowerCase().includes(q) || (b.vendeur||'').toLowerCase().includes(q);
     const matchV = !vendeur || b.vendeur === vendeur;
     const matchS = !sport   || b.sport   === sport;
     return matchQ && matchV && matchS;
   });
-  renderHistory(filtered);
 }
+
+function filterBreaks() { renderHistory(filteredBreaks()); }
+
+document.querySelectorAll('#hist-sport-filters .hist-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    histSportFilter = p.dataset.sport || '';
+    document.querySelectorAll('#hist-sport-filters .hist-pill').forEach(x => x.classList.toggle('active', x === p));
+    renderHistory(filteredBreaks());
+  });
+});
 
 function renderHistory(breaks) {
   const list = document.getElementById('hist-list');
@@ -656,96 +1093,56 @@ function renderHistory(breaks) {
     list.innerHTML = '<div class="hist-empty">Aucun break trouvé.</div>';
     return;
   }
-  list.innerHTML = breaks.map((b, i) => {
-    const benefice  = parseFloat(b.beneficeNet) || 0;
-    const marge     = parseFloat(b.marge) || 0;
-    const ventes    = parseFloat(b.ventesBrutes) || 0;
-    const posNeg    = benefice >= 0 ? 'pos' : 'neg';
-    const rowIdx    = b.id;
-    return `
-    <div class="break-card" id="bcard-${i}">
-      <div class="break-card-head" onclick="toggleCard(${i})">
-        <span class="break-card-date">${b.date || '—'}</span>
-        <span class="break-card-name">${b.nomBreak || '—'}</span>
-        <span class="break-card-vendeur">${b.vendeur || ''}</span>
-        <span class="break-card-sport">${b.sport || ''}</span>
-        <span class="break-card-amount ${benefice < 0 ? 'neg' : ''}">${fmtNum(benefice)}</span>
-        <span class="break-card-chevron">▼</span>
-      </div>
-      <div class="break-card-body">
-        <div class="break-detail-grid">
-          <div class="break-detail-cell">
-            <div class="break-detail-lbl">Ventes brutes</div>
-            <div class="break-detail-val">${fmtNum(ventes)}</div>
-          </div>
-          <div class="break-detail-cell">
-            <div class="break-detail-lbl">Bénéfice net</div>
-            <div class="break-detail-val ${posNeg}">${fmtNum(benefice)}</div>
-          </div>
-          <div class="break-detail-cell">
-            <div class="break-detail-lbl">Marge</div>
-            <div class="break-detail-val ${posNeg}">${marge.toFixed(1)}%</div>
-          </div>
-          <div class="break-detail-cell">
-            <div class="break-detail-lbl">Durée</div>
-            <div class="break-detail-val">${b.duree || 0} min</div>
-          </div>
-          <div class="break-detail-cell">
-            <div class="break-detail-lbl">Type</div>
-            <div class="break-detail-val">${b.typeBreak || '—'}</div>
-          </div>
-          <div class="break-detail-cell">
-            <div class="break-detail-lbl">Catégorie</div>
-            <div class="break-detail-val">${b.categorie || '—'}</div>
-          </div>
-          ${b.helper ? `<div class="break-detail-cell">
-            <div class="break-detail-lbl">Helper</div>
-            <div class="break-detail-val">${b.helper}</div>
-          </div>` : ''}
-          ${b.coutProduits ? `<div class="break-detail-cell">
-            <div class="break-detail-lbl">Coût produits</div>
-            <div class="break-detail-val">${fmtNum(parseFloat(b.coutProduits))}</div>
-          </div>` : ''}
-          ${b.heureDebut ? `<div class="break-detail-cell">
-            <div class="break-detail-lbl">Début</div>
-            <div class="break-detail-val">${b.heureDebut}</div>
-          </div>` : ''}
-        </div>
-        <div class="break-actions">
-          <button class="btn-edit" onclick="editBreak(${JSON.stringify(b).replace(/"/g,'&quot;')}, ${rowIdx})">✏️ Modifier</button>
-          <button class="btn-delete" onclick="deleteBreak(${rowIdx}, ${i})">🗑 Supprimer</button>
-        </div>
-      </div>
-    </div>`;
+  const rows = breaks.map((b, i) => {
+    const benefice = parseFloat(b.beneficeNet) || 0;
+    const marge    = parseFloat(b.marge) || 0;
+    const ventes   = parseFloat(b.ventesBrutes) || 0;
+    const margeCls = marge >= 0 ? 'pos' : 'neg';
+    return `<tr onclick="editBreak(${JSON.stringify(b).replace(/"/g,'&quot;')}, ${b.id})">
+      <td class="date">${b.date || '—'}</td>
+      <td class="name">${escapeHtml(b.nomBreak || '—')}</td>
+      <td class="mono">${escapeHtml(b.vendeur || '')}</td>
+      <td class="mono">${escapeHtml(b.sport || '')}</td>
+      <td class="mono">${escapeHtml(b.typeBreak || '')}</td>
+      <td class="num">${fmtNum(ventes)}</td>
+      <td class="num ${margeCls}">${marge.toFixed(1)}%</td>
+      <td class="num ${benefice < 0 ? 'neg' : 'pos'}">${fmtNum(benefice)}</td>
+      <td class="tbl-actions" onclick="event.stopPropagation()">
+        <button class="del" onclick="deleteBreak(${b.id})">×</button>
+      </td>
+    </tr>`;
   }).join('');
+  list.innerHTML = `<table class="tbl">
+    <thead><tr>
+      <th>Date</th><th>Break</th><th>Vendeur</th><th>Sport</th><th>Type</th>
+      <th class="num">Ventes</th><th class="num">Marge</th><th class="num">Bénéfice</th><th></th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
 }
 
-function toggleCard(i) {
-  const card = document.getElementById('bcard-' + i);
-  card.classList.toggle('open');
+function escapeHtml(s) {
+  return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-async function deleteBreak(id, idx) {
+async function deleteBreak(id) {
   if (!confirm('Supprimer ce break définitivement ?')) return;
   try {
     const res = await fetch('/api/breaks?id=' + id, { method: 'DELETE' });
     if (!res.ok) throw new Error('Erreur ' + res.status);
     allBreaks = allBreaks.filter(b => b.id !== id);
-    filterBreaks();
-  } catch(e) {
-    alert('Erreur lors de la suppression : ' + e.message);
+    document.getElementById('hist-sub').textContent = `${allBreaks.length} breaks enregistrés`;
+    renderHistory(filteredBreaks());
+    showToast('Break supprimé');
+  } catch (e) {
+    showToast(e.message, true);
   }
 }
 
-function exportCSV() {
-  window.open('/api/breaks?format=csv', '_blank');
-}
+function exportCSV() { window.open('/api/breaks?format=csv', '_blank'); }
 
 function editBreak(b, rowIndex) {
-  // Switch to form tab
   setTab('new');
-
-  // Pre-fill all fields
   document.getElementById('date').value          = b.date || '';
   document.getElementById('nom-break').value     = b.nomBreak || '';
   document.getElementById('categorie').value     = b.categorie || '';
@@ -755,28 +1152,22 @@ function editBreak(b, rowIndex) {
   document.getElementById('ventes-brutes').value = b.ventesBrutes || '';
   document.getElementById('cout-produits').value = b.coutProduits || '';
   document.getElementById('heure-debut').value   = b.heureDebut || '';
-
-  // Vendeur & helper (triggers salary section)
-  document.getElementById('vendeur').value = b.vendeur || '';
-  document.getElementById('helper').value  = b.helper  || '';
+  document.getElementById('vendeur').value       = b.vendeur || '';
+  document.getElementById('helper').value        = b.helper  || '';
   updateSalaireSection();
   document.getElementById('salaire-vendeur').value = b.salaireVendeur || '';
   document.getElementById('salaire-helper').value  = b.salaireHelper  || '';
   calculate();
 
-  // Edit mode UI
   editingRowIndex = rowIndex;
-  document.getElementById('form-title').textContent   = 'Modifier le break';
-  document.getElementById('form-sub').textContent     = b.nomBreak + ' — ' + b.date;
-  document.getElementById('submit-btn').textContent   = 'Mettre à jour le break';
-  document.getElementById('cancel-btn').style.display = 'block';
-  document.getElementById('edit-banner').style.display = 'block';
-  document.getElementById('success-box').style.display = 'none';
-  document.getElementById('error-box').style.display   = 'none';
-
-  // Scroll to top
+  document.getElementById('submit-label').textContent = 'Mettre à jour le break';
+  document.getElementById('cancel-btn').style.display = 'inline-flex';
+  document.getElementById('edit-banner').classList.add('show');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// Initial calc
+calculate();
 </script>
 </body>
 </html>
