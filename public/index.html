@@ -148,38 +148,52 @@
 .announce-empty-title { font-weight: 600; color: var(--ink-2); font-size: 15px; }
 .announce-empty-sub   { font-size: 12px; margin-top: 5px; color: var(--mute); }
 
-/* ── Carte = l'image sticky-note.png comme fond ─────────────── */
+/* ── Carte = sticky-note.png flottante (blend mode) ─────────── */
 .announce-card {
   position: relative;
-  background: url('/sticky-note.png') center / 100% 100% no-repeat;
+  background: transparent;  /* la note est dans ::before */
   border: none;
   border-radius: 0;
-  box-shadow: none;   /* l'ombre est dans l'image */
+  box-shadow: none;
   overflow: visible;
-  min-height: 240px;  /* proportion proche du carré de l'image */
-  transition: transform 0.2s, filter 0.2s;
+  min-height: 240px;
+  transition: transform 0.2s;
 }
-/* Hover : légère élévation + luminosité */
-.announce-card:hover {
-  transform: translateY(-5px) scale(1.012);
-  filter: brightness(1.02) drop-shadow(0 16px 28px rgba(0,0,0,.18));
+/* L'image en pseudo-élément avec multiply :
+   blanc de l'image × fond blanc de la section = invisible
+   jaune + punaise restent visibles → note qui flotte sans rectangle */
+.announce-card::before {
+  content: '';
+  position: absolute;
+  inset: -8% -6%;      /* légère marge pour inclure ombre/coin */
+  background: url('/sticky-note.png') center / 100% 100% no-repeat;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 0;
 }
-/* Pas de rotation CSS — la rotation est dans l'image elle-même */
-.announce-card:nth-child(odd)  { transform: none; }
-.announce-card:nth-child(even) { transform: none; }
-/* Supprime le ::after CSS — le coin plié est dans l'image */
+/* Supprime le ::after CSS — coin plié est dans l'image */
 .announce-card::after { display: none; }
-/* Supprime notre punaise SVG — la punaise est dans l'image */
+/* Supprime la punaise SVG — elle est dans l'image */
 .announce-pushpin { display: none !important; }
 
-/* ── Zone de texte : dans la zone jaune de la note ─────────── */
-/* La note est inclinée ~-4° — le contenu jaune commence à ~13% du haut
-   et ~9% des côtés. On ajoute le padding en px pour un résultat précis. */
+/* Hover */
+.announce-card:hover { transform: translateY(-5px) scale(1.015); }
+
+/* Pas de rotation CSS — baked dans l'image */
+.announce-card:nth-child(odd),
+.announce-card:nth-child(even) { transform: none; }
+.announce-card:hover { transform: translateY(-5px) scale(1.015); }
+
+/* ── Zone de texte : au-dessus du ::before, dans la zone jaune ─ */
+.announce-card-meta,
+.announce-card-body,
+.announce-footer { position: relative; z-index: 1; }
+
 .announce-card-meta {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 72px 50px 0 48px; /* top : passe la punaise + coin blanc */
+  padding: 72px 50px 0 48px;
 }
 .announce-type-badge {
   font-family: var(--font-mono);
