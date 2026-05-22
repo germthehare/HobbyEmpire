@@ -4,336 +4,651 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sorties — Speloosh</title>
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="/speloosh-shell.css">
-<link rel="stylesheet" href="news.css">
+<script src="/auth-guard.js" data-role="admin"></script>
 <style>
-  .rel-page { padding: 40px 56px 56px; }
+/* ════════════════════ Grift ════════════════════ */
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Regular.woff2')   format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-SemiBold.woff2')  format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Bold.woff2')      format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Black.woff2')     format('woff2'); font-weight: 900; font-display: swap; }
 
-  /* Header */
-  .rel-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 24px; }
-  .rel-head h1 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.02em; line-height: .92; font-size: clamp(40px, 6vw, 64px); margin: 6px 0 0; }
-  .rel-head .lead { font-size: 14px; color: var(--ink-2); margin-top: 12px; max-width: 540px; }
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; }
+a { color: inherit; text-decoration: none; }
 
-  /* Stats strip */
-  .rel-stats { display: flex; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 24px; }
-  .rel-stats .cell { flex: 1; padding: 14px 20px; display: flex; flex-direction: column; gap: 4px; }
-  .rel-stats .cell + .cell { border-left: 1px solid var(--line); }
-  .rel-stats .v { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
-  .rel-stats .s { font-family: var(--font-mono); font-size: 10px; color: var(--mute); letter-spacing: .08em; text-transform: uppercase; }
+:root {
+  --bg:          oklch(96.5% 0.012 75);
+  --bg-2:        oklch(93%   0.016 75);
+  --bg-3:        oklch(99%   0.005 80);
+  --bg-ink:      oklch(16%   0.018 260);
+  --line:        oklch(86%   0.014 75);
+  --line-strong: oklch(70%   0.02  75);
+  --ink:         oklch(16%   0.018 260);
+  --ink-2:       oklch(32%   0.014 260);
+  --ink-3:       oklch(50%   0.012 260);
+  --mute:        oklch(62%   0.01  75);
+  --accent:      oklch(72%   0.13  200);
+  --accent-ink:  oklch(16%   0.018 260);
+  --pos:         oklch(54%   0.16  152);
+  --neg:         oklch(56%   0.21  22);
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px;
+  --foil: linear-gradient(110deg,
+    transparent 0%,
+    color-mix(in oklch, oklch(82% 0.14 320), transparent 60%) 18%,
+    color-mix(in oklch, oklch(80% 0.12 200), transparent 55%) 35%,
+    color-mix(in oklch, oklch(86% 0.14 100), transparent 60%) 52%,
+    color-mix(in oklch, oklch(78% 0.14 30),  transparent 50%) 70%,
+    transparent 100%);
+}
 
-  /* Filter bar */
-  .rel-filters { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; align-items: center; }
-  .rel-filter-group { display: flex; gap: 4px; flex-wrap: wrap; }
-  .rel-filter-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-right: 8px; }
-  .rel-chip {
-    padding: 6px 12px;
-    background: var(--bg-3);
-    border: 1px solid var(--line);
-    border-radius: var(--r-sm);
-    font-family: var(--font-mono);
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink-3); cursor: pointer;
-    transition: all .12s;
-    white-space: nowrap;
-  }
-  .rel-chip:hover { color: var(--ink); border-color: var(--line-strong); }
-  .rel-chip.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+body {
+  font-family: 'Grift', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  min-height: 100vh;
+  display: flex;
+}
 
-  /* Month section header */
-  .rel-month-head {
-    margin: 28px 0 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--line);
-    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  }
-  .rel-month-title { font-family: var(--font-display); font-weight: 800; letter-spacing: -.02em; font-size: 24px; margin: 0; text-transform: capitalize; }
-  .rel-month-count { font-family: var(--font-mono); font-size: 11px; color: var(--mute); letter-spacing: .08em; text-transform: uppercase; }
+/* ════════════════════ Sidebar ════════════════════ */
+.sb {
+  width: 232px; min-width: 232px; height: 100vh;
+  position: sticky; top: 0;
+  background: var(--bg-3); border-right: 1px solid var(--line);
+  display: flex; flex-direction: column; z-index: 200;
+  overflow-y: auto; scrollbar-width: none;
+}
+.sb::-webkit-scrollbar { display: none; }
+.sb-section { padding: 14px 14px 4px; }
+.sb-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+  position: relative;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-first { color: var(--accent); font-weight: 700; }
+.sb-item:hover { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active::before {
+  content: ''; position: absolute; left: -14px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.sb-spacer { flex: 1; min-height: 12px; }
+.sb-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px; border-top: 1px solid var(--line);
+}
+.sb-avatar {
+  width: 32px; height: 32px; border-radius: var(--r-sm);
+  background: var(--bg-ink); color: oklch(85% 0.01 75);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.sb-uname { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; line-height: 1.2; }
+.sb-ustatus {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9px; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px;
+}
+.sb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pos); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.3; } }
 
-  /* Card grid — 2-up on desktop, 1-up on mobile */
-  .rel-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-    gap: 10px;
-  }
-  .rel-card {
-    background: var(--bg-3);
-    border: 1px solid var(--line);
-    border-radius: var(--r-md);
-    padding: 14px 16px;
-    box-shadow: var(--shadow-card);
-    transition: border-color .12s, transform .12s;
-    display: grid;
-    grid-template-columns: 72px 1fr;
-    gap: 14px;
-    align-items: center;
-  }
-  .rel-card:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+/* ════════════════════ Main ════════════════════ */
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
 
-  /* Date badge */
-  .rel-date {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 8px 6px;
-    border-radius: var(--r-sm);
-    background: var(--bg-2);
-    border: 1px solid var(--line);
-    text-align: center;
-  }
-  .rel-date.is-tbd { background: color-mix(in oklch, var(--mute), transparent 88%); }
-  .rel-date.is-estimated { background: color-mix(in oklch, var(--warn), transparent 88%); }
-  .rel-date .d {
-    font-family: var(--font-display); font-weight: 800; font-size: 22px; line-height: 1; letter-spacing: -.02em;
-    color: var(--ink);
-  }
-  .rel-date .m {
-    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--ink-2); margin-top: 2px;
-  }
-  .rel-date.is-tbd .d, .rel-date.is-tbd .m { color: var(--mute); }
+/* Cert strips */
+.cert {
+  background: var(--bg-ink);
+  padding: 10px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; position: relative;
+}
+.cert-top { border-bottom: 3px solid var(--accent); }
+.cert-top::after, .cert-bot::before {
+  content: ''; position: absolute; left: 0; right: 0; height: 3px;
+  background: var(--foil); mix-blend-mode: screen;
+  opacity: 0.65; pointer-events: none;
+}
+.cert-top::after { bottom: -3px; }
+.cert-bot { margin-top: auto; border-top: 3px solid var(--accent); }
+.cert-bot::before { top: -3px; }
+.cert-bc {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: oklch(50% 0.01 75);
+}
+.cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
+.cert-bc .sep { opacity: 0.5; }
+.cert-splash {
+  height: 56px; width: auto; display: block;
+  margin: -14px 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+}
+.cert-right {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--accent);
+}
+.cert-meta { display: flex; }
+.cert-pill {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+.cert-pill + .cert-pill::before { content: ' · '; white-space: pre; }
+.cert-id {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
 
-  /* Body */
-  .rel-body { min-width: 0; }
-  .rel-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
-  .rel-brand {
-    font-family: var(--font-mono); font-size: 9px; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    padding: 3px 7px; border-radius: 3px; white-space: nowrap;
-  }
-  .rel-brand.b-ud { color: var(--accent); background: color-mix(in oklch, var(--accent), transparent 88%); border: 1px solid color-mix(in oklch, var(--accent), transparent 70%); }
-  .rel-brand.b-topps { color: #2b6fa6; background: color-mix(in oklch, #2b6fa6, transparent 88%); border: 1px solid color-mix(in oklch, #2b6fa6, transparent 70%); }
-  .rel-brand.b-panini { color: #d4351c; background: color-mix(in oklch, #d4351c, transparent 88%); border: 1px solid color-mix(in oklch, #d4351c, transparent 70%); }
-  .rel-brand.b-leaf { color: #2b8a3e; background: color-mix(in oklch, #2b8a3e, transparent 88%); border: 1px solid color-mix(in oklch, #2b8a3e, transparent 70%); }
-  .rel-brand.b-other { color: var(--ink-3); background: var(--bg-2); border: 1px solid var(--line); }
-  .rel-format {
-    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--ink-3); padding: 2px 6px; border-radius: 3px;
-    background: var(--bg-2); border: 1px solid var(--line);
-  }
-  .rel-tbd-flag {
-    font-family: var(--font-mono); font-size: 9px; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--warn); padding: 2px 6px; border-radius: 3px;
-    background: color-mix(in oklch, var(--warn), transparent 88%);
-    border: 1px solid color-mix(in oklch, var(--warn), transparent 70%);
-  }
-  .rel-name { font-size: 13px; font-weight: 600; color: var(--ink); line-height: 1.35; }
-  .rel-card:hover .rel-name { color: var(--accent); }
+/* ════════════════════ Toolbar ════════════════════ */
+.toolbar {
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
+}
+.tb-left { display: flex; align-items: center; gap: 14px; }
+.tb-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.holo { height: 2px; width: 44px; background: var(--foil); border-radius: 1px; }
+.tb-sub {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 14px; border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: filter .12s, background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.btn-ghost { background: var(--bg-3); color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { background: var(--bg-2); }
+.btn-sm { padding: 8px 12px; font-size: 10px; }
 
-  /* States */
-  .rel-loading { padding: 60px 20px; text-align: center; color: var(--ink-3); font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
-  .rel-error {
-    background: color-mix(in oklch, var(--neg), transparent 88%);
-    border: 1px solid color-mix(in oklch, var(--neg), transparent 65%);
-    border-radius: var(--r-sm); padding: 12px 14px; font-size: 13px;
-    color: var(--neg); margin: 12px 0;
-  }
-  .rel-empty { padding: 60px 20px; text-align: center; color: var(--ink-3); font-size: 13px; }
+/* ════════════════════ Page ════════════════════ */
+.page { padding: 32px 36px 48px; }
 
-  /* Responsive */
-  @media (max-width: 720px) {
-    .rel-page { padding: 24px 20px 40px; }
-    .rel-stats { display: grid; grid-template-columns: 1fr 1fr; }
-    .rel-stats .cell + .cell { border-left: none; }
-    .rel-stats .cell:nth-child(odd) { border-right: 1px solid var(--line); }
-    .rel-stats .cell:nth-child(n+3) { border-top: 1px solid var(--line); }
-    .rel-card { grid-template-columns: 56px 1fr; }
-  }
+/* Intro */
+.intro {
+  margin-bottom: 26px;
+}
+.intro h1 {
+  font-size: 48px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.95;
+  margin: 0 0 12px;
+}
+.intro h1 .first { color: var(--accent); }
+.intro p {
+  font-size: 14px; line-height: 1.55;
+  color: var(--ink-2);
+  margin: 0;
+  max-width: 640px;
+}
+
+/* KPI strip */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.kpi-cell {
+  padding: 18px 22px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.kpi-cell:last-child { border-right: 0; }
+.kpi-cell.accent::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.kpi-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.kpi-value {
+  font-size: 32px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 6px;
+}
+.kpi-cell.accent .kpi-value { color: var(--accent); }
+.kpi-sub {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Filters */
+.filters {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 28px;
+  display: flex; flex-direction: column;
+  gap: 8px;
+}
+.filter-row {
+  display: flex; align-items: center;
+  gap: 10px;
+}
+.filter-label {
+  width: 80px; flex-shrink: 0;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.filter-pills {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.chip {
+  padding: 4px 11px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.chip:hover { background: var(--bg-3); color: var(--ink); border-color: var(--line-strong); }
+.chip.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* Month blocks */
+.month {
+  margin-bottom: 30px;
+}
+.month-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.month-title {
+  font-size: 24px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 1;
+  margin: 0;
+}
+.month-title .first { color: var(--accent); }
+.month-count {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.rel-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+}
+
+.rel-card {
+  display: flex; gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 88px;
+  cursor: pointer;
+  transition: border-color .15s, transform .08s, box-shadow .15s;
+}
+.rel-card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -8px rgba(20,15,10,.12);
+}
+.rel-card.past {
+  background: var(--bg-2);
+  opacity: 0.62;
+}
+.rel-date {
+  flex-shrink: 0;
+  padding-top: 1px;
+  text-align: center;
+}
+.rel-date .d {
+  font-size: 22px; font-weight: 900;
+  line-height: 0.95;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.rel-date .m {
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+.rel-date.tbd .d { color: var(--ink-3); font-size: 16px; }
+.rel-body {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.rel-tags {
+  display: flex; flex-wrap: wrap; gap: 4px;
+}
+.rel-tag {
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+  background: var(--bg-3);
+}
+.rel-tag.primary {
+  background: color-mix(in oklch, var(--accent), transparent 86%);
+  border-color: color-mix(in oklch, var(--accent), transparent 65%);
+  color: var(--accent);
+}
+.rel-tag.flag {
+  background: color-mix(in oklch, var(--warn, oklch(72% 0.16 80)), transparent 86%);
+  border-color: color-mix(in oklch, oklch(72% 0.16 80), transparent 65%);
+  color: oklch(48% 0.16 80);
+}
+.rel-name {
+  font-size: 11.5px; font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+/* Loading / empty / error */
+.rel-status {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+}
+.rel-status.err { color: var(--neg); }
+
+.page-footer {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--mute);
+}
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 28px; right: 28px;
+  background: var(--bg-ink); color: oklch(96% 0.008 80);
+  padding: 12px 18px; border-radius: 10px;
+  border-left: 3px solid var(--accent);
+  font-size: 12.5px; font-weight: 600;
+  box-shadow: 0 16px 40px -12px rgba(0,0,0,.40);
+  z-index: 1000;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .25s, transform .25s;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast.err { border-left-color: var(--neg); }
+.toast.ok  { border-left-color: var(--pos); }
+
+@media (max-width: 1200px) {
+  .rel-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 900px) {
+  .sb { display: none; }
+  body { display: block; }
+  .page { padding: 24px 18px 36px; }
+  .toolbar { padding: 12px 18px; }
+  .cert { padding: 10px 18px; }
+  .kpi-strip { grid-template-columns: 1fr 1fr; }
+  .kpi-cell { border-right: 0; border-bottom: 1px solid var(--line); }
+  .kpi-cell:nth-child(2) { border-right: 1px solid var(--line); }
+  .kpi-cell:nth-child(2n) { border-right: 0; }
+  .rel-grid { grid-template-columns: repeat(2, 1fr); }
+  .intro h1 { font-size: 32px; }
+  .filter-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .filter-label { width: auto; }
+}
 </style>
-<script src="/lang-toggle.js"></script>
-<script src="/speloosh-shell.js"></script>
 </head>
-<body class="he-root he-court"
-  data-sp-breadcrumb="■ SPELOOSH › INVENTAIRE › SORTIES"
-  data-sp-cert="SPLSH·26·05·S005"
-  data-sp-meta="RELEASES · HOCKEY · CAL">
+<body>
 
-<header class="nav">
-  <a class="logo" href="/" style="text-decoration:none">
-    <span class="dot"></span>
-    <span>Speloosh</span>
-    <small>/ Sports Cards</small>
-  </a>
-  <nav class="nav-links">
-    <a class="nav-link" href="/">Home</a>
-    <a class="nav-link" href="/break-builder.html">Break Tracker</a>
-    <a class="nav-link" href="/hub.html">Hub</a>
-    <a class="nav-link" href="/break-prep.html">Break Prep</a>
-    <a class="nav-link is-active" href="/releases.html">Sorties</a>
-    <a class="nav-link" href="/planner.html">Planificateur</a>
-    <a class="nav-link" href="/team.html">Équipe</a>
-    <a class="nav-link" href="/settings.html">Settings</a>
-  </nav>
-</header>
-
-<main class="rel-page">
-
-  <div class="rel-head">
+<!-- ═════════════════════ SIDEBAR ═════════════════════ -->
+<aside class="sb" aria-label="Navigation principale">
+  <div class="sb-section" style="padding-top:22px">
+    <a class="sb-item" href="/"><span><span class="sb-first">H</span>ome</span></a>
+    <a class="sb-item" href="/break-builder.html"><span><span class="sb-first">B</span>reak Tracker</span></a>
+    <a class="sb-item" href="/hub.html"><span><span class="sb-first">H</span>ub</span></a>
+    <a class="sb-item" href="/break-prep.html"><span><span class="sb-first">B</span>reak Prep</span></a>
+    <a class="sb-item" href="/planner.html"><span><span class="sb-first">P</span>lanificateur</span></a>
+    <a class="sb-item is-active" href="/releases.html"><span><span class="sb-first">S</span>orties</span></a>
+    <a class="sb-item" href="/team.html"><span><span class="sb-first">É</span>quipe</span></a>
+    <a class="sb-item" href="/settings.html"><span><span class="sb-first">S</span>ettings</span></a>
+  </div>
+  <div class="sb-spacer"></div>
+  <div class="sb-user">
+    <div class="sb-avatar">GL</div>
     <div>
-      <div class="eyebrow">Calendrier — 2025-26</div>
-      <h1>Sorties de cartes hockey.</h1>
-      <p class="lead">Dates de sortie, prix et formats pour chaque produit hockey. Données rafraîchies toutes les 6h depuis Waxstat, Miraj Trading et Beckett.</p>
+      <div class="sb-uname">Germain</div>
+      <div class="sb-ustatus"><span class="sb-dot"></span>En ligne</div>
     </div>
-    <button class="btn btn-ghost btn-sm" id="rel-refresh" title="Rafraîchir">↻ Rafraîchir</button>
+  </div>
+</aside>
+
+<!-- ═════════════════════ MAIN ═════════════════════ -->
+<div class="main">
+
+  <!-- Top cert strip -->
+  <div class="cert cert-top">
+    <span class="cert-bc">
+      <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
+      <span class="sep">›</span><strong>SORTIES</strong>
+    </span>
+    <span class="cert-right">Weather the Storm</span>
   </div>
 
-  <!-- Stats strip -->
-  <div class="rel-stats" id="rel-stats">
-    <div class="cell">
-      <div class="eyebrow">Total produits</div>
-      <div class="v" id="stat-total">—</div>
-      <div class="s">tous formats</div>
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="tb-left">
+      <span class="tb-eyebrow">Calendrier · 2025-26</span>
+      <span class="holo"></span>
+      <span class="tb-sub">Hockey · Toutes les marques</span>
     </div>
-    <div class="cell">
-      <div class="eyebrow">À venir (90 j)</div>
-      <div class="v" id="stat-upcoming">—</div>
-      <div class="s">dates confirmées</div>
+    <button class="btn btn-ghost btn-sm" id="rel-refresh">↻ Rafraîchir</button>
+  </div>
+
+  <!-- Page content -->
+  <div class="page">
+
+    <!-- Intro -->
+    <div class="intro">
+      <h1><span class="first">S</span>orties de cartes hockey.</h1>
+      <p>Dates de sortie, prix et formats pour chaque produit hockey. Données rafraîchies toutes les 6h depuis Wasztel, Mojo, Trading Card Database et Beckett.</p>
     </div>
-    <div class="cell">
-      <div class="eyebrow">Saison active</div>
-      <div class="v" id="stat-season">2025-26</div>
-      <div class="s">produits suivis</div>
+
+    <!-- KPI strip -->
+    <div class="kpi-strip">
+      <div class="kpi-cell">
+        <div class="kpi-eyebrow">Total produits</div>
+        <div class="kpi-value" id="stat-total">—</div>
+        <div class="kpi-sub" id="stat-total-sub">Trackés</div>
+      </div>
+      <div class="kpi-cell accent">
+        <div class="kpi-eyebrow">À venir (90j)</div>
+        <div class="kpi-value" id="stat-upcoming">—</div>
+        <div class="kpi-sub">Dates confirmées</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-eyebrow">Saison active</div>
+        <div class="kpi-value" style="font-size:24px">2025-26</div>
+        <div class="kpi-sub">Produits datés</div>
+      </div>
+      <div class="kpi-cell">
+        <div class="kpi-eyebrow">Dernier scrape</div>
+        <div class="kpi-value" id="stat-updated" style="font-size:22px">—</div>
+        <div class="kpi-sub" id="stat-updated-source">—</div>
+      </div>
     </div>
-    <div class="cell">
-      <div class="eyebrow">Dernier scrape</div>
-      <div class="v" id="stat-updated" style="font-size:14px">—</div>
-      <div class="s" id="stat-updated-source">—</div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div class="filter-row" id="filter-season">
+        <span class="filter-label">Saison</span>
+        <div class="filter-pills">
+          <button class="chip active" data-season="">Toutes</button>
+          <button class="chip" data-season="2025-26">2025-26</button>
+          <button class="chip" data-season="2024-25">2024-25</button>
+          <button class="chip" data-season="2023-24">2023-24</button>
+        </div>
+      </div>
+      <div class="filter-row" id="filter-brand">
+        <span class="filter-label">Marque</span>
+        <div class="filter-pills">
+          <button class="chip active" data-brand="">Toutes</button>
+          <button class="chip" data-brand="Upper Deck">Upper Deck</button>
+          <button class="chip" data-brand="Topps">Topps</button>
+          <button class="chip" data-brand="Panini">Panini</button>
+          <button class="chip" data-brand="Leaf">Leaf</button>
+        </div>
+      </div>
+      <div class="filter-row" id="filter-format">
+        <span class="filter-label">Format</span>
+        <div class="filter-pills">
+          <button class="chip active" data-format="">Tous</button>
+          <button class="chip" data-format="Hobby">Hobby</button>
+          <button class="chip" data-format="Retail">Retail</button>
+          <button class="chip" data-format="Blaster">Blaster</button>
+          <button class="chip" data-format="Tin">Tin</button>
+          <button class="chip" data-format="Pack">Pack</button>
+        </div>
+      </div>
+      <div class="filter-row" id="filter-view">
+        <span class="filter-label">Voir</span>
+        <div class="filter-pills">
+          <button class="chip active" data-view="upcoming">À venir (90j)</button>
+          <button class="chip" data-view="all">Tout afficher</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="rel-results">
+      <div class="rel-status">Chargement…</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+      <div>Speloosh © 2026 · Sports Cards Platform</div>
+      <div>API · api.hobbyempire.org · v2.0</div>
     </div>
   </div>
 
-  <!-- Filters -->
-  <div class="rel-filters">
-    <span class="rel-filter-label">Saison</span>
-    <div class="rel-filter-group" id="filter-season">
-      <button class="rel-chip active" data-season="">Toutes</button>
-      <button class="rel-chip" data-season="2025-26">2025-26</button>
-      <button class="rel-chip" data-season="2024-25">2024-25</button>
-      <button class="rel-chip" data-season="2023-24">2023-24</button>
+  <!-- Bottom cert strip -->
+  <div class="cert cert-bot">
+    <div class="cert-meta">
+      <span class="cert-pill" id="bot-count">— produits</span>
+      <span class="cert-pill" id="bot-upcoming">— à venir</span>
+      <span class="cert-pill" id="bot-updated">Dernier scrape · —</span>
     </div>
-  </div>
-  <div class="rel-filters">
-    <span class="rel-filter-label">Marque</span>
-    <div class="rel-filter-group" id="filter-brand">
-      <button class="rel-chip active" data-brand="">Toutes</button>
-      <button class="rel-chip" data-brand="Upper Deck">Upper Deck</button>
-      <button class="rel-chip" data-brand="Topps">Topps</button>
-      <button class="rel-chip" data-brand="Panini">Panini</button>
-      <button class="rel-chip" data-brand="Leaf">Leaf</button>
-    </div>
-  </div>
-  <div class="rel-filters">
-    <span class="rel-filter-label">Format</span>
-    <div class="rel-filter-group" id="filter-format">
-      <button class="rel-chip active" data-format="">Tous</button>
-      <button class="rel-chip" data-format="Hobby">Hobby</button>
-      <button class="rel-chip" data-format="Retail">Retail</button>
-      <button class="rel-chip" data-format="Blaster">Blaster</button>
-      <button class="rel-chip" data-format="Tin">Tin</button>
-      <button class="rel-chip" data-format="Mega">Mega</button>
-    </div>
-  </div>
-  <div class="rel-filters">
-    <span class="rel-filter-label">Vue</span>
-    <div class="rel-filter-group" id="filter-view">
-      <button class="rel-chip active" data-view="upcoming">À venir (90 j)</button>
-      <button class="rel-chip" data-view="all">Tout afficher</button>
-    </div>
+    <span class="cert-id">SPELOOSH © 2026</span>
   </div>
 
-  <!-- Results -->
-  <div id="rel-results">
-    <div class="rel-loading">Chargement…</div>
-  </div>
+</div>
 
-</main>
-
-<footer class="footer">
-  <div>Speloosh © 2026 / Sports Cards Platform</div>
-  <div>API: api.hobbyempire.org / v2.0</div>
-</footer>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
-(function() {
+(function () {
   'use strict';
 
   const API_BASE = 'https://api.hobbyempire.org';
-
-  // Selected filters. View defaults to "upcoming" (the value users care about most).
   const state = { season: '', brand: '', format: '', view: 'upcoming' };
 
   const $ = (sel) => document.querySelector(sel);
-  const fmt = {
-    monthFR(iso) {
-      // YYYY-MM → "mai 2026"
-      const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-      const [y, m] = iso.split('-').map(Number);
-      return `${months[m - 1]} ${y}`;
-    },
-    monthKey(iso) {
-      // YYYY-MM-DD → "YYYY-MM" (or "tbd" if null)
-      return iso ? iso.slice(0, 7) : 'tbd';
-    },
-    dayNum(iso) {
-      return iso ? String(parseInt(iso.slice(8, 10), 10)) : '—';
-    },
-    monthShort(iso) {
-      const m = ['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC'];
-      return iso ? m[parseInt(iso.slice(5, 7), 10) - 1] : 'TBD';
-    },
-    relativeDate(iso) {
-      if (!iso) return '—';
-      const d = new Date(iso + 'T00:00:00Z');
-      const now = new Date();
-      const diffDays = Math.round((d - now) / 86_400_000);
-      if (diffDays === 0) return "aujourd'hui";
-      if (diffDays === 1) return 'demain';
-      if (diffDays > 0 && diffDays < 14) return `dans ${diffDays} jours`;
-      return d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short', year: 'numeric' });
-    },
-  };
 
-  function brandClass(brand) {
-    const b = (brand || '').toLowerCase();
-    if (b.includes('upper deck')) return 'b-ud';
-    if (b.includes('topps')) return 'b-topps';
-    if (b.includes('panini')) return 'b-panini';
-    if (b.includes('leaf')) return 'b-leaf';
-    return 'b-other';
+  const MOIS_FR  = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  const MOIS_3   = ['','JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC'];
+  const todayISO = new Date().toISOString().slice(0,10);
+
+  const esc = (s) => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function monthKey(iso)   { return iso ? iso.slice(0, 7) : 'tbd'; }
+  function dayOf(iso)      { return iso ? String(parseInt(iso.slice(8,10),10)) : '—'; }
+  function monthShort(iso) { return iso ? MOIS_3[parseInt(iso.slice(5,7),10)] : 'TBD'; }
+  function monthFR(key) {
+    if (key === 'tbd') return 'Date à confirmer';
+    const [y, m] = key.split('-').map(Number);
+    return `${MOIS_FR[m]} ${y}`;
+  }
+  function relativeDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso + 'T00:00:00Z');
+    const diff = Math.round((d - new Date()) / 86400000);
+    if (diff === 0)  return "aujourd'hui";
+    if (diff === 1)  return 'demain';
+    if (diff === -1) return 'hier';
+    if (diff > 0 && diff < 14)  return `dans ${diff} j`;
+    if (diff < 0 && diff > -14) return `il y a ${-diff} j`;
+    return d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' });
+  }
+
+  function showToast(msg, kind) {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (kind || 'ok');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2800);
   }
 
   function renderCard(r) {
-    const date = r.releaseDate;
-    const dateClass = !date ? 'is-tbd' : (r.releaseDateConfirmed ? '' : 'is-estimated');
-    const brandClassName = brandClass(r.brand);
+    const isPast = r.releaseDate && r.releaseDate < todayISO;
+    const tags = [];
+    if (r.brand)  tags.push(`<span class="rel-tag primary">${esc(r.brand)}</span>`);
+    if (r.format) tags.push(`<span class="rel-tag">${esc(r.format)}</span>`);
+    if (r.releaseDate && !r.releaseDateConfirmed) tags.push(`<span class="rel-tag flag">Estimée</span>`);
+    if (!r.releaseDate) tags.push(`<span class="rel-tag flag">Date inconnue</span>`);
+    if (r.releaseDate && r.releaseDate > todayISO && r.releaseDate <= new Date(Date.now()+14*86400000).toISOString().slice(0,10))
+      tags.push(`<span class="rel-tag">Future</span>`);
 
-    return `
-      <article class="rel-card">
-        <div class="rel-date ${dateClass}">
-          <div class="d">${fmt.dayNum(date)}</div>
-          <div class="m">${fmt.monthShort(date)}</div>
-        </div>
-        <div class="rel-body">
-          <div class="rel-meta">
-            <span class="rel-brand ${brandClassName}">${escapeHtml(r.brand)}</span>
-            ${r.format ? `<span class="rel-format">${escapeHtml(r.format)}</span>` : ''}
-            ${!r.releaseDateConfirmed && date ? '<span class="rel-tbd-flag">Estimée</span>' : ''}
-            ${!date ? '<span class="rel-tbd-flag">Date inconnue</span>' : ''}
-          </div>
-          <div class="rel-name">${escapeHtml(r.productName)}</div>
-        </div>
-      </article>
-    `;
-  }
-
-  function escapeHtml(s) {
-    return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    return `<article class="rel-card${isPast ? ' past' : ''}">
+      <div class="rel-date${!r.releaseDate ? ' tbd' : ''}">
+        <div class="d">${dayOf(r.releaseDate)}</div>
+        <div class="m">${monthShort(r.releaseDate)}</div>
+      </div>
+      <div class="rel-body">
+        <div class="rel-tags">${tags.join('')}</div>
+        <div class="rel-name">${esc(r.productName)}</div>
+      </div>
+    </article>`;
   }
 
   function groupByMonth(releases) {
     const groups = new Map();
     for (const r of releases) {
-      const key = fmt.monthKey(r.releaseDate);
+      const key = monthKey(r.releaseDate);
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(r);
     }
@@ -342,86 +657,89 @@
 
   function render(releases) {
     const target = $('#rel-results');
-    if (releases.length === 0) {
-      target.innerHTML = '<div class="rel-empty">Aucune sortie ne correspond à ces filtres.</div>';
+    if (!releases.length) {
+      target.innerHTML = '<div class="rel-status">Aucune sortie ne correspond à ces filtres.</div>';
       return;
     }
     const groups = groupByMonth(releases);
-    const sections = [];
-    // Sort keys: known dates ascending, TBD last
     const keys = Array.from(groups.keys()).sort((a, b) => {
       if (a === 'tbd') return 1;
       if (b === 'tbd') return -1;
       return a.localeCompare(b);
     });
-    for (const key of keys) {
+    const sections = keys.map(key => {
       const items = groups.get(key);
-      const title = key === 'tbd' ? 'Date à confirmer' : fmt.monthFR(key + '-01');
-      sections.push(`
-        <div class="rel-month-head">
-          <h2 class="rel-month-title">${title}</h2>
-          <span class="rel-month-count">${items.length} produit${items.length > 1 ? 's' : ''}</span>
+      const title = monthFR(key);
+      const firstChar = title.charAt(0);
+      const rest = title.slice(1);
+      return `<section class="month">
+        <div class="month-head">
+          <h3 class="month-title"><span class="first">${esc(firstChar)}</span>${esc(rest)}</h3>
+          <span class="month-count">${items.length} produit${items.length>1?'s':''}</span>
         </div>
         <div class="rel-grid">${items.map(renderCard).join('')}</div>
-      `);
-    }
+      </section>`;
+    });
     target.innerHTML = sections.join('');
+    $('#bot-count').textContent = `${releases.length} produits`;
   }
 
   function buildUrl() {
-    const params = new URLSearchParams();
-    if (state.season) params.set('season', state.season);
-    if (state.brand) params.set('brand', state.brand);
-    if (state.format) params.set('format', state.format);
-    params.set('limit', '200');
-    if (state.view === 'upcoming') {
-      const today = new Date().toISOString().slice(0, 10);
-      params.set('from', today);
-      params.set('sort', 'date_asc');
-    } else {
-      params.set('sort', 'date_asc');
-    }
-    return `${API_BASE}/api/releases?${params.toString()}`;
+    const p = new URLSearchParams();
+    if (state.season) p.set('season', state.season);
+    if (state.brand)  p.set('brand', state.brand);
+    if (state.format) p.set('format', state.format);
+    p.set('limit', '200');
+    p.set('sort', 'date_asc');
+    if (state.view === 'upcoming') p.set('from', todayISO);
+    return `${API_BASE}/api/releases?${p.toString()}`;
   }
 
   async function load() {
-    const target = $('#rel-results');
-    target.innerHTML = '<div class="rel-loading">Chargement…</div>';
+    $('#rel-results').innerHTML = '<div class="rel-status">Chargement…</div>';
     try {
       const res = await fetch(buildUrl());
       if (!res.ok) throw new Error(`API ${res.status}`);
       const data = await res.json();
       render(data.releases || []);
     } catch (err) {
-      target.innerHTML = `<div class="rel-error">Erreur de chargement : ${escapeHtml(err.message)}</div>`;
+      $('#rel-results').innerHTML = `<div class="rel-status err">Erreur : ${esc(err.message)}</div>`;
     }
   }
 
   async function loadStats() {
     try {
-      const [statsRes, upcomingRes] = await Promise.all([
+      const [stats, upcoming] = await Promise.all([
         fetch(`${API_BASE}/api/stats`).then(r => r.json()),
         fetch(`${API_BASE}/api/releases/upcoming`).then(r => r.json()),
       ]);
-      $('#stat-total').textContent = (statsRes.total_releases ?? 0).toLocaleString('fr-CA');
-      $('#stat-upcoming').textContent = (upcomingRes.releases ?? []).length;
-      // Pick the most recent successful run
-      const runs = (statsRes.per_source || [])
+      const total = stats.total_releases ?? 0;
+      const up    = (upcoming.releases ?? []).length;
+      $('#stat-total').textContent     = total.toLocaleString('fr-CA');
+      $('#stat-total-sub').textContent = `${total.toLocaleString('fr-CA')} trackés`;
+      $('#stat-upcoming').textContent  = up;
+      $('#bot-upcoming').textContent   = `${up} à venir`;
+
+      const runs = (stats.per_source || [])
         .filter(s => s.last_success_at)
         .sort((a, b) => (b.last_success_at || '').localeCompare(a.last_success_at || ''));
       if (runs[0]) {
-        $('#stat-updated').textContent = fmt.relativeDate(runs[0].last_success_at.slice(0, 10));
-        $('#stat-updated-source').textContent = `via ${runs[0].source}`;
+        const iso = runs[0].last_success_at.slice(0, 10);
+        const d = new Date(iso + 'T12:00:00');
+        const label = `${d.getDate()} ${MOIS_FR[d.getMonth()+1].toLowerCase().slice(0,3)} ${d.getFullYear()}`;
+        $('#stat-updated').textContent = label;
+        $('#stat-updated-source').textContent = `Via ${runs[0].source}`;
+        $('#bot-updated').textContent = `Dernier scrape · ${label}`;
       }
     } catch {
-      // Stats are non-critical — fail silently to keep the main list usable.
+      /* stats non-critical */
     }
   }
 
-  function wireFilters(groupSel, key) {
-    document.querySelectorAll(`${groupSel} .rel-chip`).forEach(btn => {
+  function wireFilters(groupId, key) {
+    document.querySelectorAll(`#${groupId} .chip`).forEach(btn => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll(`${groupSel} .rel-chip`).forEach(b => b.classList.remove('active'));
+        document.querySelectorAll(`#${groupId} .chip`).forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         state[key] = btn.dataset[key] || '';
         load();
@@ -429,17 +747,19 @@
     });
   }
 
-  // Wire up
-  wireFilters('#filter-season', 'season');
-  wireFilters('#filter-brand', 'brand');
-  wireFilters('#filter-format', 'format');
-  wireFilters('#filter-view', 'view');
-  $('#rel-refresh').addEventListener('click', () => { load(); loadStats(); });
+  wireFilters('filter-season', 'season');
+  wireFilters('filter-brand',  'brand');
+  wireFilters('filter-format', 'format');
+  wireFilters('filter-view',   'view');
+
+  $('#rel-refresh').addEventListener('click', () => {
+    showToast('Rafraîchissement…', 'ok');
+    Promise.all([load(), loadStats()]).then(() => showToast('Données rafraîchies', 'ok'));
+  });
 
   load();
   loadStats();
 })();
 </script>
-
 </body>
 </html>
