@@ -246,12 +246,18 @@ body {
 }
 .cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
 .cert-bc .sep { opacity: 0.5; }
-.cert-splash {
-  height: 56px;
-  width: auto;
+.sb-splash-wrap {
+  padding: 20px 16px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.sb-splash {
+  width: 110px;
+  height: auto;
   display: block;
-  margin: -14px 0;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.18));
 }
 .cert-logo {
   display: inline-flex; align-items: center; gap: 8px;
@@ -1222,7 +1228,10 @@ body {
 
 <!-- ═════════════════════ SIDEBAR ═════════════════════ -->
 <aside class="sb" aria-label="Navigation principale">
-  <div class="sb-section" style="padding-top:22px">
+  <a href="/home-v2.html" class="sb-splash-wrap" aria-label="Speloosh">
+    <img class="sb-splash" src="/images/speloosh-splash.png" alt="Speloosh">
+  </a>
+  <div class="sb-section" style="padding-top:14px">
     <a class="sb-item is-active" href="/home-v2.html"><span><span class="sb-first">H</span>ome</span><span class="sb-badge">v2</span></a>
     <a class="sb-item" href="/break-builder.html"><span><span class="sb-first">B</span>reak Tracker</span></a>
     <a class="sb-item" href="/hub.html"><span><span class="sb-first">H</span>ub</span></a>
@@ -1249,8 +1258,7 @@ body {
   <!-- Top cert strip -->
   <div class="cert cert-top">
     <span class="cert-bc">
-      <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
-      <span class="sep">›</span><strong>HOME</strong>
+      <strong>HOME</strong>
     </span>
     <span class="cert-right">Weather the Storm</span>
   </div>
