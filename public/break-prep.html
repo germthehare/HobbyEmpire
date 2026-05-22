@@ -1034,7 +1034,45 @@ async function callClaude(msg, sys) {
   return JSON.parse(m[0]);
 }
 
-// ════════════════════ Generate (mode AVANT) ════════════════════
+// ════════════════════ Generate (mode AVANT) — data réelle ════════════════════
+// Source: /api/checklist (data/checklists.json, curé manuellement) pour les facts
+//         /api/ebay (sold listings) pour les prix RÉELS
+// Plus de Claude pour les facts → fini les hallucinations.
+
+async function fetchEbayPrice(query) {
+  try {
+    const r = await fetch('/api/ebay?limit=8&q=' + encodeURIComponent(query));
+    const d = await r.json();
+    const items = d.itemSummaries || [];
+    const prices = items.map(it => parseFloat(it.price?.value || 0)).filter(p => p > 0).sort((a, b) => a - b);
+    if (!prices.length) return null;
+    const lo = prices[0];
+    const hi = prices[prices.length - 1];
+    const median = prices[Math.floor(prices.length / 2)];
+    return { lo, hi, median, count: prices.length };
+  } catch (e) { return null; }
+}
+
+function fmtPriceRange(p) {
+  if (!p) return '<span style="color:var(--ink-3)">—</span>';
+  const f = (n) => '$' + Math.round(n).toLocaleString('en-US');
+  if (p.lo === p.hi || p.count === 1) return `${f(p.median)}`;
+  return `${f(p.lo)}–${f(p.hi)}`;
+}
+
+async function fetchChecklist(key) {
+  const r = await fetch('/api/checklist?key=' + encodeURIComponent(key));
+  if (!r.ok) throw new Error('Produit non trouvé dans la base curée');
+  return await r.json();
+}
+
+function buildSearchQuery(playerName, productKey, extra = '') {
+  // Build eBay query with brand + year + player + card type if any
+  const { sport, year } = parseKey(productKey);
+  const productClean = productKey.replace(/\s+(Hockey|Football|Basketball|Baseball|Pokémon|Multi sports)\s*$/i, '');
+  return [playerName, productClean, extra].filter(Boolean).join(' ').trim();
+}
+
 async function generatePrep() {
   const chips = document.querySelectorAll('#product-list .product-chip');
   const products = Array.from(chips).map(c => c.dataset.key).filter(Boolean);
@@ -1045,39 +1083,38 @@ async function generatePrep() {
   const btn = document.getElementById('gen-btn');
   btn.disabled = true;
   btn.textContent = 'Génération…';
-  document.getElementById('prep-result').innerHTML = '<div class="loading"><div class="spinner"></div>Analyse en cours…</div>';
+  document.getElementById('prep-result').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement du checklist + prix eBay…</div>';
 
   try {
     const results = [];
     for (const p of products) {
-      const d = await callClaude(
-        `Generate a precise prep sheet for this trading card product: "${p}". Be extremely accurate. Respond in French.`,
-        `You are a trading card accuracy specialist. FACTUAL ACCURACY IS THE TOP PRIORITY — NEVER invent, NEVER guess.
+      // 1. Fetch curated checklist (no AI)
+      const d = await fetchChecklist(p);
+      // 2. Build eBay price queries in parallel
+      const productKey = d.key || p;
+      const topCardsArr = (d.topCards || []).slice(0, 8);
+      const rookiesArr  = (d.rookies  || []).slice(0, 16);
+      const legendsArr  = (d.legends  || []);
 
-CRITICAL RULES:
-1) hitsPerBox: this is the number of GUARANTEED HITS (autos + memorabilia + 1/1s) per Hobby box. Be exact. Examples to anchor:
-   - Upper Deck Clear Cut Hockey: 1 hit per box (ONE autograph)
-   - Upper Deck SP Authentic Hockey: 3 hits per box (1 auto + 2 memorabilia)
-   - Upper Deck The Cup Hockey: 4-6 hits per box (premium product)
-   - Upper Deck Series 1/2 Hockey: 0 guaranteed hits (1 Young Guns per box, no autos)
-   - Upper Deck SPx Hockey: 1 rookie auto per box
-   - Upper Deck Ice Hockey: 1 hit per box
-   - Upper Deck Ultimate Collection: 5 hits per box
-   - Upper Deck Trilogy Hockey: 2 hits per box
-   If you are NOT certain for the exact product, say "Variable" or "À vérifier" — DO NOT INVENT.
+      const topCardPrices = await Promise.all(topCardsArr.map(c => {
+        const playerName = String(c.name).split(' - ')[0].trim();
+        const cardType   = String(c.name).split(' - ')[1] || '';
+        return fetchEbayPrice(buildSearchQuery(playerName, productKey, cardType));
+      }));
+      const rookiePrices = await Promise.all(rookiesArr.map(r =>
+        fetchEbayPrice(buildSearchQuery(r.name, productKey, 'rookie'))
+      ));
+      const legendPrices = await Promise.all(legendsArr.map(l =>
+        fetchEbayPrice(buildSearchQuery(l.name, productKey, l.cardType || ''))
+      ));
 
-2) Rookies: ONLY players who had their FIRST official NHL/NFL/NBA/MLB licensed card in THIS specific set+season. If unsure for a player, OMIT them. Better to return 5 confirmed rookies than 15 with errors.
-
-3) Legends: ONLY veterans/legends actually printed in this set's checklist (Connor McDavid won't appear in 2023-24 Clear Cut if he's not a Clear Cut subject for that year).
-
-4) Values: realistic current USD market ranges. If a card is rare/hot, range like "$150-$400" is fine.
-
-5) summary: 1-2 sentences in French describing the product, key insert sets and hit ratios. Be specific (e.g. "1 acétate autograph par boîte" not "plusieurs hits").
-
-Respond with ONLY valid JSON, no markdown, no preamble:
-{"name":"Full official set name","brand":"Brand","year":"Season year","sport":"Hockey|Football|Basketball|Baseball","hitsPerBox":"Exact number — e.g. 1 hit par boîte / 3 hits par boîte / Variable","summary":"Accurate 1-2 sentence French description","topCards":[{"name":"Player - Card type","value":"$XX-$XXX","tag":"rookie|hot|rare|auto|legend","player":"First Last"}],"rookies":[{"rank":1,"name":"Full name","team":"NHL team","position":"POS","value":"$XX-$XXX"}],"legends":[{"name":"Full name","cardType":"Exact insert name","value":"$XX-$XXX"}]}`
-      );
-      results.push(d);
+      results.push({
+        ...d,
+        productKey,
+        _topCardPrices: topCardPrices,
+        _rookiePrices: rookiePrices,
+        _legendPrices: legendPrices,
+      });
     }
     renderPrep(results);
   } catch (e) {
@@ -1093,61 +1130,79 @@ function renderPrep(results) {
     const brand = d.brand || 'Upper Deck';
     const year  = d.year  || '—';
     const sport = d.sport || 'Hockey';
-    const productName = d.name || 'Produit';
-    // Highlight last word in product name (à la SPx Hockey)
+    // Product name from key (e.g. "2025-2026 SPx Hockey" → "2025-26 SPx Hockey")
+    const parsed = parseKey(d.productKey || d.key || '');
+    const productName = `${parsed.year || year} ${parsed.name || ''} ${parsed.sport || sport}`.trim();
+
+    // Highlight: first-letter of product name OR a distinctive word
     const titleParts = productName.split(' ');
     let titleHtml = '';
     if (titleParts.length > 1) {
-      const accentIdx = titleParts.findIndex(p => /SPx|RC|Cup|Premier|Tier|Authentic|Black|Diamond|Trilogy|Synergy/i.test(p));
-      const idx = accentIdx >= 0 ? accentIdx : Math.floor(titleParts.length / 2);
+      const accentIdx = titleParts.findIndex(p => /SPx|Cup|Premier|Authentic|Black|Diamond|Trilogy|Synergy|Ice|Flair|OPC|Platinum|Series/i.test(p));
+      const idx = accentIdx >= 0 ? accentIdx : 1;
       titleHtml = titleParts.map((t, i) => i === idx ? `<span class="hl">${esc(t)}</span>` : esc(t)).join(' ');
     } else {
       titleHtml = `<span class="hl">${esc(productName)}</span>`;
     }
 
-    const topCards = (d.topCards || []).slice(0, 7).map(c => `
-      <div class="watch-row">
+    const hitsLabel = d.hitsPerBox != null
+      ? `${d.hitsPerBox} hit${d.hitsPerBox > 1 ? 's' : ''} par boîte`
+      : '1 hit par boîte';
+
+    // Cartes à surveiller — curated + eBay sold prices
+    const topCardsArr = (d.topCards || []).slice(0, 8);
+    const topCards = topCardsArr.map((c, i) => {
+      const player = String(c.name || '').split(' - ')[0];
+      const cardType = String(c.name || '').split(' - ')[1] || c.tag || '';
+      const price = d._topCardPrices?.[i];
+      return `<div class="watch-row">
         <img class="splash" src="/assets/splash-official.png" alt="">
         <div>
-          <div class="name">${esc((c.player || c.name || '').split(' - ')[0])}</div>
-          <div class="tag">${esc((c.name || '').split(' - ')[1] || c.tag || '')}</div>
+          <div class="name">${esc(player)}</div>
+          <div class="tag">${esc(cardType)}${price ? ` <span style="font-size:9px;color:var(--ink-3);letter-spacing:.08em">· ${price.count} sold</span>` : ''}</div>
         </div>
-        <span class="price">${esc(c.value || '')}</span>
-      </div>`).join('');
+        <span class="price">${fmtPriceRange(price)}</span>
+      </div>`;
+    }).join('');
 
     const rookies = (d.rookies || []).slice(0, 16);
     const halfR = Math.ceil(rookies.length / 2);
-    const renderRookieCol = (arr, base) => arr.map((r, i) => `
-      <div class="rookie-row">
-        <span class="rookie-rank">${base + i}</span>
+    const renderRookieRow = (r, rank) => {
+      const price = d._rookiePrices?.[rank - 1];
+      return `<div class="rookie-row">
+        <span class="rookie-rank">${rank}</span>
         <div>
           <div class="rookie-name">${esc(r.name || '')}</div>
           <div class="rookie-sub">${esc(r.team || '')}${r.position ? ' · ' + esc(r.position) : ''}</div>
         </div>
-        <span class="rookie-price">${esc(r.value || '')}</span>
-      </div>`).join('');
+        <span class="rookie-price">${fmtPriceRange(price)}</span>
+      </div>`;
+    };
     const rookiesHtml = rookies.length ? `
       <div class="rookies-grid">
-        <div>${renderRookieCol(rookies.slice(0, halfR), 1)}</div>
-        <div>${renderRookieCol(rookies.slice(halfR), halfR + 1)}</div>
+        <div>${rookies.slice(0, halfR).map((r, i) => renderRookieRow(r, i + 1)).join('')}</div>
+        <div>${rookies.slice(halfR).map((r, i) => renderRookieRow(r, halfR + i + 1)).join('')}</div>
       </div>` : '';
 
-    const legendsHtml = (d.legends || []).map(l => `
-      <div class="legend-row">
+    const legendsArr = (d.legends || []);
+    const legendsHtml = legendsArr.map((l, i) => {
+      const price = d._legendPrices?.[i];
+      return `<div class="legend-row">
         <img class="coeur" src="/assets/coeur.png" alt="">
         <div><div class="name">${esc(l.name || '')}</div></div>
         <span class="ltag">${esc(l.cardType || 'Légende')}</span>
-        <span class="price">${esc(l.value || '')}</span>
-      </div>`).join('');
+        <span class="price">${fmtPriceRange(price)}</span>
+      </div>`;
+    }).join('');
 
     html += `<div class="fiche">
       <div class="fiche-header">
         <span class="fiche-brand">${esc(brand)}</span>
-        <span class="fiche-meta">${esc(year)} · ${esc(sport)}</span>
+        <span class="fiche-meta">${esc(parsed.year || year)} · ${esc(sport)}</span>
         <h2 class="fiche-title">${titleHtml}</h2>
         <div class="fiche-stats">
-          <div class="fiche-stat"><img src="/assets/poight.png" alt=""><span>${esc(d.hitsPerBox || '1 hit par boîte')}</span></div>
-          <div class="fiche-stat"><img src="/assets/diamant.png" alt=""><span>Rookies + autos</span></div>
+          <div class="fiche-stat"><img src="/assets/poight.png" alt=""><span>${esc(hitsLabel)}</span></div>
+          <div class="fiche-stat"><img src="/assets/diamant.png" alt=""><span>${esc(d.format || 'Rookies + autos')}</span></div>
         </div>
       </div>
       ${d.summary ? `<div class="fiche-summary">${esc(d.summary)}</div>` : ''}
@@ -1167,7 +1222,7 @@ function renderPrep(results) {
         ${legendsHtml}
       </div>` : ''}
       <div class="fiche-footer">
-        <span class="fiche-sources">Sources · eBay · Beckett · 130point · Claude AI</span>
+        <span class="fiche-sources">Sources · Checklist curé · eBay sold listings</span>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="alert('Sauvegarde — à brancher')">💾 Sauvegarder</button>
           <button class="btn btn-ghost btn-sm" onclick="window.print()">📄 PDF</button>
