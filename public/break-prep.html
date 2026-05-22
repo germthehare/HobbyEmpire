@@ -336,6 +336,13 @@ body {
   background: var(--bg-3);
 }
 .empty-fiche .ico { font-size: 40px; opacity: 0.4; margin-bottom: 14px; }
+.empty-fiche img.ico-splash {
+  width: 96px; height: auto;
+  display: block;
+  margin: 0 auto 18px;
+  opacity: 0.55;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,.08));
+}
 .empty-fiche .ttl {
   font-size: 16px; font-weight: 700;
   letter-spacing: -0.005em;
@@ -837,7 +844,7 @@ body {
         <div class="col-right">
           <div id="prep-result">
             <div class="empty-fiche">
-              <div class="ico">📋</div>
+              <img class="ico-splash" src="/images/speloosh-splash.png" alt="">
               <div class="ttl">Tes fiches apparaîtront ici</div>
               <div class="sub">Choisis un sport, une année et un produit dans la colonne de gauche, puis clique sur Générer les fiches.</div>
             </div>
