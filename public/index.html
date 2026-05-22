@@ -13,15 +13,16 @@
 
 /* ── Announcements board ─────────────────────────────────────── */
 .announce-section {
-  padding: 32px 48px 24px;
-  /* pas de fond forcé — l'image a déjà des coins transparents */
+  padding: 28px 32px 36px;
+  background: #2c2926;
+  border-radius: 10px;
 }
 .announce-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 }
 .announce-header h2 {
@@ -31,9 +32,11 @@
   font-stretch: 75%;
   letter-spacing: -0.025em;
   line-height: 0.9;
-  color: var(--ink);
+  color: #fff;
   margin: 0;
 }
+.announce-header .home-section-eyebrow { color: rgba(255,255,255,.40); }
+.announce-header .sp-holo-line { background: rgba(255,255,255,.18); }
 
 /* New post slide-down form */
 .post-form-wrap {
@@ -131,150 +134,156 @@
 }
 .pf-pin-label input { margin: 0; accent-color: var(--accent); }
 
-/* ═══ POST-IT BOARD — image réelle sticky-note.png ══════════ */
+/* ═══ GRILLE DE NOTES — flat CSS, aucune image ═══════════════ */
 .announce-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  max-width: 400px; /* largeur proche du carré de la note originale */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 22px;
+  padding-top: 10px; /* espace pour les punaises */
 }
 .announce-empty {
-  padding: 52px 20px;
+  grid-column: 1/-1;
+  padding: 40px 20px;
   text-align: center;
-  color: var(--ink-3);
+  color: rgba(255,255,255,.35);
 }
 .announce-empty-icon  { font-size: 28px; margin-bottom: 10px; }
-.announce-empty-title { font-weight: 600; color: var(--ink-2); font-size: 15px; }
-.announce-empty-sub   { font-size: 12px; margin-top: 5px; color: var(--mute); }
+.announce-empty-title { font-size: 14px; color: rgba(255,255,255,.45); font-weight: 600; }
+.announce-empty-sub   { font-size: 11px; margin-top: 4px; }
 
-/* ── Carte = sticky-note.png flottante (blend mode) ─────────── */
+/* ── Note individuelle ──────────────────────────────────────── */
 .announce-card {
-  position: relative;
-  background: transparent;  /* la note est dans ::before */
+  background: #fef865;
   border: none;
-  border-radius: 0;
-  box-shadow: none;
-  overflow: visible;
-  aspect-ratio: 1 / 0.88; /* carré proche de l'image originale 2000×2000 */
-  transition: transform 0.2s;
+  border-radius: 2px;
+  padding: 16px 14px 12px;
+  box-shadow: 3px 5px 10px rgba(0,0,0,.50), 6px 8px 2px rgba(0,0,0,.25);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 165px;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s, z-index 0s;
 }
-/* L'image en pseudo-élément avec multiply :
-   blanc de l'image × fond blanc de la section = invisible
-   jaune + punaise restent visibles → note qui flotte sans rectangle */
-.announce-card::before {
-  content: '';
+/* Rotations légères */
+.announce-card:nth-child(3n+1) { transform: rotate(-1.5deg); }
+.announce-card:nth-child(3n+2) { transform: rotate(0.8deg);  }
+.announce-card:nth-child(3n+3) { transform: rotate(-0.5deg); }
+.announce-card:hover {
+  transform: rotate(0deg) scale(1.05) !important;
+  box-shadow: 4px 8px 20px rgba(0,0,0,.60), 8px 12px 4px rgba(0,0,0,.30);
+  z-index: 10;
+}
+
+/* Couleurs pastels par type */
+.announce-card.type-info    { background: #c8d8f8; }
+.announce-card.type-urgent  { background: #f8c5c0; }
+.announce-card.type-live    { background: #c8f0d0; }
+.announce-card.type-rappel  { background: #fef865; }
+
+/* ── Punaise CSS — cercle rouge en haut au centre ───────────── */
+.announce-pushpin {
+  display: block !important;
   position: absolute;
-  inset: 0;
-  background: url('/sticky-note.png') center / 100% 100% no-repeat;
-  /* pas de mix-blend-mode — l'image PNG a déjà un fond transparent (alpha=0 sur les coins) */
-  pointer-events: none;
-  z-index: 0;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #f47575 0%, #c0392b 55%, #8b1a1a 100%);
+  box-shadow: 0 2px 5px rgba(0,0,0,.45), inset 0 -1px 2px rgba(0,0,0,.25), inset 2px 2px 4px rgba(255,255,255,.30);
+  z-index: 5;
+  overflow: hidden; /* cache le SVG à l'intérieur */
 }
-/* Supprime le ::after CSS — coin plié est dans l'image */
-.announce-card::after { display: none; }
-/* Supprime la punaise SVG — elle est dans l'image */
-.announce-pushpin { display: none !important; }
+/* Cache le SVG hérité */
+.announce-pushpin svg { display: none; }
 
-/* Hover */
-.announce-card:hover { transform: translateY(-5px) scale(1.015); }
-
-/* Pas de rotation CSS — baked dans l'image */
-.announce-card:nth-child(odd),
-.announce-card:nth-child(even) { transform: none; }
-.announce-card:hover { transform: translateY(-5px) scale(1.015); }
-
-/* ── Encre sur papier — zéro chrome UI ─────────────────────── */
-.announce-card-meta,
-.announce-card-body,
-.announce-footer { position: relative; z-index: 1; }
-
-/* Ligne type — minuscule, discret, comme un tampon */
+/* ── Méta : type + supprimer ────────────────────────────────── */
 .announce-card-meta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 58px 40px 0 40px; /* centré dans la zone jaune */
+  gap: 5px;
+  margin-bottom: 9px;
+  padding-top: 6px;
 }
 .announce-type-badge {
   font-family: var(--font-mono);
   font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(0,0,0,.32);
-  /* pas de fond, pas de bordure, pas de padding */
+  color: rgba(0,0,0,.36);
 }
-.type-info   .announce-type-badge { color: rgba(30,80,180,.45); }
-.type-urgent .announce-type-badge { color: rgba(180,50,20,.50); }
-.type-live   .announce-type-badge { color: rgba(20,120,60,.45); }
-.type-rappel .announce-type-badge { color: rgba(0,0,0,.30); }
+.type-info   .announce-type-badge { color: rgba(20,60,160,.52); }
+.type-urgent .announce-type-badge { color: rgba(160,40,20,.58); }
+.type-live   .announce-type-badge { color: rgba(20,100,50,.52); }
+.type-rappel .announce-type-badge { color: rgba(0,0,0,.36); }
 
-.announce-pin-icon { font-size: 10px; opacity: .6; }
+.announce-pin-icon { font-size: 9px; opacity: .65; }
+
 .announce-del {
-  margin-left: auto;
+  position: absolute;
+  top: 7px;
+  right: 8px;
   background: none;
   border: none;
-  padding: 0 2px;
   color: rgba(0,0,0,.18);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1;
   cursor: pointer;
+  padding: 0;
   transition: color .12s;
 }
-.announce-del:hover { color: rgba(160,0,0,.55); }
+.announce-del:hover { color: rgba(140,0,0,.60); }
 
-/* Grand titre — comme écrit au marqueur */
-.announce-card-body {
-  padding: 6px 40px 8px 40px;
-}
+/* ── Contenu ────────────────────────────────────────────────── */
+.announce-card-body { flex: 1; padding: 0; }
 .announce-titre {
   font-family: var(--font-display);
-  font-size: 27px;
+  font-size: 17px;
   font-weight: 900;
   font-stretch: 75%;
-  letter-spacing: -0.025em;
-  line-height: 1.04;
-  color: rgba(0,0,0,.76);
-  margin: 0 0 8px;
+  letter-spacing: -0.018em;
+  line-height: 1.18;
+  color: rgba(0,0,0,.84);
+  margin: 0 0 7px;
 }
 .announce-body {
-  font-size: 13.5px;
-  line-height: 1.66;
-  color: rgba(0,0,0,.50);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(0,0,0,.58);
   white-space: pre-line;
   word-break: break-word;
   margin: 0;
 }
 
-/* Byline — tout petit en bas de la note, comme une signature */
+/* ── Footer ─────────────────────────────────────────────────── */
 .announce-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 40px 38px 40px;
-  /* PAS de border-top — le papier n'a pas de ligne */
-  gap: 10px;
+  margin-top: 10px;
+  gap: 6px;
 }
 .announce-byline {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8px;
   color: rgba(0,0,0,.30);
-  letter-spacing: 0.03em;
 }
-.announce-byline-author { font-weight: 700; color: rgba(0,0,0,.42); }
-.announce-byline-dot    { opacity: 0.30; }
+.announce-byline-author { font-weight: 700; color: rgba(0,0,0,.44); }
+.announce-byline-dot    { opacity: .30; }
 
-/* Bouton épingler — texte nu, sans fond ni bordure */
 .announce-pin-btn {
   background: none;
   border: none;
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: rgba(0,0,0,.28);
   cursor: pointer;
@@ -282,8 +291,8 @@
   transition: color .12s;
   white-space: nowrap;
 }
-.announce-pin-btn:hover     { color: rgba(0,0,0,.55); }
-.announce-pin-btn.is-pinned { color: #c0392b; }
+.announce-pin-btn:hover     { color: rgba(0,0,0,.62); }
+.announce-pin-btn.is-pinned { color: rgba(170,35,35,.85); }
 
 /* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
 .ticker {
@@ -523,8 +532,25 @@
 #home-releases .hr-loading { padding:28px; text-align:center; color:var(--ink-3); font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
 
 /* ── Responsive ─────────────────────────────────────────────── */
+/* Formulaire sur fond sombre */
+.announce-section .post-form-inner {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.12);
+}
+.announce-section .pf-titre,
+.announce-section .pf-msg {
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.90);
+}
+.announce-section .pf-titre::placeholder,
+.announce-section .pf-msg::placeholder { color: rgba(255,255,255,.30); }
+.announce-section .pf-pin-label        { color: rgba(255,255,255,.50); }
+.announce-section .pf-type-btn         { border-color: rgba(255,255,255,.18); color: rgba(255,255,255,.55); }
+
 @media (max-width: 1100px) {
-  .announce-section { padding: 24px 28px 18px; }
+  .announce-section { padding: 22px 20px 28px; }
+  .announce-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
   .ticker { margin: 0 28px; grid-template-columns: 1fr 1fr; }
   .ticker-cell.featured { grid-column: 1 / -1; }
   .ticker-cell:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
