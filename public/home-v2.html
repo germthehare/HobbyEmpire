@@ -366,6 +366,89 @@ body {
   margin: 0;
 }
 
+/* Form drawer */
+.sdm-form-wrap {
+  position: relative; z-index: 2;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), margin-bottom 0.35s;
+  margin-bottom: 0;
+}
+.sdm-form-wrap.open { max-height: 600px; margin-bottom: 18px; }
+.sdm-form {
+  background: rgba(20,15,10,.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: grid;
+  gap: 10px;
+}
+.sdm-form label {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(20,15,10,.7);
+}
+.sdm-form input, .sdm-form select, .sdm-form textarea {
+  font-family: inherit;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink);
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(20,15,10,.12);
+  border-radius: 6px;
+  padding: 8px 10px;
+  outline: none;
+  text-transform: none;
+}
+.sdm-form input:focus, .sdm-form select:focus, .sdm-form textarea:focus {
+  border-color: var(--ink);
+  background: #fff;
+}
+.sdm-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.sdm-form-actions {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding-top: 4px;
+}
+
+/* Empty card placeholder */
+.sdm-empty {
+  background: rgba(255,255,255,.45);
+  border: 1px dashed rgba(20,15,10,.20);
+  border-radius: 10px;
+  padding: 24px 20px;
+  display: flex; flex-direction: column; gap: 8px;
+  align-items: center; justify-content: center;
+  text-align: center;
+  color: rgba(20,15,10,.55);
+}
+.sdm-empty .ico { font-size: 22px; opacity: 0.7; }
+.sdm-empty .ttl {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.sdm-empty .sub { font-size: 11.5px; }
+
+.card-pin .card-del, .card-ann .card-del, .card-win .card-del {
+  position: absolute; top: 10px; right: 10px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  font-size: 12px; line-height: 1;
+  color: oklch(80% 0.01 75);
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+.card-ann .card-del, .card-win .card-del { color: var(--ink-3); background: rgba(20,15,10,.05); }
+.card-pin:hover .card-del, .card-ann:hover .card-del, .card-win:hover .card-del { opacity: 0.7; }
+.card-pin .card-del:hover, .card-ann .card-del:hover, .card-win .card-del:hover { opacity: 1; background: rgba(255,80,80,.18); color: var(--neg); }
+
 /* Cards grid */
 .sdm-grid {
   position: relative; z-index: 2;
@@ -1279,72 +1362,53 @@ body {
 
     <div class="sdm-head">
       <div>
-        <div class="sdm-eyebrow"><span class="live"></span>Salle des machines · 5 actifs maintenant</div>
+        <div class="sdm-eyebrow"><span class="live"></span>Salle des machines</div>
         <h1 class="sdm-title">Salut team. 👋</h1>
       </div>
-      <button class="btn btn-dark btn-sm">
+      <button class="btn btn-dark btn-sm" onclick="sdmToggleForm()">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
         Nouveau message
       </button>
     </div>
 
-    <!-- Cards -->
-    <div class="sdm-grid">
-
-      <!-- Card 1 — Pinned (dark) -->
-      <article class="card-pin">
-        <span class="card-pin-badge">★ Épinglé</span>
-        <div class="card-byline">
-          <div class="byline-avatar">GL</div>
-          <div>
-            <div class="byline-name">Germain Lelièvre</div>
-            <div class="byline-time">Il y a 2h · Direction</div>
-          </div>
+    <!-- Form drawer (closed by default) -->
+    <div id="sdm-form-wrap" class="sdm-form-wrap">
+      <div class="sdm-form">
+        <div class="sdm-form-row">
+          <label>Type
+            <select id="sdm-cat">
+              <option value="pinned">★ Épinglé (direction)</option>
+              <option value="announce">📢 Annonce</option>
+              <option value="win">🏆 Win du jour</option>
+            </select>
+          </label>
+          <label>Auteur
+            <input id="sdm-auteur" type="text" placeholder="Ton prénom" value="Germain">
+          </label>
         </div>
-        <h3>On part en grande à la sortie Upper Deck.</h3>
-        <p class="lede">Mardi prochain, 19h — préparation de salle dès 17h30.</p>
-        <p class="body">L'objectif est de finir 8 cases minimum sur le live, avec un focus rookie premium pour Hobby. Chuck mène le break, Phebe en backup tracker. Si vous avez du stock à shooter pour Instagram avant le live, postez-le dans #salle-photo avant lundi soir.</p>
-        <div class="reactions" id="rxn-pin">
-          <button class="rxn" data-emo="🔥"><span>🔥</span><span class="n">8</span></button>
-          <button class="rxn" data-emo="💪"><span>💪</span><span class="n">5</span></button>
-          <button class="rxn" data-emo="👀"><span>👀</span><span class="n">3</span></button>
-          <button class="rxn" data-emo="🙌"><span>🙌</span><span class="n">2</span></button>
-          <button class="rxn add">+ Réagir</button>
+        <label>Titre
+          <input id="sdm-title" type="text" placeholder="Titre du message…">
+        </label>
+        <label>Message
+          <textarea id="sdm-body" rows="3" placeholder="Le message…"></textarea>
+        </label>
+        <div class="sdm-form-row sdm-win-only" style="display:none">
+          <label>Grosse métrique
+            <input id="sdm-bignum" type="text" placeholder="$16 095">
+          </label>
+          <label>Label métrique
+            <input id="sdm-metric" type="text" placeholder="Revenu / break · Hier soir">
+          </label>
         </div>
-      </article>
-
-      <!-- Card 2 — Announce (amber) -->
-      <article class="card-ann">
-        <div class="icon-square icon-amber">📢</div>
-        <div class="card-label">Annonce · 21 mai</div>
-        <h3>Inventaire physique vendredi.</h3>
-        <p class="body">On bloque la salle à 14h. Apportez les retours clients dans le bac orange. Toute la team présente, sauf imprévu — ping-moi avant jeudi midi.</p>
-        <div class="card-footer">
-          <span class="card-footer-meta">4 / 5 ont lu</span>
-          <button class="mark-done" onclick="this.classList.toggle('done'); this.textContent=this.classList.contains('done')?'Fait ✓':'Marquer fait ✓'">Marquer fait ✓</button>
+        <div class="sdm-form-actions">
+          <button class="btn btn-ghost btn-sm" onclick="sdmToggleForm(false)">Annuler</button>
+          <button class="btn btn-primary btn-sm" onclick="sdmSubmit()">Publier</button>
         </div>
-      </article>
-
-      <!-- Card 3 — Win du jour (green) -->
-      <article class="card-win">
-        <div class="icon-square icon-green">🏆</div>
-        <div class="card-label">Win du jour</div>
-        <div class="win-byline">
-          <div class="win-avatar">CH</div>
-          <div>
-            <div class="win-name">Chuck</div>
-            <div class="win-metric">Revenu / break · Hier soir</div>
-          </div>
-        </div>
-        <div class="big-num">$16 095</div>
-        <p class="body">Record du mois sur un seul break — The Cup Hockey, salle pleine, 0 retour. Bravo team.</p>
-        <div class="rxn-chips" id="rxn-win">
-          <button class="rxn-chip" data-emo="🚀"><span>🚀</span><span class="n">11</span></button>
-          <button class="rxn-chip" data-emo="🏆"><span>🏆</span><span class="n">7</span></button>
-          <button class="rxn-chip" data-emo="👏"><span>👏</span><span class="n">6</span></button>
-        </div>
-      </article>
+      </div>
     </div>
+
+    <!-- Cards -->
+    <div class="sdm-grid" id="sdm-grid"></div>
 
     <!-- Activity strip -->
     <div class="activity">
@@ -2004,6 +2068,185 @@ document.querySelectorAll('.tab-pill, .tab-chip').forEach(b => {
     if (state.feedMode === 'news') loadNouvelles();
   });
 });
+
+/* ─────────────────────────────────────────────────────────────
+   Salle des machines — localStorage (key: sdm_messages_v1)
+   Categories: pinned | announce | win
+   ───────────────────────────────────────────────────────────── */
+const SDM_KEY = 'sdm_messages_v1';
+
+function sdmLoad() {
+  try { return JSON.parse(localStorage.getItem(SDM_KEY) || '[]'); }
+  catch { return []; }
+}
+function sdmSave(arr) {
+  localStorage.setItem(SDM_KEY, JSON.stringify(arr));
+}
+function sdmInitials(name) {
+  const parts = String(name||'').trim().split(/\s+/);
+  return ((parts[0]||'')[0] + (parts[1]||'')[0]||'').toUpperCase() || (name||'?').slice(0,2).toUpperCase();
+}
+function sdmTimeAgo(iso) {
+  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (s < 60) return "à l'instant";
+  if (s < 3600) return `il y a ${Math.floor(s/60)} min`;
+  if (s < 86400) return `il y a ${Math.floor(s/3600)} h`;
+  return `il y a ${Math.floor(s/86400)} j`;
+}
+function sdmDateFR(iso) {
+  const d = new Date(iso);
+  const months = ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+  return `${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+window.sdmToggleForm = function (force) {
+  const wrap = document.getElementById('sdm-form-wrap');
+  const open = force !== undefined ? Boolean(force) : !wrap.classList.contains('open');
+  wrap.classList.toggle('open', open);
+  if (open) setTimeout(() => document.getElementById('sdm-title').focus(), 50);
+};
+
+// Show win-only fields based on category select
+document.getElementById('sdm-cat').addEventListener('change', e => {
+  document.querySelector('.sdm-win-only').style.display = e.target.value === 'win' ? 'grid' : 'none';
+});
+
+window.sdmSubmit = function () {
+  const cat = document.getElementById('sdm-cat').value;
+  const auteur = document.getElementById('sdm-auteur').value.trim() || 'Admin';
+  const title = document.getElementById('sdm-title').value.trim();
+  const body  = document.getElementById('sdm-body').value.trim();
+  if (!title) { document.getElementById('sdm-title').focus(); return; }
+  const post = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+    category: cat, auteur, title, body,
+    date: new Date().toISOString(),
+    reactions: {},
+  };
+  if (cat === 'win') {
+    post.bignum = document.getElementById('sdm-bignum').value.trim();
+    post.metric = document.getElementById('sdm-metric').value.trim();
+  }
+  const all = sdmLoad();
+  all.unshift(post);
+  sdmSave(all);
+  // reset
+  document.getElementById('sdm-title').value = '';
+  document.getElementById('sdm-body').value = '';
+  if (cat === 'win') {
+    document.getElementById('sdm-bignum').value = '';
+    document.getElementById('sdm-metric').value = '';
+  }
+  sdmToggleForm(false);
+  sdmRender();
+};
+
+window.sdmDelete = function (id) {
+  if (!confirm('Supprimer ce message ?')) return;
+  sdmSave(sdmLoad().filter(p => p.id !== id));
+  sdmRender();
+};
+
+window.sdmReact = function (id, emo) {
+  const all = sdmLoad();
+  const p = all.find(x => x.id === id);
+  if (!p) return;
+  p.reactions = p.reactions || {};
+  p.reactions[emo] = (p.reactions[emo] || 0) + 1;
+  sdmSave(all);
+  sdmRender();
+};
+
+function sdmRenderPinned(p) {
+  if (!p) return `
+    <article class="sdm-empty" style="grid-row:span 1">
+      <div class="ico">★</div>
+      <div class="ttl">Aucun message épinglé</div>
+      <div class="sub">Clique "Nouveau message" pour publier un message direction.</div>
+    </article>`;
+  const rxns = Object.entries(p.reactions||{});
+  const rxnHtml = rxns.length
+    ? rxns.map(([e,n]) => `<button class="rxn" onclick="sdmReact('${p.id}','${e}')"><span>${e}</span><span class="n">${n}</span></button>`).join('')
+    : '';
+  return `<article class="card-pin">
+    <button class="card-del" onclick="sdmDelete('${p.id}')" title="Supprimer">×</button>
+    <span class="card-pin-badge">★ Épinglé</span>
+    <div class="card-byline">
+      <div class="byline-avatar">${escHtml(sdmInitials(p.auteur))}</div>
+      <div>
+        <div class="byline-name">${escHtml(p.auteur)}</div>
+        <div class="byline-time">${sdmTimeAgo(p.date)} · Direction</div>
+      </div>
+    </div>
+    <h3>${escHtml(p.title)}</h3>
+    ${p.body ? `<p class="body">${escHtml(p.body)}</p>` : ''}
+    <div class="reactions">
+      ${rxnHtml}
+      <button class="rxn add" onclick="sdmReact('${p.id}','🔥')">+ Réagir</button>
+    </div>
+  </article>`;
+}
+
+function sdmRenderAnnounce(p) {
+  if (!p) return `
+    <article class="sdm-empty">
+      <div class="ico">📢</div>
+      <div class="ttl">Aucune annonce</div>
+      <div class="sub">Publie une annonce d'équipe.</div>
+    </article>`;
+  return `<article class="card-ann" style="position:relative">
+    <button class="card-del" onclick="sdmDelete('${p.id}')" title="Supprimer">×</button>
+    <div class="icon-square icon-amber">📢</div>
+    <div class="card-label">Annonce · ${sdmDateFR(p.date)}</div>
+    <h3>${escHtml(p.title)}</h3>
+    ${p.body ? `<p class="body">${escHtml(p.body)}</p>` : ''}
+    <div class="card-footer">
+      <span class="card-footer-meta">${escHtml(p.auteur)}</span>
+      <button class="mark-done" onclick="this.classList.toggle('done'); this.textContent=this.classList.contains('done')?'Fait ✓':'Marquer fait ✓'">Marquer fait ✓</button>
+    </div>
+  </article>`;
+}
+
+function sdmRenderWin(p) {
+  if (!p) return `
+    <article class="sdm-empty">
+      <div class="ico">🏆</div>
+      <div class="ttl">Aucun win</div>
+      <div class="sub">Célèbre un record ou une perf de l'équipe.</div>
+    </article>`;
+  const rxns = Object.entries(p.reactions||{});
+  const rxnHtml = rxns.length
+    ? rxns.map(([e,n]) => `<button class="rxn-chip" onclick="sdmReact('${p.id}','${e}')"><span>${e}</span><span class="n">${n}</span></button>`).join('')
+    : `<button class="rxn-chip" onclick="sdmReact('${p.id}','🚀')"><span>🚀</span><span class="n">0</span></button>`;
+  return `<article class="card-win" style="position:relative">
+    <button class="card-del" onclick="sdmDelete('${p.id}')" title="Supprimer">×</button>
+    <div class="icon-square icon-green">🏆</div>
+    <div class="card-label">Win du jour</div>
+    <div class="win-byline">
+      <div class="win-avatar">${escHtml(sdmInitials(p.auteur))}</div>
+      <div>
+        <div class="win-name">${escHtml(p.auteur)}</div>
+        ${p.metric ? `<div class="win-metric">${escHtml(p.metric)}</div>` : ''}
+      </div>
+    </div>
+    ${p.bignum ? `<div class="big-num">${escHtml(p.bignum)}</div>` : ''}
+    <h3 style="font-size:18px;font-weight:900;letter-spacing:-0.02em;line-height:1;margin:0 0 6px">${escHtml(p.title)}</h3>
+    ${p.body ? `<p class="body">${escHtml(p.body)}</p>` : ''}
+    <div class="rxn-chips">${rxnHtml}</div>
+  </article>`;
+}
+
+function sdmRender() {
+  const grid = document.getElementById('sdm-grid');
+  if (!grid) return;
+  const all = sdmLoad().sort((a,b) => new Date(b.date) - new Date(a.date));
+  const pin = all.find(p => p.category === 'pinned');
+  const ann = all.find(p => p.category === 'announce');
+  const win = all.find(p => p.category === 'win');
+  grid.innerHTML = sdmRenderPinned(pin) + sdmRenderAnnounce(ann) + sdmRenderWin(win);
+}
+
+sdmRender();
 
 /* ─────────────────────────────────────────────────────────────
    Sorties à venir — fetch api.hobbyempire.org/api/releases/upcoming
