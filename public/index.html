@@ -130,58 +130,89 @@
 }
 .pf-pin-label input { margin: 0; accent-color: var(--accent); }
 
-/* Post cards — bulletin board paper notices */
+/* ═══ POST-IT BOARD ══════════════════════════════════════════ */
 .announce-grid {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 680px;
+  gap: 28px;
+  max-width: 560px;
+  padding-top: 18px; /* espace pour les punaises */
 }
 .announce-empty {
   padding: 52px 20px;
   text-align: center;
   color: var(--ink-3);
 }
-.announce-empty-icon { font-size: 28px; margin-bottom: 10px; }
+.announce-empty-icon  { font-size: 28px; margin-bottom: 10px; }
 .announce-empty-title { font-weight: 600; color: var(--ink-2); font-size: 15px; }
-.announce-empty-sub { font-size: 12px; margin-top: 5px; color: var(--mute); }
+.announce-empty-sub   { font-size: 12px; margin-top: 5px; color: var(--mute); }
 
-/* Paper card — background crème, ombre franche, coins quasi droits */
+/* ── Post-it note shell ─────────────────────────────────────── */
 .announce-card {
-  background: oklch(97.8% 0.007 80); /* papier crème chaud */
+  position: relative;
+  background: oklch(92% 0.11 93);       /* jaune Post-it */
   border: none;
-  border-top: 7px solid oklch(80% 0.01 75); /* remplacé par type */
-  border-radius: 4px;
-  overflow: hidden;
+  border-radius: 2px 2px 4px 2px;
+  overflow: visible;                    /* punaise dépasse en haut */
+  margin-top: 14px;                     /* espace pour la punaise */
   box-shadow:
-    0 1px 2px rgba(0,0,0,.07),
-    0 5px 16px rgba(0,0,0,.12),
-    0 20px 44px rgba(0,0,0,.10);
-  transition: box-shadow 0.18s, transform 0.18s;
+    2px  3px  5px rgba(0,0,0,.13),
+    5px 10px 22px rgba(0,0,0,.17),
+    8px 20px 52px rgba(0,0,0,.13);
+  transition: box-shadow 0.2s, transform 0.2s;
 }
+/* Coin plié bas-droite */
+.announce-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 34px; height: 34px;
+  background: linear-gradient(
+    225deg,
+    transparent 48%,
+    rgba(0,0,0,.14) 48%,
+    rgba(0,0,0,.08) 100%
+  );
+  border-bottom-right-radius: 3px;
+  pointer-events: none;
+  z-index: 1;
+}
+/* Rotations alternées */
+.announce-card:nth-child(odd)  { transform: rotate(-1.4deg); }
+.announce-card:nth-child(even) { transform: rotate(0.9deg); }
 .announce-card:hover {
+  transform: rotate(0deg) translateY(-4px) !important;
   box-shadow:
-    0 2px 4px rgba(0,0,0,.09),
-    0 8px 24px rgba(0,0,0,.14),
-    0 28px 56px rgba(0,0,0,.14);
-  transform: translateY(-2px);
+    3px  4px  6px rgba(0,0,0,.10),
+    6px 14px 28px rgba(0,0,0,.18),
+    12px 28px 64px rgba(0,0,0,.15);
 }
 
-/* Barre de couleur du haut — catégorie du post */
-.announce-card.type-info    { border-top-color: oklch(56% 0.18 255); }
-.announce-card.type-urgent  { border-top-color: var(--accent); }
-.announce-card.type-live    { border-top-color: oklch(50% 0.18 155); }
-.announce-card.type-rappel  { border-top-color: oklch(72% 0.15 78); }
+/* Couleurs Post-it par type */
+.announce-card.type-info    { background: oklch(90% 0.07 238); }  /* bleu Post-it */
+.announce-card.type-urgent  { background: oklch(88% 0.09 22);  }  /* saumon/rose */
+.announce-card.type-live    { background: oklch(89% 0.09 148); }  /* vert menthe */
+.announce-card.type-rappel  { background: oklch(92% 0.11 93);  }  /* jaune standard */
 
-/* Épinglé : papier légèrement teinté */
-.announce-card.is-pinned { background: oklch(97.0% 0.012 82); }
+/* ── Punaise SVG centrée en haut ────────────────────────────── */
+.announce-pushpin {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 32px;
+  z-index: 10;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,.32));
+  pointer-events: none;
+}
 
-/* Ligne meta : type + icône pin + supprimer */
+/* ── Ligne méta : type + supprimer ─────────────────────────── */
 .announce-card-meta {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 11px 16px 0 20px;
+  padding: 14px 14px 0 18px;
 }
 .announce-type-badge {
   font-family: var(--font-mono);
@@ -192,58 +223,57 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
-.type-info   .announce-type-badge { color: oklch(40% 0.18 255); }
-.type-urgent .announce-type-badge { color: oklch(44% 0.22 32);  }
-.type-live   .announce-type-badge { color: oklch(38% 0.18 155); }
-.type-rappel .announce-type-badge { color: oklch(48% 0.16 78);  }
+.type-info   .announce-type-badge { color: oklch(28% 0.16 248); }
+.type-urgent .announce-type-badge { color: oklch(28% 0.18 22);  }
+.type-live   .announce-type-badge { color: oklch(28% 0.16 150); }
+.type-rappel .announce-type-badge { color: oklch(36% 0.16 82);  }
 
-.announce-pin-icon { font-size: 11px; flex-shrink: 0; line-height: 1; }
-
+.announce-pin-icon { font-size: 11px; flex-shrink: 0; }
 .announce-del {
   margin-left: auto;
   background: transparent;
   border: none;
   padding: 2px 5px;
-  color: oklch(74% 0.01 80);
-  font-size: 17px;
+  color: rgba(0,0,0,.28);
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
   border-radius: 3px;
   transition: color 0.12s;
 }
-.announce-del:hover { color: oklch(52% 0.20 25); }
+.announce-del:hover { color: rgba(180,0,0,.65); }
 
-/* Contenu principal */
+/* ── Contenu : grand titre + corps ─────────────────────────── */
 .announce-card-body {
-  padding: 14px 22px 16px 22px;
+  padding: 10px 20px 14px 20px;
 }
 .announce-titre {
   font-family: var(--font-display);
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 900;
   font-stretch: 75%;
-  letter-spacing: -0.03em;
-  line-height: 1.02;
-  color: oklch(14% 0.012 260); /* encre noire sur papier */
-  margin: 0 0 12px;
+  letter-spacing: -0.028em;
+  line-height: 1.03;
+  color: rgba(0,0,0,.84);
+  margin: 0 0 10px;
 }
 .announce-body {
-  font-size: 14.5px;
-  line-height: 1.72;
-  color: oklch(36% 0.010 75); /* gris chaud lisible sur crème */
+  font-size: 14px;
+  line-height: 1.70;
+  color: rgba(0,0,0,.58);
   white-space: pre-line;
   word-break: break-word;
   margin: 0;
 }
 
-/* Pied de page — byline journalistique */
+/* ── Pied de page byline ───────────────────────────────────── */
 .announce-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 22px 15px;
+  padding: 9px 20px 14px;
   gap: 12px;
-  border-top: 1px solid oklch(89% 0.008 78); /* ligne règle papier */
+  border-top: 1px solid rgba(0,0,0,.11);
 }
 .announce-byline {
   display: flex;
@@ -251,39 +281,36 @@
   gap: 5px;
   font-family: var(--font-mono);
   font-size: 10px;
-  color: oklch(62% 0.012 78);
+  color: rgba(0,0,0,.44);
   letter-spacing: 0.04em;
 }
-.announce-byline-author {
-  color: oklch(36% 0.012 78);
-  font-weight: 700;
-}
-.announce-byline-dot { opacity: 0.4; }
+.announce-byline-author { color: rgba(0,0,0,.62); font-weight: 700; }
+.announce-byline-dot    { opacity: 0.38; }
 
 .announce-pin-btn {
-  background: transparent;
-  border: 1px solid oklch(82% 0.008 78);
+  background: rgba(0,0,0,.06);
+  border: 1px solid rgba(0,0,0,.13);
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: oklch(54% 0.012 78);
+  color: rgba(0,0,0,.48);
   cursor: pointer;
   padding: 4px 10px;
   border-radius: 3px;
-  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
   white-space: nowrap;
 }
 .announce-pin-btn:hover {
-  color: oklch(26% 0.010 78);
-  border-color: oklch(68% 0.010 78);
-  background: oklch(93% 0.007 78);
+  background: rgba(0,0,0,.12);
+  border-color: rgba(0,0,0,.22);
+  color: rgba(0,0,0,.72);
 }
 .announce-pin-btn.is-pinned {
-  color: var(--accent);
-  border-color: color-mix(in oklch, var(--accent), transparent 55%);
-  background: color-mix(in oklch, var(--accent), transparent 93%);
+  color: #c0392b;
+  border-color: rgba(192,57,43,.32);
+  background: rgba(192,57,43,.10);
 }
 
 /* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
@@ -1063,6 +1090,9 @@
       return `
         <article class="announce-card type-${esc(p.type)}${p.pinned ? ' is-pinned' : ''}">
 
+          <!-- Punaise centrée en haut -->
+          <div class="announce-pushpin" aria-hidden="true">${PUSHPIN}</div>
+
           <!-- Meta row: type badge · pin · delete -->
           <div class="announce-card-meta">
             <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
@@ -1096,6 +1126,17 @@
         </article>`;
     }).join('');
   }
+
+  /* ── Punaise SVG (rouge, brillante) ───────────────────────── */
+  const PUSHPIN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 30" fill="none">
+    <ellipse cx="11" cy="29.5" rx="3.5" ry="1" fill="rgba(0,0,0,.18)"/>
+    <rect x="10" y="18" width="2" height="10" rx="1" fill="#9e9e9e"/>
+    <rect x="9.2" y="16.5" width="3.6" height="3" rx=".5" fill="#bdbdbd"/>
+    <circle cx="11" cy="9.5" r="9.5" fill="#922b21"/>
+    <circle cx="11" cy="9.5" r="9"   fill="#e74c3c"/>
+    <ellipse cx="7.8" cy="5.8" rx="4" ry="3.2" fill="rgba(255,255,255,.42)" transform="rotate(-22 7.8 5.8)"/>
+    <circle  cx="11" cy="9.5" r="2"   fill="rgba(80,0,0,.28)"/>
+  </svg>`;
 
   /* ── Init ──────────────────────────────────────────────── */
   render();
