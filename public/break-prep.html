@@ -931,10 +931,13 @@ async function loadChecklistKeys() {
   try {
     const r = await fetch('/products.json');
     const data = await r.json();
-    ALL_KEYS = data.keys || data || [];
+    if (Array.isArray(data))                    ALL_KEYS = data;
+    else if (data && Array.isArray(data.keys))  ALL_KEYS = data.keys;
+    else                                        ALL_KEYS = [];
     buildHierarchy();
     populateSportSelect();
   } catch (e) {
+    console.error('loadChecklistKeys failed', e);
     populateSportSelect();
   }
 }
