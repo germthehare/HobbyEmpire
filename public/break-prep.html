@@ -126,6 +126,7 @@ body {
 }
 .cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
 .cert-bc .sep { opacity: 0.5; }
+.menu-btn { display: none; }
 .cert-splash {
   height: 56px; width: auto; display: block;
   margin: -14px 0;
@@ -735,8 +736,34 @@ body {
   .avant-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
-  .sb { display: none; }
   body { display: block; }
+  .sb {
+    position: fixed; left: -100%; top: 0;
+    width: 260px; height: 100vh;
+    transition: left 0.25s ease;
+    z-index: 1000;
+    box-shadow: 0 0 40px rgba(0,0,0,.30);
+  }
+  .sb.open { left: 0; }
+  .sb-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 999;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s;
+  }
+  .sb-overlay.open { opacity: 1; pointer-events: auto; }
+  .menu-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px;
+    margin-right: 4px;
+    color: oklch(94% 0.008 80);
+    background: rgba(255,255,255,.08);
+    border-radius: 6px;
+    font-size: 18px;
+    transition: background .12s;
+  }
+  .menu-btn:hover { background: rgba(255,255,255,.16); }
   .page { padding: 20px 14px 36px; }
   .toolbar { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
   .cert { padding: 8px 14px; }
@@ -813,11 +840,13 @@ body {
   <!-- Top cert strip -->
   <div class="cert cert-top">
     <span class="cert-bc">
+      <button class="menu-btn" onclick="toggleSidebar()" aria-label="Menu">☰</button>
       <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
       <span class="sep">›</span><strong>BREAK PREP</strong>
     </span>
     <span class="cert-right">Weather the Storm</span>
   </div>
+  <div class="sb-overlay" onclick="toggleSidebar()"></div>
 
   <!-- Toolbar -->
   <div class="toolbar">
@@ -924,6 +953,11 @@ body {
 </div>
 
 <script>
+function toggleSidebar() {
+  document.querySelector('.sb').classList.toggle('open');
+  document.querySelector('.sb-overlay').classList.toggle('open');
+}
+
 // ════════════════════ Constants ════════════════════
 const KNOWN_SPORTS = ['Hockey','Football','Basketball','Baseball','Pokémon','Multi sports'];
 
