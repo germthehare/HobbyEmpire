@@ -3,811 +3,1477 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Speloosh — The Break Platform</title>
-<link rel="stylesheet" href="tokens.css">
-<link rel="stylesheet" href="speloosh-shell.css">
-<link rel="stylesheet" href="news.css">
+<title>Speloosh — Home</title>
 <script src="/auth-guard.js" data-role="admin"></script>
 <style>
-/* ══ HOME-SPECIFIC STYLES ══════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   Grift — font family
+   ════════════════════════════════════════════════════════════════ */
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Regular.woff2')   format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-SemiBold.woff2')  format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Bold.woff2')      format('woff2'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-ExtraBold.woff2') format('woff2'); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Grift'; src: url('/fonts/Grift-Black.woff2')     format('woff2'); font-weight: 900; font-style: normal; font-display: swap; }
 
-/* ── Announcements board ─────────────────────────────────────── */
-.announce-section {
-  padding: 28px 32px 36px;
-  background: #2c2926;
-  border-radius: 10px;
-}
-.announce-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-}
-.announce-header h2 {
-  font-family: var(--font-display);
-  font-size: 34px;
-  font-weight: 900;
-  font-stretch: 75%;
-  letter-spacing: -0.025em;
-  line-height: 0.9;
-  color: #fff;
-  margin: 0;
-}
-.announce-header .home-section-eyebrow { color: rgba(255,255,255,.40); }
-.announce-header .sp-holo-line { background: rgba(255,255,255,.18); }
+/* ════════════════════════════════════════════════════════════════
+   Reset + tokens
+   ════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+button { font: inherit; cursor: pointer; background: none; border: 0; color: inherit; }
+a { color: inherit; text-decoration: none; }
 
-/* New post slide-down form */
-.post-form-wrap {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+:root {
+  --bg:          oklch(96.5% 0.012 75);
+  --bg-2:        oklch(93%   0.016 75);
+  --bg-3:        oklch(99%   0.005 80);
+  --bg-ink:      oklch(16%   0.018 260);
+  --line:        oklch(86%   0.014 75);
+  --line-strong: oklch(70%   0.02  75);
+  --ink:         oklch(16%   0.018 260);
+  --ink-2:       oklch(32%   0.014 260);
+  --ink-3:       oklch(50%   0.012 260);
+  --mute:        oklch(62%   0.01  75);
+
+  --accent:      oklch(72%   0.13  200);
+  --accent-2:    oklch(65%   0.14  195);
+  --accent-ink:  oklch(16%   0.018 260);
+
+  --pos:         oklch(54%   0.16  152);
+  --neg:         oklch(56%   0.21  22);
+  --warn:        oklch(72%   0.16  80);
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+
+  --shadow-card: 0 1px 0 rgba(20,15,10,.05), 0 10px 28px -16px rgba(20,15,10,.20);
+  --foil: linear-gradient(110deg,
+    transparent 0%,
+    color-mix(in oklch, oklch(82% 0.14 320), transparent 60%) 18%,
+    color-mix(in oklch, oklch(80% 0.12 200), transparent 55%) 35%,
+    color-mix(in oklch, oklch(86% 0.14 100), transparent 60%) 52%,
+    color-mix(in oklch, oklch(78% 0.14 30),  transparent 50%) 70%,
+    transparent 100%);
 }
-.post-form-wrap.open { max-height: 640px; }
-.post-form-inner {
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  padding: 20px 22px 18px;
-  margin-bottom: 16px;
-}
-.pf-type-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 14px;
-  flex-wrap: wrap;
-}
-.pf-type-btn {
-  padding: 6px 14px;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  border: 1.5px solid var(--line);
-  background: transparent;
-  color: var(--ink-3);
-  cursor: pointer;
-  transition: all 0.12s;
-}
-.pf-type-btn.active-info    { background: color-mix(in oklch, oklch(58% 0.16 260), transparent 86%); color: oklch(40% 0.16 260); border-color: oklch(58% 0.16 260); }
-.pf-type-btn.active-urgent  { background: color-mix(in oklch, var(--accent), transparent 86%); color: var(--accent); border-color: var(--accent); }
-.pf-type-btn.active-live    { background: color-mix(in oklch, var(--pos), transparent 86%); color: var(--pos); border-color: var(--pos); }
-.pf-type-btn.active-rappel  { background: color-mix(in oklch, var(--warn), transparent 86%); color: oklch(52% 0.18 80); border-color: var(--warn); }
-.pf-titre {
-  width: 100%;
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  padding: 11px 14px;
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 800;
-  font-stretch: 75%;
-  letter-spacing: -0.01em;
+
+body {
+  font-family: 'Grift', system-ui, sans-serif;
+  font-weight: 400;
   color: var(--ink);
-  outline: none;
-  margin-bottom: 10px;
-  display: block;
-  transition: border-color 0.12s;
-}
-.pf-titre:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
-.pf-titre::placeholder { font-family: var(--font-body); font-size: 14px; font-weight: 400; font-stretch: normal; letter-spacing: 0; color: var(--mute); }
-.pf-msg {
-  width: 100%;
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  border-radius: var(--r-sm);
-  padding: 11px 14px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--ink);
-  outline: none;
-  resize: vertical;
-  min-height: 80px;
-  margin-bottom: 14px;
-  display: block;
-  line-height: 1.6;
-  transition: border-color 0.12s;
-}
-.pf-msg:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
-.pf-msg::placeholder { color: var(--mute); }
-.pf-actions {
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.005em;
+  min-height: 100vh;
   display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
 }
-.pf-pin-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 10px;
+
+/* Mono = Grift uppercase + tracking */
+.mono {
+  font-family: 'Grift', system-ui, sans-serif;
   font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--ink-3);
-  cursor: pointer;
-  padding: 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
 }
-.pf-pin-label input { margin: 0; accent-color: var(--accent); }
+.display { font-weight: 900; letter-spacing: -0.025em; line-height: 0.9; }
 
-/* ═══ GRILLE DE NOTES — flat CSS, aucune image ═══════════════ */
-.announce-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-  gap: 22px;
-  padding-top: 10px; /* espace pour les punaises */
-}
-.announce-empty {
-  grid-column: 1/-1;
-  padding: 40px 20px;
-  text-align: center;
-  color: rgba(255,255,255,.35);
-}
-.announce-empty-icon  { font-size: 28px; margin-bottom: 10px; }
-.announce-empty-title { font-size: 14px; color: rgba(255,255,255,.45); font-weight: 600; }
-.announce-empty-sub   { font-size: 11px; margin-top: 4px; }
-
-/* ── Note individuelle ──────────────────────────────────────── */
-.announce-card {
-  background: #fef865;
-  border: none;
-  border-radius: 2px;
-  padding: 16px 14px 12px;
-  box-shadow: 3px 5px 10px rgba(0,0,0,.50), 6px 8px 2px rgba(0,0,0,.25);
-  position: relative;
+/* ════════════════════════════════════════════════════════════════
+   SIDEBAR
+   ════════════════════════════════════════════════════════════════ */
+.sb {
+  width: 232px;
+  min-width: 232px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background: var(--bg-3);
+  border-right: 1px solid var(--line);
   display: flex;
   flex-direction: column;
-  min-height: 165px;
-  overflow: hidden;
-  transition: transform 0.15s, box-shadow 0.15s, z-index 0s;
+  z-index: 200;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
-/* Rotations légères */
-.announce-card:nth-child(3n+1) { transform: rotate(-1.5deg); }
-.announce-card:nth-child(3n+2) { transform: rotate(0.8deg);  }
-.announce-card:nth-child(3n+3) { transform: rotate(-0.5deg); }
-.announce-card:hover {
-  transform: rotate(0deg) scale(1.05) !important;
-  box-shadow: 4px 8px 20px rgba(0,0,0,.60), 8px 12px 4px rgba(0,0,0,.30);
-  z-index: 10;
-}
+.sb::-webkit-scrollbar { display: none; }
 
-/* Couleurs pastels par type */
-.announce-card.type-info    { background: #c8d8f8; }
-.announce-card.type-urgent  { background: #f8c5c0; }
-.announce-card.type-live    { background: #c8f0d0; }
-.announce-card.type-rappel  { background: #fef865; }
-
-/* ── Punaise CSS — cercle rouge en haut au centre ───────────── */
-.announce-pushpin {
-  display: block !important;
-  position: absolute;
-  top: -9px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #f47575 0%, #c0392b 55%, #8b1a1a 100%);
-  box-shadow: 0 2px 5px rgba(0,0,0,.45), inset 0 -1px 2px rgba(0,0,0,.25), inset 2px 2px 4px rgba(255,255,255,.30);
-  z-index: 5;
-  overflow: hidden; /* cache le SVG à l'intérieur */
-}
-/* Cache le SVG hérité */
-.announce-pushpin svg { display: none; }
-
-/* ── Méta : type + supprimer ────────────────────────────────── */
-.announce-card-meta {
+.sb-brand {
+  padding: 22px 20px 16px;
+  border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
-  gap: 5px;
-  margin-bottom: 9px;
-  padding-top: 6px;
+  gap: 10px;
 }
-.announce-type-badge {
-  font-family: var(--font-mono);
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+.sb-droplet {
+  width: 10px; height: 13px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  transform: rotate(-14deg);
+  background: linear-gradient(145deg,
+    color-mix(in oklch, oklch(85% 0.12 320), transparent 20%) 0%,
+    color-mix(in oklch, var(--accent), transparent 20%) 35%,
+    color-mix(in oklch, oklch(88% 0.12 100), transparent 20%) 60%,
+    var(--accent-2) 100%);
+  box-shadow: inset 0 -2px 4px rgba(0,0,0,.18), inset 0 1px 2px rgba(255,255,255,.35);
+}
+.sb-wordmark { font-size: 17px; font-weight: 900; letter-spacing: -0.01em; line-height: 1; }
+.sb-tag { font-size: 8.5px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); margin-top: 2px; }
+
+.sb-search {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.sb-search input {
+  width: 100%;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 7px 34px 7px 10px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  color: rgba(0,0,0,.36);
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  outline: none;
 }
-.type-info   .announce-type-badge { color: rgba(20,60,160,.52); }
-.type-urgent .announce-type-badge { color: rgba(160,40,20,.58); }
-.type-live   .announce-type-badge { color: rgba(20,100,50,.52); }
-.type-rappel .announce-type-badge { color: rgba(0,0,0,.36); }
+.sb-kbd {
+  position: absolute; right: 22px; top: 50%; transform: translateY(-50%);
+  font-size: 9px; font-weight: 600;
+  color: var(--ink-3); background: var(--bg-3);
+  border: 1px solid var(--line); border-radius: 3px;
+  padding: 1px 5px;
+}
 
-.announce-pin-icon { font-size: 9px; opacity: .65; }
+.sb-section { padding: 14px 14px 4px; }
+.sb-label {
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--mute);
+  margin-bottom: 4px;
+  padding: 0 4px;
+}
+.sb-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+  position: relative;
+  transition: background 0.12s, color 0.12s;
+}
+.sb-first {
+  color: var(--accent);
+  font-weight: 700;
+}
+.sb-item:hover { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active { background: var(--bg-2); color: var(--ink); }
+.sb-item.is-active::before {
+  content: ''; position: absolute; left: -14px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.sb-badge {
+  font-size: 9px; font-weight: 700;
+  background: var(--bg-2); color: var(--ink-3);
+  padding: 1px 6px; border-radius: 10px;
+  border: 1px solid var(--line);
+  letter-spacing: 0.04em;
+}
 
-.announce-del {
-  position: absolute;
-  top: 7px;
-  right: 8px;
-  background: none;
-  border: none;
-  color: rgba(0,0,0,.18);
-  font-size: 15px;
+.sb-spacer { flex: 1; min-height: 12px; }
+.sb-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+}
+.sb-avatar {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--bg-ink);
+  color: oklch(85% 0.01 75);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em;
+  display: flex; align-items: center; justify-content: center;
+}
+.sb-uname { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; line-height: 1.2; }
+.sb-ustatus {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 9px; color: var(--ink-3);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-top: 2px;
+}
+.sb-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--pos);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: 0.3; } }
+
+/* ════════════════════════════════════════════════════════════════
+   MAIN
+   ════════════════════════════════════════════════════════════════ */
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Cert strips */
+.cert {
+  background: var(--bg-ink);
+  padding: 10px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  position: relative;
+}
+.cert-top { border-bottom: 3px solid var(--accent); }
+.cert-top::after,
+.cert-bot::before {
+  content: ''; position: absolute; left: 0; right: 0; height: 3px;
+  background: var(--foil); mix-blend-mode: screen;
+  opacity: 0.65; pointer-events: none;
+}
+.cert-top::after { bottom: -3px; }
+.cert-bot { margin-top: auto; border-top: 3px solid var(--accent); }
+.cert-bot::before { top: -3px; }
+.cert-bc {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: oklch(50% 0.01 75);
+}
+.cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
+.cert-bc .sep { opacity: 0.5; }
+.cert-splash {
+  height: 56px;
+  width: auto;
+  display: block;
+  margin: -14px 0;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.35));
+}
+.cert-logo {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding-right: 12px;
+  border-right: 1px solid rgba(255,255,255,.10);
+}
+.cert-logo .sb-droplet { width: 11px; height: 14px; }
+.cert-logo .wm {
+  font-size: 13px; font-weight: 900; letter-spacing: -0.005em;
+  color: oklch(94% 0.008 80);
   line-height: 1;
-  cursor: pointer;
-  padding: 0;
-  transition: color .12s;
 }
-.announce-del:hover { color: rgba(140,0,0,.60); }
+.cert-right {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
+  color: var(--accent);
+}
+.cert-meta { display: flex; gap: 0; }
+.cert-pill {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
+.cert-pill + .cert-pill::before { content: ' · '; white-space: pre; }
+.cert-id {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: oklch(42% 0.01 75);
+}
 
-/* ── Contenu ────────────────────────────────────────────────── */
-.announce-card-body { flex: 1; padding: 0; }
-.announce-titre {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 900;
-  font-stretch: 75%;
-  letter-spacing: -0.018em;
-  line-height: 1.18;
-  color: rgba(0,0,0,.84);
-  margin: 0 0 7px;
+/* Toolbar */
+.toolbar {
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px;
 }
-.announce-body {
-  font-size: 12.5px;
-  line-height: 1.55;
-  color: rgba(0,0,0,.58);
-  white-space: pre-line;
-  word-break: break-word;
+.toolbar-left {
+  display: flex; align-items: center; gap: 14px;
+}
+.holo {
+  height: 2px; width: 44px;
+  background: var(--foil);
+  border-radius: 1px;
+}
+.toolbar-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  border: 1px solid transparent;
+  transition: transform .12s, filter .12s, background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-dark { background: var(--ink); color: var(--bg); }
+.btn-dark:hover { filter: brightness(1.15); }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+.btn-ghost:hover { background: var(--bg-2); }
+.btn-sm { padding: 7px 11px; font-size: 10px; }
+
+/* ════════════════════════════════════════════════════════════════
+   1. SALLE DES MACHINES
+   ════════════════════════════════════════════════════════════════ */
+.sdm {
+  position: relative;
+  padding: 36px 48px 28px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  overflow: hidden;
+}
+.sdm-splash {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.07;
+}
+.sdm-splash.s1 { top: -40px; right: -30px; width: 280px; transform: rotate(18deg); }
+.sdm-splash.s2 { bottom: -60px; left: 28%;  width: 220px; transform: rotate(-12deg); opacity: 0.05; }
+
+.sdm-head {
+  position: relative; z-index: 2;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; margin-bottom: 26px; flex-wrap: wrap;
+}
+.sdm-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(20,15,10,.7);
+  margin-bottom: 12px;
+}
+.sdm-eyebrow .live {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--ink);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.sdm-title {
+  font-size: 56px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.88;
+  color: var(--ink);
   margin: 0;
 }
 
-/* ── Footer ─────────────────────────────────────────────────── */
-.announce-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 10px;
-  gap: 6px;
+/* Form drawer */
+.sdm-form-wrap {
+  position: relative; z-index: 2;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), margin-bottom 0.35s;
+  margin-bottom: 0;
 }
-.announce-byline {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  font-family: var(--font-mono);
-  font-size: 8px;
-  color: rgba(0,0,0,.30);
-}
-.announce-byline-author { font-weight: 700; color: rgba(0,0,0,.44); }
-.announce-byline-dot    { opacity: .30; }
-
-.announce-pin-btn {
-  background: none;
-  border: none;
-  font-family: var(--font-mono);
-  font-size: 7.5px;
-  font-weight: 700;
-  letter-spacing: 0.10em;
-  text-transform: uppercase;
-  color: rgba(0,0,0,.28);
-  cursor: pointer;
-  padding: 0;
-  transition: color .12s;
-  white-space: nowrap;
-}
-.announce-pin-btn:hover     { color: rgba(0,0,0,.62); }
-.announce-pin-btn.is-pinned { color: rgba(170,35,35,.85); }
-
-/* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
-.ticker {
+.sdm-form-wrap.open { max-height: 600px; margin-bottom: 18px; }
+.sdm-form {
+  background: rgba(20,15,10,.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 16px 18px;
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1fr;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  margin: 0 48px;
+  gap: 10px;
 }
-.ticker-cell {
-  padding: 18px 22px;
-  display: flex;
-  align-items: center;
+.sdm-form label {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(20,15,10,.7);
+}
+.sdm-form input, .sdm-form select, .sdm-form textarea {
+  font-family: inherit;
+  font-size: 13px; font-weight: 500;
+  letter-spacing: 0;
+  color: var(--ink);
+  background: rgba(255,255,255,.85);
+  border: 1px solid rgba(20,15,10,.12);
+  border-radius: 6px;
+  padding: 8px 10px;
+  outline: none;
+  text-transform: none;
+}
+.sdm-form input:focus, .sdm-form select:focus, .sdm-form textarea:focus {
+  border-color: var(--ink);
+  background: #fff;
+}
+.sdm-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.sdm-form-actions {
+  display: flex; justify-content: flex-end; gap: 8px;
+  padding-top: 4px;
+}
+
+/* Empty card placeholder */
+.sdm-empty {
+  background: rgba(255,255,255,.45);
+  border: 1px dashed rgba(20,15,10,.20);
+  border-radius: 10px;
+  padding: 24px 20px;
+  display: flex; flex-direction: column; gap: 8px;
+  align-items: center; justify-content: center;
+  text-align: center;
+  color: rgba(20,15,10,.55);
+}
+.sdm-empty .ico { font-size: 22px; opacity: 0.7; }
+.sdm-empty .ttl {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+}
+.sdm-empty .sub { font-size: 11.5px; }
+
+.card-pin .card-del, .card-ann .card-del, .card-win .card-del {
+  position: absolute; top: 10px; right: 10px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.06);
+  font-size: 12px; line-height: 1;
+  color: oklch(80% 0.01 75);
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+.card-ann .card-del, .card-win .card-del { color: var(--ink-3); background: rgba(20,15,10,.05); }
+.card-pin:hover .card-del, .card-ann:hover .card-del, .card-win:hover .card-del { opacity: 0.7; }
+.card-pin .card-del:hover, .card-ann .card-del:hover, .card-win .card-del:hover { opacity: 1; background: rgba(255,80,80,.18); color: var(--neg); }
+
+/* Cards grid */
+.sdm-grid {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
   gap: 14px;
-  min-width: 0;
 }
-.ticker-cell + .ticker-cell { border-left: 1px solid var(--line); }
-.ticker-cell.featured { background: var(--bg-2); }
 
-.ticker-accent-tile {
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  background: var(--accent);
-  border-radius: var(--r-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 900;
-  font-stretch: 75%;
-  color: var(--accent-ink);
+/* Card 1 — Pinned (dark) */
+.card-pin {
   position: relative;
+  background: var(--bg-ink);
+  color: oklch(94% 0.01 75);
+  border-radius: var(--r-md);
+  border-top: 3px solid var(--accent);
+  padding: 20px 22px 16px;
+  display: flex; flex-direction: column;
   overflow: hidden;
 }
-.ticker-accent-tile::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--foil-gradient);
-  opacity: 0.35;
-  mix-blend-mode: overlay;
-  pointer-events: none;
+.card-pin-badge {
+  position: absolute; top: 14px; right: 16px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent);
+}
+.card-byline {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.byline-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900;
+  letter-spacing: 0.02em;
+}
+.byline-name { font-size: 13px; font-weight: 700; line-height: 1.2; }
+.byline-time {
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: oklch(64% 0.01 75);
+  margin-top: 2px;
+}
+.card-pin h3 {
+  font-size: 26px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 0.95;
+  margin: 0 0 10px;
+}
+.card-pin .lede {
+  color: var(--accent);
+  font-size: 14px; font-weight: 600;
+  margin: 0 0 8px;
+}
+.card-pin .body {
+  font-size: 13.5px; line-height: 1.55;
+  opacity: 0.78;
+  margin: 0 0 18px;
+}
+.reactions {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.10);
+  margin-top: auto;
+}
+.rxn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.08);
+  font-size: 12px;
+  transition: background .12s, border-color .12s, transform .08s;
+}
+.rxn:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.18); }
+.rxn:active { transform: scale(0.96); }
+.rxn .n {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.05em;
+  color: oklch(85% 0.01 75);
+}
+.rxn.add {
+  background: transparent;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: oklch(70% 0.01 75);
+  padding: 5px 10px;
 }
 
-.ticker-data { flex: 1; min-width: 0; }
-
-.ticker-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+/* Card 2 — Announce (amber) */
+.card-ann {
+  background: var(--bg-3);
+  border-radius: var(--r-md);
+  border-top: 3px solid var(--warn);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--warn);
+  padding: 18px 20px 16px;
+  display: flex; flex-direction: column;
+}
+.icon-square {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+.icon-amber  { background: color-mix(in oklch, var(--warn), transparent 78%); }
+.icon-green  { background: color-mix(in oklch, var(--pos), transparent 78%); }
+.card-label {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-3);
-  margin-bottom: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 8px;
 }
-.ticker-val-lg {
-  font-family: var(--font-display);
-  font-size: 40px;
-  font-weight: 900;
-  font-stretch: 75%;
-  letter-spacing: -0.025em;
-  line-height: 0.9;
+.card-ann h3 {
+  font-size: 20px; font-weight: 900;
+  letter-spacing: -0.02em; line-height: 1;
+  margin: 0 0 8px;
+}
+.card-ann .body {
+  font-size: 13px; line-height: 1.55;
+  color: var(--ink-2);
+  margin: 0 0 14px;
+}
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+.card-footer-meta {
+  font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.mark-done {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink);
-  font-variant-numeric: tabular-nums;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-3);
+  transition: background .12s, color .12s, border-color .12s;
 }
-.ticker-val {
-  font-family: var(--font-display);
-  font-size: 28px;
-  font-weight: 900;
-  font-stretch: 75%;
-  letter-spacing: -0.02em;
-  line-height: 0.9;
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-}
-.ticker-delta {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--pos);
-  letter-spacing: 0.06em;
-  margin-top: 3px;
-}
-.ticker-sub {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--mute);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-top: 5px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.ticker-spark { width: 56px; height: 30px; flex-shrink: 0; }
+.mark-done:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.mark-done.done { background: color-mix(in oklch, var(--pos), transparent 85%); border-color: var(--pos); color: var(--pos); }
 
-/* ── Module cards ───────────────────────────────────────────── */
+/* Card 3 — Win (green celebration) */
+.card-win {
+  background: linear-gradient(160deg,
+    color-mix(in oklch, var(--pos), transparent 88%) 0%,
+    var(--bg-3) 70%);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--pos);
+  padding: 18px 20px 16px;
+  display: flex; flex-direction: column;
+}
+.win-byline {
+  display: flex; align-items: center; gap: 9px;
+  margin: 4px 0 6px;
+}
+.win-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--pos); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 900;
+  letter-spacing: 0.02em;
+}
+.win-name {
+  font-size: 12px; font-weight: 700;
+  color: var(--ink);
+}
+.win-metric {
+  font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.big-num {
+  font-size: 36px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.9;
+  color: var(--pos);
+  margin: 4px 0 8px;
+  font-variant-numeric: tabular-nums;
+}
+.card-win .body {
+  font-size: 12.5px; line-height: 1.5;
+  color: var(--ink-2);
+  margin: 0 0 14px;
+}
+.rxn-chips {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+.rxn-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  transition: background .12s, transform .08s;
+}
+.rxn-chip:hover { background: color-mix(in oklch, var(--pos), transparent 88%); }
+.rxn-chip:active { transform: scale(0.96); }
+.rxn-chip .n {
+  font-size: 10px; font-weight: 700;
+  color: var(--ink-2);
+}
+
+/* Activity strip */
+.activity {
+  position: relative; z-index: 2;
+  margin-top: 18px;
+  background: rgba(20,15,10,.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  font-size: 11.5px;
+  color: rgba(20,15,10,.78);
+}
+.activity .ticker {
+  display: flex; gap: 14px; align-items: center;
+  flex-wrap: wrap;
+}
+.activity .ticker b { font-weight: 700; }
+.activity .ticker .dot { opacity: 0.5; }
+.activity .link {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   2. MODULES
+   ════════════════════════════════════════════════════════════════ */
 .modules {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-  padding: 32px 48px;
+  padding: 36px 48px;
 }
-.module-card {
+.mod {
+  position: relative;
   background: var(--bg-3);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  padding: 24px 22px;
+  padding: 22px 22px 0;
   box-shadow: var(--shadow-card);
-  position: relative;
+  display: flex; flex-direction: column;
+  min-height: 240px;
   overflow: hidden;
-  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
+  transition: transform .15s, border-color .15s, box-shadow .15s;
 }
-/* Foil edge on cards */
-.module-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--foil-gradient);
-  opacity: 0.48;
-  pointer-events: none;
+.mod::before {
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 2px;
+  background: var(--foil); opacity: 0.55; pointer-events: none;
 }
-.module-card:hover {
+.mod:hover {
   transform: translateY(-3px);
   border-color: var(--line-strong);
-  box-shadow: 0 10px 36px rgba(0,0,0,.13);
+  box-shadow: 0 14px 40px rgba(0,0,0,.12);
 }
-.module-mark {
-  width: 56px;
-  height: 56px;
+.mod-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
   margin-bottom: 18px;
 }
-.module-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+.mod-mark { width: 48px; height: 48px; }
+.mod-eyebrow {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.20em; text-transform: uppercase;
   color: var(--ink-3);
-  margin-bottom: 7px;
 }
-.module-headline {
-  font-family: var(--font-display);
-  font-size: 22px;
-  font-weight: 900;
-  font-stretch: 75%;
-  letter-spacing: -0.02em;
-  line-height: 0.9;
+.mod-title {
+  font-size: 30px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 0.9;
   color: var(--ink);
-  margin-bottom: 9px;
+  margin: 0 0 10px;
 }
-.module-desc {
-  font-size: 13px;
-  line-height: 1.55;
+.mod-desc {
+  font-size: 13px; line-height: 1.5;
   color: var(--ink-2);
   flex: 1;
+  margin: 0 0 18px;
 }
-.module-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+.mod-cta {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--accent);
-  margin-top: 14px;
-  transition: gap 0.12s;
 }
-.module-card:hover .module-cta { gap: 9px; }
 
-/* ── Home sections ──────────────────────────────────────────── */
-.home-section {
-  padding: 0 48px 40px;
+/* ════════════════════════════════════════════════════════════════
+   3. FEED DU JOUR
+   ════════════════════════════════════════════════════════════════ */
+.feed {
+  padding: 8px 48px 36px;
 }
-.home-section-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 18px;
-  gap: 16px;
-  padding-top: 32px;
+.feed-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; margin-bottom: 22px;
 }
-.home-section-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+.feed-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-3);
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
-.home-section h2 {
-  font-family: var(--font-display);
-  font-size: 34px;
-  font-weight: 900;
-  font-stretch: 75%;
-  letter-spacing: -0.025em;
-  line-height: 0.9;
-  color: var(--ink);
+.feed-title {
+  font-size: 56px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.88;
   margin: 0;
 }
-.home-section-sep {
-  height: 1px;
+.feed-mode {
+  display: inline-flex;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 3px;
+}
+.feed-mode button {
+  padding: 8px 16px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border-radius: 4px;
+  transition: background .12s, color .12s;
+}
+.feed-mode button.active {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* Sport tabs (row 1) */
+.tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.tab-pill {
+  padding: 8px 14px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.tab-pill:hover { color: var(--ink); background: var(--bg-2); }
+.tab-pill.active {
+  background: var(--ink);
+  color: var(--bg);
+}
+.tab-pill .ct {
+  font-size: 9.5px;
+  opacity: 0.65;
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+/* League tabs (row 2 — lighter chips) */
+.tabs-leagues {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.tab-chip {
+  padding: 6px 11px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg-3);
+  transition: background .12s, color .12s, border-color .12s;
+}
+.tab-chip:hover { background: var(--bg-2); color: var(--ink); }
+.tab-chip.active {
+  background: var(--bg-2);
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+/* Stats sub-tabs */
+.subtabs-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.subtabs {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 4px;
+}
+.subtab {
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: background .12s, color .12s;
+}
+.subtab:hover { background: var(--bg-2); color: var(--ink); }
+.subtab.active {
+  background: var(--ink);
+  color: var(--bg);
+}
+.subtab .ct {
+  font-size: 9px; font-weight: 600;
+  opacity: 0.62;
+}
+.subtab.active .ct { opacity: 0.7; }
+.see-all {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Stats panels */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* — Matchs grid */
+.matchs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.match-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+}
+.match-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+.match-live {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--neg);
+}
+.match-live .d { width: 5px; height: 5px; border-radius: 50%; background: var(--neg); animation: pulse 1.4s ease-in-out infinite; }
+.match-row {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 14px;
+}
+.match-row + .match-row { border-top: 1px solid var(--line); }
+.match-team { font-weight: 700; letter-spacing: -0.005em; }
+.match-team.lead { color: var(--accent); }
+.match-score {
+  font-size: 18px; font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* — Meneurs grid */
+.meneurs-controls {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.mc-group {
+  display: inline-flex;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 3px;
+}
+.mc-group button {
+  padding: 6px 11px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border-radius: 3px;
+}
+.mc-group button.active { background: var(--ink); color: var(--bg); }
+.meneurs-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.meneurs-col {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.meneur-row {
+  display: grid;
+  grid-template-columns: 26px 36px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.meneur-row + .meneur-row { border-top: 1px solid var(--line); }
+.meneur-rank {
+  font-size: 14px; font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  text-align: center;
+}
+.meneur-headshot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-2);
+  object-fit: cover;
+  object-position: center top;
+  border: 1px solid var(--line);
+}
+.meneur-row.top .meneur-rank { color: var(--accent); }
+.meneur-name { font-weight: 700; }
+.meneur-team {
+  font-size: 9.5px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+.meneur-stat {
+  font-size: 16px; font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* — Bracket */
+.bracket {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.br-col-head {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+.br-col { display: flex; flex-direction: column; gap: 8px; justify-content: space-around; }
+.br-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+.br-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 3px 0;
+}
+.br-row + .br-row { border-top: 1px dashed var(--line); }
+.br-row .t { font-weight: 700; letter-spacing: -0.005em; display: flex; align-items: center; gap: 7px; }
+.br-row .t .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-3); }
+.br-row .s {
+  font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+.br-row.win .t { color: var(--accent); }
+.br-row.win .t .dot { background: var(--accent); }
+.br-row.win .s { color: var(--accent); }
+.br-empty {
+  background: transparent;
+  border: 1px dashed var(--line);
+  color: var(--ink-3);
+  font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  text-align: center;
+  padding: 18px 10px;
+}
+
+/* — Classement */
+.cl-controls {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.cl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cl-col {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.cl-head {
+  display: grid;
+  grid-template-columns: 28px 1fr 36px 36px 50px;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--line);
+}
+.cl-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 36px 36px 50px;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+.cl-row + .cl-row { border-top: 1px solid var(--line); }
+.cl-row .rk { font-weight: 700; color: var(--ink-3); }
+.cl-row .nm { font-weight: 700; }
+.cl-row .pt { font-weight: 900; text-align: right; }
+.cl-row.top { background: color-mix(in oklch, var(--accent), transparent 92%); }
+.cl-row.top .rk { color: var(--accent); }
+
+/* News mode */
+.news-hero {
+  background: var(--bg-ink);
+  color: oklch(94% 0.01 75);
+  border-radius: var(--r-md);
+  border-top: 3px solid var(--accent);
+  padding: 28px 30px 26px;
+  margin-bottom: 22px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 22px;
+}
+.news-hero .badge-row {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.badge-une {
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 3px 9px;
+  border-radius: 3px;
+}
+.news-hero h2 {
+  font-size: 36px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 0.95;
+  margin: 0 0 10px;
+}
+.news-hero p {
+  font-size: 14px; line-height: 1.55;
+  margin: 0;
+  opacity: 0.72;
+  max-width: 65ch;
+}
+.news-hero .lire {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.news-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 36px;
+  row-gap: 0;
+}
+.news-item {
+  display: grid;
+  grid-template-columns: 1fr 16px;
+  align-items: start;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.news-meta {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+.news-meta .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.news-item h4 {
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -0.015em; line-height: 1.2;
+  margin: 0 0 6px;
+}
+.news-item p {
+  font-size: 12px; line-height: 1.5;
+  color: var(--ink-3);
+  margin: 0;
+}
+.news-arrow {
+  color: var(--ink-3);
+  font-size: 16px;
+  line-height: 1;
+  align-self: center;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   4. SORTIES À VENIR — timeline
+   ════════════════════════════════════════════════════════════════ */
+.releases {
+  padding: 8px 48px 56px;
+}
+.releases-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; margin-bottom: 26px;
+}
+.releases-title {
+  font-size: 56px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.88;
+  margin: 0;
+}
+.releases-caption {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  padding-top: 18px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 25px; /* aligns with dot center (top:18+dot 14/2) */
+  left: 14px; right: 14px;
+  height: 2px;
   background: var(--line);
-  margin: 0 48px;
+  z-index: 0;
 }
 
-/* Releases grid */
-#home-releases .hr-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(254px,1fr)); gap:10px; }
-#home-releases .hr-card { background:var(--bg-3); border:1px solid var(--line); border-radius:var(--r-md); padding:12px 14px; box-shadow:var(--shadow-card); display:grid; grid-template-columns:52px 1fr; gap:11px; align-items:center; transition:border-color .12s,transform .12s; text-decoration:none; color:inherit; }
-#home-releases .hr-card:hover { border-color:var(--line-strong); transform:translateY(-1px); }
-#home-releases .hr-date { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:5px; border-radius:var(--r-sm); background:var(--bg-2); border:1px solid var(--line); text-align:center; }
-#home-releases .hr-date .d { font-family:var(--font-display); font-weight:900; font-stretch:75%; font-size:18px; line-height:1; letter-spacing:-.02em; color:var(--ink); }
-#home-releases .hr-date .m { font-family:var(--font-mono); font-size:8px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2); margin-top:2px; }
-#home-releases .hr-meta { display:flex; gap:5px; margin-bottom:3px; align-items:center; flex-wrap:wrap; }
-#home-releases .hr-brand { font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:0.11em; text-transform:uppercase; color:var(--accent); background:color-mix(in oklch,var(--accent),transparent 88%); border:1px solid color-mix(in oklch,var(--accent),transparent 70%); padding:2px 5px; border-radius:3px; }
-#home-releases .hr-format { font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.09em; text-transform:uppercase; color:var(--ink-3); padding:2px 5px; border-radius:3px; background:var(--bg-2); border:1px solid var(--line); }
-#home-releases .hr-name { font-size:12.5px; font-weight:600; color:var(--ink); line-height:1.35; }
-#home-releases .hr-card:hover .hr-name { color:var(--accent); }
-#home-releases .hr-loading { padding:28px; text-align:center; color:var(--ink-3); font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+.tl-col {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: stretch;
+}
+.tl-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--line-strong);
+  align-self: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 14px;
+}
+.tl-col.today .tl-dot {
+  border: 0;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px color-mix(in oklch, var(--accent), transparent 70%),
+              0 0 0 10px color-mix(in oklch, var(--accent), transparent 88%);
+}
+.tl-date {
+  text-align: center;
+  margin-bottom: 14px;
+}
+.tl-day {
+  font-size: 36px; font-weight: 900;
+  letter-spacing: -0.035em; line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+.tl-col.today .tl-day { color: var(--accent); }
+.tl-month {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 4px;
+}
 
-/* ── Responsive ─────────────────────────────────────────────── */
-/* Formulaire sur fond sombre */
-.announce-section .post-form-inner {
-  background: rgba(255,255,255,.07);
-  border-color: rgba(255,255,255,.12);
+.tl-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 11px 12px 12px;
+  display: flex; flex-direction: column;
+  gap: 8px;
 }
-.announce-section .pf-titre,
-.announce-section .pf-msg {
-  background: rgba(255,255,255,.09);
-  border-color: rgba(255,255,255,.12);
-  color: rgba(255,255,255,.90);
+.tl-col.today .tl-card { border-top: 3px solid var(--accent); border-top-left-radius: 0; border-top-right-radius: 0; }
+.tl-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tl-tag {
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  color: var(--ink-3);
 }
-.announce-section .pf-titre::placeholder,
-.announce-section .pf-msg::placeholder { color: rgba(255,255,255,.30); }
-.announce-section .pf-pin-label        { color: rgba(255,255,255,.50); }
-.announce-section .pf-type-btn         { border-color: rgba(255,255,255,.18); color: rgba(255,255,255,.55); }
+.tl-tag.solid {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+.tl-name {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: -0.005em; line-height: 1.35;
+}
+.tl-today-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 2px;
+}
+.tl-today-badge::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--accent);
+  animation: pulse 1.4s ease-in-out infinite;
+}
 
-@media (max-width: 1100px) {
-  .announce-section { padding: 22px 20px 28px; }
-  .announce-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
-  .ticker { margin: 0 28px; grid-template-columns: 1fr 1fr; }
-  .ticker-cell.featured { grid-column: 1 / -1; }
-  .ticker-cell:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
-  .ticker-cell:nth-child(4) { border-top: 1px solid var(--line); }
-  .modules { padding: 28px 28px; grid-template-columns: 1fr; }
-  .home-section { padding: 0 28px 36px; }
-  .home-section-sep { margin: 0 28px; }
+/* ════════════════════════════════════════════════════════════════
+   Responsive
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 1240px) {
+  .sdm-grid { grid-template-columns: 1fr 1fr; }
+  .sdm-grid > :nth-child(1) { grid-column: 1 / -1; }
+  .bracket { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .news-list { grid-template-columns: 1fr; }
+  .timeline { grid-template-columns: repeat(3, 1fr); row-gap: 32px; }
+  .timeline::before { display: none; }
 }
-@media (max-width: 640px) {
-  .ticker { grid-template-columns: 1fr 1fr; }
-  .ticker-cell.featured { grid-column: 1 / -1; }
+@media (max-width: 900px) {
+  .sb { display: none; }
+  body { display: block; }
+  .sdm, .modules, .feed, .releases { padding-left: 22px; padding-right: 22px; }
+  .sdm-grid { grid-template-columns: 1fr; }
+  .modules { grid-template-columns: 1fr; }
+  .matchs-grid { grid-template-columns: 1fr; }
+  .meneurs-grid, .cl-grid { grid-template-columns: 1fr; }
+  .timeline { grid-template-columns: 1fr 1fr; }
+  .sdm-title, .feed-title, .releases-title { font-size: 42px; }
+  .news-hero { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-<body class="he-root he-court sp-shell">
+<body>
 
-<!-- ═══════════════════ SIDEBAR ════════════════════════════════ -->
-<aside class="sp-sidebar" role="navigation" aria-label="Navigation principale">
-  <div class="sp-brand">
-    <a href="/" class="sp-brand-link">
-      <div class="sp-droplet" aria-hidden="true"></div>
-      <div class="sp-wordmark-wrap">
-        <div class="sp-wordmark">SPELOOSH</div>
-        <div class="sp-tagline">/ THE BREAK PLATFORM</div>
-      </div>
-    </a>
-  </div>
-  <div class="sp-search-wrap">
-    <input class="sp-search-input" type="search" placeholder="Rechercher…" aria-label="Rechercher dans l'app" />
-    <kbd class="sp-kbd">⌘K</kbd>
+<!-- ═════════════════════ SIDEBAR ═════════════════════ -->
+<aside class="sb" aria-label="Navigation principale">
+  <div class="sb-section" style="padding-top:22px">
+    <a class="sb-item is-active" href="/"><span><span class="sb-first">H</span>ome</span></a>
+    <a class="sb-item" href="/break-builder.html"><span><span class="sb-first">B</span>reak Tracker</span></a>
+    <a class="sb-item" href="/hub.html"><span><span class="sb-first">H</span>ub</span></a>
+    <a class="sb-item" href="/break-prep.html"><span><span class="sb-first">B</span>reak Prep</span></a>
+    <a class="sb-item" href="/planner.html"><span><span class="sb-first">P</span>lanificateur</span></a>
+    <a class="sb-item" href="/releases.html"><span><span class="sb-first">S</span>orties</span></a>
+    <a class="sb-item" href="/team.html"><span><span class="sb-first">É</span>quipe</span></a>
+    <a class="sb-item" href="/settings.html"><span><span class="sb-first">S</span>ettings</span></a>
   </div>
 
-  <div class="sp-nav-section">
-    <div class="sp-nav-label">Break ops</div>
-    <a class="sp-nav-item is-active" href="/">Home</a>
-    <a class="sp-nav-item" href="/break-builder.html">Break Tracker</a>
-    <a class="sp-nav-item" href="/hub.html">Hub</a>
-    <a class="sp-nav-item" href="/break-prep.html">Break Prep</a>
-    <a class="sp-nav-item" href="/planner.html">Planificateur</a>
-  </div>
-  <div class="sp-nav-section">
-    <div class="sp-nav-label">Inventaire</div>
-    <a class="sp-nav-item" href="/releases.html">Sorties</a>
-  </div>
-  <div class="sp-nav-section">
-    <div class="sp-nav-label">Système</div>
-    <a class="sp-nav-item" href="/team.html">Équipe</a>
-    <a class="sp-nav-item" href="/settings.html">Settings</a>
-  </div>
-
-  <div class="sp-spacer"></div>
-  <div class="sp-user-card">
-    <div class="sp-user-avatar" aria-hidden="true">AD</div>
-    <div class="sp-user-info">
-      <div class="sp-user-name">Admin</div>
-      <div class="sp-user-status">
-        <span class="sp-live-dot" aria-hidden="true"></span>En ligne
-      </div>
+  <div class="sb-spacer"></div>
+  <div class="sb-user">
+    <div class="sb-avatar">GL</div>
+    <div>
+      <div class="sb-uname">Germain</div>
+      <div class="sb-ustatus"><span class="sb-dot"></span>En ligne</div>
     </div>
   </div>
 </aside>
 
-<!-- ═══════════════════ MAIN ════════════════════════════════════ -->
-<div class="sp-main">
+<!-- ═════════════════════ MAIN ═════════════════════ -->
+<div class="main">
 
   <!-- Top cert strip -->
-  <div class="sp-cert-strip sp-cert-top" aria-hidden="true">
-    <span class="sp-cert-breadcrumb">&#9632; SPELOOSH &rsaquo; OPÉRATIONS &rsaquo; <strong>HOME</strong></span>
-    <span class="sp-cert-id">CERT &middot; SPLSH&middot;26&middot;05&middot;H001</span>
+  <div class="cert cert-top">
+    <span class="cert-bc">
+      <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
+      <span class="sep">›</span><strong>HOME</strong>
+    </span>
+    <span class="cert-right">Weather the Storm</span>
   </div>
 
-  <div class="sp-page-content">
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="holo"></span>
+      <span class="toolbar-eyebrow">Tableau d'affichage</span>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="window.alert('New post drawer — à implémenter')">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      Nouveau post
+    </button>
+  </div>
 
-    <!-- ══ ANNOUNCEMENTS BOARD ════════════════════════════════ -->
-    <section class="announce-section">
+  <!-- ═════════════════════ 1. SALLE DES MACHINES ═════════════════════ -->
+  <section class="sdm">
+    <!-- background splash silhouettes -->
+    <svg class="sdm-splash s1" viewBox="0 0 200 240" aria-hidden="true">
+      <path d="M100 10 Q140 60 130 110 Q165 120 170 160 Q145 195 100 200 Q55 195 30 160 Q35 120 70 110 Q60 60 100 10Z" fill="var(--ink)"/>
+    </svg>
+    <svg class="sdm-splash s2" viewBox="0 0 200 240" aria-hidden="true">
+      <path d="M100 10 Q140 60 130 110 Q165 120 170 160 Q145 195 100 200 Q55 195 30 160 Q35 120 70 110 Q60 60 100 10Z" fill="var(--ink)"/>
+    </svg>
 
-      <div class="announce-header">
-        <div>
-          <div class="home-section-eyebrow">
-            <span class="sp-holo-line" aria-hidden="true"></span>
-            Tableau d'affichage
-          </div>
-          <h2>Messages équipe.</h2>
+    <div class="sdm-head">
+      <div>
+        <div class="sdm-eyebrow"><span class="live"></span>Salle des machines</div>
+        <h1 class="sdm-title">Salut team. 👋</h1>
+      </div>
+      <button class="btn btn-dark btn-sm" onclick="sdmToggleForm()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Nouveau message
+      </button>
+    </div>
+
+    <!-- Form drawer (closed by default) -->
+    <div id="sdm-form-wrap" class="sdm-form-wrap">
+      <div class="sdm-form">
+        <div class="sdm-form-row">
+          <label>Type
+            <select id="sdm-cat">
+              <option value="pinned">★ Épinglé (direction)</option>
+              <option value="announce">📢 Annonce</option>
+              <option value="win">🏆 Win du jour</option>
+            </select>
+          </label>
+          <label>Auteur
+            <input id="sdm-auteur" type="text" placeholder="Ton prénom" value="Germain">
+          </label>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="togglePostForm()" id="new-post-btn">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-          Nouveau post
-        </button>
-      </div>
-
-      <!-- Slide-down form -->
-      <div class="post-form-wrap" id="post-form-wrap" aria-live="polite">
-        <div class="post-form-inner">
-          <!-- Type selector -->
-          <div class="pf-type-row" role="group" aria-label="Type de post">
-            <button class="pf-type-btn active-info" data-type="info"   onclick="setPfType('info')">ℹ Info</button>
-            <button class="pf-type-btn"              data-type="urgent" onclick="setPfType('urgent')">⚡ Urgent</button>
-            <button class="pf-type-btn"              data-type="live"   onclick="setPfType('live')">🔴 Live</button>
-            <button class="pf-type-btn"              data-type="rappel" onclick="setPfType('rappel')">📅 Rappel</button>
-          </div>
-          <!-- Title -->
-          <input class="pf-titre" id="pf-titre" type="text"
-            placeholder="Titre du post…"
-            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('pf-msg').focus();}" />
-          <!-- Body -->
-          <textarea class="pf-msg" id="pf-msg"
-            placeholder="Message (optionnel)…"></textarea>
-          <!-- Actions -->
-          <div class="pf-actions">
-            <label class="pf-pin-label">
-              <input type="checkbox" id="pf-pin"> Épingler en haut
-            </label>
-            <div style="margin-left:auto;display:flex;gap:8px">
-              <button class="btn btn-ghost btn-sm" onclick="togglePostForm(false)">Annuler</button>
-              <button class="btn btn-primary btn-sm" onclick="submitPost()">
-                Publier
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </button>
-            </div>
-          </div>
+        <label>Titre
+          <input id="sdm-title" type="text" placeholder="Titre du message…">
+        </label>
+        <label>Message
+          <textarea id="sdm-body" rows="3" placeholder="Le message…"></textarea>
+        </label>
+        <div class="sdm-form-row sdm-win-only" style="display:none">
+          <label>Grosse métrique
+            <input id="sdm-bignum" type="text" placeholder="$16 095">
+          </label>
+          <label>Label métrique
+            <input id="sdm-metric" type="text" placeholder="Revenu / break · Hier soir">
+          </label>
         </div>
-      </div>
-
-      <!-- Posts grid -->
-      <div class="announce-grid" id="announce-grid" aria-live="polite">
-        <!-- rendered by JS -->
-      </div>
-
-    </section>
-
-    <!-- ══ STAT TICKER (asymmetric 1.6 / 1 / 1 / 1) ══════════ -->
-    <div class="ticker" aria-label="Statistiques clés">
-
-      <!-- Featured cell -->
-      <div class="ticker-cell featured">
-        <div class="ticker-accent-tile" aria-hidden="true">$</div>
-        <div class="ticker-data">
-          <div class="ticker-eyebrow">Revenu — Mai 2026</div>
-          <div class="ticker-val-lg">$6 067</div>
-          <div class="ticker-delta">▲ +22% vs mois précédent</div>
-          <div class="ticker-sub">21 mai 2026</div>
+        <div class="sdm-form-actions">
+          <button class="btn btn-ghost btn-sm" onclick="sdmToggleForm(false)">Annuler</button>
+          <button class="btn btn-primary btn-sm" onclick="sdmSubmit()">Publier</button>
         </div>
       </div>
+    </div>
 
-      <!-- Breaks count -->
-      <div class="ticker-cell">
-        <div class="ticker-data">
-          <div class="ticker-eyebrow">Breaks ce mois</div>
-          <div class="ticker-val">4</div>
-          <div class="ticker-sub">Mai 2026</div>
-        </div>
-        <svg class="ticker-spark" viewBox="0 0 56 30" fill="none" aria-hidden="true">
-          <polyline points="0,26 8,24 18,20 28,22 38,14 48,16 56,10"
-            stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="56" cy="10" r="2.5" fill="var(--accent)"/>
-        </svg>
+    <!-- Cards -->
+    <div class="sdm-grid" id="sdm-grid"></div>
+
+    <!-- Activity strip -->
+    <div class="activity">
+      <div class="ticker">
+        <span><b>Phebe</b> a réagi 🔥</span>
+        <span class="dot">·</span>
+        <span><b>Chuck</b> a posté un win</span>
+        <span class="dot">·</span>
+        <span><b>3 messages</b> non lus</span>
       </div>
+      <a href="#" class="link">Voir tout l'historique →</a>
+    </div>
+  </section>
 
-      <!-- Marge -->
-      <div class="ticker-cell">
-        <div class="ticker-data">
-          <div class="ticker-eyebrow">Marge moyenne</div>
-          <div class="ticker-val">22.2%</div>
-          <div class="ticker-sub">Hockey en tête</div>
-        </div>
-        <svg class="ticker-spark" viewBox="0 0 56 30" fill="none" aria-hidden="true">
-          <polyline points="0,22 10,20 20,24 30,16 40,18 50,10 56,12"
-            stroke="var(--pos)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="56" cy="12" r="2.5" fill="var(--pos)"/>
-        </svg>
-      </div>
+  <!-- ═════════════════════ 2. MODULES ═════════════════════ -->
+  <div class="modules">
 
-      <!-- Meilleur vendeur -->
-      <div class="ticker-cell">
-        <div class="ticker-data">
-          <div class="ticker-eyebrow">Meilleur vendeur</div>
-          <div class="ticker-val">Chuck</div>
-          <div class="ticker-sub">$16 095 / break</div>
-        </div>
-        <svg class="ticker-spark" viewBox="0 0 56 30" fill="none" aria-hidden="true">
-          <polyline points="0,28 10,24 20,26 30,18 40,14 50,8 56,6"
-            stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="56" cy="6" r="2.5" fill="var(--accent)"/>
-        </svg>
-      </div>
-
-    </div><!-- /ticker -->
-
-    <!-- ══ MODULE CARDS ════════════════════════════════════════ -->
-    <div class="modules">
-
-      <!-- 01 / Break Tracker -->
-      <a class="module-card" href="/break-builder.html">
-        <!-- Module mark SVG — stacked rows + green check -->
-        <svg class="module-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+    <a class="mod" href="#">
+      <div class="mod-head">
+        <svg class="mod-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
           <rect x="4" y="8"  width="38" height="6" rx="2" fill="var(--line)"/>
           <rect x="4" y="18" width="32" height="6" rx="2" fill="var(--line)"/>
           <rect x="4" y="28" width="35" height="6" rx="2" fill="var(--line)"/>
           <rect x="4" y="38" width="28" height="6" rx="2" fill="var(--line)"/>
-          <!-- Accent fill on top bar -->
-          <rect x="4" y="8"  width="22" height="6" rx="2" fill="var(--accent)" opacity="0.9"/>
-          <!-- Green check disc -->
+          <rect x="4" y="8"  width="22" height="6" rx="2" fill="var(--accent)" opacity="0.95"/>
           <circle cx="44" cy="44" r="11" fill="var(--pos)"/>
           <path d="M38.5 44 L42.5 48 L50.5 40" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <div class="module-eyebrow">
-          <span class="sp-holo-line" aria-hidden="true"></span>
-          01 / Break Ops
-        </div>
-        <div class="module-headline">Break<br>Tracker</div>
-        <div class="module-desc">Saisie rapide de chaque break — revenu brut, coût, bénéfice net, durée. Historique complet et exportable.</div>
-        <div class="module-cta">
-          Entrer un break
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </div>
-      </a>
+        <span class="mod-eyebrow">01 / Break Ops</span>
+      </div>
+      <h3 class="mod-title">Break<br>Tracker</h3>
+      <p class="mod-desc">Saisie rapide de chaque break — revenu brut, coût, bénéfice net, durée. Historique complet et exportable.</p>
+      <div class="mod-cta">
+        Entrer un break
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+    </a>
 
-      <!-- 02 / Hub -->
-      <a class="module-card" href="/hub.html">
-        <!-- Module mark SVG — bar chart + trend line -->
-        <svg class="module-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+    <a class="mod" href="#">
+      <div class="mod-head">
+        <svg class="mod-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
           <rect x="4"  y="32" width="9" height="16" rx="2" fill="var(--line)"/>
           <rect x="16" y="24" width="9" height="24" rx="2" fill="var(--line)"/>
           <rect x="28" y="16" width="9" height="32" rx="2" fill="var(--accent)"/>
           <rect x="40" y="20" width="9" height="28" rx="2" fill="var(--line)"/>
-          <!-- Trend line -->
-          <polyline points="4,36 16,28 28,14 40,22 52,10"
-            stroke="var(--pos)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="4,36 16,28 28,14 40,22 52,10" stroke="var(--pos)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
           <circle cx="28" cy="14" r="3.5" fill="var(--pos)"/>
         </svg>
-        <div class="module-eyebrow">
-          <span class="sp-holo-line" aria-hidden="true"></span>
-          02 / Analytics
-        </div>
-        <div class="module-headline">Analytics<br>Hub</div>
-        <div class="module-desc">Tableaux de bord complets — revenu mensuel, marge par sport, performance par vendeur et tendances.</div>
-        <div class="module-cta">
-          Voir les stats
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </div>
-      </a>
+        <span class="mod-eyebrow">02 / Analytics</span>
+      </div>
+      <h3 class="mod-title">Analytics<br>Hub</h3>
+      <p class="mod-desc">Tableaux de bord complets — revenu mensuel, marge par sport, performance par vendeur et tendances.</p>
+      <div class="mod-cta">
+        Voir les stats
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </div>
+    </a>
 
-      <!-- 03 / Break Prep -->
-      <a class="module-card" href="/break-prep.html">
-        <!-- Module mark SVG — overlapping card silhouettes + checklist -->
-        <svg class="module-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-          <!-- Back card, rotated -->
-          <rect x="9" y="8" width="34" height="42" rx="4"
-            fill="var(--bg-2)" stroke="var(--line)" stroke-width="1.5"
-            transform="rotate(-6 26 29)"/>
-          <!-- Front card -->
-          <rect x="12" y="10" width="34" height="42" rx="4"
-            fill="var(--bg-3)" stroke="var(--line)" stroke-width="1.5"/>
-          <!-- Accent band -->
+    <a class="mod" href="#">
+      <div class="mod-head">
+        <svg class="mod-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+          <rect x="9" y="8" width="34" height="42" rx="4" fill="var(--bg-2)" stroke="var(--line)" stroke-width="1.5" transform="rotate(-6 26 29)"/>
+          <rect x="12" y="10" width="34" height="42" rx="4" fill="var(--bg-3)" stroke="var(--line)" stroke-width="1.5"/>
           <rect x="12" y="10" width="34" height="13" rx="4" fill="var(--accent)"/>
           <rect x="12" y="17" width="34" height="6" rx="0" fill="var(--accent)"/>
-          <!-- Checklist rows -->
           <circle cx="18" cy="30" r="2.5" fill="var(--pos)"/>
           <rect x="23" y="28.5" width="17" height="2.5" rx="1" fill="var(--line)"/>
           <circle cx="18" cy="38" r="2.5" fill="var(--pos)"/>
@@ -815,330 +1481,842 @@
           <circle cx="18" cy="46" r="2.5" fill="var(--line-strong)"/>
           <rect x="23" y="44.5" width="15" height="2.5" rx="1" fill="var(--line)"/>
         </svg>
-        <div class="module-eyebrow">
-          <span class="sp-holo-line" aria-hidden="true"></span>
-          03 / Préparation
-        </div>
-        <div class="module-headline">Break<br>Prep</div>
-        <div class="module-desc">IA Claude intégrée pour fiches produits, lookup de cartes en direct et prix eBay en temps réel.</div>
-        <div class="module-cta">
-          Préparer un live
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </div>
-      </a>
-
-    </div><!-- /modules -->
-
-    <div class="home-section-sep"></div>
-
-    <!-- ══ NEWS ════════════════════════════════════════════════ -->
-    <section class="home-section">
-      <div class="home-section-head">
-        <div>
-          <div class="home-section-eyebrow">
-            <span class="sp-holo-line" aria-hidden="true"></span>
-            Actualités
-          </div>
-          <h2>Le feed du jour.</h2>
-        </div>
+        <span class="mod-eyebrow">03 / Préparation</span>
       </div>
-      <div class="news-wrap">
-        <div class="news-filters" style="margin-bottom:10px">
-          <button class="news-sport-btn active" data-sport="hockey"     onclick="HE_NEWS.switchSport('hockey')">Hockey</button>
-          <button class="news-sport-btn"        data-sport="football"   onclick="HE_NEWS.switchSport('football')">Football</button>
-          <button class="news-sport-btn"        data-sport="basketball" onclick="HE_NEWS.switchSport('basketball')">Basketball</button>
-          <button class="news-sport-btn"        data-sport="baseball"   onclick="HE_NEWS.switchSport('baseball')">Baseball</button>
-        </div>
-        <div id="hockey-leagues" class="league-tabs">
-          <button class="league-tab active" data-league="hobby"  onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
-          <button class="league-tab"        data-league="nhl"    onclick="HE_NEWS.switchLeague('nhl')">NHL</button>
-          <button class="league-tab"        data-league="ahl"    onclick="HE_NEWS.switchLeague('ahl')">AHL</button>
-          <button class="league-tab"        data-league="ncaa"   onclick="HE_NEWS.switchLeague('ncaa')">NCAA</button>
-          <button class="league-tab"        data-league="ohl"    onclick="HE_NEWS.switchLeague('ohl')">OHL</button>
-          <button class="league-tab"        data-league="whl"    onclick="HE_NEWS.switchLeague('whl')">WHL</button>
-          <button class="league-tab"        data-league="lhjmq"  onclick="HE_NEWS.switchLeague('lhjmq')">LHJMQ</button>
-          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
-        </div>
-        <div id="football-leagues" class="league-tabs" style="display:none">
-          <button class="league-tab active" data-league="hobby" onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
-          <button class="league-tab"        data-league="nfl"   onclick="HE_NEWS.switchLeague('nfl')">NFL</button>
-          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
-        </div>
-        <div id="basketball-leagues" class="league-tabs" style="display:none">
-          <button class="league-tab active" data-league="hobby" onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
-          <button class="league-tab"        data-league="nba"   onclick="HE_NEWS.switchLeague('nba')">NBA</button>
-          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
-        </div>
-        <div id="baseball-leagues" class="league-tabs" style="display:none">
-          <button class="league-tab active" data-league="hobby" onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
-          <button class="league-tab"        data-league="mlb"   onclick="HE_NEWS.switchLeague('mlb')">MLB</button>
-          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
-        </div>
-        <div id="other-sport-bar" class="news-filters" style="display:none">
-          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)">↻ Rafraîchir</button>
-        </div>
-        <div id="news-feed"><div class="news-loading">Chargement des nouvelles…</div></div>
+      <h3 class="mod-title">Break<br>Prep</h3>
+      <p class="mod-desc">IA Claude intégrée pour fiches produits, lookup de cartes en direct et prix eBay en temps réel.</p>
+      <div class="mod-cta">
+        Préparer un live
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </div>
-    </section>
+    </a>
 
-    <div class="home-section-sep"></div>
-
-    <!-- ══ SORTIES ════════════════════════════════════════════ -->
-    <section class="home-section" id="home-releases">
-      <div class="home-section-head">
-        <div>
-          <div class="home-section-eyebrow">
-            <span class="sp-holo-line" aria-hidden="true"></span>
-            Calendrier — Hockey
-          </div>
-          <h2>Sorties à venir.</h2>
-        </div>
-        <a class="btn btn-ghost btn-sm" href="/releases.html">
-          Voir tout
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </a>
-      </div>
-      <div id="hr-feed"><div class="hr-loading" style="padding:28px;text-align:center;color:var(--ink-3);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase">Chargement…</div></div>
-      <script>
-        (function () {
-          const API = 'https://api.hobbyempire.org';
-          const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-          const monthShort = iso => { const m=['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC']; return iso?m[parseInt(iso.slice(5,7),10)-1]:'TBD'; };
-          const dayNum = iso => iso ? String(parseInt(iso.slice(8,10),10)) : '—';
-          fetch(API + '/api/releases/upcoming').then(r => r.json()).then(data => {
-            const all = data.releases || [];
-            const seen = new Set(), cards = [];
-            for (const r of all) {
-              if (!r.releaseDateConfirmed) continue;
-              const k = `${r.season}|${r.productLine}`;
-              if (seen.has(k)) continue;
-              seen.add(k); cards.push(r);
-              if (cards.length >= 6) break;
-            }
-            if (!cards.length) {
-              document.getElementById('hr-feed').innerHTML = '<p style="padding:14px;color:var(--mute);font-size:12px">Aucune sortie confirmée à venir.</p>';
-              return;
-            }
-            document.getElementById('hr-feed').innerHTML = '<div class="hr-grid">' + cards.map(r => `
-              <a class="hr-card" href="/releases.html">
-                <div class="hr-date">
-                  <div class="d">${dayNum(r.releaseDate)}</div>
-                  <div class="m">${monthShort(r.releaseDate)}</div>
-                </div>
-                <div>
-                  <div class="hr-meta">
-                    <span class="hr-brand">${esc(r.brand)}</span>
-                    ${r.format ? `<span class="hr-format">${esc(r.format)}</span>` : ''}
-                  </div>
-                  <div class="hr-name">${esc(r.productName)}</div>
-                </div>
-              </a>`).join('') + '</div>';
-          }).catch(() => {
-            document.getElementById('hr-feed').innerHTML = '<p style="padding:14px;color:var(--mute);font-size:12px;font-style:italic">Calendrier indisponible pour le moment.</p>';
-          });
-        })();
-      </script>
-    </section>
-
-  </div><!-- /sp-page-content -->
-
-  <!-- Bottom cert strip -->
-  <div class="sp-cert-strip sp-cert-bot" aria-hidden="true">
-    <div class="sp-cert-meta">
-      <span class="sp-cert-pill">POP</span>
-      <span class="sp-cert-pill">GRADED</span>
-      <span class="sp-cert-pill">BUILD</span>
-    </div>
-    <span class="sp-cert-id">SPELOOSH &copy; 2026</span>
   </div>
 
-</div><!-- /sp-main -->
+  <!-- ═════════════════════ 3. FEED DU JOUR ═════════════════════ -->
+  <section class="feed">
+    <div class="feed-head">
+      <div>
+        <div class="feed-eyebrow"><span class="holo"></span>Le feed du jour</div>
+        <h2 class="feed-title">Le feed du jour.</h2>
+      </div>
+      <div class="feed-mode" role="tablist" aria-label="Mode du feed">
+        <button class="active" data-mode="stats">Stats</button>
+        <button data-mode="news">Nouvelles</button>
+      </div>
+    </div>
 
-<!-- Print marks (decorative, print-shop ref) -->
-<div class="sp-print-marks" aria-hidden="true">
-  <div class="sp-print-mark tl"></div>
-  <div class="sp-print-mark tr"></div>
-  <div class="sp-print-mark bl"></div>
-  <div class="sp-print-mark br"></div>
-</div>
+    <!-- Sport tabs row 1 -->
+    <div class="tabs" role="tablist" aria-label="Sport">
+      <button class="tab-pill active" data-sport="hockey">Hockey</button>
+      <button class="tab-pill" data-sport="football">Football</button>
+      <button class="tab-pill" data-sport="basketball">Basketball</button>
+      <button class="tab-pill" data-sport="baseball">Baseball</button>
+    </div>
 
-<script src="news.js"></script>
+    <!-- League tabs row 2 -->
+    <div class="tabs-leagues" role="tablist" aria-label="Ligue">
+      <button class="tab-chip" data-league="hobby">Hobby</button>
+      <button class="tab-chip active" data-league="nhl">NHL</button>
+      <button class="tab-chip" data-league="ahl">AHL</button>
+      <button class="tab-chip" data-league="ncaa">NCAA</button>
+      <button class="tab-chip" data-league="ohl">OHL</button>
+      <button class="tab-chip" data-league="whl">WHL</button>
+      <button class="tab-chip" data-league="lhjmq">LHJMQ</button>
+    </div>
+
+    <!-- STATS MODE -->
+    <div id="mode-stats">
+
+      <div class="subtabs-row">
+        <div class="subtabs" role="tablist" aria-label="Stats">
+          <button class="subtab" data-stab="matchs">Matchs<span class="ct">3 en cours</span></button>
+          <button class="subtab" data-stab="meneurs">Meneurs<span class="ct">Pts</span></button>
+          <button class="subtab active" data-stab="bracket">Bracket<span class="ct">Playoffs 2026</span></button>
+          <button class="subtab" data-stab="classement">Classement<span class="ct">32 équipes</span></button>
+        </div>
+        <a class="see-all" href="#">Voir tout →</a>
+      </div>
+
+      <!-- Matchs panel -->
+      <div class="panel" data-spanel="matchs">
+        <div class="matchs-grid" id="nhl-matchs">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>
+        </div>
+      </div>
+
+      <!-- Meneurs panel -->
+      <div class="panel" data-spanel="meneurs">
+        <div class="meneurs-controls">
+          <div class="mc-group" data-mc="mode">
+            <button class="active" data-val="season">Saison</button>
+            <button data-val="playoffs">Playoffs</button>
+          </div>
+          <div class="mc-group" data-mc="cat">
+            <button class="active" data-val="points">Pts</button>
+            <button data-val="goals">Buts</button>
+            <button data-val="assists">Passes</button>
+          </div>
+        </div>
+        <div class="meneurs-grid" id="nhl-meneurs">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>
+        </div>
+      </div>
+
+      <!-- Bracket panel (DEFAULT) -->
+      <div class="panel active" data-spanel="bracket">
+        <div class="bracket" id="nhl-bracket">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement du bracket…</div>
+        </div>
+      </div>
+
+      <!-- Classement panel -->
+      <div class="panel" data-spanel="classement">
+        <div class="cl-controls">
+          <div class="mc-group" data-mc="cltab">
+            <button class="active" data-val="ALL">LNH</button>
+            <button data-val="E">Est</button>
+            <button data-val="W">Ouest</button>
+            <button data-val="A">Atl</button>
+            <button data-val="M">Mét</button>
+            <button data-val="C">Cen</button>
+            <button data-val="P">Pac</button>
+          </div>
+        </div>
+        <div class="cl-grid" id="nhl-classement">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>
+        </div>
+      </div>
+
+    </div><!-- /mode-stats -->
+
+    <!-- NEWS MODE -->
+    <div id="mode-news" style="display:none">
+      <div id="news-hero-slot"></div>
+      <div class="news-list" id="news-list-slot"></div>
+    </div>
+
+  </section>
+
+  <!-- ═════════════════════ 4. SORTIES À VENIR ═════════════════════ -->
+  <section class="releases">
+    <div class="releases-head">
+      <div>
+        <div class="feed-eyebrow"><span class="holo"></span>Calendrier · Hockey</div>
+        <h2 class="releases-title">Sorties à venir.</h2>
+      </div>
+      <div class="releases-caption" id="releases-caption">Chargement…</div>
+    </div>
+
+    <div class="timeline" id="timeline">
+      <div style="grid-column:1/-1;padding:18px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">
+        Chargement du calendrier…
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom cert strip -->
+  <div class="cert cert-bot">
+    <div class="cert-meta">
+      <span class="cert-pill">POP</span>
+      <span class="cert-pill">GRADED</span>
+      <span class="cert-pill">BUILD</span>
+    </div>
+    <span class="cert-id">SPELOOSH © 2026</span>
+  </div>
+
+</div><!-- /.main -->
+
 <script>
-/* ═══════════════════════════════════════════════════════════
-   Announcements board — admin posts for vendors / helpers
-   Stored in localStorage under key 'he_announcements'
-   ═══════════════════════════════════════════════════════════ */
+/* ─────────────────────────────────────────────────────────────
+   Local state — Stats sub-tabs, Feed mode toggle, Sport, League
+   ───────────────────────────────────────────────────────────── */
+const state = {
+  feedMode: 'stats',
+  statsTab: 'bracket',
+  sport: 'hockey',
+  league: 'nhl',
+};
+
+/* Feed mode (Stats / Nouvelles) */
+document.querySelectorAll('.feed-mode button').forEach(b => {
+  b.addEventListener('click', () => {
+    state.feedMode = b.dataset.mode;
+    document.querySelectorAll('.feed-mode button').forEach(x => x.classList.toggle('active', x === b));
+    document.getElementById('mode-stats').style.display = state.feedMode === 'stats' ? '' : 'none';
+    document.getElementById('mode-news').style.display  = state.feedMode === 'news'  ? '' : 'none';
+  });
+});
+
+/* Stats sub-tabs */
+document.querySelectorAll('.subtab').forEach(b => {
+  b.addEventListener('click', () => {
+    state.statsTab = b.dataset.stab;
+    document.querySelectorAll('.subtab').forEach(x => x.classList.toggle('active', x === b));
+    document.querySelectorAll('[data-spanel]').forEach(p => {
+      p.classList.toggle('active', p.dataset.spanel === state.statsTab);
+    });
+  });
+});
+
+/* Sport tabs */
+document.querySelectorAll('.tab-pill').forEach(b => {
+  b.addEventListener('click', () => {
+    state.sport = b.dataset.sport;
+    document.querySelectorAll('.tab-pill').forEach(x => x.classList.toggle('active', x === b));
+  });
+});
+
+/* League tabs */
+document.querySelectorAll('.tab-chip').forEach(b => {
+  b.addEventListener('click', () => {
+    state.league = b.dataset.league;
+    document.querySelectorAll('.tab-chip').forEach(x => x.classList.toggle('active', x === b));
+  });
+});
+
+/* Reactions — clickable, increments count (client only for mockup) */
+document.querySelectorAll('.rxn, .rxn-chip').forEach(chip => {
+  if (chip.classList.contains('add')) return;
+  chip.addEventListener('click', () => {
+    const n = chip.querySelector('.n');
+    if (!n) return;
+    n.textContent = String(parseInt(n.textContent, 10) + 1);
+    chip.animate(
+      [{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }],
+      { duration: 260, easing: 'cubic-bezier(.2,.8,.2,1)' }
+    );
+  });
+});
+
+/* ─────────────────────────────────────────────────────────────
+   NHL Stats — fetch /api/nhl proxy (Matchs / Meneurs / Bracket / Classement)
+   ───────────────────────────────────────────────────────────── */
+const NHL_SEASON = '20252026';
+const NHL_PLAYOFF_YEAR = 2026;
+const escHtml = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const nhl = {
+  loaded: false,
+  loading: false,
+  data: { scores: [], leaders: { season: {}, playoffs: {} }, bracket: null, standings: [] },
+  ui: { meneursMode: 'season', meneursCat: 'points', clTab: 'ALL' },
+};
+
+const notAvailableHTML = msg => `<div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">${msg}</div>`;
+
+function nhlPath(p) { return '/api/nhl?path=' + encodeURIComponent(p); }
+
+async function loadNHL() {
+  if (nhl.loaded || nhl.loading) return;
+  nhl.loading = true;
+  try {
+    const [scoresRes,
+      sPts, sGoals, sAssists,
+      pPts, pGoals, pAssists,
+      standRes, bracketRes,
+    ] = await Promise.all([
+      fetch(nhlPath('score/now')).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/2?categories=points&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/2?categories=goals&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/2?categories=assists&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/3?categories=points&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/3?categories=goals&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/3?categories=assists&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath('standings/now')).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`playoff-bracket/${NHL_PLAYOFF_YEAR}`)).then(r=>r.json()).catch(()=>({})),
+    ]);
+    nhl.data.scores = scoresRes.games || [];
+    nhl.data.leaders = {
+      season:   { points: sPts.points || [], goals: sGoals.goals || [], assists: sAssists.assists || [] },
+      playoffs: { points: pPts.points || [], goals: pGoals.goals || [], assists: pAssists.assists || [] },
+    };
+    nhl.data.standings = standRes.standings || [];
+    nhl.data.bracket = bracketRes;
+    nhl.loaded = true;
+  } catch (e) {
+    console.error('NHL load failed', e);
+  } finally {
+    nhl.loading = false;
+    renderAllNHL();
+  }
+}
+
+/* ── Matchs (live + à venir aujourd'hui) */
+function renderMatchs() {
+  const el = document.getElementById('nhl-matchs'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const games = nhl.data.scores;
+  if (!games.length) { el.innerHTML = notAvailableHTML('Aucun match aujourd\'hui'); return; }
+
+  const live = games.filter(g => g.gameState === 'LIVE' || g.gameState === 'CRIT');
+  const upcoming = games.filter(g => g.gameState !== 'LIVE' && g.gameState !== 'CRIT' && g.gameState !== 'OFF' && g.gameState !== 'FINAL');
+  const finalGames = games.filter(g => g.gameState === 'OFF' || g.gameState === 'FINAL');
+  const pick = (live.length ? live : (upcoming.length ? upcoming : finalGames)).slice(0, 6);
+
+  el.innerHTML = pick.map(g => {
+    const isLive  = g.gameState === 'LIVE' || g.gameState === 'CRIT';
+    const isFinal = g.gameState === 'OFF' || g.gameState === 'FINAL';
+    const away = g.awayTeam || {}, home = g.homeTeam || {};
+    const aScore = away.score ?? 0, hScore = home.score ?? 0;
+    const aWin = (isLive || isFinal) && aScore > hScore;
+    const hWin = (isLive || isFinal) && hScore > aScore;
+    const state = isFinal ? 'Final'
+                 : isLive ? `Live · ${g.periodDescriptor?.periodType === 'OT' ? 'OT' : (g.periodDescriptor?.number || '')}${g.periodDescriptor?.number && g.periodDescriptor?.periodType !== 'OT' ? 'e période' : ''}`
+                 : g.startTimeUTC ? new Date(g.startTimeUTC).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}) : 'À venir';
+    const venue = g.venue?.default || '';
+    return `<div class="match-card">
+      <div class="match-meta">
+        ${isLive ? `<span class="match-live"><span class="d"></span>${escHtml(state)}</span>` : `<span>${escHtml(state)}</span>`}
+        <span>${escHtml(venue)}</span>
+      </div>
+      <div class="match-row"><span class="match-team${aWin?' lead':''}">${escHtml(away.placeName?.default || away.abbrev || '')}</span><span class="match-score">${aScore}</span></div>
+      <div class="match-row"><span class="match-team${hWin?' lead':''}">${escHtml(home.placeName?.default || home.abbrev || '')}</span><span class="match-score">${hScore}</span></div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Meneurs (2 colonnes × 5) */
+function renderMeneurs() {
+  const el = document.getElementById('nhl-meneurs'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const players = (nhl.data.leaders[nhl.ui.meneursMode] || {})[nhl.ui.meneursCat] || [];
+  if (!players.length) { el.innerHTML = notAvailableHTML('Données non disponibles'); return; }
+
+  const top10 = players.slice(0, 10);
+  const renderRow = (p, rank) => {
+    const isTop = rank <= 3;
+    const first = (p.firstName?.default || '').slice(0,1);
+    const last  = p.lastName?.default || p.firstName?.default || '';
+    const team  = typeof p.teamAbbrev === 'object' ? (p.teamAbbrev?.default || '') : (p.teamAbbrev || '');
+    const pos   = p.position || '';
+    const photo = p.headshot ? `<img class="meneur-headshot" src="${escHtml(p.headshot)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">` : `<div class="meneur-headshot"></div>`;
+    return `<div class="meneur-row${isTop?' top':''}">
+      <div class="meneur-rank">${rank}</div>
+      ${photo}
+      <div><div class="meneur-name">${escHtml(first)}. ${escHtml(last)}</div><div class="meneur-team">${escHtml(team)}${pos?' · '+escHtml(pos):''}</div></div>
+      <div class="meneur-stat">${p.value || 0}</div>
+    </div>`;
+  };
+  const colA = top10.slice(0, 5).map((p, i) => renderRow(p, i + 1)).join('');
+  const colB = top10.slice(5, 10).map((p, i) => renderRow(p, i + 6)).join('');
+  el.innerHTML = `<div class="meneurs-col">${colA}</div><div class="meneurs-col">${colB}</div>`;
+}
+
+/* ── Bracket (4 colonnes par playoffRound) */
+function renderBracket() {
+  const el = document.getElementById('nhl-bracket'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const series = nhl.data.bracket?.series || [];
+  if (!series.length) { el.innerHTML = notAvailableHTML('Bracket non disponible'); return; }
+
+  const rounds = {1:[], 2:[], 3:[], 4:[]};
+  for (const s of series) {
+    const r = s.playoffRound || s.roundNumber || 1;
+    if (rounds[r]) rounds[r].push(s);
+  }
+  const labels = {1:'1er tour', 2:'Demi-finales', 3:'Finales conf.', 4:'Finale Stanley'};
+
+  el.innerHTML = [1,2,3,4].map(r => {
+    const ss = rounds[r];
+    const cards = ss.length ? ss.map(s => {
+      const top = s.topSeedTeam || {}, bot = s.bottomSeedTeam || {};
+      const tW = s.topSeedWins || 0, bW = s.bottomSeedWins || 0;
+      const done = tW >= 4 || bW >= 4;
+      const tWon = done && tW > bW, bWon = done && bW > tW;
+      return `<div class="br-card">
+        <div class="br-row${tWon?' win':''}"><span class="t"><span class="dot"></span>${escHtml(top.placeName?.default || top.abbrev || '—')}</span><span class="s">${tW}</span></div>
+        <div class="br-row${bWon?' win':''}"><span class="t"><span class="dot"></span>${escHtml(bot.placeName?.default || bot.abbrev || '—')}</span><span class="s">${bW}</span></div>
+      </div>`;
+    }).join('') : '<div class="br-empty">En attente</div>';
+    return `<div><div class="br-col-head">${labels[r]}</div><div class="br-col">${cards}</div></div>`;
+  }).join('');
+}
+
+/* ── Classement (2 colonnes × 16 rangs) avec filtre conf/div */
+function renderClassement() {
+  const el = document.getElementById('nhl-classement'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const all = nhl.data.standings;
+  if (!all.length) { el.innerHTML = notAvailableHTML('Classement non disponible'); return; }
+
+  const tab = nhl.ui.clTab;
+  let filtered, cutoff;
+  if      (tab === 'ALL') { filtered = [...all]; cutoff = -1; }
+  else if (tab === 'E')   { filtered = all.filter(t=>t.conferenceAbbrev==='E'); cutoff = 8; }
+  else if (tab === 'W')   { filtered = all.filter(t=>t.conferenceAbbrev==='W'); cutoff = 8; }
+  else                    { filtered = all.filter(t=>t.divisionAbbrev===tab); cutoff = 3; }
+  filtered.sort((a,b) => (b.points||0)-(a.points||0) || (b.wins||0)-(a.wins||0));
+
+  const half = Math.ceil(filtered.length / 2);
+  const head = `<div class="cl-head"><span>#</span><span>Équipe</span><span>V</span><span>D</span><span>Pts</span></div>`;
+  const renderRows = (arr, base) => arr.map((t, i) => {
+    const rank = base + i;
+    const abbr = typeof t.teamAbbrev === 'object' ? (t.teamAbbrev?.default || '') : (t.teamAbbrev || '');
+    const inPo = cutoff > 0 && rank <= cutoff;
+    return `<div class="cl-row${inPo?' top':''}"><span class="rk">${rank}</span><span class="nm">${escHtml(t.teamName?.default || abbr)}</span><span>${t.wins||0}</span><span>${t.losses||0}</span><span class="pt">${t.points||0}</span></div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="cl-col">${head}${renderRows(filtered.slice(0, half), 1)}</div>
+    <div class="cl-col">${head}${renderRows(filtered.slice(half), half + 1)}</div>`;
+}
+
+function renderAllNHL() {
+  renderMatchs();
+  renderMeneurs();
+  renderBracket();
+  renderClassement();
+}
+
+function isNhlContext() {
+  return state.sport === 'hockey' && state.league === 'nhl';
+}
+
+/* Meneurs + Classement sub-controls — hook to data attrs */
+document.querySelectorAll('.mc-group').forEach(g => {
+  const kind = g.dataset.mc;
+  g.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => {
+      g.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+      if (kind === 'mode')  { nhl.ui.meneursMode = b.dataset.val; renderMeneurs(); }
+      if (kind === 'cat')   { nhl.ui.meneursCat  = b.dataset.val; renderMeneurs(); }
+      if (kind === 'cltab') { nhl.ui.clTab       = b.dataset.val; renderClassement(); }
+    });
+  });
+});
+
+/* Re-render NHL panels when sport/league changes */
+document.querySelectorAll('.tab-pill, .tab-chip').forEach(b => {
+  b.addEventListener('click', () => {
+    if (isNhlContext()) { loadNHL().then(renderAllNHL); renderAllNHL(); }
+    else                { renderAllNHL(); }
+  });
+});
+
+/* Initial load (default = hockey + nhl) */
+if (isNhlContext()) loadNHL();
+
+/* ─────────────────────────────────────────────────────────────
+   Nouvelles — RSS via rss2json.com + NewsAPI proxy via /api/news
+   ───────────────────────────────────────────────────────────── */
+const NEWS_FEEDS = {
+  hockey: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/hockey/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
+      { label: 'SC Investor',          url: 'https://sportscardsinvestor.com/feed/' },
+    ]},
+    nhl: { rss: [
+      { label: 'Sportsnet', url: 'https://www.sportsnet.ca/feed/' },
+      { label: 'CBC Sports', url: 'https://www.cbc.ca/cmlink/rss-sports' },
+    ], apiLeague: 'nhl' },
+    ahl:   { apiLeague: 'ahl' },
+    ncaa:  { apiLeague: 'ncaa' },
+    ohl:   { apiLeague: 'ohl' },
+    whl:   { apiLeague: 'whl' },
+    lhjmq: { apiLeague: 'lhjmq' },
+  },
+  football: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/football/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/football-cards/feed/' },
+    ]},
+    nfl: { rss: [
+      { label: 'ESPN', url: 'https://www.espn.com/espn/rss/nfl/news' },
+      { label: 'CBS Sports', url: 'https://www.cbssports.com/rss/headlines/nfl/' },
+    ]},
+  },
+  basketball: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/basketball/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/basketball-cards/feed/' },
+    ]},
+    nba: { rss: [
+      { label: 'ESPN', url: 'https://www.espn.com/espn/rss/nba/news' },
+      { label: 'CBS Sports', url: 'https://www.cbssports.com/rss/headlines/nba/' },
+    ]},
+  },
+  baseball: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/baseball/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/baseball-cards/feed/' },
+    ]},
+    mlb: { rss: [
+      { label: 'ESPN',    url: 'https://www.espn.com/espn/rss/mlb/news' },
+      { label: 'MLB.com', url: 'https://www.mlb.com/feeds/news/rss.xml' },
+    ]},
+  },
+};
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+const newsCache = {};
+
+function newsDateFR(d) {
+  const months = ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+  return `${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+async function fetchRssFeed(src) {
+  try {
+    const r = await fetch(RSS2JSON + encodeURIComponent(src.url));
+    const d = await r.json();
+    if (d.status !== 'ok') return [];
+    return (d.items || []).map(item => ({
+      title:   (item.title || '').replace(/<[^>]+>/g, '').trim(),
+      link:    item.link || item.guid || '#',
+      excerpt: (item.description || item.content || '').replace(/<[^>]+>/g, '').replace(/\s+/g,' ').trim().slice(0, 180),
+      date:    new Date(item.pubDate || item.published || Date.now()),
+      source:  src.label,
+    }));
+  } catch (e) { return []; }
+}
+
+async function fetchApiNews(league) {
+  try {
+    const r = await fetch(`/api/news?league=${league}&limit=20`);
+    const d = await r.json();
+    return (d.items || []).map(item => ({
+      title:   item.title,
+      link:    item.url || item.link || '#',
+      excerpt: (item.description || '').slice(0, 180),
+      date:    new Date(item.publishedAt || item.date || Date.now()),
+      source:  item.sourceName || 'NHL',
+    }));
+  } catch (e) { return []; }
+}
+
+async function loadNouvelles() {
+  const hero = document.getElementById('news-hero-slot');
+  const list = document.getElementById('news-list-slot');
+  if (!hero || !list) return;
+
+  const key = `${state.sport}-${state.league}`;
+  if (newsCache[key]) { renderNouvelles(newsCache[key]); return; }
+
+  hero.innerHTML = '';
+  list.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>`;
+
+  const cfg = NEWS_FEEDS[state.sport]?.[state.league];
+  if (!cfg) {
+    list.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Pas de feed disponible</div>`;
+    return;
+  }
+
+  const promises = [];
+  if (cfg.rss)        promises.push(...cfg.rss.map(fetchRssFeed));
+  if (cfg.apiLeague)  promises.push(fetchApiNews(cfg.apiLeague));
+
+  const all = (await Promise.all(promises)).flat();
+  all.sort((a, b) => b.date - a.date);
+  const items = all.slice(0, 25);
+  newsCache[key] = items;
+  renderNouvelles(items);
+}
+
+function renderNouvelles(items) {
+  const hero = document.getElementById('news-hero-slot');
+  const list = document.getElementById('news-list-slot');
+  if (!items.length) {
+    hero.innerHTML = '';
+    list.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Aucune nouvelle</div>`;
+    return;
+  }
+  const [first, ...rest] = items;
+  hero.innerHTML = `
+    <a class="news-hero" href="${escHtml(first.link)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+      <div>
+        <div class="badge-row">
+          <span class="badge-une">À la une</span>
+          <span>${escHtml(first.source || '')}</span>
+          <span style="opacity:.5">·</span>
+          <span>${newsDateFR(first.date)}</span>
+        </div>
+        <h2>${escHtml(first.title)}</h2>
+        ${first.excerpt ? `<p>${escHtml(first.excerpt)}</p>` : ''}
+      </div>
+      <span class="lire">Lire →</span>
+    </a>`;
+  list.innerHTML = rest.slice(0, 12).map(it => `
+    <a class="news-item" href="${escHtml(it.link)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+      <div>
+        <div class="news-meta"><span class="dot"></span>${escHtml(it.source || '')} · ${newsDateFR(it.date)}</div>
+        <h4>${escHtml(it.title)}</h4>
+        ${it.excerpt ? `<p>${escHtml(it.excerpt)}</p>` : ''}
+      </div>
+      <span class="news-arrow">↗</span>
+    </a>`).join('');
+}
+
+/* Trigger news fetch quand on switch en mode 'news' */
+document.querySelectorAll('.feed-mode button').forEach(b => {
+  b.addEventListener('click', () => {
+    if (b.dataset.mode === 'news') loadNouvelles();
+  });
+});
+
+/* Re-fetch news quand sport/ligue change (si mode news actif) */
+document.querySelectorAll('.tab-pill, .tab-chip').forEach(b => {
+  b.addEventListener('click', () => {
+    if (state.feedMode === 'news') loadNouvelles();
+  });
+});
+
+/* ─────────────────────────────────────────────────────────────
+   Salle des machines — localStorage (key: sdm_messages_v1)
+   Categories: pinned | announce | win
+   ───────────────────────────────────────────────────────────── */
+const SDM_KEY = 'sdm_messages_v1';
+
+function sdmLoad() {
+  try { return JSON.parse(localStorage.getItem(SDM_KEY) || '[]'); }
+  catch { return []; }
+}
+function sdmSave(arr) {
+  localStorage.setItem(SDM_KEY, JSON.stringify(arr));
+}
+function sdmInitials(name) {
+  const parts = String(name||'').trim().split(/\s+/);
+  return ((parts[0]||'')[0] + (parts[1]||'')[0]||'').toUpperCase() || (name||'?').slice(0,2).toUpperCase();
+}
+function sdmTimeAgo(iso) {
+  const s = Math.floor((Date.now() - new Date(iso)) / 1000);
+  if (s < 60) return "à l'instant";
+  if (s < 3600) return `il y a ${Math.floor(s/60)} min`;
+  if (s < 86400) return `il y a ${Math.floor(s/3600)} h`;
+  return `il y a ${Math.floor(s/86400)} j`;
+}
+function sdmDateFR(iso) {
+  const d = new Date(iso);
+  const months = ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+  return `${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+window.sdmToggleForm = function (force) {
+  const wrap = document.getElementById('sdm-form-wrap');
+  const open = force !== undefined ? Boolean(force) : !wrap.classList.contains('open');
+  wrap.classList.toggle('open', open);
+  if (open) setTimeout(() => document.getElementById('sdm-title').focus(), 50);
+};
+
+// Show win-only fields based on category select
+document.getElementById('sdm-cat').addEventListener('change', e => {
+  document.querySelector('.sdm-win-only').style.display = e.target.value === 'win' ? 'grid' : 'none';
+});
+
+window.sdmSubmit = function () {
+  const cat = document.getElementById('sdm-cat').value;
+  const auteur = document.getElementById('sdm-auteur').value.trim() || 'Admin';
+  const title = document.getElementById('sdm-title').value.trim();
+  const body  = document.getElementById('sdm-body').value.trim();
+  if (!title) { document.getElementById('sdm-title').focus(); return; }
+  const post = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+    category: cat, auteur, title, body,
+    date: new Date().toISOString(),
+    reactions: {},
+  };
+  if (cat === 'win') {
+    post.bignum = document.getElementById('sdm-bignum').value.trim();
+    post.metric = document.getElementById('sdm-metric').value.trim();
+  }
+  const all = sdmLoad();
+  all.unshift(post);
+  sdmSave(all);
+  // reset
+  document.getElementById('sdm-title').value = '';
+  document.getElementById('sdm-body').value = '';
+  if (cat === 'win') {
+    document.getElementById('sdm-bignum').value = '';
+    document.getElementById('sdm-metric').value = '';
+  }
+  sdmToggleForm(false);
+  sdmRender();
+};
+
+window.sdmDelete = function (id) {
+  if (!confirm('Supprimer ce message ?')) return;
+  sdmSave(sdmLoad().filter(p => p.id !== id));
+  sdmRender();
+};
+
+window.sdmReact = function (id, emo) {
+  const all = sdmLoad();
+  const p = all.find(x => x.id === id);
+  if (!p) return;
+  p.reactions = p.reactions || {};
+  p.reactions[emo] = (p.reactions[emo] || 0) + 1;
+  sdmSave(all);
+  sdmRender();
+};
+
+function sdmRenderPinned(p) {
+  if (!p) return `
+    <article class="sdm-empty" style="grid-row:span 1">
+      <div class="ico">★</div>
+      <div class="ttl">Aucun message épinglé</div>
+      <div class="sub">Clique "Nouveau message" pour publier un message direction.</div>
+    </article>`;
+  const rxns = Object.entries(p.reactions||{});
+  const rxnHtml = rxns.length
+    ? rxns.map(([e,n]) => `<button class="rxn" onclick="sdmReact('${p.id}','${e}')"><span>${e}</span><span class="n">${n}</span></button>`).join('')
+    : '';
+  return `<article class="card-pin">
+    <button class="card-del" onclick="sdmDelete('${p.id}')" title="Supprimer">×</button>
+    <span class="card-pin-badge">★ Épinglé</span>
+    <div class="card-byline">
+      <div class="byline-avatar">${escHtml(sdmInitials(p.auteur))}</div>
+      <div>
+        <div class="byline-name">${escHtml(p.auteur)}</div>
+        <div class="byline-time">${sdmTimeAgo(p.date)} · Direction</div>
+      </div>
+    </div>
+    <h3>${escHtml(p.title)}</h3>
+    ${p.body ? `<p class="body">${escHtml(p.body)}</p>` : ''}
+    <div class="reactions">
+      ${rxnHtml}
+      <button class="rxn add" onclick="sdmReact('${p.id}','🔥')">+ Réagir</button>
+    </div>
+  </article>`;
+}
+
+function sdmRenderAnnounce(p) {
+  if (!p) return `
+    <article class="sdm-empty">
+      <div class="ico">📢</div>
+      <div class="ttl">Aucune annonce</div>
+      <div class="sub">Publie une annonce d'équipe.</div>
+    </article>`;
+  return `<article class="card-ann" style="position:relative">
+    <button class="card-del" onclick="sdmDelete('${p.id}')" title="Supprimer">×</button>
+    <div class="icon-square icon-amber">📢</div>
+    <div class="card-label">Annonce · ${sdmDateFR(p.date)}</div>
+    <h3>${escHtml(p.title)}</h3>
+    ${p.body ? `<p class="body">${escHtml(p.body)}</p>` : ''}
+    <div class="card-footer">
+      <span class="card-footer-meta">${escHtml(p.auteur)}</span>
+      <button class="mark-done" onclick="this.classList.toggle('done'); this.textContent=this.classList.contains('done')?'Fait ✓':'Marquer fait ✓'">Marquer fait ✓</button>
+    </div>
+  </article>`;
+}
+
+function sdmRenderWin(p) {
+  if (!p) return `
+    <article class="sdm-empty">
+      <div class="ico">🏆</div>
+      <div class="ttl">Aucun win</div>
+      <div class="sub">Célèbre un record ou une perf de l'équipe.</div>
+    </article>`;
+  const rxns = Object.entries(p.reactions||{});
+  const rxnHtml = rxns.length
+    ? rxns.map(([e,n]) => `<button class="rxn-chip" onclick="sdmReact('${p.id}','${e}')"><span>${e}</span><span class="n">${n}</span></button>`).join('')
+    : `<button class="rxn-chip" onclick="sdmReact('${p.id}','🚀')"><span>🚀</span><span class="n">0</span></button>`;
+  return `<article class="card-win" style="position:relative">
+    <button class="card-del" onclick="sdmDelete('${p.id}')" title="Supprimer">×</button>
+    <div class="icon-square icon-green">🏆</div>
+    <div class="card-label">Win du jour</div>
+    <div class="win-byline">
+      <div class="win-avatar">${escHtml(sdmInitials(p.auteur))}</div>
+      <div>
+        <div class="win-name">${escHtml(p.auteur)}</div>
+        ${p.metric ? `<div class="win-metric">${escHtml(p.metric)}</div>` : ''}
+      </div>
+    </div>
+    ${p.bignum ? `<div class="big-num">${escHtml(p.bignum)}</div>` : ''}
+    <h3 style="font-size:18px;font-weight:900;letter-spacing:-0.02em;line-height:1;margin:0 0 6px">${escHtml(p.title)}</h3>
+    ${p.body ? `<p class="body">${escHtml(p.body)}</p>` : ''}
+    <div class="rxn-chips">${rxnHtml}</div>
+  </article>`;
+}
+
+function sdmRender() {
+  const grid = document.getElementById('sdm-grid');
+  if (!grid) return;
+  const all = sdmLoad().sort((a,b) => new Date(b.date) - new Date(a.date));
+  const pin = all.find(p => p.category === 'pinned');
+  const ann = all.find(p => p.category === 'announce');
+  const win = all.find(p => p.category === 'win');
+  grid.innerHTML = sdmRenderPinned(pin) + sdmRenderAnnounce(ann) + sdmRenderWin(win);
+}
+
+sdmRender();
+
+/* ─────────────────────────────────────────────────────────────
+   Sorties à venir — fetch api.hobbyempire.org/api/releases/upcoming
+   Render: timeline 6 colonnes, "aujourd'hui" si date == today
+   ───────────────────────────────────────────────────────────── */
 (function () {
-  const KEY = 'he_announcements';
+  const API = 'https://api.hobbyempire.org';
+  const tl = document.getElementById('timeline');
+  const cap = document.getElementById('releases-caption');
 
-  const TYPE_META = {
-    info:   { label: 'Info',   emoji: 'ℹ️' },
-    urgent: { label: 'Urgent', emoji: '⚡' },
-    live:   { label: 'Live',   emoji: '🔴' },
-    rappel: { label: 'Rappel', emoji: '📅' },
+  const MONTHS_FR = ['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC'];
+  const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const dayOf   = iso => iso ? String(parseInt(iso.slice(8,10),10)).padStart(2,'0') : '—';
+  const monthOf = iso => iso ? MONTHS_FR[parseInt(iso.slice(5,7),10)-1] : 'TBD';
+  const todayISO = new Date().toISOString().slice(0,10);
+
+  const daysBetween = iso => {
+    if (!iso) return null;
+    const a = new Date(todayISO), b = new Date(iso);
+    return Math.round((b - a) / 86400000);
   };
 
-  /* ── Storage ───────────────────────────────────────────── */
-  function load() {
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
-    catch { return []; }
-  }
-  function save(posts) {
-    localStorage.setItem(KEY, JSON.stringify(posts));
-  }
+  fetch(API + '/api/releases/upcoming')
+    .then(r => r.json())
+    .then(data => {
+      const all = data.releases || [];
+      const seen = new Set(), cards = [];
+      for (const r of all) {
+        if (!r.releaseDateConfirmed) continue;
+        const k = `${r.season}|${r.productLine}`;
+        if (seen.has(k)) continue;
+        seen.add(k); cards.push(r);
+        if (cards.length >= 6) break;
+      }
+      if (!cards.length) {
+        tl.innerHTML = '<div style="grid-column:1/-1;padding:18px;color:var(--mute);font-size:12px">Aucune sortie confirmée à venir.</div>';
+        cap.textContent = '';
+        return;
+      }
 
-  /* ── XSS escape ────────────────────────────────────────── */
-  function esc(s) {
-    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+      const lastISO = cards[cards.length - 1].releaseDate;
+      const span = daysBetween(lastISO);
+      cap.textContent = `${cards.length} prochaines · ${span} jours`;
 
-  /* ── State ─────────────────────────────────────────────── */
-  let currentType = 'info';
-
-  /* ── Toggle form ───────────────────────────────────────── */
-  window.togglePostForm = function (force) {
-    const wrap = document.getElementById('post-form-wrap');
-    const open = force !== undefined ? Boolean(force) : !wrap.classList.contains('open');
-    wrap.classList.toggle('open', open);
-    if (open) {
-      setTimeout(() => document.getElementById('pf-titre').focus(), 50);
-    }
-  };
-
-  /* ── Set post type ─────────────────────────────────────── */
-  window.setPfType = function (type) {
-    currentType = type;
-    document.querySelectorAll('.pf-type-btn').forEach(btn => {
-      btn.classList.remove('active-info','active-urgent','active-live','active-rappel');
-      if (btn.dataset.type === type) btn.classList.add('active-' + type);
-    });
-  };
-
-  /* ── Submit post ───────────────────────────────────────── */
-  window.submitPost = function () {
-    const titreEl = document.getElementById('pf-titre');
-    const msgEl   = document.getElementById('pf-msg');
-    const pinEl   = document.getElementById('pf-pin');
-
-    const titre = titreEl.value.trim();
-    if (!titre) { titreEl.focus(); titreEl.style.borderColor = 'var(--neg)'; return; }
-    titreEl.style.borderColor = '';
-
-    const posts = load();
-    posts.unshift({
-      id:      Date.now().toString(36) + Math.random().toString(36).slice(2,5),
-      type:    currentType,
-      titre,
-      message: msgEl.value.trim(),
-      pinned:  pinEl.checked,
-      auteur:  'Admin',
-      date:    new Date().toISOString(),
-    });
-    save(posts);
-
-    /* Reset form */
-    titreEl.value = '';
-    msgEl.value   = '';
-    pinEl.checked = false;
-    togglePostForm(false);
-    render();
-  };
-
-  /* ── Delete post ───────────────────────────────────────── */
-  window.deletePost = function (id) {
-    if (!confirm('Supprimer ce post ?')) return;
-    save(load().filter(p => p.id !== id));
-    render();
-  };
-
-  /* ── Toggle pin ────────────────────────────────────────── */
-  window.togglePin = function (id) {
-    save(load().map(p => p.id === id ? { ...p, pinned: !p.pinned } : p));
-    render();
-  };
-
-  /* ── Render ────────────────────────────────────────────── */
-  function render() {
-    const posts = load();
-    const grid  = document.getElementById('announce-grid');
-    if (!grid) return;
-
-    if (!posts.length) {
-      grid.innerHTML = `
-        <div class="announce-empty">
-          <div class="announce-empty-icon">📌</div>
-          <div class="announce-empty-title">Aucun message pour le moment.</div>
-          <div class="announce-empty-sub">Cliquez sur <strong>Nouveau post</strong> pour commencer.</div>
-        </div>`;
-      return;
-    }
-
-    /* Pinned posts float to top */
-    const sorted = [
-      ...posts.filter(p => p.pinned),
-      ...posts.filter(p => !p.pinned),
-    ];
-
-    grid.innerHTML = sorted.map(p => {
-      const meta = TYPE_META[p.type] || { label: p.type, emoji: '' };
-      const d    = new Date(p.date);
-      const date = d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' });
-      const time = d.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
-
-      return `
-        <article class="announce-card type-${esc(p.type)}${p.pinned ? ' is-pinned' : ''}">
-
-          <!-- Punaise centrée en haut -->
-          <div class="announce-pushpin" aria-hidden="true">${PUSHPIN}</div>
-
-          <!-- Meta row: type badge · pin · delete -->
-          <div class="announce-card-meta">
-            <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
-            ${p.pinned ? '<span class="announce-pin-icon" title="Épinglé">📌</span>' : ''}
-            <button class="announce-del" onclick="deletePost('${esc(p.id)}')"
-              title="Supprimer" aria-label="Supprimer ce post">×</button>
-          </div>
-
-          <!-- Headline + body -->
-          <div class="announce-card-body">
-            <h3 class="announce-titre">${esc(p.titre)}</h3>
-            ${p.message ? `<p class="announce-body">${esc(p.message)}</p>` : ''}
-          </div>
-
-          <!-- Byline footer -->
-          <div class="announce-footer">
-            <div class="announce-byline">
-              <span class="announce-byline-author">${esc(p.auteur || 'Admin')}</span>
-              <span class="announce-byline-dot">·</span>
-              <span>${date}</span>
-              <span class="announce-byline-dot">·</span>
-              <span>${time}</span>
+      tl.innerHTML = cards.map(r => {
+        const isToday = r.releaseDate === todayISO;
+        const tags = [];
+        if (r.brand)  tags.push(`<span class="tl-tag solid">${esc(r.brand)}</span>`);
+        if (r.format) tags.push(`<span class="tl-tag">${esc(r.format)}</span>`);
+        return `
+          <div class="tl-col${isToday ? ' today' : ''}">
+            <div class="tl-dot"></div>
+            <div class="tl-date">
+              <div class="tl-day">${dayOf(r.releaseDate)}</div>
+              <div class="tl-month">${monthOf(r.releaseDate)}</div>
             </div>
-            <button class="announce-pin-btn${p.pinned ? ' is-pinned' : ''}"
-              onclick="togglePin('${esc(p.id)}')"
-              title="${p.pinned ? 'Désépingler' : 'Épingler'}">
-              ${p.pinned ? '📌 Épinglé' : 'Épingler'}
-            </button>
-          </div>
-
-        </article>`;
-    }).join('');
-  }
-
-  /* ── Punaise SVG (rouge, brillante) ───────────────────────── */
-  const PUSHPIN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 30" fill="none">
-    <ellipse cx="11" cy="29.5" rx="3.5" ry="1" fill="rgba(0,0,0,.18)"/>
-    <rect x="10" y="18" width="2" height="10" rx="1" fill="#9e9e9e"/>
-    <rect x="9.2" y="16.5" width="3.6" height="3" rx=".5" fill="#bdbdbd"/>
-    <circle cx="11" cy="9.5" r="9.5" fill="#922b21"/>
-    <circle cx="11" cy="9.5" r="9"   fill="#e74c3c"/>
-    <ellipse cx="7.8" cy="5.8" rx="4" ry="3.2" fill="rgba(255,255,255,.42)" transform="rotate(-22 7.8 5.8)"/>
-    <circle  cx="11" cy="9.5" r="2"   fill="rgba(80,0,0,.28)"/>
-  </svg>`;
-
-  /* ── Init ──────────────────────────────────────────────── */
-  render();
+            <div class="tl-card">
+              <div class="tl-tags">${tags.join('')}</div>
+              <div class="tl-name">${esc(r.productName)}</div>
+              ${isToday ? '<div class="tl-today-badge">Aujourd\'hui</div>' : ''}
+            </div>
+          </div>`;
+      }).join('');
+    })
+    .catch(() => {
+      tl.innerHTML = '<div style="grid-column:1/-1;padding:18px;color:var(--mute);font-size:12px;font-style:italic">Calendrier indisponible pour le moment.</div>';
+      cap.textContent = '';
+    });
 })();
 </script>
+
 </body>
 </html>

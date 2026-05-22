@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speloosh — The Break Platform</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="speloosh-shell.css">
+<link rel="stylesheet" href="news.css">
+<script src="/auth-guard.js" data-role="admin"></script>
+<style>
+/* ══ HOME-SPECIFIC STYLES ══════════════════════════════════════ */
+
+/* ── Announcements board ─────────────────────────────────────── */
+.announce-section {
+  padding: 28px 32px 36px;
+  background: #2c2926;
+  border-radius: 10px;
+}
+.announce-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.announce-header h2 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 900;
+  font-stretch: 75%;
+  letter-spacing: -0.025em;
+  line-height: 0.9;
+  color: #fff;
+  margin: 0;
+}
+.announce-header .home-section-eyebrow { color: rgba(255,255,255,.40); }
+.announce-header .sp-holo-line { background: rgba(255,255,255,.18); }
+
+/* New post slide-down form */
+.post-form-wrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.post-form-wrap.open { max-height: 640px; }
+.post-form-inner {
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 20px 22px 18px;
+  margin-bottom: 16px;
+}
+.pf-type-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.pf-type-btn {
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  color: var(--ink-3);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.pf-type-btn.active-info    { background: color-mix(in oklch, oklch(58% 0.16 260), transparent 86%); color: oklch(40% 0.16 260); border-color: oklch(58% 0.16 260); }
+.pf-type-btn.active-urgent  { background: color-mix(in oklch, var(--accent), transparent 86%); color: var(--accent); border-color: var(--accent); }
+.pf-type-btn.active-live    { background: color-mix(in oklch, var(--pos), transparent 86%); color: var(--pos); border-color: var(--pos); }
+.pf-type-btn.active-rappel  { background: color-mix(in oklch, var(--warn), transparent 86%); color: oklch(52% 0.18 80); border-color: var(--warn); }
+.pf-titre {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 800;
+  font-stretch: 75%;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  outline: none;
+  margin-bottom: 10px;
+  display: block;
+  transition: border-color 0.12s;
+}
+.pf-titre:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
+.pf-titre::placeholder { font-family: var(--font-body); font-size: 14px; font-weight: 400; font-stretch: normal; letter-spacing: 0; color: var(--mute); }
+.pf-msg {
+  width: 100%;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 11px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  margin-bottom: 14px;
+  display: block;
+  line-height: 1.6;
+  transition: border-color 0.12s;
+}
+.pf-msg:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 82%); }
+.pf-msg::placeholder { color: var(--mute); }
+.pf-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pf-pin-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  cursor: pointer;
+  padding: 0 4px;
+}
+.pf-pin-label input { margin: 0; accent-color: var(--accent); }
+
+/* ═══ GRILLE DE NOTES — flat CSS, aucune image ═══════════════ */
+.announce-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+  gap: 22px;
+  padding-top: 10px; /* espace pour les punaises */
+}
+.announce-empty {
+  grid-column: 1/-1;
+  padding: 40px 20px;
+  text-align: center;
+  color: rgba(255,255,255,.35);
+}
+.announce-empty-icon  { font-size: 28px; margin-bottom: 10px; }
+.announce-empty-title { font-size: 14px; color: rgba(255,255,255,.45); font-weight: 600; }
+.announce-empty-sub   { font-size: 11px; margin-top: 4px; }
+
+/* ── Note individuelle ──────────────────────────────────────── */
+.announce-card {
+  background: #fef865;
+  border: none;
+  border-radius: 2px;
+  padding: 16px 14px 12px;
+  box-shadow: 3px 5px 10px rgba(0,0,0,.50), 6px 8px 2px rgba(0,0,0,.25);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 165px;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.15s, z-index 0s;
+}
+/* Rotations légères */
+.announce-card:nth-child(3n+1) { transform: rotate(-1.5deg); }
+.announce-card:nth-child(3n+2) { transform: rotate(0.8deg);  }
+.announce-card:nth-child(3n+3) { transform: rotate(-0.5deg); }
+.announce-card:hover {
+  transform: rotate(0deg) scale(1.05) !important;
+  box-shadow: 4px 8px 20px rgba(0,0,0,.60), 8px 12px 4px rgba(0,0,0,.30);
+  z-index: 10;
+}
+
+/* Couleurs pastels par type */
+.announce-card.type-info    { background: #c8d8f8; }
+.announce-card.type-urgent  { background: #f8c5c0; }
+.announce-card.type-live    { background: #c8f0d0; }
+.announce-card.type-rappel  { background: #fef865; }
+
+/* ── Punaise CSS — cercle rouge en haut au centre ───────────── */
+.announce-pushpin {
+  display: block !important;
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #f47575 0%, #c0392b 55%, #8b1a1a 100%);
+  box-shadow: 0 2px 5px rgba(0,0,0,.45), inset 0 -1px 2px rgba(0,0,0,.25), inset 2px 2px 4px rgba(255,255,255,.30);
+  z-index: 5;
+  overflow: hidden; /* cache le SVG à l'intérieur */
+}
+/* Cache le SVG hérité */
+.announce-pushpin svg { display: none; }
+
+/* ── Méta : type + supprimer ────────────────────────────────── */
+.announce-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 9px;
+  padding-top: 6px;
+}
+.announce-type-badge {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.36);
+}
+.type-info   .announce-type-badge { color: rgba(20,60,160,.52); }
+.type-urgent .announce-type-badge { color: rgba(160,40,20,.58); }
+.type-live   .announce-type-badge { color: rgba(20,100,50,.52); }
+.type-rappel .announce-type-badge { color: rgba(0,0,0,.36); }
+
+.announce-pin-icon { font-size: 9px; opacity: .65; }
+
+.announce-del {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: rgba(0,0,0,.18);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color .12s;
+}
+.announce-del:hover { color: rgba(140,0,0,.60); }
+
+/* ── Contenu ────────────────────────────────────────────────── */
+.announce-card-body { flex: 1; padding: 0; }
+.announce-titre {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 900;
+  font-stretch: 75%;
+  letter-spacing: -0.018em;
+  line-height: 1.18;
+  color: rgba(0,0,0,.84);
+  margin: 0 0 7px;
+}
+.announce-body {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(0,0,0,.58);
+  white-space: pre-line;
+  word-break: break-word;
+  margin: 0;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.announce-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 6px;
+}
+.announce-byline {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: rgba(0,0,0,.30);
+}
+.announce-byline-author { font-weight: 700; color: rgba(0,0,0,.44); }
+.announce-byline-dot    { opacity: .30; }
+
+.announce-pin-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.28);
+  cursor: pointer;
+  padding: 0;
+  transition: color .12s;
+  white-space: nowrap;
+}
+.announce-pin-btn:hover     { color: rgba(0,0,0,.62); }
+.announce-pin-btn.is-pinned { color: rgba(170,35,35,.85); }
+
+/* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
+.ticker {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin: 0 48px;
+}
+.ticker-cell {
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.ticker-cell + .ticker-cell { border-left: 1px solid var(--line); }
+.ticker-cell.featured { background: var(--bg-2); }
+
+.ticker-accent-tile {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  background: var(--accent);
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 900;
+  font-stretch: 75%;
+  color: var(--accent-ink);
+  position: relative;
+  overflow: hidden;
+}
+.ticker-accent-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--foil-gradient);
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.ticker-data { flex: 1; min-width: 0; }
+
+.ticker-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ticker-val-lg {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 900;
+  font-stretch: 75%;
+  letter-spacing: -0.025em;
+  line-height: 0.9;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.ticker-val {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 900;
+  font-stretch: 75%;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.ticker-delta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--pos);
+  letter-spacing: 0.06em;
+  margin-top: 3px;
+}
+.ticker-sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--mute);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ticker-spark { width: 56px; height: 30px; flex-shrink: 0; }
+
+/* ── Module cards ───────────────────────────────────────────── */
+.modules {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 32px 48px;
+}
+.module-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 24px 22px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+/* Foil edge on cards */
+.module-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--foil-gradient);
+  opacity: 0.48;
+  pointer-events: none;
+}
+.module-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+  box-shadow: 0 10px 36px rgba(0,0,0,.13);
+}
+.module-mark {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+}
+.module-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 7px;
+}
+.module-headline {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 900;
+  font-stretch: 75%;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  color: var(--ink);
+  margin-bottom: 9px;
+}
+.module-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  flex: 1;
+}
+.module-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 14px;
+  transition: gap 0.12s;
+}
+.module-card:hover .module-cta { gap: 9px; }
+
+/* ── Home sections ──────────────────────────────────────────── */
+.home-section {
+  padding: 0 48px 40px;
+}
+.home-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 16px;
+  padding-top: 32px;
+}
+.home-section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 5px;
+}
+.home-section h2 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 900;
+  font-stretch: 75%;
+  letter-spacing: -0.025em;
+  line-height: 0.9;
+  color: var(--ink);
+  margin: 0;
+}
+.home-section-sep {
+  height: 1px;
+  background: var(--line);
+  margin: 0 48px;
+}
+
+/* Releases grid */
+#home-releases .hr-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(254px,1fr)); gap:10px; }
+#home-releases .hr-card { background:var(--bg-3); border:1px solid var(--line); border-radius:var(--r-md); padding:12px 14px; box-shadow:var(--shadow-card); display:grid; grid-template-columns:52px 1fr; gap:11px; align-items:center; transition:border-color .12s,transform .12s; text-decoration:none; color:inherit; }
+#home-releases .hr-card:hover { border-color:var(--line-strong); transform:translateY(-1px); }
+#home-releases .hr-date { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:5px; border-radius:var(--r-sm); background:var(--bg-2); border:1px solid var(--line); text-align:center; }
+#home-releases .hr-date .d { font-family:var(--font-display); font-weight:900; font-stretch:75%; font-size:18px; line-height:1; letter-spacing:-.02em; color:var(--ink); }
+#home-releases .hr-date .m { font-family:var(--font-mono); font-size:8px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-2); margin-top:2px; }
+#home-releases .hr-meta { display:flex; gap:5px; margin-bottom:3px; align-items:center; flex-wrap:wrap; }
+#home-releases .hr-brand { font-family:var(--font-mono); font-size:9px; font-weight:700; letter-spacing:0.11em; text-transform:uppercase; color:var(--accent); background:color-mix(in oklch,var(--accent),transparent 88%); border:1px solid color-mix(in oklch,var(--accent),transparent 70%); padding:2px 5px; border-radius:3px; }
+#home-releases .hr-format { font-family:var(--font-mono); font-size:9px; font-weight:600; letter-spacing:0.09em; text-transform:uppercase; color:var(--ink-3); padding:2px 5px; border-radius:3px; background:var(--bg-2); border:1px solid var(--line); }
+#home-releases .hr-name { font-size:12.5px; font-weight:600; color:var(--ink); line-height:1.35; }
+#home-releases .hr-card:hover .hr-name { color:var(--accent); }
+#home-releases .hr-loading { padding:28px; text-align:center; color:var(--ink-3); font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+/* Formulaire sur fond sombre */
+.announce-section .post-form-inner {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.12);
+}
+.announce-section .pf-titre,
+.announce-section .pf-msg {
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.90);
+}
+.announce-section .pf-titre::placeholder,
+.announce-section .pf-msg::placeholder { color: rgba(255,255,255,.30); }
+.announce-section .pf-pin-label        { color: rgba(255,255,255,.50); }
+.announce-section .pf-type-btn         { border-color: rgba(255,255,255,.18); color: rgba(255,255,255,.55); }
+
+@media (max-width: 1100px) {
+  .announce-section { padding: 22px 20px 28px; }
+  .announce-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; }
+  .ticker { margin: 0 28px; grid-template-columns: 1fr 1fr; }
+  .ticker-cell.featured { grid-column: 1 / -1; }
+  .ticker-cell:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
+  .ticker-cell:nth-child(4) { border-top: 1px solid var(--line); }
+  .modules { padding: 28px 28px; grid-template-columns: 1fr; }
+  .home-section { padding: 0 28px 36px; }
+  .home-section-sep { margin: 0 28px; }
+}
+@media (max-width: 640px) {
+  .ticker { grid-template-columns: 1fr 1fr; }
+  .ticker-cell.featured { grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body class="he-root he-court sp-shell">
+
+<!-- ═══════════════════ SIDEBAR ════════════════════════════════ -->
+<aside class="sp-sidebar" role="navigation" aria-label="Navigation principale">
+  <div class="sp-brand">
+    <a href="/" class="sp-brand-link">
+      <div class="sp-droplet" aria-hidden="true"></div>
+      <div class="sp-wordmark-wrap">
+        <div class="sp-wordmark">SPELOOSH</div>
+        <div class="sp-tagline">/ THE BREAK PLATFORM</div>
+      </div>
+    </a>
+  </div>
+  <div class="sp-search-wrap">
+    <input class="sp-search-input" type="search" placeholder="Rechercher…" aria-label="Rechercher dans l'app" />
+    <kbd class="sp-kbd">⌘K</kbd>
+  </div>
+
+  <div class="sp-nav-section">
+    <div class="sp-nav-label">Break ops</div>
+    <a class="sp-nav-item is-active" href="/">Home</a>
+    <a class="sp-nav-item" href="/break-builder.html">Break Tracker</a>
+    <a class="sp-nav-item" href="/hub.html">Hub</a>
+    <a class="sp-nav-item" href="/break-prep.html">Break Prep</a>
+    <a class="sp-nav-item" href="/planner.html">Planificateur</a>
+  </div>
+  <div class="sp-nav-section">
+    <div class="sp-nav-label">Inventaire</div>
+    <a class="sp-nav-item" href="/releases.html">Sorties</a>
+  </div>
+  <div class="sp-nav-section">
+    <div class="sp-nav-label">Système</div>
+    <a class="sp-nav-item" href="/team.html">Équipe</a>
+    <a class="sp-nav-item" href="/settings.html">Settings</a>
+  </div>
+
+  <div class="sp-spacer"></div>
+  <div class="sp-user-card">
+    <div class="sp-user-avatar" aria-hidden="true">AD</div>
+    <div class="sp-user-info">
+      <div class="sp-user-name">Admin</div>
+      <div class="sp-user-status">
+        <span class="sp-live-dot" aria-hidden="true"></span>En ligne
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════ MAIN ════════════════════════════════════ -->
+<div class="sp-main">
+
+  <!-- Top cert strip -->
+  <div class="sp-cert-strip sp-cert-top" aria-hidden="true">
+    <span class="sp-cert-breadcrumb">&#9632; SPELOOSH &rsaquo; OPÉRATIONS &rsaquo; <strong>HOME</strong></span>
+    <span class="sp-cert-id">CERT &middot; SPLSH&middot;26&middot;05&middot;H001</span>
+  </div>
+
+  <div class="sp-page-content">
+
+    <!-- ══ ANNOUNCEMENTS BOARD ════════════════════════════════ -->
+    <section class="announce-section">
+
+      <div class="announce-header">
+        <div>
+          <div class="home-section-eyebrow">
+            <span class="sp-holo-line" aria-hidden="true"></span>
+            Tableau d'affichage
+          </div>
+          <h2>Messages équipe.</h2>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="togglePostForm()" id="new-post-btn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Nouveau post
+        </button>
+      </div>
+
+      <!-- Slide-down form -->
+      <div class="post-form-wrap" id="post-form-wrap" aria-live="polite">
+        <div class="post-form-inner">
+          <!-- Type selector -->
+          <div class="pf-type-row" role="group" aria-label="Type de post">
+            <button class="pf-type-btn active-info" data-type="info"   onclick="setPfType('info')">ℹ Info</button>
+            <button class="pf-type-btn"              data-type="urgent" onclick="setPfType('urgent')">⚡ Urgent</button>
+            <button class="pf-type-btn"              data-type="live"   onclick="setPfType('live')">🔴 Live</button>
+            <button class="pf-type-btn"              data-type="rappel" onclick="setPfType('rappel')">📅 Rappel</button>
+          </div>
+          <!-- Title -->
+          <input class="pf-titre" id="pf-titre" type="text"
+            placeholder="Titre du post…"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('pf-msg').focus();}" />
+          <!-- Body -->
+          <textarea class="pf-msg" id="pf-msg"
+            placeholder="Message (optionnel)…"></textarea>
+          <!-- Actions -->
+          <div class="pf-actions">
+            <label class="pf-pin-label">
+              <input type="checkbox" id="pf-pin"> Épingler en haut
+            </label>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="togglePostForm(false)">Annuler</button>
+              <button class="btn btn-primary btn-sm" onclick="submitPost()">
+                Publier
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Posts grid -->
+      <div class="announce-grid" id="announce-grid" aria-live="polite">
+        <!-- rendered by JS -->
+      </div>
+
+    </section>
+
+    <!-- ══ STAT TICKER (asymmetric 1.6 / 1 / 1 / 1) ══════════ -->
+    <div class="ticker" aria-label="Statistiques clés">
+
+      <!-- Featured cell -->
+      <div class="ticker-cell featured">
+        <div class="ticker-accent-tile" aria-hidden="true">$</div>
+        <div class="ticker-data">
+          <div class="ticker-eyebrow">Revenu — Mai 2026</div>
+          <div class="ticker-val-lg">$6 067</div>
+          <div class="ticker-delta">▲ +22% vs mois précédent</div>
+          <div class="ticker-sub">21 mai 2026</div>
+        </div>
+      </div>
+
+      <!-- Breaks count -->
+      <div class="ticker-cell">
+        <div class="ticker-data">
+          <div class="ticker-eyebrow">Breaks ce mois</div>
+          <div class="ticker-val">4</div>
+          <div class="ticker-sub">Mai 2026</div>
+        </div>
+        <svg class="ticker-spark" viewBox="0 0 56 30" fill="none" aria-hidden="true">
+          <polyline points="0,26 8,24 18,20 28,22 38,14 48,16 56,10"
+            stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="56" cy="10" r="2.5" fill="var(--accent)"/>
+        </svg>
+      </div>
+
+      <!-- Marge -->
+      <div class="ticker-cell">
+        <div class="ticker-data">
+          <div class="ticker-eyebrow">Marge moyenne</div>
+          <div class="ticker-val">22.2%</div>
+          <div class="ticker-sub">Hockey en tête</div>
+        </div>
+        <svg class="ticker-spark" viewBox="0 0 56 30" fill="none" aria-hidden="true">
+          <polyline points="0,22 10,20 20,24 30,16 40,18 50,10 56,12"
+            stroke="var(--pos)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="56" cy="12" r="2.5" fill="var(--pos)"/>
+        </svg>
+      </div>
+
+      <!-- Meilleur vendeur -->
+      <div class="ticker-cell">
+        <div class="ticker-data">
+          <div class="ticker-eyebrow">Meilleur vendeur</div>
+          <div class="ticker-val">Chuck</div>
+          <div class="ticker-sub">$16 095 / break</div>
+        </div>
+        <svg class="ticker-spark" viewBox="0 0 56 30" fill="none" aria-hidden="true">
+          <polyline points="0,28 10,24 20,26 30,18 40,14 50,8 56,6"
+            stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="56" cy="6" r="2.5" fill="var(--accent)"/>
+        </svg>
+      </div>
+
+    </div><!-- /ticker -->
+
+    <!-- ══ MODULE CARDS ════════════════════════════════════════ -->
+    <div class="modules">
+
+      <!-- 01 / Break Tracker -->
+      <a class="module-card" href="/break-builder.html">
+        <!-- Module mark SVG — stacked rows + green check -->
+        <svg class="module-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+          <rect x="4" y="8"  width="38" height="6" rx="2" fill="var(--line)"/>
+          <rect x="4" y="18" width="32" height="6" rx="2" fill="var(--line)"/>
+          <rect x="4" y="28" width="35" height="6" rx="2" fill="var(--line)"/>
+          <rect x="4" y="38" width="28" height="6" rx="2" fill="var(--line)"/>
+          <!-- Accent fill on top bar -->
+          <rect x="4" y="8"  width="22" height="6" rx="2" fill="var(--accent)" opacity="0.9"/>
+          <!-- Green check disc -->
+          <circle cx="44" cy="44" r="11" fill="var(--pos)"/>
+          <path d="M38.5 44 L42.5 48 L50.5 40" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="module-eyebrow">
+          <span class="sp-holo-line" aria-hidden="true"></span>
+          01 / Break Ops
+        </div>
+        <div class="module-headline">Break<br>Tracker</div>
+        <div class="module-desc">Saisie rapide de chaque break — revenu brut, coût, bénéfice net, durée. Historique complet et exportable.</div>
+        <div class="module-cta">
+          Entrer un break
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </a>
+
+      <!-- 02 / Hub -->
+      <a class="module-card" href="/hub.html">
+        <!-- Module mark SVG — bar chart + trend line -->
+        <svg class="module-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+          <rect x="4"  y="32" width="9" height="16" rx="2" fill="var(--line)"/>
+          <rect x="16" y="24" width="9" height="24" rx="2" fill="var(--line)"/>
+          <rect x="28" y="16" width="9" height="32" rx="2" fill="var(--accent)"/>
+          <rect x="40" y="20" width="9" height="28" rx="2" fill="var(--line)"/>
+          <!-- Trend line -->
+          <polyline points="4,36 16,28 28,14 40,22 52,10"
+            stroke="var(--pos)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="28" cy="14" r="3.5" fill="var(--pos)"/>
+        </svg>
+        <div class="module-eyebrow">
+          <span class="sp-holo-line" aria-hidden="true"></span>
+          02 / Analytics
+        </div>
+        <div class="module-headline">Analytics<br>Hub</div>
+        <div class="module-desc">Tableaux de bord complets — revenu mensuel, marge par sport, performance par vendeur et tendances.</div>
+        <div class="module-cta">
+          Voir les stats
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </a>
+
+      <!-- 03 / Break Prep -->
+      <a class="module-card" href="/break-prep.html">
+        <!-- Module mark SVG — overlapping card silhouettes + checklist -->
+        <svg class="module-mark" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+          <!-- Back card, rotated -->
+          <rect x="9" y="8" width="34" height="42" rx="4"
+            fill="var(--bg-2)" stroke="var(--line)" stroke-width="1.5"
+            transform="rotate(-6 26 29)"/>
+          <!-- Front card -->
+          <rect x="12" y="10" width="34" height="42" rx="4"
+            fill="var(--bg-3)" stroke="var(--line)" stroke-width="1.5"/>
+          <!-- Accent band -->
+          <rect x="12" y="10" width="34" height="13" rx="4" fill="var(--accent)"/>
+          <rect x="12" y="17" width="34" height="6" rx="0" fill="var(--accent)"/>
+          <!-- Checklist rows -->
+          <circle cx="18" cy="30" r="2.5" fill="var(--pos)"/>
+          <rect x="23" y="28.5" width="17" height="2.5" rx="1" fill="var(--line)"/>
+          <circle cx="18" cy="38" r="2.5" fill="var(--pos)"/>
+          <rect x="23" y="36.5" width="13" height="2.5" rx="1" fill="var(--line)"/>
+          <circle cx="18" cy="46" r="2.5" fill="var(--line-strong)"/>
+          <rect x="23" y="44.5" width="15" height="2.5" rx="1" fill="var(--line)"/>
+        </svg>
+        <div class="module-eyebrow">
+          <span class="sp-holo-line" aria-hidden="true"></span>
+          03 / Préparation
+        </div>
+        <div class="module-headline">Break<br>Prep</div>
+        <div class="module-desc">IA Claude intégrée pour fiches produits, lookup de cartes en direct et prix eBay en temps réel.</div>
+        <div class="module-cta">
+          Préparer un live
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+      </a>
+
+    </div><!-- /modules -->
+
+    <div class="home-section-sep"></div>
+
+    <!-- ══ NEWS ════════════════════════════════════════════════ -->
+    <section class="home-section">
+      <div class="home-section-head">
+        <div>
+          <div class="home-section-eyebrow">
+            <span class="sp-holo-line" aria-hidden="true"></span>
+            Actualités
+          </div>
+          <h2>Le feed du jour.</h2>
+        </div>
+      </div>
+      <div class="news-wrap">
+        <div class="news-filters" style="margin-bottom:10px">
+          <button class="news-sport-btn active" data-sport="hockey"     onclick="HE_NEWS.switchSport('hockey')">Hockey</button>
+          <button class="news-sport-btn"        data-sport="football"   onclick="HE_NEWS.switchSport('football')">Football</button>
+          <button class="news-sport-btn"        data-sport="basketball" onclick="HE_NEWS.switchSport('basketball')">Basketball</button>
+          <button class="news-sport-btn"        data-sport="baseball"   onclick="HE_NEWS.switchSport('baseball')">Baseball</button>
+        </div>
+        <div id="hockey-leagues" class="league-tabs">
+          <button class="league-tab active" data-league="hobby"  onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
+          <button class="league-tab"        data-league="nhl"    onclick="HE_NEWS.switchLeague('nhl')">NHL</button>
+          <button class="league-tab"        data-league="ahl"    onclick="HE_NEWS.switchLeague('ahl')">AHL</button>
+          <button class="league-tab"        data-league="ncaa"   onclick="HE_NEWS.switchLeague('ncaa')">NCAA</button>
+          <button class="league-tab"        data-league="ohl"    onclick="HE_NEWS.switchLeague('ohl')">OHL</button>
+          <button class="league-tab"        data-league="whl"    onclick="HE_NEWS.switchLeague('whl')">WHL</button>
+          <button class="league-tab"        data-league="lhjmq"  onclick="HE_NEWS.switchLeague('lhjmq')">LHJMQ</button>
+          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
+        </div>
+        <div id="football-leagues" class="league-tabs" style="display:none">
+          <button class="league-tab active" data-league="hobby" onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
+          <button class="league-tab"        data-league="nfl"   onclick="HE_NEWS.switchLeague('nfl')">NFL</button>
+          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
+        </div>
+        <div id="basketball-leagues" class="league-tabs" style="display:none">
+          <button class="league-tab active" data-league="hobby" onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
+          <button class="league-tab"        data-league="nba"   onclick="HE_NEWS.switchLeague('nba')">NBA</button>
+          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
+        </div>
+        <div id="baseball-leagues" class="league-tabs" style="display:none">
+          <button class="league-tab active" data-league="hobby" onclick="HE_NEWS.switchLeague('hobby')">Hobby</button>
+          <button class="league-tab"        data-league="mlb"   onclick="HE_NEWS.switchLeague('mlb')">MLB</button>
+          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)" style="margin-left:auto" title="Rafraîchir">↻</button>
+        </div>
+        <div id="other-sport-bar" class="news-filters" style="display:none">
+          <button class="news-refresh" onclick="HE_NEWS.loadNews(true)">↻ Rafraîchir</button>
+        </div>
+        <div id="news-feed"><div class="news-loading">Chargement des nouvelles…</div></div>
+      </div>
+    </section>
+
+    <div class="home-section-sep"></div>
+
+    <!-- ══ SORTIES ════════════════════════════════════════════ -->
+    <section class="home-section" id="home-releases">
+      <div class="home-section-head">
+        <div>
+          <div class="home-section-eyebrow">
+            <span class="sp-holo-line" aria-hidden="true"></span>
+            Calendrier — Hockey
+          </div>
+          <h2>Sorties à venir.</h2>
+        </div>
+        <a class="btn btn-ghost btn-sm" href="/releases.html">
+          Voir tout
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+      <div id="hr-feed"><div class="hr-loading" style="padding:28px;text-align:center;color:var(--ink-3);font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase">Chargement…</div></div>
+      <script>
+        (function () {
+          const API = 'https://api.hobbyempire.org';
+          const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+          const monthShort = iso => { const m=['JAN','FÉV','MAR','AVR','MAI','JUIN','JUIL','AOÛT','SEP','OCT','NOV','DÉC']; return iso?m[parseInt(iso.slice(5,7),10)-1]:'TBD'; };
+          const dayNum = iso => iso ? String(parseInt(iso.slice(8,10),10)) : '—';
+          fetch(API + '/api/releases/upcoming').then(r => r.json()).then(data => {
+            const all = data.releases || [];
+            const seen = new Set(), cards = [];
+            for (const r of all) {
+              if (!r.releaseDateConfirmed) continue;
+              const k = `${r.season}|${r.productLine}`;
+              if (seen.has(k)) continue;
+              seen.add(k); cards.push(r);
+              if (cards.length >= 6) break;
+            }
+            if (!cards.length) {
+              document.getElementById('hr-feed').innerHTML = '<p style="padding:14px;color:var(--mute);font-size:12px">Aucune sortie confirmée à venir.</p>';
+              return;
+            }
+            document.getElementById('hr-feed').innerHTML = '<div class="hr-grid">' + cards.map(r => `
+              <a class="hr-card" href="/releases.html">
+                <div class="hr-date">
+                  <div class="d">${dayNum(r.releaseDate)}</div>
+                  <div class="m">${monthShort(r.releaseDate)}</div>
+                </div>
+                <div>
+                  <div class="hr-meta">
+                    <span class="hr-brand">${esc(r.brand)}</span>
+                    ${r.format ? `<span class="hr-format">${esc(r.format)}</span>` : ''}
+                  </div>
+                  <div class="hr-name">${esc(r.productName)}</div>
+                </div>
+              </a>`).join('') + '</div>';
+          }).catch(() => {
+            document.getElementById('hr-feed').innerHTML = '<p style="padding:14px;color:var(--mute);font-size:12px;font-style:italic">Calendrier indisponible pour le moment.</p>';
+          });
+        })();
+      </script>
+    </section>
+
+  </div><!-- /sp-page-content -->
+
+  <!-- Bottom cert strip -->
+  <div class="sp-cert-strip sp-cert-bot" aria-hidden="true">
+    <div class="sp-cert-meta">
+      <span class="sp-cert-pill">POP</span>
+      <span class="sp-cert-pill">GRADED</span>
+      <span class="sp-cert-pill">BUILD</span>
+    </div>
+    <span class="sp-cert-id">SPELOOSH &copy; 2026</span>
+  </div>
+
+</div><!-- /sp-main -->
+
+<!-- Print marks (decorative, print-shop ref) -->
+<div class="sp-print-marks" aria-hidden="true">
+  <div class="sp-print-mark tl"></div>
+  <div class="sp-print-mark tr"></div>
+  <div class="sp-print-mark bl"></div>
+  <div class="sp-print-mark br"></div>
+</div>
+
+<script src="news.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   Announcements board — admin posts for vendors / helpers
+   Stored in localStorage under key 'he_announcements'
+   ═══════════════════════════════════════════════════════════ */
+(function () {
+  const KEY = 'he_announcements';
+
+  const TYPE_META = {
+    info:   { label: 'Info',   emoji: 'ℹ️' },
+    urgent: { label: 'Urgent', emoji: '⚡' },
+    live:   { label: 'Live',   emoji: '🔴' },
+    rappel: { label: 'Rappel', emoji: '📅' },
+  };
+
+  /* ── Storage ───────────────────────────────────────────── */
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+    catch { return []; }
+  }
+  function save(posts) {
+    localStorage.setItem(KEY, JSON.stringify(posts));
+  }
+
+  /* ── XSS escape ────────────────────────────────────────── */
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── State ─────────────────────────────────────────────── */
+  let currentType = 'info';
+
+  /* ── Toggle form ───────────────────────────────────────── */
+  window.togglePostForm = function (force) {
+    const wrap = document.getElementById('post-form-wrap');
+    const open = force !== undefined ? Boolean(force) : !wrap.classList.contains('open');
+    wrap.classList.toggle('open', open);
+    if (open) {
+      setTimeout(() => document.getElementById('pf-titre').focus(), 50);
+    }
+  };
+
+  /* ── Set post type ─────────────────────────────────────── */
+  window.setPfType = function (type) {
+    currentType = type;
+    document.querySelectorAll('.pf-type-btn').forEach(btn => {
+      btn.classList.remove('active-info','active-urgent','active-live','active-rappel');
+      if (btn.dataset.type === type) btn.classList.add('active-' + type);
+    });
+  };
+
+  /* ── Submit post ───────────────────────────────────────── */
+  window.submitPost = function () {
+    const titreEl = document.getElementById('pf-titre');
+    const msgEl   = document.getElementById('pf-msg');
+    const pinEl   = document.getElementById('pf-pin');
+
+    const titre = titreEl.value.trim();
+    if (!titre) { titreEl.focus(); titreEl.style.borderColor = 'var(--neg)'; return; }
+    titreEl.style.borderColor = '';
+
+    const posts = load();
+    posts.unshift({
+      id:      Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+      type:    currentType,
+      titre,
+      message: msgEl.value.trim(),
+      pinned:  pinEl.checked,
+      auteur:  'Admin',
+      date:    new Date().toISOString(),
+    });
+    save(posts);
+
+    /* Reset form */
+    titreEl.value = '';
+    msgEl.value   = '';
+    pinEl.checked = false;
+    togglePostForm(false);
+    render();
+  };
+
+  /* ── Delete post ───────────────────────────────────────── */
+  window.deletePost = function (id) {
+    if (!confirm('Supprimer ce post ?')) return;
+    save(load().filter(p => p.id !== id));
+    render();
+  };
+
+  /* ── Toggle pin ────────────────────────────────────────── */
+  window.togglePin = function (id) {
+    save(load().map(p => p.id === id ? { ...p, pinned: !p.pinned } : p));
+    render();
+  };
+
+  /* ── Render ────────────────────────────────────────────── */
+  function render() {
+    const posts = load();
+    const grid  = document.getElementById('announce-grid');
+    if (!grid) return;
+
+    if (!posts.length) {
+      grid.innerHTML = `
+        <div class="announce-empty">
+          <div class="announce-empty-icon">📌</div>
+          <div class="announce-empty-title">Aucun message pour le moment.</div>
+          <div class="announce-empty-sub">Cliquez sur <strong>Nouveau post</strong> pour commencer.</div>
+        </div>`;
+      return;
+    }
+
+    /* Pinned posts float to top */
+    const sorted = [
+      ...posts.filter(p => p.pinned),
+      ...posts.filter(p => !p.pinned),
+    ];
+
+    grid.innerHTML = sorted.map(p => {
+      const meta = TYPE_META[p.type] || { label: p.type, emoji: '' };
+      const d    = new Date(p.date);
+      const date = d.toLocaleDateString('fr-CA', { day: 'numeric', month: 'short' });
+      const time = d.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit' });
+
+      return `
+        <article class="announce-card type-${esc(p.type)}${p.pinned ? ' is-pinned' : ''}">
+
+          <!-- Punaise centrée en haut -->
+          <div class="announce-pushpin" aria-hidden="true">${PUSHPIN}</div>
+
+          <!-- Meta row: type badge · pin · delete -->
+          <div class="announce-card-meta">
+            <span class="announce-type-badge">${esc(meta.emoji)} ${esc(meta.label)}</span>
+            ${p.pinned ? '<span class="announce-pin-icon" title="Épinglé">📌</span>' : ''}
+            <button class="announce-del" onclick="deletePost('${esc(p.id)}')"
+              title="Supprimer" aria-label="Supprimer ce post">×</button>
+          </div>
+
+          <!-- Headline + body -->
+          <div class="announce-card-body">
+            <h3 class="announce-titre">${esc(p.titre)}</h3>
+            ${p.message ? `<p class="announce-body">${esc(p.message)}</p>` : ''}
+          </div>
+
+          <!-- Byline footer -->
+          <div class="announce-footer">
+            <div class="announce-byline">
+              <span class="announce-byline-author">${esc(p.auteur || 'Admin')}</span>
+              <span class="announce-byline-dot">·</span>
+              <span>${date}</span>
+              <span class="announce-byline-dot">·</span>
+              <span>${time}</span>
+            </div>
+            <button class="announce-pin-btn${p.pinned ? ' is-pinned' : ''}"
+              onclick="togglePin('${esc(p.id)}')"
+              title="${p.pinned ? 'Désépingler' : 'Épingler'}">
+              ${p.pinned ? '📌 Épinglé' : 'Épingler'}
+            </button>
+          </div>
+
+        </article>`;
+    }).join('');
+  }
+
+  /* ── Punaise SVG (rouge, brillante) ───────────────────────── */
+  const PUSHPIN = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 30" fill="none">
+    <ellipse cx="11" cy="29.5" rx="3.5" ry="1" fill="rgba(0,0,0,.18)"/>
+    <rect x="10" y="18" width="2" height="10" rx="1" fill="#9e9e9e"/>
+    <rect x="9.2" y="16.5" width="3.6" height="3" rx=".5" fill="#bdbdbd"/>
+    <circle cx="11" cy="9.5" r="9.5" fill="#922b21"/>
+    <circle cx="11" cy="9.5" r="9"   fill="#e74c3c"/>
+    <ellipse cx="7.8" cy="5.8" rx="4" ry="3.2" fill="rgba(255,255,255,.42)" transform="rotate(-22 7.8 5.8)"/>
+    <circle  cx="11" cy="9.5" r="2"   fill="rgba(80,0,0,.28)"/>
+  </svg>`;
+
+  /* ── Init ──────────────────────────────────────────────── */
+  render();
+})();
+</script>
+</body>
+</html>
