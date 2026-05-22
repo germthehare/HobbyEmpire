@@ -1528,70 +1528,8 @@ body {
 
     <!-- NEWS MODE -->
     <div id="mode-news" style="display:none">
-      <div class="news-hero">
-        <div>
-          <div class="badge-row">
-            <span class="badge-une">À la une</span>
-            <span>The Hockey News</span>
-            <span style="opacity:.5">·</span>
-            <span>21 mai 2026</span>
-          </div>
-          <h2>Upper Deck dévoile la finition « Holo Ice Splash » pour The Cup 25-26.</h2>
-          <p>La nouvelle parallèle remplacera les Black Diamond Acetate et viendra avec un tirage limité à 25 par joueur. Premier aperçu officiel attendu cette semaine pendant le National.</p>
-        </div>
-        <a href="#" class="lire">Lire →</a>
-      </div>
-
-      <div class="news-list">
-        <article class="news-item">
-          <div>
-            <div class="news-meta"><span class="dot"></span>Beckett · 21 mai</div>
-            <h4>Marché Connor Bedard refroidit après séries — opportunité d'achat ?</h4>
-            <p>Les rookie cards 23-24 ont chuté de 22% depuis avril. Analyse des comparables et timing d'entrée.</p>
-          </div>
-          <span class="news-arrow">↗</span>
-        </article>
-        <article class="news-item">
-          <div>
-            <div class="news-meta"><span class="dot"></span>Cardboard Connection · 21 mai</div>
-            <h4>Topps Series Two Baseball — checklist complète révélée.</h4>
-            <p>Les hits courts (1/1 Sapphire) sont moins nombreux cette année. La nouvelle insertion « Stadium Series » prend le relais.</p>
-          </div>
-          <span class="news-arrow">↗</span>
-        </article>
-        <article class="news-item">
-          <div>
-            <div class="news-meta"><span class="dot"></span>SC Investor · 20 mai</div>
-            <h4>Panini perd la licence NBA dès 2025-26 — impact long terme sur les prix.</h4>
-            <p>Topps reprend la NBA. Les anciens flagship Panini deviennent des produits orphelins, déjà 8% de hausse sur eBay.</p>
-          </div>
-          <span class="news-arrow">↗</span>
-        </article>
-        <article class="news-item">
-          <div>
-            <div class="news-meta"><span class="dot"></span>The Hockey News · 20 mai</div>
-            <h4>Repêchage 2026 — Top 5 prospects et leurs cards les plus chaudes.</h4>
-            <p>Aatos Koivu, Gavin McKenna et Michael Misa dominent les rookie cards prospects pré-draft.</p>
-          </div>
-          <span class="news-arrow">↗</span>
-        </article>
-        <article class="news-item">
-          <div>
-            <div class="news-meta"><span class="dot"></span>Beckett · 19 mai</div>
-            <h4>Comment authentifier un autographe Sidney Crosby en 2026.</h4>
-            <p>Trois nouveaux faux UD ont fait surface ce mois-ci. Guide visuel + caractéristiques à vérifier.</p>
-          </div>
-          <span class="news-arrow">↗</span>
-        </article>
-        <article class="news-item">
-          <div>
-            <div class="news-meta"><span class="dot"></span>Cardboard Connection · 19 mai</div>
-            <h4>Bowman Chrome 2026 — date de sortie repoussée à juillet.</h4>
-            <p>Topps confirme un délai d'approvisionnement papier. Pré-commandes ouvertes chez les distributeurs canadiens.</p>
-          </div>
-          <span class="news-arrow">↗</span>
-        </article>
-      </div>
+      <div id="news-hero-slot"></div>
+      <div class="news-list" id="news-list-slot"></div>
     </div>
 
   </section>
@@ -1902,6 +1840,170 @@ document.querySelectorAll('.tab-pill, .tab-chip').forEach(b => {
 
 /* Initial load (default = hockey + nhl) */
 if (isNhlContext()) loadNHL();
+
+/* ─────────────────────────────────────────────────────────────
+   Nouvelles — RSS via rss2json.com + NewsAPI proxy via /api/news
+   ───────────────────────────────────────────────────────────── */
+const NEWS_FEEDS = {
+  hockey: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/hockey/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/hockey-cards/feed/' },
+      { label: 'SC Investor',          url: 'https://sportscardsinvestor.com/feed/' },
+    ]},
+    nhl: { rss: [
+      { label: 'Sportsnet', url: 'https://www.sportsnet.ca/feed/' },
+      { label: 'CBC Sports', url: 'https://www.cbc.ca/cmlink/rss-sports' },
+    ], apiLeague: 'nhl' },
+    ahl:   { apiLeague: 'ahl' },
+    ncaa:  { apiLeague: 'ncaa' },
+    ohl:   { apiLeague: 'ohl' },
+    whl:   { apiLeague: 'whl' },
+    lhjmq: { apiLeague: 'lhjmq' },
+  },
+  football: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/football/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/football-cards/feed/' },
+    ]},
+    nfl: { rss: [
+      { label: 'ESPN', url: 'https://www.espn.com/espn/rss/nfl/news' },
+      { label: 'CBS Sports', url: 'https://www.cbssports.com/rss/headlines/nfl/' },
+    ]},
+  },
+  basketball: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/basketball/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/basketball-cards/feed/' },
+    ]},
+    nba: { rss: [
+      { label: 'ESPN', url: 'https://www.espn.com/espn/rss/nba/news' },
+      { label: 'CBS Sports', url: 'https://www.cbssports.com/rss/headlines/nba/' },
+    ]},
+  },
+  baseball: {
+    hobby: { rss: [
+      { label: 'Beckett',              url: 'https://www.beckett.com/news/category/baseball/feed/' },
+      { label: 'Cardboard Connection', url: 'https://cardboardconnection.com/category/baseball-cards/feed/' },
+    ]},
+    mlb: { rss: [
+      { label: 'ESPN',    url: 'https://www.espn.com/espn/rss/mlb/news' },
+      { label: 'MLB.com', url: 'https://www.mlb.com/feeds/news/rss.xml' },
+    ]},
+  },
+};
+const RSS2JSON = 'https://api.rss2json.com/v1/api.json?rss_url=';
+const newsCache = {};
+
+function newsDateFR(d) {
+  const months = ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+  return `${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+async function fetchRssFeed(src) {
+  try {
+    const r = await fetch(RSS2JSON + encodeURIComponent(src.url));
+    const d = await r.json();
+    if (d.status !== 'ok') return [];
+    return (d.items || []).map(item => ({
+      title:   (item.title || '').replace(/<[^>]+>/g, '').trim(),
+      link:    item.link || item.guid || '#',
+      excerpt: (item.description || item.content || '').replace(/<[^>]+>/g, '').replace(/\s+/g,' ').trim().slice(0, 180),
+      date:    new Date(item.pubDate || item.published || Date.now()),
+      source:  src.label,
+    }));
+  } catch (e) { return []; }
+}
+
+async function fetchApiNews(league) {
+  try {
+    const r = await fetch(`/api/news?league=${league}&limit=20`);
+    const d = await r.json();
+    return (d.items || []).map(item => ({
+      title:   item.title,
+      link:    item.url || item.link || '#',
+      excerpt: (item.description || '').slice(0, 180),
+      date:    new Date(item.publishedAt || item.date || Date.now()),
+      source:  item.sourceName || 'NHL',
+    }));
+  } catch (e) { return []; }
+}
+
+async function loadNouvelles() {
+  const hero = document.getElementById('news-hero-slot');
+  const list = document.getElementById('news-list-slot');
+  if (!hero || !list) return;
+
+  const key = `${state.sport}-${state.league}`;
+  if (newsCache[key]) { renderNouvelles(newsCache[key]); return; }
+
+  hero.innerHTML = '';
+  list.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>`;
+
+  const cfg = NEWS_FEEDS[state.sport]?.[state.league];
+  if (!cfg) {
+    list.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Pas de feed disponible</div>`;
+    return;
+  }
+
+  const promises = [];
+  if (cfg.rss)        promises.push(...cfg.rss.map(fetchRssFeed));
+  if (cfg.apiLeague)  promises.push(fetchApiNews(cfg.apiLeague));
+
+  const all = (await Promise.all(promises)).flat();
+  all.sort((a, b) => b.date - a.date);
+  const items = all.slice(0, 25);
+  newsCache[key] = items;
+  renderNouvelles(items);
+}
+
+function renderNouvelles(items) {
+  const hero = document.getElementById('news-hero-slot');
+  const list = document.getElementById('news-list-slot');
+  if (!items.length) {
+    hero.innerHTML = '';
+    list.innerHTML = `<div style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Aucune nouvelle</div>`;
+    return;
+  }
+  const [first, ...rest] = items;
+  hero.innerHTML = `
+    <a class="news-hero" href="${escHtml(first.link)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+      <div>
+        <div class="badge-row">
+          <span class="badge-une">À la une</span>
+          <span>${escHtml(first.source || '')}</span>
+          <span style="opacity:.5">·</span>
+          <span>${newsDateFR(first.date)}</span>
+        </div>
+        <h2>${escHtml(first.title)}</h2>
+        ${first.excerpt ? `<p>${escHtml(first.excerpt)}</p>` : ''}
+      </div>
+      <span class="lire">Lire →</span>
+    </a>`;
+  list.innerHTML = rest.slice(0, 12).map(it => `
+    <a class="news-item" href="${escHtml(it.link)}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+      <div>
+        <div class="news-meta"><span class="dot"></span>${escHtml(it.source || '')} · ${newsDateFR(it.date)}</div>
+        <h4>${escHtml(it.title)}</h4>
+        ${it.excerpt ? `<p>${escHtml(it.excerpt)}</p>` : ''}
+      </div>
+      <span class="news-arrow">↗</span>
+    </a>`).join('');
+}
+
+/* Trigger news fetch quand on switch en mode 'news' */
+document.querySelectorAll('.feed-mode button').forEach(b => {
+  b.addEventListener('click', () => {
+    if (b.dataset.mode === 'news') loadNouvelles();
+  });
+});
+
+/* Re-fetch news quand sport/ligue change (si mode news actif) */
+document.querySelectorAll('.tab-pill, .tab-chip').forEach(b => {
+  b.addEventListener('click', () => {
+    if (state.feedMode === 'news') loadNouvelles();
+  });
+});
 
 /* ─────────────────────────────────────────────────────────────
    Sorties à venir — fetch api.hobbyempire.org/api/releases/upcoming
