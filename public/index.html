@@ -14,6 +14,8 @@
 /* ── Announcements board ─────────────────────────────────────── */
 .announce-section {
   padding: 32px 48px 24px;
+  background: #fff; /* fond blanc pour marier les coins de l'image */
+  border-radius: var(--r-md);
 }
 .announce-header {
   display: flex;
@@ -130,13 +132,12 @@
 }
 .pf-pin-label input { margin: 0; accent-color: var(--accent); }
 
-/* ═══ POST-IT BOARD ══════════════════════════════════════════ */
+/* ═══ POST-IT BOARD — image réelle sticky-note.png ══════════ */
 .announce-grid {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  max-width: 560px;
-  padding-top: 18px; /* espace pour les punaises */
+  gap: 24px;
+  max-width: 520px;
 }
 .announce-empty {
   padding: 52px 20px;
@@ -147,72 +148,38 @@
 .announce-empty-title { font-weight: 600; color: var(--ink-2); font-size: 15px; }
 .announce-empty-sub   { font-size: 12px; margin-top: 5px; color: var(--mute); }
 
-/* ── Post-it note shell ─────────────────────────────────────── */
+/* ── Carte = l'image sticky-note.png comme fond ─────────────── */
 .announce-card {
   position: relative;
-  background: oklch(92% 0.11 93);       /* jaune Post-it */
+  background: url('/sticky-note.png') center / 100% 100% no-repeat;
   border: none;
-  border-radius: 2px 2px 4px 2px;
-  overflow: visible;                    /* punaise dépasse en haut */
-  margin-top: 14px;                     /* espace pour la punaise */
-  box-shadow:
-    2px  3px  5px rgba(0,0,0,.13),
-    5px 10px 22px rgba(0,0,0,.17),
-    8px 20px 52px rgba(0,0,0,.13);
-  transition: box-shadow 0.2s, transform 0.2s;
+  border-radius: 0;
+  box-shadow: none;   /* l'ombre est dans l'image */
+  overflow: visible;
+  min-height: 240px;  /* proportion proche du carré de l'image */
+  transition: transform 0.2s, filter 0.2s;
 }
-/* Coin plié bas-droite */
-.announce-card::after {
-  content: '';
-  position: absolute;
-  bottom: 0; right: 0;
-  width: 34px; height: 34px;
-  background: linear-gradient(
-    225deg,
-    transparent 48%,
-    rgba(0,0,0,.14) 48%,
-    rgba(0,0,0,.08) 100%
-  );
-  border-bottom-right-radius: 3px;
-  pointer-events: none;
-  z-index: 1;
-}
-/* Rotations alternées */
-.announce-card:nth-child(odd)  { transform: rotate(-1.4deg); }
-.announce-card:nth-child(even) { transform: rotate(0.9deg); }
+/* Hover : légère élévation + luminosité */
 .announce-card:hover {
-  transform: rotate(0deg) translateY(-4px) !important;
-  box-shadow:
-    3px  4px  6px rgba(0,0,0,.10),
-    6px 14px 28px rgba(0,0,0,.18),
-    12px 28px 64px rgba(0,0,0,.15);
+  transform: translateY(-5px) scale(1.012);
+  filter: brightness(1.02) drop-shadow(0 16px 28px rgba(0,0,0,.18));
 }
+/* Pas de rotation CSS — la rotation est dans l'image elle-même */
+.announce-card:nth-child(odd)  { transform: none; }
+.announce-card:nth-child(even) { transform: none; }
+/* Supprime le ::after CSS — le coin plié est dans l'image */
+.announce-card::after { display: none; }
+/* Supprime notre punaise SVG — la punaise est dans l'image */
+.announce-pushpin { display: none !important; }
 
-/* Couleurs Post-it par type */
-.announce-card.type-info    { background: oklch(90% 0.07 238); }  /* bleu Post-it */
-.announce-card.type-urgent  { background: oklch(88% 0.09 22);  }  /* saumon/rose */
-.announce-card.type-live    { background: oklch(89% 0.09 148); }  /* vert menthe */
-.announce-card.type-rappel  { background: oklch(92% 0.11 93);  }  /* jaune standard */
-
-/* ── Punaise SVG centrée en haut ────────────────────────────── */
-.announce-pushpin {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 26px;
-  height: 32px;
-  z-index: 10;
-  filter: drop-shadow(0 3px 5px rgba(0,0,0,.32));
-  pointer-events: none;
-}
-
-/* ── Ligne méta : type + supprimer ─────────────────────────── */
+/* ── Zone de texte : dans la zone jaune de la note ─────────── */
+/* La note est inclinée ~-4° — le contenu jaune commence à ~13% du haut
+   et ~9% des côtés. On ajoute le padding en px pour un résultat précis. */
 .announce-card-meta {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 14px 14px 0 18px;
+  padding: 72px 50px 0 48px; /* top : passe la punaise + coin blanc */
 }
 .announce-type-badge {
   font-family: var(--font-mono);
@@ -222,58 +189,52 @@
   text-transform: uppercase;
   white-space: nowrap;
   flex-shrink: 0;
+  color: rgba(0,0,0,.45);
 }
-.type-info   .announce-type-badge { color: oklch(28% 0.16 248); }
-.type-urgent .announce-type-badge { color: oklch(28% 0.18 22);  }
-.type-live   .announce-type-badge { color: oklch(28% 0.16 150); }
-.type-rappel .announce-type-badge { color: oklch(36% 0.16 82);  }
-
 .announce-pin-icon { font-size: 11px; flex-shrink: 0; }
 .announce-del {
   margin-left: auto;
   background: transparent;
   border: none;
   padding: 2px 5px;
-  color: rgba(0,0,0,.28);
+  color: rgba(0,0,0,.25);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
-  border-radius: 3px;
   transition: color 0.12s;
 }
 .announce-del:hover { color: rgba(180,0,0,.65); }
 
-/* ── Contenu : grand titre + corps ─────────────────────────── */
 .announce-card-body {
-  padding: 10px 20px 14px 20px;
+  padding: 8px 50px 12px 48px;
 }
 .announce-titre {
   font-family: var(--font-display);
-  font-size: 30px;
+  font-size: 27px;
   font-weight: 900;
   font-stretch: 75%;
-  letter-spacing: -0.028em;
-  line-height: 1.03;
-  color: rgba(0,0,0,.84);
-  margin: 0 0 10px;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
+  color: rgba(0,0,0,.80);
+  margin: 0 0 9px;
 }
 .announce-body {
   font-size: 14px;
-  line-height: 1.70;
-  color: rgba(0,0,0,.58);
+  line-height: 1.68;
+  color: rgba(0,0,0,.55);
   white-space: pre-line;
   word-break: break-word;
   margin: 0;
 }
 
-/* ── Pied de page byline ───────────────────────────────────── */
+/* ── Footer byline ──────────────────────────────────────────── */
 .announce-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 20px 14px;
+  padding: 10px 50px 44px 48px; /* bas : padding pour le coin plié */
   gap: 12px;
-  border-top: 1px solid rgba(0,0,0,.11);
+  border-top: 1px solid rgba(0,0,0,.09);
 }
 .announce-byline {
   display: flex;
@@ -281,36 +242,32 @@
   gap: 5px;
   font-family: var(--font-mono);
   font-size: 10px;
-  color: rgba(0,0,0,.44);
+  color: rgba(0,0,0,.40);
   letter-spacing: 0.04em;
 }
-.announce-byline-author { color: rgba(0,0,0,.62); font-weight: 700; }
-.announce-byline-dot    { opacity: 0.38; }
+.announce-byline-author { color: rgba(0,0,0,.58); font-weight: 700; }
+.announce-byline-dot    { opacity: 0.36; }
 
 .announce-pin-btn {
-  background: rgba(0,0,0,.06);
-  border: 1px solid rgba(0,0,0,.13);
+  background: rgba(0,0,0,.05);
+  border: 1px solid rgba(0,0,0,.12);
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: rgba(0,0,0,.48);
+  color: rgba(0,0,0,.44);
   cursor: pointer;
   padding: 4px 10px;
   border-radius: 3px;
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  transition: background 0.12s, color 0.12s;
   white-space: nowrap;
 }
-.announce-pin-btn:hover {
-  background: rgba(0,0,0,.12);
-  border-color: rgba(0,0,0,.22);
-  color: rgba(0,0,0,.72);
-}
+.announce-pin-btn:hover { background: rgba(0,0,0,.10); color: rgba(0,0,0,.68); }
 .announce-pin-btn.is-pinned {
   color: #c0392b;
-  border-color: rgba(192,57,43,.32);
-  background: rgba(192,57,43,.10);
+  border-color: rgba(192,57,43,.30);
+  background: rgba(192,57,43,.09);
 }
 
 /* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
