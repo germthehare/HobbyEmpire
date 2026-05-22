@@ -816,23 +816,24 @@ body {
           <div class="field-stack" id="field-stack">
             <label class="field-tile" for="sel-sport">
               <span class="field-tile-label">Sport</span>
-              <select id="sel-sport" onchange="onSelectSport(this.value)">
+              <select id="sel-sport">
                 <option value="">Sélectionner…</option>
               </select>
             </label>
             <label class="field-tile" for="sel-year">
               <span class="field-tile-label">Année</span>
-              <select id="sel-year" onchange="onSelectYear(this.value)" disabled>
+              <select id="sel-year" disabled>
                 <option value="">—</option>
               </select>
             </label>
             <label class="field-tile" for="sel-product">
               <span class="field-tile-label">Produit</span>
-              <select id="sel-product" onchange="onSelectProduct(this.value)" disabled>
+              <select id="sel-product" disabled>
                 <option value="">—</option>
               </select>
             </label>
           </div>
+          <div id="debug-status" style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:4px 2px">Chargement des produits…</div>
 
           <div id="product-list" style="display:flex;flex-direction:column;gap:8px"></div>
 
@@ -936,6 +937,7 @@ function buildHierarchy() {
 }
 
 async function loadChecklistKeys() {
+  const dbg = document.getElementById('debug-status');
   try {
     const r = await fetch('/products.json');
     const data = await r.json();
@@ -944,8 +946,12 @@ async function loadChecklistKeys() {
     else                                        ALL_KEYS = [];
     buildHierarchy();
     populateSportSelect();
+    const sportCount = Object.keys(HIERARCHY).length;
+    if (dbg) dbg.textContent = `${ALL_KEYS.length} produits · ${sportCount} sports`;
+    console.log('[break-prep] loaded', { ALL_KEYS: ALL_KEYS.length, HIERARCHY });
   } catch (e) {
     console.error('loadChecklistKeys failed', e);
+    if (dbg) { dbg.textContent = 'Erreur de chargement: ' + e.message; dbg.style.color = 'var(--neg)'; }
     populateSportSelect();
   }
 }
@@ -1232,6 +1238,19 @@ function renderLookup(d) {
 document.getElementById('card-input').addEventListener('keydown', e => { if (e.key === 'Enter') lookupCard(); });
 
 // ════════════════════ Boot ════════════════════
+document.getElementById('sel-sport').addEventListener('change', e => {
+  console.log('[break-prep] sport change', e.target.value);
+  onSelectSport(e.target.value);
+});
+document.getElementById('sel-year').addEventListener('change', e => {
+  console.log('[break-prep] year change', e.target.value, 'sport=', document.getElementById('sel-sport').value);
+  onSelectYear(e.target.value);
+});
+document.getElementById('sel-product').addEventListener('change', e => {
+  console.log('[break-prep] product change', e.target.value);
+  onSelectProduct(e.target.value);
+});
+
 loadChecklistKeys();
 </script>
 </body>
