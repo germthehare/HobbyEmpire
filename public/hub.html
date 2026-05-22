@@ -607,7 +607,6 @@ body {
           <div class="pills" id="chart-pills">
             <button class="pill active" data-range="semaine">Semaine</button>
             <button class="pill" data-range="mois">Mois</button>
-            <button class="pill" data-range="3m">3M</button>
           </div>
         </div>
         <div class="chart-wrap" id="chart-wrap"></div>
@@ -945,24 +944,39 @@ function renderSpark(id, values, isAccent) {
 }
 
 function renderChart(current) {
-  // Week: Monday-Sunday of current week (or most recent week in data)
+  const wrap   = document.getElementById('chart-wrap');
+  const labels = document.getElementById('chart-labels');
+  const wk     = document.getElementById('chart-week');
+
   const sortedDates = [...new Set(current.map(b => b.date).filter(Boolean))].sort();
   if (!sortedDates.length) {
-    document.getElementById('chart-wrap').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);font-size:12px;padding:60px 0">Aucune donnée</div>';
-    document.getElementById('chart-labels').innerHTML = '';
-    document.getElementById('chart-week').textContent = '—';
+    wrap.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--ink-3);font-size:12px;padding:60px 0">Aucune donnée</div>';
+    labels.innerHTML = '';
+    wk.textContent = '—';
     return;
   }
+
+  if (chartRange === 'mois') {
+    renderChartMois(current, sortedDates);
+  } else {
+    renderChartSemaine(current, sortedDates);
+  }
+}
+
+function renderChartSemaine(current, sortedDates) {
+  const wrap   = document.getElementById('chart-wrap');
+  const labels = document.getElementById('chart-labels');
+  const wk     = document.getElementById('chart-week');
+
   const latestDate = new Date(sortedDates[sortedDates.length - 1] + 'T12:00:00');
-  // Find Monday of that week
   const day = latestDate.getDay();
   const mondayOffset = day === 0 ? -6 : 1 - day;
   const monday = new Date(latestDate);
   monday.setDate(latestDate.getDate() + mondayOffset);
 
-  const weekISO = monday.toISOString().slice(0, 10);
   const weekLabel = `${monday.getDate()} ${MOIS_FR[monday.getMonth()+1].toLowerCase().slice(0,3)}`;
-  document.getElementById('chart-week').textContent = weekLabel;
+  document.getElementById('chart-title').firstChild.textContent = 'Semaine du ';
+  wk.textContent = weekLabel;
 
   const byDay = JOURS_ORDER.map((j, i) => {
     const d = new Date(monday);
@@ -974,12 +988,13 @@ function renderChart(current) {
   });
 
   const max = Math.max(...byDay.map(d => d.rev), 1);
-  // Today = highest revenue day = highlighted; if none, no highlight
   const maxRev = Math.max(...byDay.map(d => d.rev));
   const today = new Date().toISOString().slice(0, 10);
   const todayIdx = byDay.findIndex(d => d.iso === today);
 
-  document.getElementById('chart-wrap').innerHTML = byDay.map((d, i) => {
+  wrap.style.gridTemplateColumns = 'repeat(7, 1fr)';
+  labels.style.gridTemplateColumns = 'repeat(7, 1fr)';
+  wrap.innerHTML = byDay.map((d, i) => {
     const h = d.rev > 0 ? Math.max(8, Math.round((d.rev / max) * 200)) : 0;
     const isHl = d.rev > 0 && (todayIdx === i || (todayIdx === -1 && d.rev === maxRev && maxRev > 0));
     return `<div class="chart-col ${d.rev === 0 ? 'zero' : ''} ${isHl ? 'hl' : ''}">
@@ -988,7 +1003,71 @@ function renderChart(current) {
       </div>
     </div>`;
   }).join('');
-  document.getElementById('chart-labels').innerHTML = JOURS_ORDER.map(j => `<div class="chart-label">${JOURS_LBL[j]}</div>`).join('');
+  labels.innerHTML = JOURS_ORDER.map(j => `<div class="chart-label">${JOURS_LBL[j]}</div>`).join('');
+}
+
+function renderChartMois(current, sortedDates) {
+  const wrap   = document.getElementById('chart-wrap');
+  const labels = document.getElementById('chart-labels');
+  const wk     = document.getElementById('chart-week');
+
+  // Determine month from selected breaks
+  const sample = current[0];
+  const monthNum = sample ? +sample.mois : null;
+  const yearNum  = sample ? +sample.annee : null;
+  const monthLabel = monthNum ? `${MOIS_FR[monthNum]} ${yearNum}` : '—';
+  document.getElementById('chart-title').firstChild.textContent = 'Mois de ';
+  wk.textContent = monthLabel;
+
+  // Build weeks of the month: Mon-Sun chunks
+  if (!monthNum) return;
+  const firstDay = new Date(yearNum, monthNum - 1, 1);
+  const lastDay  = new Date(yearNum, monthNum, 0);
+  const weeks = [];
+  // Find first Monday at or before the 1st
+  let cursor = new Date(firstDay);
+  const dow = cursor.getDay();
+  const offsetToMon = dow === 0 ? -6 : 1 - dow;
+  cursor.setDate(cursor.getDate() + offsetToMon);
+
+  while (cursor <= lastDay) {
+    const weekStart = new Date(cursor);
+    const weekEnd = new Date(cursor); weekEnd.setDate(weekEnd.getDate() + 6);
+    weeks.push({ start: new Date(weekStart), end: new Date(weekEnd) });
+    cursor.setDate(cursor.getDate() + 7);
+  }
+
+  const byWeek = weeks.map((w, i) => {
+    const startISO = w.start.toISOString().slice(0,10);
+    const endISO   = w.end.toISOString().slice(0,10);
+    const rev = current
+      .filter(b => b.date >= startISO && b.date <= endISO)
+      .reduce((s,b) => s + (+b.revenuReel||0), 0);
+    return {
+      idx: i + 1,
+      label: `S${i+1}`,
+      sub: `${w.start.getDate()}→${w.end.getDate()}`,
+      rev
+    };
+  });
+
+  const max = Math.max(...byWeek.map(w => w.rev), 1);
+  const maxRev = Math.max(...byWeek.map(w => w.rev));
+
+  wrap.style.gridTemplateColumns = `repeat(${byWeek.length}, 1fr)`;
+  labels.style.gridTemplateColumns = `repeat(${byWeek.length}, 1fr)`;
+  wrap.innerHTML = byWeek.map(w => {
+    const h = w.rev > 0 ? Math.max(8, Math.round((w.rev / max) * 200)) : 0;
+    const isHl = w.rev > 0 && w.rev === maxRev;
+    return `<div class="chart-col ${w.rev === 0 ? 'zero' : ''} ${isHl ? 'hl' : ''}">
+      <div class="chart-bar" style="height:${h}px">
+        ${w.rev > 0 ? `<div class="chart-bar-val">${fmtShort(w.rev)}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  labels.innerHTML = byWeek.map(w =>
+    `<div class="chart-label">${w.label}<div style="font-size:9px;font-weight:500;margin-top:2px;color:var(--mute);letter-spacing:.04em;text-transform:none">${w.sub}</div></div>`
+  ).join('');
 }
 
 function renderHoraire(current) {
