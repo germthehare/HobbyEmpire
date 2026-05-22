@@ -263,6 +263,7 @@ body {
   letter-spacing: 0.20em; text-transform: uppercase;
   color: var(--ink-3);
 }
+.filter-label .first { color: var(--accent); }
 .filter-pills {
   display: flex; flex-wrap: wrap; gap: 4px;
 }
@@ -508,7 +509,7 @@ body {
     <!-- Filters -->
     <div class="filters">
       <div class="filter-row" id="filter-season">
-        <span class="filter-label">Saison</span>
+        <span class="filter-label"><span class="first">S</span>aison</span>
         <div class="filter-pills">
           <button class="chip active" data-season="">Toutes</button>
           <button class="chip" data-season="2025-26">2025-26</button>
@@ -517,7 +518,7 @@ body {
         </div>
       </div>
       <div class="filter-row" id="filter-brand">
-        <span class="filter-label">Marque</span>
+        <span class="filter-label"><span class="first">M</span>arque</span>
         <div class="filter-pills">
           <button class="chip active" data-brand="">Toutes</button>
           <button class="chip" data-brand="Upper Deck">Upper Deck</button>
@@ -527,7 +528,7 @@ body {
         </div>
       </div>
       <div class="filter-row" id="filter-format">
-        <span class="filter-label">Format</span>
+        <span class="filter-label"><span class="first">F</span>ormat</span>
         <div class="filter-pills">
           <button class="chip active" data-format="">Tous</button>
           <button class="chip" data-format="Hobby">Hobby</button>
@@ -538,7 +539,7 @@ body {
         </div>
       </div>
       <div class="filter-row" id="filter-view">
-        <span class="filter-label">Voir</span>
+        <span class="filter-label"><span class="first">V</span>oir</span>
         <div class="filter-pills">
           <button class="chip active" data-view="upcoming">À venir (90j)</button>
           <button class="chip" data-view="all">Tout afficher</button>
