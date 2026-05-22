@@ -165,7 +165,7 @@
 .announce-card::before {
   content: '';
   position: absolute;
-  inset: -8% -6%;      /* légère marge pour inclure ombre/coin */
+  inset: 0;
   background: url('/sticky-note.png') center / 100% 100% no-repeat;
   mix-blend-mode: multiply;
   pointer-events: none;
@@ -184,43 +184,49 @@
 .announce-card:nth-child(even) { transform: none; }
 .announce-card:hover { transform: translateY(-5px) scale(1.015); }
 
-/* ── Zone de texte : au-dessus du ::before, dans la zone jaune ─ */
+/* ── Encre sur papier — zéro chrome UI ─────────────────────── */
 .announce-card-meta,
 .announce-card-body,
 .announce-footer { position: relative; z-index: 1; }
 
+/* Ligne type — minuscule, discret, comme un tampon */
 .announce-card-meta {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 72px 50px 0 48px;
+  gap: 6px;
+  padding: 66px 46px 0 48px;
 }
 .announce-type-badge {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  white-space: nowrap;
-  flex-shrink: 0;
-  color: rgba(0,0,0,.45);
+  color: rgba(0,0,0,.32);
+  /* pas de fond, pas de bordure, pas de padding */
 }
-.announce-pin-icon { font-size: 11px; flex-shrink: 0; }
+.type-info   .announce-type-badge { color: rgba(30,80,180,.45); }
+.type-urgent .announce-type-badge { color: rgba(180,50,20,.50); }
+.type-live   .announce-type-badge { color: rgba(20,120,60,.45); }
+.type-rappel .announce-type-badge { color: rgba(0,0,0,.30); }
+
+.announce-pin-icon { font-size: 10px; opacity: .6; }
 .announce-del {
   margin-left: auto;
-  background: transparent;
+  background: none;
   border: none;
-  padding: 2px 5px;
-  color: rgba(0,0,0,.25);
-  font-size: 18px;
+  padding: 0 2px;
+  color: rgba(0,0,0,.18);
+  font-size: 16px;
   line-height: 1;
   cursor: pointer;
-  transition: color 0.12s;
+  transition: color .12s;
 }
-.announce-del:hover { color: rgba(180,0,0,.65); }
+.announce-del:hover { color: rgba(160,0,0,.55); }
 
+/* Grand titre — comme écrit au marqueur */
 .announce-card-body {
-  padding: 8px 50px 12px 48px;
+  padding: 6px 46px 8px 48px;
 }
 .announce-titre {
   font-family: var(--font-display);
@@ -229,60 +235,56 @@
   font-stretch: 75%;
   letter-spacing: -0.025em;
   line-height: 1.04;
-  color: rgba(0,0,0,.80);
-  margin: 0 0 9px;
+  color: rgba(0,0,0,.76);
+  margin: 0 0 8px;
 }
 .announce-body {
-  font-size: 14px;
-  line-height: 1.68;
-  color: rgba(0,0,0,.55);
+  font-size: 13.5px;
+  line-height: 1.66;
+  color: rgba(0,0,0,.50);
   white-space: pre-line;
   word-break: break-word;
   margin: 0;
 }
 
-/* ── Footer byline ──────────────────────────────────────────── */
+/* Byline — tout petit en bas de la note, comme une signature */
 .announce-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 50px 44px 48px; /* bas : padding pour le coin plié */
-  gap: 12px;
-  border-top: 1px solid rgba(0,0,0,.09);
+  padding: 6px 46px 42px 48px;
+  /* PAS de border-top — le papier n'a pas de ligne */
+  gap: 10px;
 }
 .announce-byline {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: rgba(0,0,0,.40);
-  letter-spacing: 0.04em;
-}
-.announce-byline-author { color: rgba(0,0,0,.58); font-weight: 700; }
-.announce-byline-dot    { opacity: 0.36; }
-
-.announce-pin-btn {
-  background: rgba(0,0,0,.05);
-  border: 1px solid rgba(0,0,0,.12);
+  gap: 4px;
   font-family: var(--font-mono);
   font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.10em;
+  color: rgba(0,0,0,.30);
+  letter-spacing: 0.03em;
+}
+.announce-byline-author { font-weight: 700; color: rgba(0,0,0,.42); }
+.announce-byline-dot    { opacity: 0.30; }
+
+/* Bouton épingler — texte nu, sans fond ni bordure */
+.announce-pin-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(0,0,0,.44);
+  color: rgba(0,0,0,.28);
   cursor: pointer;
-  padding: 4px 10px;
-  border-radius: 3px;
-  transition: background 0.12s, color 0.12s;
+  padding: 0;
+  transition: color .12s;
   white-space: nowrap;
 }
-.announce-pin-btn:hover { background: rgba(0,0,0,.10); color: rgba(0,0,0,.68); }
-.announce-pin-btn.is-pinned {
-  color: #c0392b;
-  border-color: rgba(192,57,43,.30);
-  background: rgba(192,57,43,.09);
-}
+.announce-pin-btn:hover     { color: rgba(0,0,0,.55); }
+.announce-pin-btn.is-pinned { color: #c0392b; }
 
 /* ── Stat ticker (asymmetric 1.6/1/1/1) ────────────────────── */
 .ticker {
