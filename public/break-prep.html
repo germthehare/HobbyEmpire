@@ -901,6 +901,14 @@ function setMode(m) {
 let HIERARCHY = {};
 let ALL_KEYS = [];
 
+function normalizeYear(y) {
+  // "2025-2026" → "2025-26"; "2025-26" → "2025-26"; "2025" → "2025"
+  const m = String(y).match(/^(\d{4})-(\d{2,4})$/);
+  if (!m) return y;
+  const yy = m[2].length === 4 ? m[2].slice(-2) : m[2];
+  return `${m[1]}-${yy}`;
+}
+
 function parseKey(key) {
   let s = key.trim();
   let sport = '';
@@ -912,7 +920,7 @@ function parseKey(key) {
   }
   const yearMatch = s.match(/^(\d{4}(?:-\d{2,4})?)\s*(.*)$/);
   let year = '', name = s;
-  if (yearMatch) { year = yearMatch[1]; name = yearMatch[2]; }
+  if (yearMatch) { year = normalizeYear(yearMatch[1]); name = yearMatch[2]; }
   return { sport, year, name: name.trim() };
 }
 
