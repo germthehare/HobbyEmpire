@@ -246,6 +246,12 @@ body {
 }
 .cert-bc strong { color: oklch(88% 0.008 80); font-weight: 700; }
 .cert-bc .sep { opacity: 0.5; }
+.cert-splash {
+  height: 28px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.25));
+}
 .cert-logo {
   display: inline-flex; align-items: center; gap: 8px;
   padding-right: 12px;
@@ -1242,7 +1248,8 @@ body {
   <!-- Top cert strip -->
   <div class="cert cert-top">
     <span class="cert-bc">
-      OPÉRATIONS<span class="sep">›</span><strong>HOME</strong>
+      <img class="cert-splash" src="/images/speloosh-splash.png" alt="Speloosh">
+      <span class="sep">›</span><strong>HOME</strong>
     </span>
     <span class="cert-right">Weather the Storm</span>
   </div>
