@@ -1480,220 +1480,51 @@ body {
 
       <!-- Matchs panel -->
       <div class="panel" data-spanel="matchs">
-        <div class="matchs-grid">
-          <div class="match-card">
-            <div class="match-meta">
-              <span class="match-live"><span class="d"></span>Live · 2e période</span>
-              <span>Bell Center</span>
-            </div>
-            <div class="match-row"><span class="match-team lead">Canadiens</span><span class="match-score">3</span></div>
-            <div class="match-row"><span class="match-team">Bruins</span><span class="match-score">2</span></div>
-          </div>
-          <div class="match-card">
-            <div class="match-meta">
-              <span class="match-live"><span class="d"></span>Live · 1ère période</span>
-              <span>Madison Square Garden</span>
-            </div>
-            <div class="match-row"><span class="match-team">Rangers</span><span class="match-score">1</span></div>
-            <div class="match-row"><span class="match-team lead">Maple Leafs</span><span class="match-score">2</span></div>
-          </div>
-          <div class="match-card">
-            <div class="match-meta">
-              <span class="match-live"><span class="d"></span>Live · OT</span>
-              <span>Scotiabank Arena</span>
-            </div>
-            <div class="match-row"><span class="match-team lead">Oilers</span><span class="match-score">4</span></div>
-            <div class="match-row"><span class="match-team">Panthers</span><span class="match-score">3</span></div>
-          </div>
+        <div class="matchs-grid" id="nhl-matchs">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>
         </div>
       </div>
 
       <!-- Meneurs panel -->
       <div class="panel" data-spanel="meneurs">
         <div class="meneurs-controls">
-          <div class="mc-group">
-            <button class="active">Saison</button>
-            <button>Playoffs</button>
+          <div class="mc-group" data-mc="mode">
+            <button class="active" data-val="season">Saison</button>
+            <button data-val="playoffs">Playoffs</button>
           </div>
-          <div class="mc-group">
-            <button class="active">Pts</button>
-            <button>Buts</button>
-            <button>Passes</button>
+          <div class="mc-group" data-mc="cat">
+            <button class="active" data-val="points">Pts</button>
+            <button data-val="goals">Buts</button>
+            <button data-val="assists">Passes</button>
           </div>
         </div>
-        <div class="meneurs-grid">
-          <div class="meneurs-col">
-            <div class="meneur-row top">
-              <div class="meneur-rank">1</div>
-              <div><div class="meneur-name">N. MacKinnon</div><div class="meneur-team">COL · C</div></div>
-              <div class="meneur-stat">142</div>
-            </div>
-            <div class="meneur-row top">
-              <div class="meneur-rank">2</div>
-              <div><div class="meneur-name">C. McDavid</div><div class="meneur-team">EDM · C</div></div>
-              <div class="meneur-stat">138</div>
-            </div>
-            <div class="meneur-row top">
-              <div class="meneur-rank">3</div>
-              <div><div class="meneur-name">L. Draisaitl</div><div class="meneur-team">EDM · C</div></div>
-              <div class="meneur-stat">128</div>
-            </div>
-            <div class="meneur-row">
-              <div class="meneur-rank">4</div>
-              <div><div class="meneur-name">A. Matthews</div><div class="meneur-team">TOR · C</div></div>
-              <div class="meneur-stat">119</div>
-            </div>
-            <div class="meneur-row">
-              <div class="meneur-rank">5</div>
-              <div><div class="meneur-name">N. Kucherov</div><div class="meneur-team">TBL · RW</div></div>
-              <div class="meneur-stat">114</div>
-            </div>
-          </div>
-          <div class="meneurs-col">
-            <div class="meneur-row">
-              <div class="meneur-rank">6</div>
-              <div><div class="meneur-name">M. Rantanen</div><div class="meneur-team">COL · RW</div></div>
-              <div class="meneur-stat">109</div>
-            </div>
-            <div class="meneur-row">
-              <div class="meneur-rank">7</div>
-              <div><div class="meneur-name">D. Pastrnak</div><div class="meneur-team">BOS · RW</div></div>
-              <div class="meneur-stat">105</div>
-            </div>
-            <div class="meneur-row">
-              <div class="meneur-rank">8</div>
-              <div><div class="meneur-name">J. Eichel</div><div class="meneur-team">VGK · C</div></div>
-              <div class="meneur-stat">102</div>
-            </div>
-            <div class="meneur-row">
-              <div class="meneur-rank">9</div>
-              <div><div class="meneur-name">N. Hischier</div><div class="meneur-team">NJD · C</div></div>
-              <div class="meneur-stat">99</div>
-            </div>
-            <div class="meneur-row">
-              <div class="meneur-rank">10</div>
-              <div><div class="meneur-name">B. Tkachuk</div><div class="meneur-team">OTT · LW</div></div>
-              <div class="meneur-stat">96</div>
-            </div>
-          </div>
+        <div class="meneurs-grid" id="nhl-meneurs">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>
         </div>
       </div>
 
       <!-- Bracket panel (DEFAULT) -->
       <div class="panel active" data-spanel="bracket">
-        <div class="bracket">
-          <!-- 1er tour -->
-          <div>
-            <div class="br-col-head">1er tour</div>
-            <div class="br-col">
-              <div class="br-card">
-                <div class="br-row win"><span class="t"><span class="dot"></span>Florida</span><span class="s">4</span></div>
-                <div class="br-row"><span class="t"><span class="dot"></span>Tampa Bay</span><span class="s">1</span></div>
-              </div>
-              <div class="br-card">
-                <div class="br-row win"><span class="t"><span class="dot"></span>Toronto</span><span class="s">4</span></div>
-                <div class="br-row"><span class="t"><span class="dot"></span>Boston</span><span class="s">3</span></div>
-              </div>
-              <div class="br-card">
-                <div class="br-row win"><span class="t"><span class="dot"></span>Edmonton</span><span class="s">4</span></div>
-                <div class="br-row"><span class="t"><span class="dot"></span>Los Angeles</span><span class="s">2</span></div>
-              </div>
-              <div class="br-card">
-                <div class="br-row win"><span class="t"><span class="dot"></span>Colorado</span><span class="s">4</span></div>
-                <div class="br-row"><span class="t"><span class="dot"></span>Winnipeg</span><span class="s">3</span></div>
-              </div>
-            </div>
-          </div>
-          <!-- Demi-finales -->
-          <div>
-            <div class="br-col-head">Demi-finales</div>
-            <div class="br-col">
-              <div class="br-card">
-                <div class="br-row win"><span class="t"><span class="dot"></span>Florida</span><span class="s">4</span></div>
-                <div class="br-row"><span class="t"><span class="dot"></span>Toronto</span><span class="s">2</span></div>
-              </div>
-              <div class="br-card">
-                <div class="br-row"><span class="t"><span class="dot"></span>Edmonton</span><span class="s">3</span></div>
-                <div class="br-row win"><span class="t"><span class="dot"></span>Colorado</span><span class="s">3</span></div>
-              </div>
-            </div>
-          </div>
-          <!-- Finales conf. -->
-          <div>
-            <div class="br-col-head">Finales conf.</div>
-            <div class="br-col">
-              <div class="br-card">
-                <div class="br-row"><span class="t"><span class="dot"></span>Florida</span><span class="s">2</span></div>
-                <div class="br-row win"><span class="t"><span class="dot"></span>Colorado</span><span class="s">3</span></div>
-              </div>
-              <div class="br-empty">En attente</div>
-            </div>
-          </div>
-          <!-- Finale Stanley -->
-          <div>
-            <div class="br-col-head">Finale Stanley</div>
-            <div class="br-col">
-              <div class="br-card">
-                <div class="br-row win"><span class="t"><span class="dot"></span>Colorado</span><span class="s">2</span></div>
-                <div class="br-row"><span class="t"><span class="dot"></span>—</span><span class="s">0</span></div>
-              </div>
-            </div>
-          </div>
+        <div class="bracket" id="nhl-bracket">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement du bracket…</div>
         </div>
       </div>
 
       <!-- Classement panel -->
       <div class="panel" data-spanel="classement">
         <div class="cl-controls">
-          <div class="mc-group">
-            <button class="active">LNH</button>
-            <button>Est</button>
-            <button>Ouest</button>
-            <button>Atl</button>
-            <button>Mét</button>
-            <button>Cen</button>
-            <button>Pac</button>
+          <div class="mc-group" data-mc="cltab">
+            <button class="active" data-val="ALL">LNH</button>
+            <button data-val="E">Est</button>
+            <button data-val="W">Ouest</button>
+            <button data-val="A">Atl</button>
+            <button data-val="M">Mét</button>
+            <button data-val="C">Cen</button>
+            <button data-val="P">Pac</button>
           </div>
         </div>
-        <div class="cl-grid">
-          <div class="cl-col">
-            <div class="cl-head"><span>#</span><span>Équipe</span><span>V</span><span>D</span><span>Pts</span></div>
-            <div class="cl-row top"><span class="rk">1</span><span class="nm">Florida</span><span>52</span><span>22</span><span class="pt">110</span></div>
-            <div class="cl-row top"><span class="rk">2</span><span class="nm">Colorado</span><span>51</span><span>24</span><span class="pt">108</span></div>
-            <div class="cl-row top"><span class="rk">3</span><span class="nm">Edmonton</span><span>49</span><span>25</span><span class="pt">105</span></div>
-            <div class="cl-row"><span class="rk">4</span><span class="nm">Toronto</span><span>47</span><span>27</span><span class="pt">102</span></div>
-            <div class="cl-row"><span class="rk">5</span><span class="nm">Tampa Bay</span><span>46</span><span>28</span><span class="pt">100</span></div>
-            <div class="cl-row"><span class="rk">6</span><span class="nm">Boston</span><span>45</span><span>28</span><span class="pt">99</span></div>
-            <div class="cl-row"><span class="rk">7</span><span class="nm">Vegas</span><span>44</span><span>29</span><span class="pt">96</span></div>
-            <div class="cl-row"><span class="rk">8</span><span class="nm">Dallas</span><span>43</span><span>30</span><span class="pt">94</span></div>
-            <div class="cl-row"><span class="rk">9</span><span class="nm">NY Rangers</span><span>42</span><span>31</span><span class="pt">92</span></div>
-            <div class="cl-row"><span class="rk">10</span><span class="nm">Carolina</span><span>41</span><span>32</span><span class="pt">90</span></div>
-            <div class="cl-row"><span class="rk">11</span><span class="nm">Winnipeg</span><span>40</span><span>32</span><span class="pt">88</span></div>
-            <div class="cl-row"><span class="rk">12</span><span class="nm">Los Angeles</span><span>39</span><span>33</span><span class="pt">86</span></div>
-            <div class="cl-row"><span class="rk">13</span><span class="nm">Vancouver</span><span>38</span><span>34</span><span class="pt">84</span></div>
-            <div class="cl-row"><span class="rk">14</span><span class="nm">Minnesota</span><span>37</span><span>35</span><span class="pt">82</span></div>
-            <div class="cl-row"><span class="rk">15</span><span class="nm">New Jersey</span><span>36</span><span>36</span><span class="pt">80</span></div>
-            <div class="cl-row"><span class="rk">16</span><span class="nm">Washington</span><span>35</span><span>37</span><span class="pt">78</span></div>
-          </div>
-          <div class="cl-col">
-            <div class="cl-head"><span>#</span><span>Équipe</span><span>V</span><span>D</span><span>Pts</span></div>
-            <div class="cl-row"><span class="rk">17</span><span class="nm">Pittsburgh</span><span>34</span><span>38</span><span class="pt">76</span></div>
-            <div class="cl-row"><span class="rk">18</span><span class="nm">Detroit</span><span>33</span><span>39</span><span class="pt">74</span></div>
-            <div class="cl-row"><span class="rk">19</span><span class="nm">Nashville</span><span>32</span><span>40</span><span class="pt">72</span></div>
-            <div class="cl-row"><span class="rk">20</span><span class="nm">St. Louis</span><span>31</span><span>41</span><span class="pt">70</span></div>
-            <div class="cl-row"><span class="rk">21</span><span class="nm">Calgary</span><span>30</span><span>42</span><span class="pt">68</span></div>
-            <div class="cl-row"><span class="rk">22</span><span class="nm">Seattle</span><span>29</span><span>43</span><span class="pt">66</span></div>
-            <div class="cl-row"><span class="rk">23</span><span class="nm">NY Islanders</span><span>28</span><span>44</span><span class="pt">64</span></div>
-            <div class="cl-row"><span class="rk">24</span><span class="nm">Buffalo</span><span>27</span><span>45</span><span class="pt">62</span></div>
-            <div class="cl-row"><span class="rk">25</span><span class="nm">Philadelphia</span><span>26</span><span>46</span><span class="pt">60</span></div>
-            <div class="cl-row"><span class="rk">26</span><span class="nm">Ottawa</span><span>25</span><span>47</span><span class="pt">58</span></div>
-            <div class="cl-row"><span class="rk">27</span><span class="nm">Columbus</span><span>24</span><span>48</span><span class="pt">56</span></div>
-            <div class="cl-row"><span class="rk">28</span><span class="nm">Utah</span><span>23</span><span>49</span><span class="pt">54</span></div>
-            <div class="cl-row"><span class="rk">29</span><span class="nm">Montreal</span><span>22</span><span>50</span><span class="pt">52</span></div>
-            <div class="cl-row"><span class="rk">30</span><span class="nm">Anaheim</span><span>21</span><span>51</span><span class="pt">50</span></div>
-            <div class="cl-row"><span class="rk">31</span><span class="nm">Chicago</span><span>20</span><span>52</span><span class="pt">48</span></div>
-            <div class="cl-row"><span class="rk">32</span><span class="nm">San Jose</span><span>19</span><span>53</span><span class="pt">46</span></div>
-          </div>
+        <div class="cl-grid" id="nhl-classement">
+          <div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">Chargement…</div>
         </div>
       </div>
 
@@ -1860,14 +1691,218 @@ document.querySelectorAll('.rxn, .rxn-chip').forEach(chip => {
   });
 });
 
-/* Meneurs sub-controls (purely visual for mockup) */
+/* ─────────────────────────────────────────────────────────────
+   NHL Stats — fetch /api/nhl proxy (Matchs / Meneurs / Bracket / Classement)
+   ───────────────────────────────────────────────────────────── */
+const NHL_SEASON = '20252026';
+const NHL_PLAYOFF_YEAR = 2026;
+const escHtml = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const nhl = {
+  loaded: false,
+  loading: false,
+  data: { scores: [], leaders: { season: {}, playoffs: {} }, bracket: null, standings: [] },
+  ui: { meneursMode: 'season', meneursCat: 'points', clTab: 'ALL' },
+};
+
+const notAvailableHTML = msg => `<div class="panel-loading" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--ink-3);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase">${msg}</div>`;
+
+function nhlPath(p) { return '/api/nhl?path=' + encodeURIComponent(p); }
+
+async function loadNHL() {
+  if (nhl.loaded || nhl.loading) return;
+  nhl.loading = true;
+  try {
+    const [scoresRes,
+      sPts, sGoals, sAssists,
+      pPts, pGoals, pAssists,
+      standRes, bracketRes,
+    ] = await Promise.all([
+      fetch(nhlPath('score/now')).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/2?categories=points&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/2?categories=goals&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/2?categories=assists&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/3?categories=points&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/3?categories=goals&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`skater-stats-leaders/${NHL_SEASON}/3?categories=assists&limit=10`)).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath('standings/now')).then(r=>r.json()).catch(()=>({})),
+      fetch(nhlPath(`playoff-bracket/${NHL_PLAYOFF_YEAR}`)).then(r=>r.json()).catch(()=>({})),
+    ]);
+    nhl.data.scores = scoresRes.games || [];
+    nhl.data.leaders = {
+      season:   { points: sPts.points || [], goals: sGoals.goals || [], assists: sAssists.assists || [] },
+      playoffs: { points: pPts.points || [], goals: pGoals.goals || [], assists: pAssists.assists || [] },
+    };
+    nhl.data.standings = standRes.standings || [];
+    nhl.data.bracket = bracketRes;
+    nhl.loaded = true;
+  } catch (e) {
+    console.error('NHL load failed', e);
+  } finally {
+    nhl.loading = false;
+    renderAllNHL();
+  }
+}
+
+/* ── Matchs (live + à venir aujourd'hui) */
+function renderMatchs() {
+  const el = document.getElementById('nhl-matchs'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const games = nhl.data.scores;
+  if (!games.length) { el.innerHTML = notAvailableHTML('Aucun match aujourd\'hui'); return; }
+
+  const live = games.filter(g => g.gameState === 'LIVE' || g.gameState === 'CRIT');
+  const upcoming = games.filter(g => g.gameState !== 'LIVE' && g.gameState !== 'CRIT' && g.gameState !== 'OFF' && g.gameState !== 'FINAL');
+  const finalGames = games.filter(g => g.gameState === 'OFF' || g.gameState === 'FINAL');
+  const pick = (live.length ? live : (upcoming.length ? upcoming : finalGames)).slice(0, 6);
+
+  el.innerHTML = pick.map(g => {
+    const isLive  = g.gameState === 'LIVE' || g.gameState === 'CRIT';
+    const isFinal = g.gameState === 'OFF' || g.gameState === 'FINAL';
+    const away = g.awayTeam || {}, home = g.homeTeam || {};
+    const aScore = away.score ?? 0, hScore = home.score ?? 0;
+    const aWin = (isLive || isFinal) && aScore > hScore;
+    const hWin = (isLive || isFinal) && hScore > aScore;
+    const state = isFinal ? 'Final'
+                 : isLive ? `Live · ${g.periodDescriptor?.periodType === 'OT' ? 'OT' : (g.periodDescriptor?.number || '')}${g.periodDescriptor?.number && g.periodDescriptor?.periodType !== 'OT' ? 'e période' : ''}`
+                 : g.startTimeUTC ? new Date(g.startTimeUTC).toLocaleTimeString('fr-CA',{hour:'2-digit',minute:'2-digit'}) : 'À venir';
+    const venue = g.venue?.default || '';
+    return `<div class="match-card">
+      <div class="match-meta">
+        ${isLive ? `<span class="match-live"><span class="d"></span>${escHtml(state)}</span>` : `<span>${escHtml(state)}</span>`}
+        <span>${escHtml(venue)}</span>
+      </div>
+      <div class="match-row"><span class="match-team${aWin?' lead':''}">${escHtml(away.placeName?.default || away.abbrev || '')}</span><span class="match-score">${aScore}</span></div>
+      <div class="match-row"><span class="match-team${hWin?' lead':''}">${escHtml(home.placeName?.default || home.abbrev || '')}</span><span class="match-score">${hScore}</span></div>
+    </div>`;
+  }).join('');
+}
+
+/* ── Meneurs (2 colonnes × 5) */
+function renderMeneurs() {
+  const el = document.getElementById('nhl-meneurs'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const players = (nhl.data.leaders[nhl.ui.meneursMode] || {})[nhl.ui.meneursCat] || [];
+  if (!players.length) { el.innerHTML = notAvailableHTML('Données non disponibles'); return; }
+
+  const top10 = players.slice(0, 10);
+  const col = arr => arr.map((p, i) => {
+    const rank = arr === top10.slice(0,5) ? i + 1 : i + 6;
+    const isTop = rank <= 3;
+    const first = (p.firstName?.default || '').slice(0,1);
+    const last  = p.lastName?.default || p.firstName?.default || '';
+    const team  = typeof p.teamAbbrev === 'object' ? (p.teamAbbrev?.default || '') : (p.teamAbbrev || '');
+    const pos   = p.position || '';
+    return `<div class="meneur-row${isTop?' top':''}">
+      <div class="meneur-rank">${rank}</div>
+      <div><div class="meneur-name">${escHtml(first)}. ${escHtml(last)}</div><div class="meneur-team">${escHtml(team)}${pos?' · '+escHtml(pos):''}</div></div>
+      <div class="meneur-stat">${p.value || 0}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="meneurs-col">${col(top10.slice(0,5))}</div><div class="meneurs-col">${col(top10.slice(5,10))}</div>`;
+}
+
+/* ── Bracket (4 colonnes par playoffRound) */
+function renderBracket() {
+  const el = document.getElementById('nhl-bracket'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const series = nhl.data.bracket?.series || [];
+  if (!series.length) { el.innerHTML = notAvailableHTML('Bracket non disponible'); return; }
+
+  const rounds = {1:[], 2:[], 3:[], 4:[]};
+  for (const s of series) {
+    const r = s.playoffRound || s.roundNumber || 1;
+    if (rounds[r]) rounds[r].push(s);
+  }
+  const labels = {1:'1er tour', 2:'Demi-finales', 3:'Finales conf.', 4:'Finale Stanley'};
+
+  el.innerHTML = [1,2,3,4].map(r => {
+    const ss = rounds[r];
+    const cards = ss.length ? ss.map(s => {
+      const top = s.topSeedTeam || {}, bot = s.bottomSeedTeam || {};
+      const tW = s.topSeedWins || 0, bW = s.bottomSeedWins || 0;
+      const done = tW >= 4 || bW >= 4;
+      const tWon = done && tW > bW, bWon = done && bW > tW;
+      return `<div class="br-card">
+        <div class="br-row${tWon?' win':''}"><span class="t"><span class="dot"></span>${escHtml(top.placeName?.default || top.abbrev || '—')}</span><span class="s">${tW}</span></div>
+        <div class="br-row${bWon?' win':''}"><span class="t"><span class="dot"></span>${escHtml(bot.placeName?.default || bot.abbrev || '—')}</span><span class="s">${bW}</span></div>
+      </div>`;
+    }).join('') : '<div class="br-empty">En attente</div>';
+    return `<div><div class="br-col-head">${labels[r]}</div><div class="br-col">${cards}</div></div>`;
+  }).join('');
+}
+
+/* ── Classement (2 colonnes × 16 rangs) avec filtre conf/div */
+function renderClassement() {
+  const el = document.getElementById('nhl-classement'); if (!el) return;
+  if (!isNhlContext()) { el.innerHTML = notAvailableHTML('Disponible pour Hockey · NHL'); return; }
+  if (!nhl.loaded)     { el.innerHTML = notAvailableHTML('Chargement…'); return; }
+
+  const all = nhl.data.standings;
+  if (!all.length) { el.innerHTML = notAvailableHTML('Classement non disponible'); return; }
+
+  const tab = nhl.ui.clTab;
+  let filtered, cutoff;
+  if      (tab === 'ALL') { filtered = [...all]; cutoff = -1; }
+  else if (tab === 'E')   { filtered = all.filter(t=>t.conferenceAbbrev==='E'); cutoff = 8; }
+  else if (tab === 'W')   { filtered = all.filter(t=>t.conferenceAbbrev==='W'); cutoff = 8; }
+  else                    { filtered = all.filter(t=>t.divisionAbbrev===tab); cutoff = 3; }
+  filtered.sort((a,b) => (b.points||0)-(a.points||0) || (b.wins||0)-(a.wins||0));
+
+  const half = Math.ceil(filtered.length / 2);
+  const head = `<div class="cl-head"><span>#</span><span>Équipe</span><span>V</span><span>D</span><span>Pts</span></div>`;
+  const renderRows = (arr, base) => arr.map((t, i) => {
+    const rank = base + i;
+    const abbr = typeof t.teamAbbrev === 'object' ? (t.teamAbbrev?.default || '') : (t.teamAbbrev || '');
+    const inPo = cutoff > 0 && rank <= cutoff;
+    return `<div class="cl-row${inPo?' top':''}"><span class="rk">${rank}</span><span class="nm">${escHtml(t.teamName?.default || abbr)}</span><span>${t.wins||0}</span><span>${t.losses||0}</span><span class="pt">${t.points||0}</span></div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="cl-col">${head}${renderRows(filtered.slice(0, half), 1)}</div>
+    <div class="cl-col">${head}${renderRows(filtered.slice(half), half + 1)}</div>`;
+}
+
+function renderAllNHL() {
+  renderMatchs();
+  renderMeneurs();
+  renderBracket();
+  renderClassement();
+}
+
+function isNhlContext() {
+  return state.sport === 'hockey' && state.league === 'nhl';
+}
+
+/* Meneurs + Classement sub-controls — hook to data attrs */
 document.querySelectorAll('.mc-group').forEach(g => {
+  const kind = g.dataset.mc;
   g.querySelectorAll('button').forEach(b => {
     b.addEventListener('click', () => {
       g.querySelectorAll('button').forEach(x => x.classList.toggle('active', x === b));
+      if (kind === 'mode')  { nhl.ui.meneursMode = b.dataset.val; renderMeneurs(); }
+      if (kind === 'cat')   { nhl.ui.meneursCat  = b.dataset.val; renderMeneurs(); }
+      if (kind === 'cltab') { nhl.ui.clTab       = b.dataset.val; renderClassement(); }
     });
   });
 });
+
+/* Re-render NHL panels when sport/league changes */
+document.querySelectorAll('.tab-pill, .tab-chip').forEach(b => {
+  b.addEventListener('click', () => {
+    if (isNhlContext()) { loadNHL().then(renderAllNHL); renderAllNHL(); }
+    else                { renderAllNHL(); }
+  });
+});
+
+/* Initial load (default = hockey + nhl) */
+if (isNhlContext()) loadNHL();
 
 /* ─────────────────────────────────────────────────────────────
    Sorties à venir — fetch api.hobbyempire.org/api/releases/upcoming
