@@ -14,8 +14,7 @@
 /* ── Announcements board ─────────────────────────────────────── */
 .announce-section {
   padding: 32px 48px 24px;
-  background: #fff; /* fond blanc pour marier les coins de l'image */
-  border-radius: var(--r-md);
+  /* pas de fond forcé — l'image a déjà des coins transparents */
 }
 .announce-header {
   display: flex;
@@ -167,7 +166,7 @@
   position: absolute;
   inset: 0;
   background: url('/sticky-note.png') center / 100% 100% no-repeat;
-  mix-blend-mode: multiply;
+  /* pas de mix-blend-mode — l'image PNG a déjà un fond transparent (alpha=0 sur les coins) */
   pointer-events: none;
   z-index: 0;
 }
