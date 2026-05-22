@@ -585,12 +585,53 @@ body {
 @media (max-width: 900px) {
   .sb { display: none; }
   body { display: block; }
-  .cal-page { padding: 16px 14px 24px; }
-  .toolbar { padding: 12px 14px; }
-  .cert { padding: 10px 14px; }
+  .cal-page { padding: 14px 10px 24px; }
+  .toolbar { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+  .cert { padding: 8px 14px; }
+  .cert-splash { height: 36px; margin: -6px 0; }
+  .cert-right { display: none; }
+  .cert-bc { gap: 8px; font-size: 9px; letter-spacing: .12em; }
   .month-name { font-size: 26px; }
-  .cell { min-height: 96px; padding: 6px; }
-  .cell-num { font-size: 14px; }
+  .cal-grid { grid-auto-rows: minmax(86px, auto); gap: 3px; }
+  .cal-dow-row { gap: 3px; }
+  .cell { min-height: 86px; padding: 5px; border-radius: 6px; gap: 4px; }
+  .cell-num { font-size: 13px; }
+  .cell.today .cell-num { width: 22px; height: 22px; font-size: 11px; }
+  .cal-dow { padding: 6px 4px; font-size: 9px; letter-spacing: .12em; }
+  .chip { padding: 4px 6px; gap: 1px; }
+  .chip-sport { font-size: 7.5px; letter-spacing: .12em; }
+  .chip-time { font-size: 8px; }
+  .chip-name { font-size: 10px; }
+  .chip-vendor { font-size: 8px; }
+  /* Legend wraps */
+  .legend { flex-direction: column; align-items: flex-start; gap: 10px; padding: 10px 12px; }
+  .legend-right { font-size: 9px; letter-spacing: .10em; flex-wrap: wrap; }
+  /* Side panel full screen */
+  .panel { width: 100%; max-width: 100%; }
+}
+@media (max-width: 640px) {
+  .cert-splash { display: none; }
+  .cert-bc { font-size: 8.5px; letter-spacing: .10em; }
+  .cert-bc .sep { margin: 0 4px; }
+  .tb-left { flex-wrap: wrap; }
+  .tb-right { width: 100%; justify-content: space-between; }
+  .view-seg { flex: 1; }
+  .view-seg button { flex: 1; padding: 7px 8px; font-size: 9px; }
+  .month-name { font-size: 22px; }
+  .year-num { font-size: 12px; }
+  /* Cells very compact — show day number + dots only */
+  .cell { min-height: 64px; padding: 4px; }
+  .cell-num { font-size: 11px; }
+  /* Hide chip text, show colored dots */
+  .chip {
+    padding: 2px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .chip-vendor, .chip-time { display: none; }
+  .chip-name { font-size: 9px; }
+  .chip-head .chip-sport { font-size: 7px; }
 }
 </style>
 </head>

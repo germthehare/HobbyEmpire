@@ -560,11 +560,41 @@ body {
 @media (max-width: 900px) {
   .sb { display: none; }
   body { display: block; }
-  .page { padding: 24px 18px 48px; }
-  .toolbar { padding: 12px 18px; }
-  .cert { padding: 10px 18px; }
-  .hist-title { font-size: 38px; }
+  .page { padding: 20px 14px 40px; }
+  .toolbar { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+  .cert { padding: 8px 14px; }
+  .cert-splash { height: 36px; margin: -6px 0; }
+  .cert-right { display: none; }
+  .cert-bc { gap: 8px; font-size: 9px; letter-spacing: .12em; }
+  .hist-title { font-size: clamp(28px, 8vw, 38px); }
   .tbl td.mono, .tbl td.date { font-size: 10px; }
+  /* Tables scroll horizontal on mobile */
+  #hist-list { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #hist-list .tbl { min-width: 720px; }
+  /* Live calc strip stacks */
+  .live-strip { grid-template-columns: 1fr 1fr; padding: 14px 16px; }
+  .live-tag { grid-column: 1 / -1; border-right: 0; padding-right: 0; margin: 0 0 10px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+  /* Save row stacks */
+  .save-row { flex-direction: column; }
+  .btn-secondary { width: 100%; }
+  /* History filters wrap */
+  .hist-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .hist-filters { width: 100%; overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .hist-filters::-webkit-scrollbar { display: none; }
+  .hist-pill { flex: 0 0 auto; white-space: nowrap; }
+  .hist-search-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .cert-splash { display: none; }
+  .cert-bc { font-size: 8.5px; letter-spacing: .10em; }
+  .cert-bc .sep { margin: 0 4px; }
+  .live-cell .val { font-size: 22px; }
+  .sec-head { flex-wrap: wrap; gap: 6px; }
+  .sp-save-btn { padding: 14px 20px; font-size: 11px; gap: 8px; }
+  .sp-save-btn img { width: 24px; height: 24px; }
+  /* Toolbar tabs more compact */
+  .toolbar-tab { padding: 8px 10px; font-size: 10px; }
+  .toolbar-tab.active::after { left: 8px; right: 8px; }
 }
 </style>
 </head>

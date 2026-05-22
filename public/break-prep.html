@@ -737,12 +737,49 @@ body {
 @media (max-width: 900px) {
   .sb { display: none; }
   body { display: block; }
-  .page { padding: 24px 18px 36px; }
-  .toolbar { padding: 12px 18px; }
-  .cert { padding: 10px 18px; }
-  .fiche-title { font-size: 24px; }
+  .page { padding: 20px 14px 36px; }
+  .toolbar { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+  .cert { padding: 8px 14px; }
+  .cert-splash { height: 36px; margin: -6px 0; }
+  .cert-right { display: none; }
+  .cert-bc { gap: 8px; font-size: 9px; letter-spacing: .12em; }
+  .fiche-title { font-size: clamp(22px, 6vw, 28px); }
   .rookies-grid { grid-template-columns: 1fr; }
-  .live-title { font-size: 22px; }
+  .live-title { font-size: clamp(20px, 6vw, 26px); }
+  .grade-grid { grid-template-columns: 1fr; }
+  /* Fiche sections compact */
+  .fiche-header, .fiche-summary, .fiche-section, .fiche-footer { padding-left: 16px; padding-right: 16px; }
+  .fiche-stats { gap: 12px; }
+  .fiche-stat img { width: 26px; height: 26px; }
+  .fiche-stat { font-size: 10px; }
+  /* Watch row */
+  .watch-row { grid-template-columns: 44px 1fr auto; gap: 10px; }
+  .watch-row img.splash { width: 40px; height: 40px; }
+  .watch-row .name { font-size: 13px; }
+  .watch-row .tag { font-size: 10px; }
+  .watch-row .price { font-size: 12px; }
+  /* Legend row */
+  .legend-row { grid-template-columns: 36px 1fr auto; gap: 10px; }
+  .legend-row img.coeur { width: 32px; height: 32px; }
+  .legend-row .ltag { display: none; }
+  /* Search row */
+  .search-row { grid-template-columns: 1fr; }
+  .valeur-btn { padding: 14px 18px; min-width: auto; width: 100%; }
+}
+@media (max-width: 640px) {
+  .cert-splash { display: none; }
+  .cert-bc { font-size: 8.5px; letter-spacing: .10em; }
+  .cert-bc .sep { margin: 0 4px; }
+  /* Toolbar tabs compact */
+  .toolbar-tab { padding: 8px 10px; font-size: 10px; }
+  .toolbar-tab.active::after { left: 8px; right: 8px; }
+  /* Empty fiche compact */
+  .empty-fiche { padding: 50px 24px; }
+  .empty-fiche img.ico-splash { width: 72px; }
+  /* Fiche footer wraps */
+  .fiche-footer { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .fiche-footer > div { width: 100%; }
+  .fiche-footer .btn { flex: 1; justify-content: center; }
 }
 </style>
 </head>

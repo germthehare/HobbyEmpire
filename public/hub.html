@@ -483,10 +483,42 @@ body {
 @media (max-width: 900px) {
   .sb { display: none; }
   body { display: block; }
-  .page { padding: 24px 18px 36px; }
-  .toolbar { padding: 12px 18px; }
-  .cert { padding: 10px 18px; }
+  .page { padding: 20px 14px 36px; }
+  .toolbar { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+  .cert { padding: 8px 14px; }
+  .cert-splash { height: 36px; margin: -6px 0; }
+  .cert-right { display: none; }
+  .cert-bc { gap: 8px; font-size: 9px; letter-spacing: .12em; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .kpi-value { font-size: 32px; }
+  /* Cards padding tight */
+  .card { padding: 18px 18px; }
+  /* DataTables scrollable */
+  .card .dt { min-width: 540px; }
+  .card { overflow-x: auto; }
+  /* Chart wrap shorter */
+  .chart-wrap { height: 180px; }
+}
+@media (max-width: 640px) {
+  .cert-splash { display: none; }
+  .cert-bc { font-size: 8.5px; letter-spacing: .10em; }
+  .cert-bc .sep { margin: 0 4px; }
   .kpi-grid { grid-template-columns: 1fr; }
+  .kpi-value { font-size: 36px; }
+  /* Toolbar actions wrap */
+  .toolbar-actions { width: 100%; }
+  .toolbar-actions .btn { flex: 1; justify-content: center; }
+  .month-select { flex: 1; }
+  /* Card head wraps */
+  .card-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .card-head > div:last-child { width: 100%; }
+  .pills { width: 100%; }
+  .pills .pill { flex: 1; text-align: center; }
+  /* Tables — keep min-width but shrink rows */
+  .dt thead th, .dt td { padding: 9px 10px; font-size: 12px; }
+  .av-circle { width: 24px; height: 24px; font-size: 10px; }
+  /* Chart bars labels */
+  .chart-bar-val { font-size: 9px; top: -16px; }
 }
 </style>
 </head>
