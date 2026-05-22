@@ -910,7 +910,7 @@ function parseKey(key) {
     if (reSuf.test(s)) { sport = sp; s = s.replace(reSuf, ''); break; }
     if (rePre.test(s)) { sport = sp; s = s.replace(rePre, ''); break; }
   }
-  const yearMatch = s.match(/^(\d{4}(?:-\d{2})?)\s*(.*)$/);
+  const yearMatch = s.match(/^(\d{4}(?:-\d{2,4})?)\s*(.*)$/);
   let year = '', name = s;
   if (yearMatch) { year = yearMatch[1]; name = yearMatch[2]; }
   return { sport, year, name: name.trim() };
