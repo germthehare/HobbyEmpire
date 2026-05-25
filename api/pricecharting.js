@@ -1,8 +1,9 @@
 // PriceCharting proxy — Pokémon card data
 // Env vars:
-//   PRICECHARTING_TOKEN    — required, your PriceCharting API token
-//   KV_REST_API_URL        — optional, Vercel KV REST endpoint (for price-change tracking)
-//   KV_REST_API_TOKEN      — optional, Vercel KV REST token
+//   PRICECHARTING_TOKEN              — required, your PriceCharting API token
+//   KV_REST_API_URL / UPSTASH_REDIS_REST_URL     — optional, REST endpoint (for price-change tracking)
+//   KV_REST_API_TOKEN / UPSTASH_REDIS_REST_TOKEN — optional, REST token
+//   (Vercel legacy KV uses KV_*, Vercel Marketplace "Upstash for Redis" uses UPSTASH_*)
 //
 // Actions:
 //   ?action=search&q=...        → search products (max ~20)
@@ -105,17 +106,25 @@ function mapCardRow(r) {
 // Writes a daily snapshot per console, looks back 1-14 days to compute deltas.
 // Gracefully no-ops if KV env vars are missing.
 
+function kvCreds() {
+  const url   = process.env.KV_REST_API_URL   || process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  return { url, token };
+}
+
 function kvConfigured() {
-  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+  const { url, token } = kvCreds();
+  return Boolean(url && token);
 }
 
 async function kvCmd(args) {
-  if (!kvConfigured()) return null;
+  const { url, token } = kvCreds();
+  if (!url || !token) return null;
   try {
-    const r = await fetch(process.env.KV_REST_API_URL, {
+    const r = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(args),
