@@ -1288,7 +1288,7 @@ async function fetchChecklist(key) {
 }
 
 // ════════════════════ Pokémon (PriceCharting) ════════════════════
-// Adhoc Pokémon products (from free search) use key prefix `pkm:<slug>|<name>`
+// Adhoc Pokémon products (from free search) use key prefix `pkm:<consoleName>`
 // so generatePrep can distinguish them from curated checklist keys.
 const PKM_PREFIX = 'pkm:';
 
@@ -1304,19 +1304,25 @@ const PKM_CONSOLE_CACHE = {};
 
 async function resolvePokemonConsole(key) {
   if (key.startsWith(PKM_PREFIX)) {
-    // adhoc: "pkm:<slug>|<displayName>"
-    return { slug: key.slice(PKM_PREFIX.length).split('|')[0], name: key.slice(PKM_PREFIX.length).split('|').slice(1).join('|') || key };
+    const consoleName = key.slice(PKM_PREFIX.length);
+    return { consoleName, name: consoleName, brand: 'Pokémon TCG', format: 'Booster Box', year: '', summary: '' };
   }
   if (PKM_CONSOLE_CACHE[key]) return PKM_CONSOLE_CACHE[key];
   const d = await fetchChecklist(key);
-  const slug = d.pricechartingConsole || '';
-  const out = { slug, name: key, summary: d.summary || '', brand: d.brand || 'Pokémon TCG', format: d.format || 'Booster Box', year: d.year || '' };
+  const out = {
+    consoleName: d.pricechartingConsole || '',
+    name: key,
+    summary: d.summary || '',
+    brand: d.brand || 'Pokémon TCG',
+    format: d.format || 'Booster Box',
+    year: d.year || '',
+  };
   PKM_CONSOLE_CACHE[key] = out;
   return out;
 }
 
-async function fetchPokemonSet(slug) {
-  const r = await fetch('/api/pricecharting?action=set&console=' + encodeURIComponent(slug));
+async function fetchPokemonSet(consoleName) {
+  const r = await fetch('/api/pricecharting?action=set&console=' + encodeURIComponent(consoleName));
   if (!r.ok) {
     const e = await r.json().catch(() => ({}));
     throw new Error(e.error || `Erreur PriceCharting (${r.status})`);
@@ -1338,20 +1344,19 @@ async function runPokemonSearch() {
       return;
     }
     const d = await r.json();
-    const sets = {};
-    // Group products by console (each Pokémon set = console). PriceCharting search returns cards;
+    // Group products by console-name (each Pokémon set = console). PriceCharting search returns cards;
     // we surface their consoles as "sets" the user can add.
+    const sets = {};
     (d.products || []).forEach(p => {
-      const slug = p.consoleSlug || '';
       const name = p.console || '';
-      if (!slug || !name) return;
-      if (!sets[slug]) sets[slug] = { slug, name, hits: 0 };
-      sets[slug].hits++;
+      if (!name) return;
+      if (!sets[name]) sets[name] = { name, hits: 0 };
+      sets[name].hits++;
     });
     const list = Object.values(sets).sort((a, b) => b.hits - a.hits).slice(0, 12);
     if (!list.length) { out.innerHTML = '<div class="pkm-search-status">Aucun set trouvé</div>'; return; }
     out.innerHTML = list.map(s => `
-      <div class="pkm-result-row" onclick="addPokemonAdhoc('${esc(s.slug)}', '${esc(s.name)}')">
+      <div class="pkm-result-row" onclick="addPokemonAdhoc('${esc(s.name)}')">
         <div>
           <div class="pkm-name">${esc(s.name)}</div>
           <div class="pkm-meta">${s.hits} carte${s.hits > 1 ? 's' : ''} matchée${s.hits > 1 ? 's' : ''}</div>
@@ -1363,8 +1368,9 @@ async function runPokemonSearch() {
   }
 }
 
-function addPokemonAdhoc(slug, name) {
-  const key = `${PKM_PREFIX}${slug}|${name}`;
+function addPokemonAdhoc(consoleName) {
+  const key = `${PKM_PREFIX}${consoleName}`;
+  const name = consoleName;
   if (document.querySelector(`.product-chip[data-key="${esc(key)}"]`)) return;
   const chip = document.createElement('div');
   chip.className = 'product-chip';
@@ -1411,24 +1417,28 @@ async function generatePrep() {
     const pkmResults = [];
     for (const p of pkmKeys) {
       const meta = await resolvePokemonConsole(p);
-      if (!meta.slug) {
+      if (!meta.consoleName) {
         pkmResults.push({ _error: `Set Pokémon "${p}" sans pricechartingConsole défini`, productKey: p, _pokemon: true });
         continue;
       }
-      const setData = await fetchPokemonSet(meta.slug);
-      pkmResults.push({
-        _pokemon: true,
-        productKey: p,
-        brand: meta.brand || 'Pokémon TCG',
-        year: meta.year || '',
-        sport: 'Pokémon',
-        format: meta.format || 'Booster Box',
-        summary: meta.summary || '',
-        name: meta.name,
-        consoleSlug: meta.slug,
-        cards: setData.cards || [],
-        count: setData.count || 0,
-      });
+      try {
+        const setData = await fetchPokemonSet(meta.consoleName);
+        pkmResults.push({
+          _pokemon: true,
+          productKey: p,
+          brand: meta.brand || 'Pokémon TCG',
+          year: meta.year || '',
+          sport: 'Pokémon',
+          format: meta.format || 'Booster Box',
+          summary: meta.summary || '',
+          name: meta.name,
+          consoleName: meta.consoleName,
+          cards: setData.cards || [],
+          count: setData.count || 0,
+        });
+      } catch (err) {
+        pkmResults.push({ _error: err.message, productKey: p, _pokemon: true });
+      }
     }
 
     const results = [...pkmResults];

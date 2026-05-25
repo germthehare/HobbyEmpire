@@ -2,26 +2,32 @@
 // Env var: PRICECHARTING_TOKEN
 //
 // Actions:
-//   ?action=search&q=...           → search products (max ~20 results)
-//   ?action=product&id=...         → single product details
-//   ?action=set&console=SLUG       → all cards in a Pokémon set (CSV → JSON)
+//   ?action=search&q=...        → search products (max ~20)
+//   ?action=product&id=...      → single product details
+//   ?action=set&console=NAME    → all cards in a Pokémon set (filters master CSV)
+//   ?action=consoles            → list of all Pokémon set console-names
 //
-// Price fields on PriceCharting for trading cards:
-//   loose-price   → Raw / Ungraded
-//   graded-price  → PSA 9 (Grade 9)
-//   new-price     → PSA 10 (Grade 10)
-//   manual-only-price → BGS 10
-//   bgs-10-price  → BGS 10 Black Label
+// Price field mapping for Pokémon trading cards:
+//   loose-price        → Raw / Ungraded
+//   cib-price          → Grade 7
+//   new-price          → Grade 8
+//   graded-price       → Grade 9  / PSA 9
+//   box-only-price     → Grade 9.5
+//   manual-only-price  → Grade 10 / PSA 10
+//   bgs-10-price       → BGS 10 Black Label
+//   condition-17-price → CGC 10
+//   condition-18-price → SGC 10
 //
 // All prices returned in cents — frontend divides by 100 for display.
 
 const CACHE = new Map();
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1h
+const CSV_TTL_MS   = 6 * 60 * 60 * 1000; // 6h for the big CSV
 
-function getCached(key) {
+function getCached(key, ttl = CACHE_TTL_MS) {
   const hit = CACHE.get(key);
   if (!hit) return null;
-  if (Date.now() - hit.t > CACHE_TTL_MS) { CACHE.delete(key); return null; }
+  if (Date.now() - hit.t > ttl) { CACHE.delete(key); return null; }
   return hit.v;
 }
 
@@ -30,7 +36,7 @@ function setCached(key, v) {
 }
 
 function parseCSV(text) {
-  const lines = text.split(/\r?\n/).filter(Boolean);
+  const lines = text.split(/\r?\n/);
   if (lines.length < 2) return [];
   const splitRow = (row) => {
     const cells = [];
@@ -50,33 +56,56 @@ function parseCSV(text) {
     cells.push(cur);
     return cells;
   };
-  const headers = splitRow(lines[0]).map(h => h.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''));
-  return lines.slice(1).map(line => {
-    const cells = splitRow(line);
+  const headers = splitRow(lines[0]);
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    if (!lines[i]) continue;
+    const cells = splitRow(lines[i]);
     const row = {};
-    headers.forEach((h, i) => { row[h] = cells[i] ?? ''; });
-    return row;
-  });
+    for (let j = 0; j < headers.length; j++) row[headers[j]] = cells[j] ?? '';
+    rows.push(row);
+  }
+  return rows;
 }
 
 function priceToCents(s) {
-  if (!s) return null;
-  const n = parseFloat(String(s).replace(/[^0-9.\-]/g, ''));
-  if (!isFinite(n)) return null;
-  return Math.round(n * 100);
+  if (s == null || s === '') return null;
+  // Values can be "$12.34" or "1234" (cents int). Normalize.
+  const str = String(s).trim();
+  if (!str) return null;
+  if (str.startsWith('$')) {
+    const n = parseFloat(str.replace(/[^0-9.\-]/g, ''));
+    return isFinite(n) ? Math.round(n * 100) : null;
+  }
+  const n = parseInt(str, 10);
+  return isFinite(n) ? n : null;
 }
 
 function mapCardRow(r) {
   return {
-    id:          r['id'] || r['product-id'] || '',
-    name:        r['product-name'] || r['name'] || '',
-    console:     r['console-name'] || r['console'] || '',
+    id:          r['id'] || '',
+    name:        r['product-name'] || '',
+    console:     r['console-name'] || '',
     raw:         priceToCents(r['loose-price']),
     psa9:        priceToCents(r['graded-price']),
-    psa10:       priceToCents(r['new-price'] || r['manual-only-price']),
+    psa10:       priceToCents(r['manual-only-price']),
     bgs10:       priceToCents(r['bgs-10-price']),
+    cgc10:       priceToCents(r['condition-17-price']),
+    salesVolume: parseInt(r['sales-volume'] || '0', 10) || 0,
     releaseDate: r['release-date'] || '',
   };
+}
+
+async function fetchPokemonMasterCSV(token) {
+  const cached = getCached('csv:pokemon', CSV_TTL_MS);
+  if (cached) return cached;
+  const url = `https://www.pricecharting.com/price-guide/download-custom?t=${encodeURIComponent(token)}&category=pokemon-cards`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`PriceCharting CSV fetch failed: ${r.status}`);
+  const csv = await r.text();
+  const rows = parseCSV(csv);
+  setCached('csv:pokemon', rows);
+  return rows;
 }
 
 export default async function handler(req, res) {
@@ -101,13 +130,12 @@ export default async function handler(req, res) {
       const data = await r.json();
       const products = (data?.products || []).map(p => ({
         id:          p.id,
-        name:        p['product-name'] || p.name || '',
+        name:        p['product-name'] || '',
         console:     p['console-name'] || '',
-        consoleSlug: p['console-slug'] || '',
         releaseDate: p['release-date'] || '',
         raw:         priceToCents(p['loose-price']),
         psa9:        priceToCents(p['graded-price']),
-        psa10:       priceToCents(p['new-price'] || p['manual-only-price']),
+        psa10:       priceToCents(p['manual-only-price']),
       }));
       const payload = { products };
       setCached(cacheKey, payload);
@@ -132,11 +160,10 @@ export default async function handler(req, res) {
         id:          data.id,
         name:        data['product-name'] || '',
         console:     data['console-name'] || '',
-        consoleSlug: data['console-slug'] || '',
         releaseDate: data['release-date'] || '',
         raw:         priceToCents(data['loose-price']),
         psa9:        priceToCents(data['graded-price']),
-        psa10:       priceToCents(data['new-price'] || data['manual-only-price']),
+        psa10:       priceToCents(data['manual-only-price']),
         bgs10:       priceToCents(data['bgs-10-price']),
       };
       setCached(cacheKey, product);
@@ -144,25 +171,56 @@ export default async function handler(req, res) {
       return res.status(200).json(product);
     }
 
+    if (action === 'consoles') {
+      const cacheKey = 'consoles';
+      const cached = getCached(cacheKey);
+      if (cached) {
+        res.setHeader('Cache-Control', 's-maxage=21600, stale-while-revalidate=86400');
+        return res.status(200).json(cached);
+      }
+      const rows = await fetchPokemonMasterCSV(token);
+      const counts = {};
+      for (const r of rows) {
+        const c = r['console-name'];
+        if (!c) continue;
+        counts[c] = (counts[c] || 0) + 1;
+      }
+      const consoles = Object.keys(counts).map(name => ({ name, cardCount: counts[name] }))
+        .sort((a, b) => b.cardCount - a.cardCount);
+      const payload = { consoles, total: consoles.length };
+      setCached(cacheKey, payload);
+      res.setHeader('Cache-Control', 's-maxage=21600, stale-while-revalidate=86400');
+      return res.status(200).json(payload);
+    }
+
     if (action === 'set') {
-      const slug = req.query?.console;
-      if (!slug) return res.status(400).json({ error: 'Missing console slug' });
-      const cacheKey = `set:${slug}`;
+      const consoleName = req.query?.console;
+      if (!consoleName) return res.status(400).json({ error: 'Missing console name' });
+      const cacheKey = `set:${consoleName}`;
       const cached = getCached(cacheKey);
       if (cached) {
         res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
         return res.status(200).json(cached);
       }
-      // PriceCharting CSV export per console
-      const url = `https://www.pricecharting.com/price-guide/download-custom?t=${encodeURIComponent(token)}&console=${encodeURIComponent(slug)}`;
-      const r = await fetch(url);
-      if (!r.ok) return res.status(502).json({ error: `PriceCharting set CSV failed: ${r.status}` });
-      const csv = await r.text();
-      const rows = parseCSV(csv);
-      const cards = rows.map(mapCardRow).filter(c => c.name);
-      // Default sort: PSA 10 desc, nulls last
+      const rows = await fetchPokemonMasterCSV(token);
+      const target = consoleName.toLowerCase();
+      const filtered = rows.filter(r => String(r['console-name'] || '').toLowerCase() === target);
+      if (!filtered.length) {
+        // Soft fallback — case-insensitive substring match (e.g. user typed shorter name)
+        const partial = rows.filter(r => String(r['console-name'] || '').toLowerCase().includes(target));
+        if (!partial.length) {
+          return res.status(404).json({ error: `Aucune carte trouvée pour "${consoleName}"`, hint: 'Vérifier le nom exact du set via ?action=consoles' });
+        }
+        // If partial yields multiple consoles, fail loudly so caller can refine
+        const distinct = [...new Set(partial.map(r => r['console-name']))];
+        if (distinct.length > 1) {
+          return res.status(400).json({ error: `Plusieurs sets matchent "${consoleName}": ${distinct.slice(0, 5).join(', ')}`, candidates: distinct });
+        }
+      }
+      const rowsToUse = filtered.length ? filtered : rows.filter(r => String(r['console-name'] || '').toLowerCase().includes(target));
+      const cards = rowsToUse.map(mapCardRow).filter(c => c.name);
       cards.sort((a, b) => (b.psa10 ?? -1) - (a.psa10 ?? -1));
-      const payload = { console: slug, count: cards.length, cards };
+      const payload = { console: consoleName, count: cards.length, cards };
       setCached(cacheKey, payload);
       res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
       return res.status(200).json(payload);
