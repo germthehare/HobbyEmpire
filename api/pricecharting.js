@@ -358,6 +358,18 @@ export default async function handler(req, res) {
       return res.status(200).json(payload);
     }
 
+    if (action === 'debug') {
+      // List env var names matching KV/Upstash/Redis patterns (NAMES ONLY, no values)
+      const interesting = Object.keys(process.env)
+        .filter(k => /^(KV_|UPSTASH_|REDIS_|STORAGE_)/i.test(k))
+        .sort();
+      return res.status(200).json({
+        kvConfigured: kvConfigured(),
+        envVarNames: interesting,
+        hasPriceChartingToken: !!process.env.PRICECHARTING_TOKEN,
+      });
+    }
+
     return res.status(400).json({ error: `Unknown action: ${action}` });
   } catch (e) {
     return res.status(500).json({ error: e.message });
