@@ -348,62 +348,142 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Vendeurs mini rows */
-.obj-vendeurs { display: grid; gap: 10px; }
-.obj-vendeur-row {
-  display: grid;
-  grid-template-columns: 130px 1fr 90px;
-  align-items: center;
-  gap: 14px;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--line);
+/* Vendeurs section title */
+.obj-vendeurs-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px;
 }
-.obj-vendeur-row:last-child { border-bottom: 0; }
-.obj-v-head {
-  display: flex; align-items: center; gap: 9px;
+.obj-vendeurs-eyebrow .count {
+  font-size: 9px; font-weight: 700;
+  color: var(--ink-3);
+  letter-spacing: 0.14em;
+}
+
+/* Cards grid */
+.obj-vendeurs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.obj-vcard {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px 16px;
+  display: flex; flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .15s, transform .12s;
+}
+.obj-vcard:hover { border-color: var(--line-strong); }
+.obj-vcard.done {
+  background: color-mix(in oklch, var(--pos), transparent 94%);
+  border-color: color-mix(in oklch, var(--pos), transparent 65%);
+}
+.obj-vcard.done::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--pos);
+}
+.obj-vcard.in-progress::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.obj-vcard.no-target { opacity: 0.65; }
+
+.obj-vcard-head {
+  display: flex; align-items: center;
+  gap: 10px;
 }
 .obj-v-avatar {
-  width: 22px; height: 22px;
-  border-radius: 5px;
+  width: 28px; height: 28px;
+  border-radius: 6px;
   background: var(--bg-ink);
   color: oklch(94% 0.008 80);
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 9px; font-weight: 700;
+  font-size: 11px; font-weight: 700;
   letter-spacing: 0.02em;
+  flex-shrink: 0;
 }
-.obj-v-name { font-size: 12.5px; font-weight: 700; }
-.obj-v-bars { display: flex; flex-direction: column; gap: 4px; }
-.obj-v-bar-row {
-  display: grid;
-  grid-template-columns: 40px 1fr 50px;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
+.obj-v-name {
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -0.005em;
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.obj-v-status {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.obj-v-status.done    { background: color-mix(in oklch, var(--pos), transparent 80%); color: var(--pos); }
+.obj-v-status.active  { background: color-mix(in oklch, var(--accent), transparent 82%); color: var(--accent); }
+.obj-v-status.empty   { background: var(--bg-2); color: var(--ink-3); }
+
+.obj-vcard-progress {
+  display: flex; align-items: baseline; gap: 6px;
+  margin-top: 4px;
+}
+.obj-vcard-pct {
+  font-size: 28px; font-weight: 900;
+  letter-spacing: -0.02em; line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.obj-vcard.done .obj-vcard-pct { color: var(--pos); }
+.obj-vcard.no-target .obj-vcard-pct { color: var(--ink-3); font-size: 16px; font-weight: 700; }
+.obj-vcard-of {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink-3);
 }
-.obj-v-bar {
-  height: 5px;
+
+.obj-vcard-bar {
+  height: 6px;
   background: var(--bg-2);
   border-radius: 3px;
   overflow: hidden;
 }
-.obj-v-bar-fill {
+.obj-vcard-bar-fill {
   height: 100%;
   background: var(--accent);
   border-radius: 3px;
   width: 0%;
   transition: width 0.4s ease;
 }
-.obj-v-bar-fill.complete { background: var(--pos); }
-.obj-v-pct {
-  text-align: right;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.02em;
+.obj-vcard.done .obj-vcard-bar-fill { background: var(--pos); }
+
+.obj-vcard-values {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 8px;
   font-variant-numeric: tabular-nums;
-  color: var(--ink-2);
 }
-.obj-v-pct.complete { color: var(--pos); }
+.obj-vcard-actual {
+  font-size: 14px; font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.obj-vcard.done .obj-vcard-actual { color: var(--pos); }
+.obj-vcard-target {
+  font-size: 11px; font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+}
+
+.obj-vcard-empty-msg {
+  font-size: 11px; font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+  font-style: italic;
+}
 
 .obj-empty {
   padding: 10px 0;
@@ -1282,45 +1362,75 @@ function renderObjectifs(current, monthLabel) {
     return;
   }
 
-  const rows = vendeursWithObj.map(name => {
+  // Build cards with computed progress
+  const cards = vendeursWithObj.map(name => {
     const o = objVend[name] || {};
     const vBreaks = current.filter(b => b.vendeur === name);
     const vRev = vBreaks.reduce((s, b) => s + (+b.revenuReel || 0), 0);
-    const vBen = vBreaks.reduce((s, b) => s + (+b.beneficeNet || 0), 0);
     const vN   = vBreaks.length;
-
-    const bars = [];
-    if (o.revenu > 0)  bars.push(miniBarRow('Revenu',  vRev, o.revenu, 'currency'));
-    if (o.breaks > 0)  bars.push(miniBarRow('Breaks',  vN,   o.breaks, 'count'));
-    // overall pct = revenu progress if available, else breaks
-    const overallPct = o.revenu > 0 ? Math.min(100, (vRev / o.revenu) * 100)
-                     : o.breaks > 0 ? Math.min(100, (vN / o.breaks) * 100)
-                     : 0;
-    const pctCls = overallPct >= 100 ? 'complete' : '';
-    const initial = (name.charAt(0) || '?').toUpperCase();
-
-    return `<div class="obj-vendeur-row">
-      <div class="obj-v-head">
-        <span class="obj-v-avatar">${esc(initial)}</span>
-        <span class="obj-v-name">${esc(name)}</span>
-      </div>
-      <div class="obj-v-bars">${bars.join('')}</div>
-      <span class="obj-v-pct ${pctCls}">${Math.round(overallPct)}%</span>
-    </div>`;
+    // overall pct: use revenu primary, fallback to breaks
+    const pctRev = o.revenu > 0 ? (vRev / o.revenu) * 100 : null;
+    const pctBrk = o.breaks > 0 ? (vN   / o.breaks) * 100 : null;
+    const overallPct = pctRev !== null ? pctRev : (pctBrk !== null ? pctBrk : 0);
+    const isDone = overallPct >= 100;
+    const isStart = overallPct <= 0;
+    return { name, o, vRev, vN, overallPct, isDone, isStart };
   });
 
-  wrap.innerHTML = rows.join('');
+  // Sort: done first (highest %), then in progress desc, then "not started" last
+  cards.sort((a, b) => b.overallPct - a.overallPct);
+
+  const doneCount = cards.filter(c => c.isDone).length;
+
+  wrap.innerHTML = `
+    <div class="obj-vendeurs-eyebrow">
+      <span>Vendeurs · cibles individuelles</span>
+      <span class="count">${doneCount}/${cards.length} atteint${cards.length > 1 ? 's' : ''}</span>
+    </div>
+    <div class="obj-vendeurs">${cards.map(renderVendeurCard).join('')}</div>
+  `;
 }
 
-function miniBarRow(label, actual, target, type) {
-  const pct = target > 0 ? Math.min(100, (actual / target) * 100) : 0;
-  const isComplete = pct >= 100;
-  const fmtA = type === 'currency' ? '$' + Math.round(actual).toLocaleString('fr-CA') : actual;
-  const fmtT = type === 'currency' ? '$' + Math.round(target).toLocaleString('fr-CA') : target;
-  return `<div class="obj-v-bar-row">
-    <span>${label}</span>
-    <span class="obj-v-bar"><span class="obj-v-bar-fill${isComplete ? ' complete' : ''}" style="width:${pct.toFixed(1)}%"></span></span>
-    <span style="text-align:right;color:var(--ink);">${fmtA}</span>
+function renderVendeurCard(c) {
+  const initial = (c.name.charAt(0) || '?').toUpperCase();
+  const pctRound = Math.round(c.overallPct);
+  const cardCls = c.isDone ? 'done' : (c.isStart ? 'no-target' : 'in-progress');
+  const statusCls = c.isDone ? 'done' : (c.isStart ? 'empty' : 'active');
+  const statusLbl = c.isDone ? '✓ Atteint' : (c.isStart ? 'À démarrer' : `${pctRound}% en cours`);
+
+  // Primary metric: revenu if set, else breaks
+  let valueLine = '';
+  let actual, target;
+  if (c.o.revenu > 0) {
+    actual = '$' + Math.round(c.vRev).toLocaleString('fr-CA');
+    target = 'sur $' + Math.round(c.o.revenu).toLocaleString('fr-CA');
+  } else if (c.o.breaks > 0) {
+    actual = `${c.vN} break${c.vN !== 1 ? 's' : ''}`;
+    target = `sur ${c.o.breaks}`;
+  } else {
+    actual = '—';
+    target = '';
+  }
+
+  const pctDisplay = Math.min(100, c.overallPct).toFixed(1);
+
+  return `<div class="obj-vcard ${cardCls}">
+    <div class="obj-vcard-head">
+      <span class="obj-v-avatar">${esc(initial)}</span>
+      <span class="obj-v-name">${esc(c.name)}</span>
+      <span class="obj-v-status ${statusCls}">${statusLbl}</span>
+    </div>
+    <div class="obj-vcard-progress">
+      <span class="obj-vcard-pct">${pctRound}%</span>
+      <span class="obj-vcard-of">de la cible</span>
+    </div>
+    <div class="obj-vcard-bar">
+      <div class="obj-vcard-bar-fill" style="width:${pctDisplay}%"></div>
+    </div>
+    <div class="obj-vcard-values">
+      <span class="obj-vcard-actual">${actual}</span>
+      <span class="obj-vcard-target">${target}</span>
+    </div>
   </div>`;
 }
 
