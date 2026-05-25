@@ -87,10 +87,13 @@ function priceToCents(s) {
 }
 
 function mapCardRow(r) {
+  const g = r['genre'] || '';
   return {
     id:          r['id'] || '',
     name:        r['product-name'] || '',
     console:     r['console-name'] || '',
+    genre:       g,
+    isSealed:    /sealed/i.test(g),
     raw:         priceToCents(r['loose-price']),
     psa9:        priceToCents(r['graded-price']),
     psa10:       priceToCents(r['manual-only-price']),

@@ -441,6 +441,54 @@ body {
 .pkm-sort-select:focus { outline: none; border-color: var(--accent); }
 .pkm-sort-select option:disabled { color: var(--ink-3); }
 
+.pkm-cards-only {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+}
+.pkm-cards-only input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--bg-3);
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+}
+.pkm-cards-only input:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.pkm-cards-only input:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px; top: -1px;
+  width: 4px; height: 8px;
+  border-right: 2px solid var(--accent-ink);
+  border-bottom: 2px solid var(--accent-ink);
+  transform: rotate(45deg);
+}
+.pkm-cards-only-text {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink);
+}
+.pkm-toggle-meta {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3);
+  padding-left: 4px;
+  border-left: 1px solid var(--line);
+}
+
 .pkm-grade-toggle {
   display: inline-flex;
   background: var(--bg-2);
@@ -1561,14 +1609,39 @@ function setPokemonGrade(ficheId, grade) {
   document.querySelectorAll(`#${ficheId} .pkm-grade-toggle button`).forEach(b => {
     b.classList.toggle('active', b.dataset.grade === grade);
   });
-  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(state.cards, grade, state.sort);
+  rerenderPokemonCards(ficheId);
 }
 
 function setPokemonSort(ficheId, sort) {
   const state = PKM_FICHE_STATE[ficheId];
   if (!state) return;
   state.sort = sort;
-  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(state.cards, state.grade, sort);
+  rerenderPokemonCards(ficheId);
+}
+
+function setPokemonCardsOnly(ficheId, on) {
+  const state = PKM_FICHE_STATE[ficheId];
+  if (!state) return;
+  state.cardsOnly = on;
+  // Update the count display in the toolbar
+  const countEl = document.getElementById(ficheId + '-count');
+  if (countEl) {
+    const visible = filterPokemonCards(state.cards, state.cardsOnly).length;
+    countEl.textContent = `${visible} carte${visible > 1 ? 's' : ''} listée${visible > 1 ? 's' : ''}`;
+  }
+  rerenderPokemonCards(ficheId);
+}
+
+function filterPokemonCards(cards, cardsOnly) {
+  if (!cardsOnly) return cards;
+  return cards.filter(c => !c.isSealed);
+}
+
+function rerenderPokemonCards(ficheId) {
+  const state = PKM_FICHE_STATE[ficheId];
+  if (!state) return;
+  const filtered = filterPokemonCards(state.cards, state.cardsOnly);
+  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(filtered, state.grade, state.sort);
 }
 
 function extractCardNumber(name) {
@@ -1643,26 +1716,33 @@ function renderPokemonFiche(d, ficheId) {
     cards: d.cards,
     grade: 'psa10',
     sort: 'price-desc',
+    cardsOnly: true,
     changeAvailable: Boolean(d.changeAvailable && d.changeSince),
     changeDaysAgo: d.changeDaysAgo || null,
   };
   const hasChanges = Boolean(d.changeSince);
+  const filteredInitial = filterPokemonCards(d.cards, true);
+  const visibleCount = filteredInitial.length;
+  const sealedCount = d.cards.length - visibleCount;
   const title = d.name || d.productKey || 'Set Pokémon';
   const titleParts = title.split(' ');
   const titleHtml = titleParts.length > 1
     ? titleParts.map((t, i) => i === 1 ? `<span class="hl">${esc(t)}</span>` : esc(t)).join(' ')
     : `<span class="hl">${esc(title)}</span>`;
-  const hitsLabel = `${d.count} carte${d.count > 1 ? 's' : ''} listée${d.count > 1 ? 's' : ''}`;
-  const cardsHtml = d.cards.length
-    ? renderPokemonCardRows(d.cards, 'psa10')
+  const hitsLabel = `${visibleCount} carte${visibleCount > 1 ? 's' : ''} listée${visibleCount > 1 ? 's' : ''}`;
+  const cardsHtml = filteredInitial.length
+    ? renderPokemonCardRows(filteredInitial, 'psa10')
     : '<div style="padding:16px;color:var(--ink-3);font-size:12px">Aucune carte renvoyée par PriceCharting pour ce set.</div>';
+  const sealedLabel = sealedCount > 0
+    ? `<span class="pkm-toggle-meta">${sealedCount} scellé${sealedCount > 1 ? 's' : ''} masqué${sealedCount > 1 ? 's' : ''}</span>`
+    : '';
   return `<div class="fiche" id="${ficheId}">
     <div class="fiche-header">
       <span class="fiche-brand">${esc(d.brand)}</span>
       <span class="fiche-meta">${esc(d.year || '')}${d.year ? ' · ' : ''}Pokémon TCG</span>
       <h2 class="fiche-title">${titleHtml}</h2>
       <div class="fiche-stats">
-        <div class="fiche-stat"><img src="/assets/poight.png" alt=""><span>${esc(hitsLabel)}</span></div>
+        <div class="fiche-stat"><img src="/assets/poight.png" alt=""><span id="${ficheId}-count">${esc(hitsLabel)}</span></div>
         <div class="fiche-stat"><img src="/assets/diamant.png" alt=""><span>${esc(d.format || 'Booster Box')}</span></div>
       </div>
     </div>
@@ -1671,6 +1751,11 @@ function renderPokemonFiche(d, ficheId) {
       <div class="fiche-section-head pkm-section-head">
         <span class="fiche-eyebrow">Classement des cartes</span>
         <div class="pkm-controls">
+          <label class="pkm-cards-only">
+            <input type="checkbox" checked onchange="setPokemonCardsOnly('${ficheId}', this.checked)">
+            <span class="pkm-cards-only-text">Cartes uniquement</span>
+            ${sealedLabel}
+          </label>
           <div class="pkm-grade-toggle">
             <button data-grade="raw"   onclick="setPokemonGrade('${ficheId}','raw')">Raw</button>
             <button data-grade="psa9"  onclick="setPokemonGrade('${ficheId}','psa9')">PSA 9</button>
