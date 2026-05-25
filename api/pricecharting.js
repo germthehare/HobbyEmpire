@@ -328,7 +328,7 @@ export default async function handler(req, res) {
         }
       }
       const rowsToUse = filtered.length ? filtered : rows.filter(r => String(r['console-name'] || '').toLowerCase().includes(target));
-      const cards = rowsToUse.map(mapCardRow).filter(c => c.name);
+      let cards = rowsToUse.map(mapCardRow).filter(c => c.name);
       cards.sort((a, b) => (b.psa10 ?? -1) - (a.psa10 ?? -1));
 
       // Price-change tracking via Vercel KV (graceful no-op if unconfigured)
@@ -337,8 +337,7 @@ export default async function handler(req, res) {
       if (kvConfigured()) {
         const snapshot = await fetchOldestSnapshot(consoleName);
         const enriched = attachDeltas(cards, snapshot);
-        cards.length = 0;
-        cards.push(...enriched.cards);
+        cards = enriched.cards;
         changeSince = enriched.since;
         changeDaysAgo = enriched.daysAgo;
         // Fire-and-forget write of today's snapshot
