@@ -339,74 +339,123 @@ body {
   letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--ink-3);
 }
-.pkm-set-search {
-  width: 100%;
-  padding: 10px 12px;
+/* ───── Pokémon set picker (main right column view) ───── */
+.pkm-picker {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  border-top: 3px solid var(--accent);
+  overflow: hidden;
+}
+.pkm-picker-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.pkm-picker-eyebrow {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 3px 8px;
+  background: color-mix(in oklch, var(--accent), transparent 86%);
+  color: var(--accent);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.pkm-picker-title {
+  font-size: 30px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 0.95;
+  margin: 0 0 8px;
+}
+.pkm-picker-title .hl { color: var(--accent); }
+.pkm-picker-sub {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pkm-picker-search {
+  width: 320px; max-width: 100%;
+  padding: 11px 14px;
   font: inherit; font-size: 13px;
   background: var(--bg);
-  border: 1px solid var(--line-strong);
-  border-radius: 8px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 10px;
   color: var(--ink);
+  transition: border-color .12s, box-shadow .12s;
 }
-.pkm-set-search:focus {
+.pkm-picker-search:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 80%);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--accent), transparent 80%);
 }
-.pkm-set-list {
-  display: flex; flex-direction: column; gap: 4px;
-  max-height: 480px;
-  overflow-y: auto;
-  padding-right: 4px;
-  margin-right: -4px;
-}
-.pkm-set-list::-webkit-scrollbar { width: 6px; }
-.pkm-set-list::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
-.pkm-set-row {
+.pkm-picker-grid {
   display: grid;
-  grid-template-columns: 48px 1fr auto;
-  gap: 10px;
-  align-items: center;
-  padding: 6px 8px;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: border-color .12s, background .12s, transform .12s;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 20px 24px 24px;
 }
-.pkm-set-row:hover {
-  border-color: var(--accent);
-  background: var(--bg-2);
-  transform: translateX(2px);
-}
-.pkm-set-logo {
-  width: 48px; height: 36px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-.pkm-set-logo.fallback { opacity: 0.4; padding: 4px; }
-.pkm-set-info { min-width: 0; }
-.pkm-set-name {
-  font-size: 12px; font-weight: 700; line-height: 1.2;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.pkm-set-meta {
-  font-size: 9px; font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase;
-  color: var(--ink-3);
-  margin-top: 2px;
-}
-.pkm-set-row .pkm-add {
-  font-size: 16px; font-weight: 800;
-  color: var(--accent);
-  line-height: 1;
-}
-.pkm-search-status {
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--ink-3);
-  padding: 10px 2px;
+.pkm-picker-loading {
+  grid-column: 1 / -1;
   text-align: center;
+  padding: 60px 20px;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pkm-set-tile {
+  display: flex; flex-direction: column;
+  background: var(--bg-3);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 6px -4px rgba(0,0,0,0.15);
+  transition: transform .12s, border-color .12s, box-shadow .12s;
+}
+.pkm-set-tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: 0 12px 24px -12px color-mix(in oklch, var(--accent), transparent 60%);
+}
+.pkm-set-tile-img {
+  height: 140px;
+  background: linear-gradient(135deg, #e8eaef, #f5f6fa);
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--line);
+}
+.pkm-set-tile-img img {
+  max-width: 100%; max-height: 100%;
+  width: auto; height: auto;
+  object-fit: contain;
+}
+.pkm-set-tile-img img.fallback { opacity: 0.35; max-width: 50%; }
+.pkm-set-tile-body {
+  padding: 12px 14px 14px;
+  flex: 1;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.pkm-set-tile-name {
+  font-size: 14px; font-weight: 800;
+  line-height: 1.25;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.pkm-set-tile-meta {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+@media (max-width: 720px) {
+  .pkm-picker-head { padding: 18px 18px 14px; }
+  .pkm-picker-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding: 14px; }
+  .pkm-picker-title { font-size: 22px; }
+  .pkm-set-tile-img { height: 110px; }
 }
 
 /* ───── Pokémon fiche (grade toggle + sort + card rows) ───── */
@@ -1342,14 +1391,6 @@ body {
           </div>
           <div id="debug-status" style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:4px 2px">Chargement des produits…</div>
 
-          <!-- Pokémon set picker (only visible when sport = Pokémon) -->
-          <div id="pkm-search-panel" class="pkm-search-panel" style="display:none">
-            <div class="pkm-search-eyebrow">Choisis un set Pokémon</div>
-            <input id="pkm-search-input" class="pkm-set-search" type="text" placeholder="Filtrer (ex: Prismatic, 151, Surging…)">
-            <div id="pkm-search-results" class="pkm-set-list">
-              <div class="pkm-search-status">Chargement des sets…</div>
-            </div>
-          </div>
 
           <div id="product-list" style="display:flex;flex-direction:column;gap:8px"></div>
 
@@ -1493,20 +1534,58 @@ function onSelectSport(sport) {
   yearSel.innerHTML = '<option value="">—</option>';
   prodSel.innerHTML = '<option value="">—</option>';
   prodSel.disabled = true;
-  // For Pokémon: hide year/product cascade (set picker handles selection)
+  // For Pokémon: hide year/product cascade, show set picker as main view
   const isPokemon = (sport === 'Pokémon');
   if (yearTile) yearTile.style.display = isPokemon ? 'none' : '';
   if (prodTile) prodTile.style.display = isPokemon ? 'none' : '';
-  const pkmPanel = document.getElementById('pkm-search-panel');
-  if (pkmPanel) {
-    pkmPanel.style.display = isPokemon ? '' : 'none';
-    if (isPokemon && !PKM_ALL_SETS) initPokemonSetPicker();
+  if (isPokemon) {
+    showPokemonSetPicker();
+  } else {
+    // Restore empty-fiche placeholder
+    const result = document.getElementById('prep-result');
+    if (result && !result.querySelector('.fiche')) {
+      result.innerHTML = `<div class="empty-fiche">
+        <img class="ico-splash" src="/images/speloosh-splash.png" alt="">
+        <div class="ttl">Tes fiches apparaîtront ici</div>
+        <div class="sub">Choisis un sport, une année et un produit dans la colonne de gauche, puis clique sur Générer les fiches.</div>
+      </div>`;
+    }
   }
   if (!sport || !HIERARCHY[sport]) { yearSel.disabled = true; return; }
   yearSel.disabled = false;
   Object.keys(HIERARCHY[sport]).sort().reverse().forEach(y => {
     yearSel.innerHTML += `<option value="${esc(y)}">${esc(y)}</option>`;
   });
+}
+
+function showPokemonSetPicker() {
+  const result = document.getElementById('prep-result');
+  if (!result) return;
+  result.innerHTML = `<div class="pkm-picker" id="pkm-picker">
+    <div class="pkm-picker-head">
+      <div>
+        <div class="pkm-picker-eyebrow">Pokémon TCG</div>
+        <h2 class="pkm-picker-title">Choisis un <span class="hl">set</span></h2>
+        <div class="pkm-picker-sub" id="pkm-picker-count">Chargement…</div>
+      </div>
+      <input id="pkm-search-input" class="pkm-picker-search" type="text" placeholder="Filtrer un set (Prismatic, 151, Mega…)">
+    </div>
+    <div id="pkm-search-results" class="pkm-picker-grid">
+      <div class="pkm-picker-loading">Chargement des sets Pokémon…</div>
+    </div>
+  </div>`;
+  // Rebind the search input (innerHTML wipes previous bindings)
+  document.getElementById('pkm-search-input')?.addEventListener('input', e => filterPokemonSets(e.target.value));
+  if (!PKM_ALL_SETS) initPokemonSetPicker();
+  else { document.getElementById('pkm-search-results').innerHTML = renderPokemonSetTiles(PKM_ALL_SETS); updatePokemonPickerCount(PKM_ALL_SETS.length, PKM_ALL_SETS.length); }
+}
+
+function updatePokemonPickerCount(visible, total) {
+  const el = document.getElementById('pkm-picker-count');
+  if (!el) return;
+  el.textContent = visible === total
+    ? `${total} sets disponibles`
+    : `${visible} sur ${total} sets`;
 }
 
 function onSelectYear(year) {
@@ -1665,17 +1744,18 @@ async function loadPokemonSets() {
   return PKM_ALL_SETS;
 }
 
-function renderPokemonSetList(sets) {
-  if (!sets.length) return '<div class="pkm-search-status">Aucun set trouvé</div>';
+function renderPokemonSetTiles(sets) {
+  if (!sets.length) return '<div class="pkm-picker-loading">Aucun set trouvé</div>';
   return sets.map(s => {
     const display = s.name.replace(/^Pokemon /, '');
-    return `<div class="pkm-set-row" onclick="addPokemonAdhoc('${esc(s.name)}')" title="${esc(s.name)}">
-      <img class="pkm-set-logo" src="${pokemonSetLogo(s.name)}" alt="" onerror="this.onerror=null;this.classList.add('fallback');this.src='/images/speloosh-splash.png';">
-      <div class="pkm-set-info">
-        <div class="pkm-set-name">${esc(display)}</div>
-        <div class="pkm-set-meta">${s.cardCount} cartes</div>
+    return `<div class="pkm-set-tile" onclick="addPokemonAdhoc('${esc(s.name)}')" title="${esc(s.name)}">
+      <div class="pkm-set-tile-img">
+        <img src="${pokemonSetLogo(s.name)}" alt="" onerror="this.onerror=null;this.classList.add('fallback');this.src='/images/speloosh-splash.png';">
       </div>
-      <span class="pkm-add">+</span>
+      <div class="pkm-set-tile-body">
+        <div class="pkm-set-tile-name">${esc(display)}</div>
+        <div class="pkm-set-tile-meta">${s.cardCount} cartes</div>
+      </div>
     </div>`;
   }).join('');
 }
@@ -1685,9 +1765,10 @@ async function initPokemonSetPicker() {
   if (!out) return;
   try {
     const sets = await loadPokemonSets();
-    out.innerHTML = renderPokemonSetList(sets);
+    out.innerHTML = renderPokemonSetTiles(sets);
+    updatePokemonPickerCount(sets.length, sets.length);
   } catch (e) {
-    out.innerHTML = `<div class="pkm-search-status" style="color:var(--neg)">${esc(e.message)}</div>`;
+    out.innerHTML = `<div class="pkm-picker-loading" style="color:var(--neg)">${esc(e.message)}</div>`;
   }
 }
 
@@ -1695,9 +1776,9 @@ function filterPokemonSets(query) {
   const out = document.getElementById('pkm-search-results');
   if (!out || !PKM_ALL_SETS) return;
   const q = String(query || '').trim().toLowerCase();
-  if (!q) { out.innerHTML = renderPokemonSetList(PKM_ALL_SETS); return; }
-  const filtered = PKM_ALL_SETS.filter(s => s.name.toLowerCase().includes(q));
-  out.innerHTML = renderPokemonSetList(filtered);
+  const filtered = q ? PKM_ALL_SETS.filter(s => s.name.toLowerCase().includes(q)) : PKM_ALL_SETS;
+  out.innerHTML = renderPokemonSetTiles(filtered);
+  updatePokemonPickerCount(filtered.length, PKM_ALL_SETS.length);
 }
 
 function addPokemonAdhoc(consoleName) {
