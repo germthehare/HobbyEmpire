@@ -287,28 +287,43 @@ body {
 .obj-banner {
   background: var(--bg-3);
   border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 22px 24px;
+  border-radius: 16px;
+  padding: 26px 28px 24px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 4px;
+  margin-bottom: 24px;
 }
 .obj-banner::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0;
-  height: 2px; background: var(--accent);
+  height: 3px; background: var(--accent);
 }
 .obj-head {
   display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 14px; margin-bottom: 16px;
+  gap: 14px; margin-bottom: 22px;
 }
+.obj-head .card-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.obj-head .card-eyebrow .holo {
+  height: 2px; width: 44px;
+  background: var(--foil);
+  border-radius: 1px;
+}
+.obj-head .card-title {
+  font-size: 28px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 0.95;
+}
+
+/* === Meter bars compagnie === */
 .obj-company-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
-  margin-bottom: 18px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--line);
+  gap: 36px;
 }
 .obj-comp-cell { display: flex; flex-direction: column; gap: 8px; }
 .obj-comp-head {
@@ -317,105 +332,183 @@ body {
 }
 .obj-comp-lbl {
   font-size: 10px; font-weight: 700;
-  letter-spacing: 0.16em; text-transform: uppercase;
+  letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-3);
 }
 .obj-comp-pct {
-  font-size: 22px; font-weight: 900;
-  letter-spacing: -0.02em;
+  font-size: 26px; font-weight: 900;
+  letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
-  color: var(--ink);
+  color: var(--accent);
 }
 .obj-comp-pct.complete { color: var(--pos); }
-.obj-bar {
-  height: 8px;
+
+.obj-meter-bar {
+  position: relative;
+  height: 14px;
   background: var(--bg-2);
-  border-radius: 4px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
   overflow: hidden;
 }
-.obj-bar-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 4px;
+.obj-meter-fill {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  border-radius: 7px 0 0 7px;
   width: 0%;
-  transition: width 0.4s ease;
+  background: var(--accent);
+  transition: width 0.5s ease;
+  box-shadow: 0 0 14px color-mix(in oklch, var(--accent), transparent 55%);
 }
-.obj-bar-fill.complete { background: var(--pos); }
+.obj-meter-fill.complete {
+  background: var(--pos);
+  box-shadow: 0 0 14px color-mix(in oklch, var(--pos), transparent 55%);
+  border-radius: 7px;
+}
+.obj-meter-fill::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: linear-gradient(45deg,
+    rgba(255,255,255,.18) 25%, transparent 25%,
+    transparent 50%, rgba(255,255,255,.18) 50%,
+    rgba(255,255,255,.18) 75%, transparent 75%);
+  background-size: 12px 12px;
+  animation: sp-stripes-pulse 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes sp-stripes-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
+}
+/* Mile markers at 25/50/75% */
+.obj-meter-bar::before,
+.obj-meter-bar::after {
+  content: ''; position: absolute; top: 0; bottom: 0;
+  width: 1px; background: rgba(255,255,255,.4);
+  pointer-events: none; z-index: 2;
+}
+.obj-meter-bar::before { left: 50%; }
+.obj-meter-bar::after  { left: 75%; }
+.obj-meter-bar .mile-25 {
+  position: absolute; top: 0; bottom: 0; left: 25%;
+  width: 1px; background: rgba(255,255,255,.4);
+  pointer-events: none; z-index: 2;
+}
+
 .obj-comp-sub {
+  display: flex; justify-content: space-between; align-items: baseline;
   font-size: 11px; font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
+  margin-top: 4px;
 }
+.obj-comp-sub .remain { color: var(--ink-2); }
+.obj-comp-sub.complete .remain { color: var(--pos); }
 
-/* Vendeurs section title */
-.obj-vendeurs-eyebrow {
+/* === Leaderboard section === */
+.lb-section { margin-top: 24px; }
+.lb-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.lb-eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
   font-size: 10px; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-3);
-  margin-bottom: 12px;
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 10px;
+  margin-bottom: 4px;
 }
-.obj-vendeurs-eyebrow .count {
-  font-size: 9px; font-weight: 700;
+.lb-eyebrow .holo {
+  height: 2px; width: 44px;
+  background: var(--foil); border-radius: 1px;
+}
+.lb-title {
+  font-size: 22px; font-weight: 900;
+  letter-spacing: -0.02em; line-height: 1;
+}
+.lb-title .first { color: var(--accent); }
+
+.lb-pips {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 7px 12px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.lb-pips-lbl {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink-3);
-  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+}
+.lb-pips-row { display: inline-flex; gap: 3px; }
+.lb-pip {
+  width: 8px; height: 16px;
+  border-radius: 2px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+}
+.lb-pip.on {
+  background: var(--pos);
+  border-color: var(--pos);
+  box-shadow: 0 0 6px color-mix(in oklch, var(--pos), transparent 50%);
 }
 
-/* Cards grid */
-.obj-vendeurs {
+/* === PlayerCard grid === */
+.lb-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
-.obj-vcard {
+.pc {
   background: var(--bg-3);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 14px 16px 16px;
-  display: flex; flex-direction: column;
-  gap: 10px;
+  padding: 14px 18px 14px;
   position: relative;
-  overflow: hidden;
-  transition: border-color .15s, transform .12s;
 }
-.obj-vcard:hover { border-color: var(--line-strong); }
-.obj-vcard.done {
-  background: color-mix(in oklch, var(--pos), transparent 94%);
-  border-color: color-mix(in oklch, var(--pos), transparent 65%);
+.pc.achieved {
+  border: 1.5px solid color-mix(in oklch, var(--pos), transparent 65%);
+  box-shadow: 0 6px 18px -10px color-mix(in oklch, var(--pos), transparent 50%);
 }
-.obj-vcard.done::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 2px; background: var(--pos);
-}
-.obj-vcard.in-progress::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0;
-  height: 2px; background: var(--accent);
-}
-.obj-vcard.no-target { opacity: 0.65; }
-
-.obj-vcard-head {
+.pc-head {
   display: flex; align-items: center;
-  gap: 10px;
+  gap: 10px; margin-bottom: 10px;
 }
-.obj-v-avatar {
-  width: 28px; height: 28px;
+.pc-avatar {
+  width: 26px; height: 26px;
   border-radius: 6px;
   background: var(--bg-ink);
-  color: oklch(94% 0.008 80);
+  color: oklch(95% 0.008 80);
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 700;
   letter-spacing: 0.02em;
   flex-shrink: 0;
 }
-.obj-v-name {
+.pc.todo .pc-avatar {
+  background: var(--bg-2);
+  color: var(--ink-3);
+}
+.pc-name {
+  flex: 1; min-width: 0;
   font-size: 14px; font-weight: 700;
   letter-spacing: -0.005em;
-  flex: 1; min-width: 0;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.obj-v-status {
+.pc-name .first { color: var(--accent); }
+.pc-rank {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.10em;
+  color: var(--ink-3);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.pc-status {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 9px; font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase;
@@ -424,65 +517,159 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
 }
-.obj-v-status.done    { background: color-mix(in oklch, var(--pos), transparent 80%); color: var(--pos); }
-.obj-v-status.active  { background: color-mix(in oklch, var(--accent), transparent 82%); color: var(--accent); }
-.obj-v-status.empty   { background: var(--bg-2); color: var(--ink-3); }
+.pc-status.done   { background: color-mix(in oklch, var(--pos), transparent 80%); color: var(--pos); }
+.pc-status.active { background: color-mix(in oklch, var(--accent), transparent 82%); color: var(--accent); }
+.pc-status.todo   { background: var(--bg-2); color: var(--mute); }
 
-.obj-vcard-progress {
-  display: flex; align-items: baseline; gap: 6px;
-  margin-top: 4px;
+.pc-pct-row {
+  display: flex; align-items: baseline; gap: 8px;
+  margin-bottom: 10px;
 }
-.obj-vcard-pct {
-  font-size: 28px; font-weight: 900;
-  letter-spacing: -0.02em; line-height: 1;
+.pc-pct {
+  font-size: 32px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1;
   font-variant-numeric: tabular-nums;
-  color: var(--ink);
+  color: var(--mute);
 }
-.obj-vcard.done .obj-vcard-pct { color: var(--pos); }
-.obj-vcard.no-target .obj-vcard-pct { color: var(--ink-3); font-size: 16px; font-weight: 700; }
-.obj-vcard-of {
+.pc.achieved .pc-pct { color: var(--pos); }
+.pc.active   .pc-pct { color: var(--accent); }
+.pc-pct-lbl {
   font-size: 10px; font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink-3);
 }
 
-.obj-vcard-bar {
-  height: 6px;
+/* === Beefy bar with $ inline === */
+.pc-bar {
+  position: relative;
+  height: 26px;
   background: var(--bg-2);
-  border-radius: 3px;
-  overflow: hidden;
+  border: 1.5px solid var(--line-strong);
+  border-radius: 6px;
+  box-shadow: inset 0 2px 3px rgba(20,15,10,.08);
+  margin-bottom: 6px;
 }
-.obj-vcard-bar-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 3px;
+.pc-bar-fill {
+  position: absolute; top: 0; bottom: 0; left: 0;
   width: 0%;
-  transition: width 0.4s ease;
+  background: var(--mute);
+  border-radius: 4px 0 0 4px;
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,.18),
+              inset 0 1px 0 rgba(255,255,255,.35),
+              2px 0 0 rgba(20,15,10,.15);
+  overflow: hidden;
+  transition: width 0.45s cubic-bezier(.2,.8,.2,1);
 }
-.obj-vcard.done .obj-vcard-bar-fill { background: var(--pos); }
-
-.obj-vcard-values {
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: 8px;
-  font-variant-numeric: tabular-nums;
+.pc.achieved .pc-bar-fill { background: var(--pos); border-radius: 4px; }
+.pc.active   .pc-bar-fill { background: var(--accent); }
+.pc-bar-fill::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: linear-gradient(45deg,
+    rgba(255,255,255,.10) 25%, transparent 25%,
+    transparent 50%, rgba(255,255,255,.10) 50%,
+    rgba(255,255,255,.10) 75%, transparent 75%);
+  background-size: 12px 12px;
+  animation: sp-stripes-pulse 2.8s ease-in-out infinite;
+  pointer-events: none;
 }
-.obj-vcard-actual {
-  font-size: 14px; font-weight: 700;
-  color: var(--ink);
-  letter-spacing: -0.005em;
-}
-.obj-vcard.done .obj-vcard-actual { color: var(--pos); }
-.obj-vcard-target {
-  font-size: 11px; font-weight: 600;
-  color: var(--ink-3);
+.pc-bar-value {
+  position: absolute; left: 10px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px; font-weight: 800;
   letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.4);
+  white-space: nowrap;
+  z-index: 2;
+}
+.pc.todo .pc-bar-value {
+  color: var(--ink-3);
+  text-shadow: none;
+}
+.pc-bar-remaining {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+}
+/* Glow at leading edge */
+.pc-bar-glow {
+  position: absolute; top: -2px; bottom: -2px;
+  width: 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.pc.achieved .pc-bar-glow {
+  background: var(--pos);
+  box-shadow: 0 0 14px var(--pos), 0 0 6px var(--pos);
+}
+.pc.active .pc-bar-glow {
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent), 0 0 6px var(--accent);
+}
+/* Target marker at 100% */
+.pc-target-marker {
+  position: absolute; right: 0;
+  top: -4px; bottom: -4px;
+  width: 0;
+  border-left: 2px solid var(--ink);
+  z-index: 3;
+}
+.pc.achieved .pc-target-marker {
+  border-left-style: dashed;
+  opacity: 0.5;
+}
+.pc-target-cap {
+  position: absolute; right: -8px; top: -18px;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.02em;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+/* Overshoot multiplier badge */
+.pc-overshoot {
+  position: absolute; right: -2px;
+  top: 50%;
+  transform: translate(100%, -50%);
+  font-size: 10px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--pos);
+  background: color-mix(in oklch, var(--pos), transparent 85%);
+  border: 1px solid color-mix(in oklch, var(--pos), transparent 60%);
+  padding: 2px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 4;
 }
 
-.obj-vcard-empty-msg {
-  font-size: 11px; font-weight: 600;
+.pc-context {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-top: 6px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
   color: var(--ink-3);
-  letter-spacing: 0.04em;
-  font-style: italic;
+}
+.pc-context b { font-weight: 800; color: var(--ink-2); }
+.pc-context .delta-pos { color: var(--pos); }
+.pc-context .delta-active { color: var(--accent); }
+.pc-context .delta-mute { color: var(--mute); }
+
+@media (max-width: 900px) {
+  .obj-company-grid { grid-template-columns: 1fr; gap: 18px; }
+  .lb-grid { grid-template-columns: 1fr; }
+  .obj-banner { padding: 20px 18px; }
+  .obj-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .lb-head { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 
 .obj-empty {
@@ -945,7 +1132,7 @@ body {
     <div class="obj-banner" id="obj-banner">
       <div class="obj-head">
         <div>
-          <div class="card-eyebrow">Objectifs · <span id="obj-month-label">—</span></div>
+          <div class="card-eyebrow"><span class="holo"></span>Objectifs · <span id="obj-month-label">—</span></div>
           <div class="card-title"><span class="first">P</span>rogression du mois</div>
         </div>
         <button class="card-link" id="obj-edit-toggle" onclick="toggleObjEditor()">Modifier →</button>
@@ -983,21 +1170,39 @@ body {
             <span class="obj-comp-lbl">Revenu compagnie</span>
             <span class="obj-comp-pct" id="obj-comp-revenu-pct">—</span>
           </div>
-          <div class="obj-bar"><div class="obj-bar-fill" id="obj-comp-revenu-fill"></div></div>
-          <div class="obj-comp-sub" id="obj-comp-revenu-sub">—</div>
+          <div class="obj-meter-bar">
+            <span class="mile-25"></span>
+            <div class="obj-meter-fill" id="obj-comp-revenu-fill"></div>
+          </div>
+          <div class="obj-comp-sub" id="obj-comp-revenu-sub"><span></span><span class="remain"></span></div>
         </div>
         <div class="obj-comp-cell" id="obj-comp-benefice">
           <div class="obj-comp-head">
             <span class="obj-comp-lbl">Bénéfice compagnie</span>
             <span class="obj-comp-pct" id="obj-comp-benefice-pct">—</span>
           </div>
-          <div class="obj-bar"><div class="obj-bar-fill" id="obj-comp-benefice-fill"></div></div>
-          <div class="obj-comp-sub" id="obj-comp-benefice-sub">—</div>
+          <div class="obj-meter-bar">
+            <span class="mile-25"></span>
+            <div class="obj-meter-fill" id="obj-comp-benefice-fill"></div>
+          </div>
+          <div class="obj-comp-sub" id="obj-comp-benefice-sub"><span></span><span class="remain"></span></div>
         </div>
       </div>
+    </div>
 
-      <!-- Vendeurs: mini barres compactes -->
-      <div class="obj-vendeurs" id="obj-vendeurs"></div>
+    <!-- Leaderboard section -->
+    <div class="lb-section" id="lb-section">
+      <div class="lb-head">
+        <div>
+          <div class="lb-eyebrow"><span class="holo"></span>Vendeurs · cibles individuelles</div>
+          <div class="lb-title"><span class="first">L</span>eaderboard</div>
+        </div>
+        <div class="lb-pips" id="lb-pips-container">
+          <span class="lb-pips-lbl" id="lb-pips-lbl">—</span>
+          <span class="lb-pips-row" id="lb-pips-row"></span>
+        </div>
+      </div>
+      <div class="lb-grid" id="lb-grid"></div>
     </div>
     </div><!-- /view-objectifs -->
 
@@ -1356,11 +1561,16 @@ function renderObjectifs(current, monthLabel) {
     (objVend[name]?.revenu > 0) || (objVend[name]?.breaks > 0)
   );
 
-  const wrap = document.getElementById('obj-vendeurs');
+  const lbSection = document.getElementById('lb-section');
+  const lbGrid    = document.getElementById('lb-grid');
+  const lbLbl     = document.getElementById('lb-pips-lbl');
+  const lbPips    = document.getElementById('lb-pips-row');
+
   if (!vendeursWithObj.length) {
-    wrap.innerHTML = '<div class="obj-empty">Aucune cible individuelle — configure dans Settings → Objectifs par vendeur</div>';
+    lbSection.style.display = 'none';
     return;
   }
+  lbSection.style.display = '';
 
   // Build cards with computed progress
   const cards = vendeursWithObj.map(name => {
@@ -1368,7 +1578,6 @@ function renderObjectifs(current, monthLabel) {
     const vBreaks = current.filter(b => b.vendeur === name);
     const vRev = vBreaks.reduce((s, b) => s + (+b.revenuReel || 0), 0);
     const vN   = vBreaks.length;
-    // overall pct: use revenu primary, fallback to breaks
     const pctRev = o.revenu > 0 ? (vRev / o.revenu) * 100 : null;
     const pctBrk = o.breaks > 0 ? (vN   / o.breaks) * 100 : null;
     const overallPct = pctRev !== null ? pctRev : (pctBrk !== null ? pctBrk : 0);
@@ -1376,60 +1585,107 @@ function renderObjectifs(current, monthLabel) {
     const isStart = overallPct <= 0;
     return { name, o, vRev, vN, overallPct, isDone, isStart };
   });
-
-  // Sort: done first (highest %), then in progress desc, then "not started" last
   cards.sort((a, b) => b.overallPct - a.overallPct);
 
   const doneCount = cards.filter(c => c.isDone).length;
+  lbLbl.textContent = `${doneCount} / ${cards.length} atteint${cards.length > 1 ? 's' : ''}`;
+  // Pips: green if done, empty if not
+  lbPips.innerHTML = cards.map(c =>
+    `<span class="lb-pip${c.isDone ? ' on' : ''}"></span>`
+  ).join('');
 
-  wrap.innerHTML = `
-    <div class="obj-vendeurs-eyebrow">
-      <span>Vendeurs · cibles individuelles</span>
-      <span class="count">${doneCount}/${cards.length} atteint${cards.length > 1 ? 's' : ''}</span>
-    </div>
-    <div class="obj-vendeurs">${cards.map(renderVendeurCard).join('')}</div>
-  `;
+  // Render cards with rank
+  lbGrid.innerHTML = cards.map((c, i) => renderPlayerCard(c, i + 1)).join('');
 }
 
-function renderVendeurCard(c) {
+function renderPlayerCard(c, rank) {
   const initial = (c.name.charAt(0) || '?').toUpperCase();
+  const name    = c.name;
+  const first   = name.charAt(0);
+  const rest    = name.slice(1);
   const pctRound = Math.round(c.overallPct);
-  const cardCls = c.isDone ? 'done' : (c.isStart ? 'no-target' : 'in-progress');
-  const statusCls = c.isDone ? 'done' : (c.isStart ? 'empty' : 'active');
-  const statusLbl = c.isDone ? '✓ Atteint' : (c.isStart ? 'À démarrer' : `${pctRound}% en cours`);
+
+  const cardCls   = c.isDone ? 'achieved' : (c.isStart ? 'todo' : 'active');
+  const statusCls = c.isDone ? 'done'     : (c.isStart ? 'todo' : 'active');
+  const statusLbl = c.isDone
+    ? '✓ Atteint'
+    : c.isStart
+      ? 'À démarrer'
+      : `${pctRound}% en cours`;
 
   // Primary metric: revenu if set, else breaks
-  let valueLine = '';
-  let actual, target;
+  let valueStr = '—', targetStr = '0', targetRaw = 0, actualRaw = 0;
   if (c.o.revenu > 0) {
-    actual = '$' + Math.round(c.vRev).toLocaleString('fr-CA');
-    target = 'sur $' + Math.round(c.o.revenu).toLocaleString('fr-CA');
+    actualRaw = c.vRev;
+    targetRaw = c.o.revenu;
+    valueStr = '$' + Math.round(c.vRev).toLocaleString('fr-CA');
+    targetStr = '$' + Math.round(c.o.revenu).toLocaleString('fr-CA');
   } else if (c.o.breaks > 0) {
-    actual = `${c.vN} break${c.vN !== 1 ? 's' : ''}`;
-    target = `sur ${c.o.breaks}`;
-  } else {
-    actual = '—';
-    target = '';
+    actualRaw = c.vN;
+    targetRaw = c.o.breaks;
+    valueStr = `${c.vN} break${c.vN !== 1 ? 's' : ''}`;
+    targetStr = `${c.o.breaks} breaks`;
   }
 
-  const pctDisplay = Math.min(100, c.overallPct).toFixed(1);
+  // Cap fill at 100% for visual (overshoot is shown via badge)
+  const fillPct = Math.min(100, c.overallPct).toFixed(1);
 
-  return `<div class="obj-vcard ${cardCls}">
-    <div class="obj-vcard-head">
-      <span class="obj-v-avatar">${esc(initial)}</span>
-      <span class="obj-v-name">${esc(c.name)}</span>
-      <span class="obj-v-status ${statusCls}">${statusLbl}</span>
+  // Target label compact (e.g. $50K)
+  const targetCap = c.o.revenu > 0
+    ? '$' + (c.o.revenu >= 1000 ? (c.o.revenu / 1000).toFixed(c.o.revenu >= 10000 ? 0 : 1) + 'K' : c.o.revenu)
+    : (c.o.breaks > 0 ? c.o.breaks : '');
+
+  // Show remaining text inside the empty track if in-progress with <70%
+  const showRemaining = !c.isDone && !c.isStart && c.overallPct < 70;
+  const remainingStr = c.o.revenu > 0
+    ? '$' + Math.round(c.o.revenu - c.vRev).toLocaleString('fr-CA') + ' restants'
+    : (c.o.breaks > 0 ? (c.o.breaks - c.vN) + ' restants' : '');
+
+  // Show glow at leading edge unless 100%+ (where bar fills whole)
+  const showGlow = (c.isDone || (!c.isStart && c.overallPct < 100));
+
+  // Overshoot multiplier badge (only when >100%)
+  const overshoot = c.overallPct > 100
+    ? `<span class="pc-overshoot">×${(c.overallPct / 100).toFixed(1)}</span>`
+    : '';
+
+  // Context line below
+  let contextRight = '';
+  if (c.isDone) {
+    const over = c.o.revenu > 0 ? c.vRev - c.o.revenu : c.vN - c.o.breaks;
+    const fmt = c.o.revenu > 0 ? '$' + Math.round(over).toLocaleString('fr-CA') : over;
+    contextRight = `<span class="delta-pos">+${fmt} au-dessus</span>`;
+  } else if (c.isStart) {
+    contextRight = `<span class="delta-mute">—</span>`;
+  } else {
+    const left = c.o.revenu > 0 ? c.o.revenu - c.vRev : c.o.breaks - c.vN;
+    const fmt = c.o.revenu > 0 ? '$' + Math.round(left).toLocaleString('fr-CA') : left;
+    contextRight = `<span class="delta-active">${fmt} restants</span>`;
+  }
+
+  return `<div class="pc ${cardCls}">
+    <div class="pc-head">
+      <span class="pc-avatar">${esc(initial)}</span>
+      <span class="pc-name"><span class="first">${esc(first)}</span>${esc(rest)}</span>
+      <span class="pc-rank">#${rank}</span>
+      <span class="pc-status ${statusCls}">${statusLbl}</span>
     </div>
-    <div class="obj-vcard-progress">
-      <span class="obj-vcard-pct">${pctRound}%</span>
-      <span class="obj-vcard-of">de la cible</span>
+    <div class="pc-pct-row">
+      <span class="pc-pct">${pctRound}%</span>
+      <span class="pc-pct-lbl">de la cible</span>
     </div>
-    <div class="obj-vcard-bar">
-      <div class="obj-vcard-bar-fill" style="width:${pctDisplay}%"></div>
+    <div class="pc-bar">
+      <div class="pc-bar-fill" style="width:${fillPct}%">
+        ${valueStr !== '—' ? `<span class="pc-bar-value">${esc(valueStr)}</span>` : ''}
+        ${showGlow && !c.isDone ? `<span class="pc-bar-glow" style="right:-4px"></span>` : ''}
+      </div>
+      ${showRemaining ? `<span class="pc-bar-remaining">${esc(remainingStr)}</span>` : ''}
+      ${!c.isDone ? `<div class="pc-target-marker"><span class="pc-target-cap">${esc(targetCap)}</span></div>` : ''}
+      ${overshoot}
     </div>
-    <div class="obj-vcard-values">
-      <span class="obj-vcard-actual">${actual}</span>
-      <span class="obj-vcard-target">${target}</span>
+    <div class="pc-context">
+      <span>Cible <b>${esc(targetStr)}</b></span>
+      ${contextRight}
     </div>
   </div>`;
 }
@@ -1519,17 +1775,20 @@ function saveObjectifsInline() {
 }
 
 function renderObjBar(prefix, actual, target) {
-  const cell    = document.getElementById('obj-comp-' + prefix.split('-').pop());
   const pctEl   = document.getElementById(prefix + '-pct');
   const fillEl  = document.getElementById(prefix + '-fill');
   const subEl   = document.getElementById(prefix + '-sub');
+  const subLeft  = subEl.querySelector('span:first-child');
+  const subRight = subEl.querySelector('.remain');
 
   if (!target || target <= 0) {
     pctEl.textContent = '—';
     fillEl.style.width = '0%';
     fillEl.classList.remove('complete');
     pctEl.classList.remove('complete');
-    subEl.textContent = 'Aucune cible définie';
+    subEl.classList.remove('complete');
+    subLeft.textContent = 'Aucune cible définie';
+    subRight.textContent = '';
     return;
   }
   const pct = (actual / target) * 100;
@@ -1538,8 +1797,12 @@ function renderObjBar(prefix, actual, target) {
   fillEl.style.width = Math.min(100, pct) + '%';
   fillEl.classList.toggle('complete', isComplete);
   pctEl.classList.toggle('complete', isComplete);
+  subEl.classList.toggle('complete', isComplete);
   const fmt = (n) => '$' + Math.round(n).toLocaleString('fr-CA');
-  subEl.textContent = `${fmt(actual)} / ${fmt(target)}` + (isComplete ? ' · ✓ Atteint' : ` · ${fmt(target - actual)} restant`);
+  subLeft.textContent  = `${fmt(actual)} / ${fmt(target)}`;
+  subRight.textContent = isComplete
+    ? `+${fmt(actual - target)} au-dessus`
+    : `${fmt(target - actual)} restant`;
 }
 
 function deltaPct(current, previous) {
