@@ -339,62 +339,74 @@ body {
   letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--ink-3);
 }
-.pkm-search-row { display: flex; gap: 8px; }
-.pkm-search-row input {
-  flex: 1; min-width: 0;
-  padding: 9px 11px;
+.pkm-set-search {
+  width: 100%;
+  padding: 10px 12px;
   font: inherit; font-size: 13px;
   background: var(--bg);
   border: 1px solid var(--line-strong);
   border-radius: 8px;
   color: var(--ink);
 }
-.pkm-search-row input:focus {
+.pkm-set-search:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 80%);
 }
-.pkm-search-btn {
-  padding: 9px 14px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-radius: 8px;
-  font-size: 10px; font-weight: 800;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  white-space: nowrap;
+.pkm-set-list {
+  display: flex; flex-direction: column; gap: 4px;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-right: -4px;
 }
-.pkm-search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-#pkm-search-results { display: flex; flex-direction: column; gap: 6px; }
-.pkm-result-row {
+.pkm-set-list::-webkit-scrollbar { width: 6px; }
+.pkm-set-list::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
+.pkm-set-row {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: 48px 1fr auto;
   gap: 10px;
   align-items: center;
-  padding: 8px 10px;
+  padding: 6px 8px;
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color .12s, background .12s;
+  transition: border-color .12s, background .12s, transform .12s;
 }
-.pkm-result-row:hover { border-color: var(--accent); background: var(--bg-2); }
-.pkm-result-row .pkm-name { font-size: 12px; font-weight: 700; line-height: 1.2; }
-.pkm-result-row .pkm-meta {
+.pkm-set-row:hover {
+  border-color: var(--accent);
+  background: var(--bg-2);
+  transform: translateX(2px);
+}
+.pkm-set-logo {
+  width: 48px; height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.pkm-set-logo.fallback { opacity: 0.4; padding: 4px; }
+.pkm-set-info { min-width: 0; }
+.pkm-set-name {
+  font-size: 12px; font-weight: 700; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pkm-set-meta {
   font-size: 9px; font-weight: 700;
   letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--ink-3);
   margin-top: 2px;
 }
-.pkm-result-row .pkm-add {
-  font-size: 9px; font-weight: 800;
-  letter-spacing: 0.14em; text-transform: uppercase;
+.pkm-set-row .pkm-add {
+  font-size: 16px; font-weight: 800;
   color: var(--accent);
+  line-height: 1;
 }
 .pkm-search-status {
   font-size: 10px; font-weight: 700;
   letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--ink-3);
-  padding: 4px 2px;
+  padding: 10px 2px;
+  text-align: center;
 }
 
 /* ───── Pokémon fiche (grade toggle + sort + card rows) ───── */
@@ -1330,14 +1342,13 @@ body {
           </div>
           <div id="debug-status" style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:4px 2px">Chargement des produits…</div>
 
-          <!-- Pokémon free search (only visible when sport = Pokémon) -->
+          <!-- Pokémon set picker (only visible when sport = Pokémon) -->
           <div id="pkm-search-panel" class="pkm-search-panel" style="display:none">
-            <div class="pkm-search-eyebrow">Ou cherche un autre set Pokémon</div>
-            <div class="pkm-search-row">
-              <input id="pkm-search-input" type="text" placeholder="Ex: Prismatic Evolutions, 151, Crown Zenith…">
-              <button class="pkm-search-btn" onclick="runPokemonSearch()">Chercher</button>
+            <div class="pkm-search-eyebrow">Choisis un set Pokémon</div>
+            <input id="pkm-search-input" class="pkm-set-search" type="text" placeholder="Filtrer (ex: Prismatic, 151, Surging…)">
+            <div id="pkm-search-results" class="pkm-set-list">
+              <div class="pkm-search-status">Chargement des sets…</div>
             </div>
-            <div id="pkm-search-results"></div>
           </div>
 
           <div id="product-list" style="display:flex;flex-direction:column;gap:8px"></div>
@@ -1475,14 +1486,22 @@ function populateSportSelect() {
 }
 
 function onSelectSport(sport) {
-  const yearSel = document.getElementById('sel-year');
-  const prodSel = document.getElementById('sel-product');
+  const yearSel  = document.getElementById('sel-year');
+  const prodSel  = document.getElementById('sel-product');
+  const yearTile = yearSel?.closest('.field-tile');
+  const prodTile = prodSel?.closest('.field-tile');
   yearSel.innerHTML = '<option value="">—</option>';
   prodSel.innerHTML = '<option value="">—</option>';
   prodSel.disabled = true;
-  // Show/hide Pokémon search panel
+  // For Pokémon: hide year/product cascade (set picker handles selection)
+  const isPokemon = (sport === 'Pokémon');
+  if (yearTile) yearTile.style.display = isPokemon ? 'none' : '';
+  if (prodTile) prodTile.style.display = isPokemon ? 'none' : '';
   const pkmPanel = document.getElementById('pkm-search-panel');
-  if (pkmPanel) pkmPanel.style.display = (sport === 'Pokémon') ? '' : 'none';
+  if (pkmPanel) {
+    pkmPanel.style.display = isPokemon ? '' : 'none';
+    if (isPokemon && !PKM_ALL_SETS) initPokemonSetPicker();
+  }
   if (!sport || !HIERARCHY[sport]) { yearSel.disabled = true; return; }
   yearSel.disabled = false;
   Object.keys(HIERARCHY[sport]).sort().reverse().forEach(y => {
@@ -1622,42 +1641,63 @@ async function fetchPokemonSet(consoleName) {
   return await r.json();
 }
 
-async function runPokemonSearch() {
-  const inp = document.getElementById('pkm-search-input');
-  const q = (inp?.value || '').trim();
+// Full Pokémon set catalog (loaded once via /api/pricecharting?action=consoles)
+let PKM_ALL_SETS = null;
+
+function pokemonSetSlug(consoleName) {
+  return String(consoleName || '').toLowerCase().replace(/\s+/g, '-');
+}
+
+function pokemonSetLogo(consoleName) {
+  const slug = pokemonSetSlug(consoleName);
+  return `https://www.pricecharting.com/images/pokemon-sets/${slug}.png`;
+}
+
+async function loadPokemonSets() {
+  if (PKM_ALL_SETS) return PKM_ALL_SETS;
+  const r = await fetch('/api/pricecharting?action=consoles');
+  if (!r.ok) throw new Error('Impossible de charger les sets Pokémon');
+  const d = await r.json();
+  // Filter to consoles that look like main Pokémon sets (excluding Japanese/Korean/Chinese variants for the default view)
+  PKM_ALL_SETS = (d.consoles || [])
+    .filter(c => /^Pokemon /.test(c.name) && !/Japanese|Korean|Chinese|Collection Sheet|Tera Starter|Energy$/i.test(c.name))
+    .sort((a, b) => b.cardCount - a.cardCount);
+  return PKM_ALL_SETS;
+}
+
+function renderPokemonSetList(sets) {
+  if (!sets.length) return '<div class="pkm-search-status">Aucun set trouvé</div>';
+  return sets.map(s => {
+    const display = s.name.replace(/^Pokemon /, '');
+    return `<div class="pkm-set-row" onclick="addPokemonAdhoc('${esc(s.name)}')" title="${esc(s.name)}">
+      <img class="pkm-set-logo" src="${pokemonSetLogo(s.name)}" alt="" onerror="this.onerror=null;this.classList.add('fallback');this.src='/images/speloosh-splash.png';">
+      <div class="pkm-set-info">
+        <div class="pkm-set-name">${esc(display)}</div>
+        <div class="pkm-set-meta">${s.cardCount} cartes</div>
+      </div>
+      <span class="pkm-add">+</span>
+    </div>`;
+  }).join('');
+}
+
+async function initPokemonSetPicker() {
   const out = document.getElementById('pkm-search-results');
-  if (!q) { out.innerHTML = ''; return; }
-  out.innerHTML = '<div class="pkm-search-status">Recherche…</div>';
+  if (!out) return;
   try {
-    const r = await fetch('/api/pricecharting?action=search&q=' + encodeURIComponent(q));
-    if (!r.ok) {
-      const e = await r.json().catch(() => ({}));
-      out.innerHTML = `<div class="pkm-search-status" style="color:var(--neg)">${esc(e.error || 'Erreur')}</div>`;
-      return;
-    }
-    const d = await r.json();
-    // Group products by console-name (each Pokémon set = console). PriceCharting search returns cards;
-    // we surface their consoles as "sets" the user can add.
-    const sets = {};
-    (d.products || []).forEach(p => {
-      const name = p.console || '';
-      if (!name) return;
-      if (!sets[name]) sets[name] = { name, hits: 0 };
-      sets[name].hits++;
-    });
-    const list = Object.values(sets).sort((a, b) => b.hits - a.hits).slice(0, 12);
-    if (!list.length) { out.innerHTML = '<div class="pkm-search-status">Aucun set trouvé</div>'; return; }
-    out.innerHTML = list.map(s => `
-      <div class="pkm-result-row" onclick="addPokemonAdhoc('${esc(s.name)}')">
-        <div>
-          <div class="pkm-name">${esc(s.name)}</div>
-          <div class="pkm-meta">${s.hits} carte${s.hits > 1 ? 's' : ''} matchée${s.hits > 1 ? 's' : ''}</div>
-        </div>
-        <span class="pkm-add">+ Ajouter</span>
-      </div>`).join('');
+    const sets = await loadPokemonSets();
+    out.innerHTML = renderPokemonSetList(sets);
   } catch (e) {
     out.innerHTML = `<div class="pkm-search-status" style="color:var(--neg)">${esc(e.message)}</div>`;
   }
+}
+
+function filterPokemonSets(query) {
+  const out = document.getElementById('pkm-search-results');
+  if (!out || !PKM_ALL_SETS) return;
+  const q = String(query || '').trim().toLowerCase();
+  if (!q) { out.innerHTML = renderPokemonSetList(PKM_ALL_SETS); return; }
+  const filtered = PKM_ALL_SETS.filter(s => s.name.toLowerCase().includes(q));
+  out.innerHTML = renderPokemonSetList(filtered);
 }
 
 function addPokemonAdhoc(consoleName) {
@@ -2358,7 +2398,7 @@ function renderLookup(d) {
 }
 
 document.getElementById('card-input').addEventListener('keydown', e => { if (e.key === 'Enter') lookupCard(); });
-document.getElementById('pkm-search-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') runPokemonSearch(); });
+document.getElementById('pkm-search-input')?.addEventListener('input', e => filterPokemonSets(e.target.value));
 
 // ════════════════════ Boot ════════════════════
 document.getElementById('sel-sport').addEventListener('change', e => {
