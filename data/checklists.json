@@ -6509,5 +6509,113 @@
       "The Cup inclut des Update Cards avec des anciennes saisons — possibilité de tirer un Connor Bedard RPA 2023-24",
       "Les Gold Foil Auto Patch de légendes comme Bobby Orr /8 sont parmi les cartes les plus précieuses du hobby"
     ]
+  },
+  "2025 Prismatic Evolutions Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2025",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-prismatic-evolutions",
+    "summary": "Set Scarlet & Violet SV8.5 sorti en janvier 2025 — l'un des sets les plus chase de l'ère SV avec ses Eeveelutions Special Illustration Rares. Box officielles quasi introuvables au MSRP.",
+    "dataSource": "pricecharting"
+  },
+  "2025 Journey Together Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2025",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-journey-together",
+    "summary": "SV9 sorti mars 2025 — premier set à introduire les Pokémon ex Trainer's (Iono's Bellibolt ex, Lillie's Clefairy ex, etc.) qui sont devenus instant chase.",
+    "dataSource": "pricecharting"
+  },
+  "2025 Destined Rivals Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2025",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-destined-rivals",
+    "summary": "SV10 sorti mai 2025 — focus sur les Trainer's Pokémon ex (Team Rocket, Cynthia, Marnie) avec SIRs très demandées.",
+    "dataSource": "pricecharting"
+  },
+  "2025 Black Bolt Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2025",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-black-bolt",
+    "summary": "Premier des deux sets jumeaux Black Bolt / White Flare (juillet 2025) basé sur la région Unova et le retour de Zekrom — collab avec White Flare.",
+    "dataSource": "pricecharting"
+  },
+  "2025 White Flare Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2025",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-white-flare",
+    "summary": "Deuxième des deux sets jumeaux (juillet 2025) basé sur Reshiram et la région Unova — SIRs Reshiram et Cilan/Iris/Hilda particulièrement chase.",
+    "dataSource": "pricecharting"
+  },
+  "2025 Mega Evolution Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2025",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-mega-evolution",
+    "summary": "Set automne 2025 marquant le grand retour des Méga-Évolutions absentes du TCG depuis 2017 — Mega Charizard et Mega Rayquaza en SIR sont les chase principales.",
+    "dataSource": "pricecharting"
+  },
+  "2024 Surging Sparks Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2024",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-surging-sparks",
+    "summary": "SV8 sorti novembre 2024 — Pikachu ex Special Illustration Rare est la carte signature, l'une des SIRs les plus rares du bloc SV.",
+    "dataSource": "pricecharting"
+  },
+  "2024 Stellar Crown Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2024",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-stellar-crown",
+    "summary": "SV7 sorti septembre 2024 — focus Terastal et Tera Pokémon. Briar SIR et Hydreigon ex sont les chase principales.",
+    "dataSource": "pricecharting"
+  },
+  "2024 Twilight Masquerade Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2024",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-twilight-masquerade",
+    "summary": "SV6 sorti mai 2024 — introduction des Pokémon ACE SPEC et des Pokémon Ogerpon. Ogerpon SIRs très chassées.",
+    "dataSource": "pricecharting"
+  },
+  "2024 Paldean Fates Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2024",
+    "sport": "Pokémon",
+    "format": "Elite Trainer Box",
+    "pricechartingConsole": "pokemon-paldean-fates",
+    "summary": "Special set janvier 2024 — l'un des sets Shiny les plus populaires depuis Hidden Fates. Charizard ex Shiny Rare et Mew ex Shiny Rare sont les top chase.",
+    "dataSource": "pricecharting"
+  },
+  "2023 151 Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2023",
+    "sport": "Pokémon",
+    "format": "Booster Bundle",
+    "pricechartingConsole": "pokemon-151",
+    "summary": "Set culte septembre 2023 reprenant les 151 Pokémon originaux de Kanto en style moderne. Charizard ex Special Illustration Rare est devenue l'une des cartes modernes les plus recherchées.",
+    "dataSource": "pricecharting"
+  },
+  "2023 Obsidian Flames Pokémon": {
+    "brand": "Pokémon TCG",
+    "year": "2023",
+    "sport": "Pokémon",
+    "format": "Booster Box",
+    "pricechartingConsole": "pokemon-obsidian-flames",
+    "summary": "SV3 sorti août 2023 — premier set à introduire Charizard ex Tera Dark, devenue carte signature de l'ère Scarlet & Violet.",
+    "dataSource": "pricecharting"
   }
 }

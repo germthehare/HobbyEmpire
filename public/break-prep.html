@@ -326,6 +326,143 @@ body {
 }
 .add-another:hover { background: var(--bg-2); color: var(--ink); border-color: var(--line-strong); }
 
+/* ───── Pokémon search panel (left column) ───── */
+.pkm-search-panel {
+  padding: 14px 14px 12px;
+  background: var(--bg-3);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.pkm-search-eyebrow {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pkm-search-row { display: flex; gap: 8px; }
+.pkm-search-row input {
+  flex: 1; min-width: 0;
+  padding: 9px 11px;
+  font: inherit; font-size: 13px;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--ink);
+}
+.pkm-search-row input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--accent), transparent 80%);
+}
+.pkm-search-btn {
+  padding: 9px 14px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 8px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  white-space: nowrap;
+}
+.pkm-search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+#pkm-search-results { display: flex; flex-direction: column; gap: 6px; }
+.pkm-result-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.pkm-result-row:hover { border-color: var(--accent); background: var(--bg-2); }
+.pkm-result-row .pkm-name { font-size: 12px; font-weight: 700; line-height: 1.2; }
+.pkm-result-row .pkm-meta {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+.pkm-result-row .pkm-add {
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--accent);
+}
+.pkm-search-status {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 4px 2px;
+}
+
+/* ───── Pokémon fiche (grade toggle + card rows) ───── */
+.pkm-grade-toggle {
+  display: inline-flex;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+.pkm-grade-toggle button {
+  padding: 6px 14px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  border-radius: 999px;
+  transition: background .12s, color .12s;
+}
+.pkm-grade-toggle button.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.pkm-card-row {
+  display: grid;
+  grid-template-columns: 56px 32px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.pkm-card-row:first-of-type { border-top: 0; }
+.pkm-card-row img.splash {
+  width: 52px; height: 52px;
+  object-fit: contain;
+}
+.pkm-card-row .pkm-rank {
+  font-size: 13px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  text-align: right;
+}
+.pkm-card-row .pkm-cname { font-size: 14px; font-weight: 700; line-height: 1.2; }
+.pkm-card-row .pkm-csub {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 3px;
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.pkm-card-row .pkm-csub .alt { color: var(--ink-3); }
+.pkm-card-row .pkm-cprice {
+  font-size: 18px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: var(--pos);
+  white-space: nowrap;
+  text-align: right;
+}
+.pkm-card-row .pkm-cprice.empty { color: var(--ink-3); font-size: 13px; }
+
+@media (max-width: 720px) {
+  .pkm-card-row { grid-template-columns: 40px 24px 1fr auto; gap: 10px; }
+  .pkm-card-row img.splash { width: 38px; height: 38px; }
+  .pkm-card-row .pkm-cname { font-size: 13px; }
+  .pkm-card-row .pkm-cprice { font-size: 15px; }
+}
+
 /* Right column — generated sheet */
 .col-right { min-width: 0; }
 
@@ -901,6 +1038,16 @@ body {
           </div>
           <div id="debug-status" style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);padding:4px 2px">Chargement des produits…</div>
 
+          <!-- Pokémon free search (only visible when sport = Pokémon) -->
+          <div id="pkm-search-panel" class="pkm-search-panel" style="display:none">
+            <div class="pkm-search-eyebrow">Ou cherche un autre set Pokémon</div>
+            <div class="pkm-search-row">
+              <input id="pkm-search-input" type="text" placeholder="Ex: Prismatic Evolutions, 151, Crown Zenith…">
+              <button class="pkm-search-btn" onclick="runPokemonSearch()">Chercher</button>
+            </div>
+            <div id="pkm-search-results"></div>
+          </div>
+
           <div id="product-list" style="display:flex;flex-direction:column;gap:8px"></div>
 
           <button class="gen-btn" id="gen-btn" onclick="generatePrep()">Générer les fiches</button>
@@ -1041,6 +1188,9 @@ function onSelectSport(sport) {
   yearSel.innerHTML = '<option value="">—</option>';
   prodSel.innerHTML = '<option value="">—</option>';
   prodSel.disabled = true;
+  // Show/hide Pokémon search panel
+  const pkmPanel = document.getElementById('pkm-search-panel');
+  if (pkmPanel) pkmPanel.style.display = (sport === 'Pokémon') ? '' : 'none';
   if (!sport || !HIERARCHY[sport]) { yearSel.disabled = true; return; }
   yearSel.disabled = false;
   Object.keys(HIERARCHY[sport]).sort().reverse().forEach(y => {
@@ -1137,6 +1287,96 @@ async function fetchChecklist(key) {
   return await r.json();
 }
 
+// ════════════════════ Pokémon (PriceCharting) ════════════════════
+// Adhoc Pokémon products (from free search) use key prefix `pkm:<slug>|<name>`
+// so generatePrep can distinguish them from curated checklist keys.
+const PKM_PREFIX = 'pkm:';
+
+function isPokemonKey(key) {
+  if (!key) return false;
+  if (key.startsWith(PKM_PREFIX)) return true;
+  // Curated entry — check HIERARCHY hint via parseKey sport
+  return parseKey(key).sport === 'Pokémon';
+}
+
+// Cache curated entries' pricechartingConsole so we don't refetch checklist twice
+const PKM_CONSOLE_CACHE = {};
+
+async function resolvePokemonConsole(key) {
+  if (key.startsWith(PKM_PREFIX)) {
+    // adhoc: "pkm:<slug>|<displayName>"
+    return { slug: key.slice(PKM_PREFIX.length).split('|')[0], name: key.slice(PKM_PREFIX.length).split('|').slice(1).join('|') || key };
+  }
+  if (PKM_CONSOLE_CACHE[key]) return PKM_CONSOLE_CACHE[key];
+  const d = await fetchChecklist(key);
+  const slug = d.pricechartingConsole || '';
+  const out = { slug, name: key, summary: d.summary || '', brand: d.brand || 'Pokémon TCG', format: d.format || 'Booster Box', year: d.year || '' };
+  PKM_CONSOLE_CACHE[key] = out;
+  return out;
+}
+
+async function fetchPokemonSet(slug) {
+  const r = await fetch('/api/pricecharting?action=set&console=' + encodeURIComponent(slug));
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(e.error || `Erreur PriceCharting (${r.status})`);
+  }
+  return await r.json();
+}
+
+async function runPokemonSearch() {
+  const inp = document.getElementById('pkm-search-input');
+  const q = (inp?.value || '').trim();
+  const out = document.getElementById('pkm-search-results');
+  if (!q) { out.innerHTML = ''; return; }
+  out.innerHTML = '<div class="pkm-search-status">Recherche…</div>';
+  try {
+    const r = await fetch('/api/pricecharting?action=search&q=' + encodeURIComponent(q));
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      out.innerHTML = `<div class="pkm-search-status" style="color:var(--neg)">${esc(e.error || 'Erreur')}</div>`;
+      return;
+    }
+    const d = await r.json();
+    const sets = {};
+    // Group products by console (each Pokémon set = console). PriceCharting search returns cards;
+    // we surface their consoles as "sets" the user can add.
+    (d.products || []).forEach(p => {
+      const slug = p.consoleSlug || '';
+      const name = p.console || '';
+      if (!slug || !name) return;
+      if (!sets[slug]) sets[slug] = { slug, name, hits: 0 };
+      sets[slug].hits++;
+    });
+    const list = Object.values(sets).sort((a, b) => b.hits - a.hits).slice(0, 12);
+    if (!list.length) { out.innerHTML = '<div class="pkm-search-status">Aucun set trouvé</div>'; return; }
+    out.innerHTML = list.map(s => `
+      <div class="pkm-result-row" onclick="addPokemonAdhoc('${esc(s.slug)}', '${esc(s.name)}')">
+        <div>
+          <div class="pkm-name">${esc(s.name)}</div>
+          <div class="pkm-meta">${s.hits} carte${s.hits > 1 ? 's' : ''} matchée${s.hits > 1 ? 's' : ''}</div>
+        </div>
+        <span class="pkm-add">+ Ajouter</span>
+      </div>`).join('');
+  } catch (e) {
+    out.innerHTML = `<div class="pkm-search-status" style="color:var(--neg)">${esc(e.message)}</div>`;
+  }
+}
+
+function addPokemonAdhoc(slug, name) {
+  const key = `${PKM_PREFIX}${slug}|${name}`;
+  if (document.querySelector(`.product-chip[data-key="${esc(key)}"]`)) return;
+  const chip = document.createElement('div');
+  chip.className = 'product-chip';
+  chip.dataset.key = key;
+  chip.innerHTML = `
+    <span class="sport">Pokémon</span>
+    <span class="year">PC</span>
+    <span class="name">${esc(name)}</span>
+    <button class="x" onclick="this.parentElement.remove()" title="Retirer">×</button>`;
+  document.getElementById('product-list').appendChild(chip);
+}
+
 function buildSearchQuery(playerName, productKey, extra = '') {
   // Strategy: keep the query SHORT so eBay finds matches.
   // Format: "<Player> <Year> <ProductShort> [<Extra>]"
@@ -1163,8 +1403,36 @@ async function generatePrep() {
   document.getElementById('prep-result').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement du checklist + prix eBay…</div>';
 
   try {
-    const results = [];
-    for (const p of products) {
+    // Split Pokémon products (PriceCharting) from sports cards (curated + eBay)
+    const pkmKeys = products.filter(isPokemonKey);
+    const sportKeys = products.filter(k => !isPokemonKey(k));
+
+    // Pokémon flow — fetch each set's cards from PriceCharting
+    const pkmResults = [];
+    for (const p of pkmKeys) {
+      const meta = await resolvePokemonConsole(p);
+      if (!meta.slug) {
+        pkmResults.push({ _error: `Set Pokémon "${p}" sans pricechartingConsole défini`, productKey: p, _pokemon: true });
+        continue;
+      }
+      const setData = await fetchPokemonSet(meta.slug);
+      pkmResults.push({
+        _pokemon: true,
+        productKey: p,
+        brand: meta.brand || 'Pokémon TCG',
+        year: meta.year || '',
+        sport: 'Pokémon',
+        format: meta.format || 'Booster Box',
+        summary: meta.summary || '',
+        name: meta.name,
+        consoleSlug: meta.slug,
+        cards: setData.cards || [],
+        count: setData.count || 0,
+      });
+    }
+
+    const results = [...pkmResults];
+    for (const p of sportKeys) {
       // 1. Fetch curated checklist (no AI)
       const d = await fetchChecklist(p);
       const productKey = d.key || p;
@@ -1213,9 +1481,113 @@ async function generatePrep() {
   btn.textContent = 'Générer les fiches';
 }
 
+// Stash Pokémon results so grade toggle can re-render without refetching
+const PKM_FICHE_STATE = {};
+
+function fmtCents(c) {
+  if (c == null || !isFinite(c)) return null;
+  return '$' + (c / 100).toLocaleString('en-US', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
+}
+
+function setPokemonGrade(ficheId, grade) {
+  const state = PKM_FICHE_STATE[ficheId];
+  if (!state) return;
+  state.grade = grade;
+  document.querySelectorAll(`#${ficheId} .pkm-grade-toggle button`).forEach(b => {
+    b.classList.toggle('active', b.dataset.grade === grade);
+  });
+  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(state.cards, grade);
+}
+
+function renderPokemonCardRows(cards, grade) {
+  // Sort by selected grade desc, nulls last
+  const key = grade; // 'raw' | 'psa9' | 'psa10'
+  const sorted = [...cards].sort((a, b) => (b[key] ?? -1) - (a[key] ?? -1));
+  return sorted.map((c, i) => {
+    const main = c[key];
+    const others = ['raw', 'psa9', 'psa10'].filter(g => g !== grade);
+    const otherLabels = { raw: 'Raw', psa9: 'PSA 9', psa10: 'PSA 10' };
+    const subPrices = others.map(g => {
+      const v = c[g];
+      return `<span class="alt">${otherLabels[g]} ${v != null ? fmtCents(v) : '—'}</span>`;
+    }).join('');
+    const mainHtml = main != null
+      ? `<span class="pkm-cprice">${fmtCents(main)}</span>`
+      : `<span class="pkm-cprice empty">—</span>`;
+    return `<div class="pkm-card-row">
+      <img class="splash" src="/assets/splash-official.png" alt="">
+      <span class="pkm-rank">${i + 1}</span>
+      <div>
+        <div class="pkm-cname">${esc(c.name)}</div>
+        <div class="pkm-csub">${subPrices}</div>
+      </div>
+      ${mainHtml}
+    </div>`;
+  }).join('');
+}
+
+function renderPokemonFiche(d, ficheId) {
+  PKM_FICHE_STATE[ficheId] = { cards: d.cards, grade: 'psa10' };
+  const title = d.name || d.productKey || 'Set Pokémon';
+  const titleParts = title.split(' ');
+  const titleHtml = titleParts.length > 1
+    ? titleParts.map((t, i) => i === 1 ? `<span class="hl">${esc(t)}</span>` : esc(t)).join(' ')
+    : `<span class="hl">${esc(title)}</span>`;
+  const hitsLabel = `${d.count} carte${d.count > 1 ? 's' : ''} listée${d.count > 1 ? 's' : ''}`;
+  const cardsHtml = d.cards.length
+    ? renderPokemonCardRows(d.cards, 'psa10')
+    : '<div style="padding:16px;color:var(--ink-3);font-size:12px">Aucune carte renvoyée par PriceCharting pour ce set.</div>';
+  return `<div class="fiche" id="${ficheId}">
+    <div class="fiche-header">
+      <span class="fiche-brand">${esc(d.brand)}</span>
+      <span class="fiche-meta">${esc(d.year || '')}${d.year ? ' · ' : ''}Pokémon TCG</span>
+      <h2 class="fiche-title">${titleHtml}</h2>
+      <div class="fiche-stats">
+        <div class="fiche-stat"><img src="/assets/poight.png" alt=""><span>${esc(hitsLabel)}</span></div>
+        <div class="fiche-stat"><img src="/assets/diamant.png" alt=""><span>${esc(d.format || 'Booster Box')}</span></div>
+      </div>
+    </div>
+    ${d.summary ? `<div class="fiche-summary">${esc(d.summary)}</div>` : ''}
+    <div class="fiche-section">
+      <div class="fiche-section-head">
+        <span class="fiche-eyebrow">Classement des cartes</span>
+        <div class="pkm-grade-toggle">
+          <button data-grade="raw"   onclick="setPokemonGrade('${ficheId}','raw')">Raw</button>
+          <button data-grade="psa9"  onclick="setPokemonGrade('${ficheId}','psa9')">PSA 9</button>
+          <button data-grade="psa10" class="active" onclick="setPokemonGrade('${ficheId}','psa10')">PSA 10</button>
+        </div>
+      </div>
+      <div id="${ficheId}-cards">${cardsHtml}</div>
+    </div>
+    <div class="fiche-footer">
+      <span class="fiche-sources">Source · PriceCharting</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="window.print()">📄 PDF</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderPokemonError(d) {
+  return `<div class="fiche">
+    <div class="fiche-header">
+      <span class="fiche-brand">Pokémon TCG</span>
+      <h2 class="fiche-title">${esc(d.productKey || 'Set Pokémon')}</h2>
+    </div>
+    <div class="fiche-summary" style="color:var(--neg)">${esc(d._error || 'Erreur')}</div>
+  </div>`;
+}
+
 function renderPrep(results) {
   let html = '';
+  let pkmIdx = 0;
   for (const d of results) {
+    if (d._pokemon) {
+      if (d._error) { html += renderPokemonError(d); continue; }
+      const ficheId = 'pkm-fiche-' + (pkmIdx++);
+      html += renderPokemonFiche(d, ficheId);
+      continue;
+    }
     const brand = d.brand || 'Upper Deck';
     const year  = d.year  || '—';
     const sport = d.sport || 'Hockey';
@@ -1402,6 +1774,7 @@ function renderLookup(d) {
 }
 
 document.getElementById('card-input').addEventListener('keydown', e => { if (e.key === 'Enter') lookupCard(); });
+document.getElementById('pkm-search-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') runPokemonSearch(); });
 
 // ════════════════════ Boot ════════════════════
 document.getElementById('sel-sport').addEventListener('change', e => {
