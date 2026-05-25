@@ -598,17 +598,17 @@ body {
 .pkm-tile {
   position: relative;
   display: flex; flex-direction: column;
-  background: var(--bg-3);
-  border: 1px solid var(--line-strong);
+  background: #ffffff;
+  border: 2px solid #d0d4dd;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 6px -4px color-mix(in oklch, var(--ink), transparent 75%);
+  box-shadow: 0 2px 6px -4px rgba(0,0,0,0.2);
   transition: transform .12s, border-color .12s, box-shadow .12s;
 }
 .pkm-tile:hover {
   transform: translateY(-2px);
-  border-color: var(--accent);
-  box-shadow: 0 8px 20px -10px color-mix(in oklch, var(--ink), transparent 65%);
+  border-color: #2bb8c9;
+  box-shadow: 0 8px 20px -10px rgba(0,0,0,0.35);
 }
 .pkm-tile-rank {
   position: absolute;
@@ -625,11 +625,8 @@ body {
 }
 .pkm-tile-img-wrap {
   aspect-ratio: 5 / 7;
-  background:
-    linear-gradient(135deg,
-      color-mix(in oklch, var(--ink-3), transparent 88%),
-      color-mix(in oklch, var(--ink-3), transparent 94%));
-  border-bottom: 1px solid var(--line);
+  background: #e8eaef;
+  border-bottom: 1px solid #d0d4dd;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
   min-height: 200px;
