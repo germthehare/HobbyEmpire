@@ -1844,7 +1844,8 @@ function pokemonCardImage(c) {
 
 function pokemonCardImageLarge(c) {
   if (!c.tcgId) return '/assets/splash-official.png';
-  return `https://product-images.tcgplayer.com/fit-in/437x437/${c.tcgId}.jpg`;
+  // 200x200 fits the ~200px tile width perfectly + keeps total bandwidth low
+  return `https://tcgplayer-cdn.tcgplayer.com/product/${c.tcgId}_in_200x200.jpg`;
 }
 
 function renderPokemonCardGrid(cards, grade, sort = 'price-desc') {
@@ -1865,7 +1866,7 @@ function renderPokemonCardGrid(cards, grade, sort = 'price-desc') {
     return `<div class="pkm-tile" title="${esc(c.name)}">
       <div class="pkm-tile-rank">#${i + 1}</div>
       <div class="pkm-tile-img-wrap">
-        <img src="${imgUrl}" alt="${esc(c.name)}" loading="lazy" onerror="this.onerror=null;this.src='/assets/splash-official.png';this.classList.add('fallback');">
+        <img src="${imgUrl}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='/assets/splash-official.png';this.classList.add('fallback');">
       </div>
       <div class="pkm-tile-body">
         <div class="pkm-tile-meta">${esc(c.genre || 'Pokémon Card')}</div>
@@ -1895,7 +1896,7 @@ function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
     const imgUrl = pokemonCardImage(c);
     const imgClass = c.tcgId ? 'pkm-cimg' : 'splash';
     return `<div class="pkm-card-row">
-      <img class="${imgClass}" src="${imgUrl}" alt="${esc(c.name)}" loading="lazy" onerror="this.onerror=null;this.src='/assets/splash-official.png';this.className='splash';">
+      <img class="${imgClass}" src="${imgUrl}" alt="${esc(c.name)}" onerror="this.onerror=null;this.src='/assets/splash-official.png';this.className='splash';">
       <span class="pkm-rank">${i + 1}</span>
       <div>
         <div class="pkm-cname">${esc(c.name)}</div>
