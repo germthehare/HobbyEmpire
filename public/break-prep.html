@@ -498,6 +498,18 @@ body {
   text-align: right;
 }
 .pkm-card-row .pkm-cprice.empty { color: var(--ink-3); font-size: 13px; }
+.pkm-change {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 7px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+.pkm-change.up   { background: color-mix(in oklch, var(--pos), transparent 80%); color: var(--pos); }
+.pkm-change.down { background: color-mix(in oklch, var(--neg), transparent 80%); color: var(--neg); }
 
 @media (max-width: 720px) {
   .pkm-card-row { grid-template-columns: 40px 24px 1fr auto; gap: 10px; }
@@ -1579,6 +1591,9 @@ function sortPokemonCards(cards, grade, sort) {
     case 'card-number':
       arr.sort((a, b) => extractCardNumber(a.name) - extractCardNumber(b.name));
       break;
+    case 'biggest-change':
+      arr.sort((a, b) => Math.abs(b[grade + 'Pct'] ?? 0) - Math.abs(a[grade + 'Pct'] ?? 0));
+      break;
     case 'price-desc':
     default:
       arr.sort((a, b) => (b[grade] ?? -1) - (a[grade] ?? -1));
@@ -1587,11 +1602,21 @@ function sortPokemonCards(cards, grade, sort) {
   return arr;
 }
 
+function fmtChange(pct) {
+  if (pct == null || !isFinite(pct) || pct === 0) return '';
+  const arrow = pct > 0 ? '↑' : '↓';
+  const cls   = pct > 0 ? 'up' : 'down';
+  const abs   = Math.abs(pct);
+  const display = abs >= 10 ? Math.round(abs) : abs.toFixed(1);
+  return `<span class="pkm-change ${cls}">${arrow}${display}%</span>`;
+}
+
 function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
   const sorted = sortPokemonCards(cards, grade, sort);
   return sorted.map((c, i) => {
     const key = grade;
     const main = c[key];
+    const pct = c[grade + 'Pct'];
     const others = ['raw', 'psa9', 'psa10'].filter(g => g !== grade);
     const otherLabels = { raw: 'Raw', psa9: 'PSA 9', psa10: 'PSA 10' };
     const subPrices = others.map(g => {
@@ -1599,7 +1624,7 @@ function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
       return `<span class="alt">${otherLabels[g]} ${v != null ? fmtCents(v) : '—'}</span>`;
     }).join('');
     const mainHtml = main != null
-      ? `<span class="pkm-cprice">${fmtCents(main)}</span>`
+      ? `<span class="pkm-cprice">${fmtCents(main)}${fmtChange(pct)}</span>`
       : `<span class="pkm-cprice empty">—</span>`;
     return `<div class="pkm-card-row">
       <img class="splash" src="/assets/splash-official.png" alt="">
@@ -1614,7 +1639,14 @@ function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
 }
 
 function renderPokemonFiche(d, ficheId) {
-  PKM_FICHE_STATE[ficheId] = { cards: d.cards, grade: 'psa10', sort: 'price-desc' };
+  PKM_FICHE_STATE[ficheId] = {
+    cards: d.cards,
+    grade: 'psa10',
+    sort: 'price-desc',
+    changeAvailable: Boolean(d.changeAvailable && d.changeSince),
+    changeDaysAgo: d.changeDaysAgo || null,
+  };
+  const hasChanges = Boolean(d.changeSince);
   const title = d.name || d.productKey || 'Set Pokémon';
   const titleParts = title.split(' ');
   const titleHtml = titleParts.length > 1
@@ -1652,7 +1684,7 @@ function renderPokemonFiche(d, ficheId) {
               <option value="popularity">Popularité</option>
               <option value="alphabetical">Alphabétique</option>
               <option value="card-number">Numéro de carte</option>
-              <option value="biggest-change" disabled>Plus gros changement (à venir)</option>
+              <option value="biggest-change"${hasChanges ? '' : ' disabled'}>Plus gros changement${hasChanges ? ` (${d.changeDaysAgo}j)` : ' (snapshot en cours)'}</option>
             </select>
           </label>
         </div>

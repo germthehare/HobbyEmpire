@@ -1,10 +1,14 @@
 // PriceCharting proxy — Pokémon card data
-// Env var: PRICECHARTING_TOKEN
+// Env vars:
+//   PRICECHARTING_TOKEN    — required, your PriceCharting API token
+//   KV_REST_API_URL        — optional, Vercel KV REST endpoint (for price-change tracking)
+//   KV_REST_API_TOKEN      — optional, Vercel KV REST token
 //
 // Actions:
 //   ?action=search&q=...        → search products (max ~20)
 //   ?action=product&id=...      → single product details
 //   ?action=set&console=NAME    → all cards in a Pokémon set (filters master CSV)
+//                                 + writes daily snapshot to KV, computes 7d delta vs oldest available snapshot
 //   ?action=consoles            → list of all Pokémon set console-names
 //
 // Price field mapping for Pokémon trading cards:
@@ -94,6 +98,103 @@ function mapCardRow(r) {
     salesVolume: parseInt(r['sales-volume'] || '0', 10) || 0,
     releaseDate: r['release-date'] || '',
   };
+}
+
+// ────────────────── Vercel KV (price-change snapshots) ──────────────────
+// Uses Upstash Redis REST API directly so we don't need any npm package.
+// Writes a daily snapshot per console, looks back 1-14 days to compute deltas.
+// Gracefully no-ops if KV env vars are missing.
+
+function kvConfigured() {
+  return Boolean(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+}
+
+async function kvCmd(args) {
+  if (!kvConfigured()) return null;
+  try {
+    const r = await fetch(process.env.KV_REST_API_URL, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.KV_REST_API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(args),
+    });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d.result;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function kvGet(key) {
+  const v = await kvCmd(['GET', key]);
+  if (v == null) return null;
+  try { return JSON.parse(v); } catch { return null; }
+}
+
+async function kvSet(key, value, ttlSec = 60 * 24 * 3600) {
+  return await kvCmd(['SET', key, JSON.stringify(value), 'EX', String(ttlSec)]);
+}
+
+function ymdUTC(d) {
+  // YYYY-MM-DD in UTC, stable across Vercel regions
+  return d.toISOString().slice(0, 10);
+}
+
+function shiftDays(d, days) {
+  const x = new Date(d);
+  x.setUTCDate(x.getUTCDate() + days);
+  return x;
+}
+
+async function fetchOldestSnapshot(consoleName, maxLookback = 14) {
+  // Try yesterday, then 2 days ago, ..., up to N days ago.
+  // Return the OLDEST snapshot found in [today-maxLookback, today-1] for biggest signal.
+  // To minimize KV calls, probe specific anchor days: 7, 14, 3, 1.
+  const today = new Date();
+  const candidates = [7, 14, 3, 1, 5, 10].filter(n => n <= maxLookback);
+  let best = null;
+  for (const days of candidates) {
+    const date = ymdUTC(shiftDays(today, -days));
+    const snap = await kvGet(`pkm:snap:${consoleName}:${date}`);
+    if (snap && snap.cards) {
+      // Prefer the FURTHEST-back snapshot (bigger delta window)
+      if (!best || days > best.daysAgo) {
+        best = { ...snap, daysAgo: days };
+      }
+    }
+  }
+  return best;
+}
+
+async function writeSnapshot(consoleName, cards) {
+  const today = ymdUTC(new Date());
+  const slim = cards.map(c => ({ id: c.id, raw: c.raw, psa9: c.psa9, psa10: c.psa10 }));
+  await kvSet(`pkm:snap:${consoleName}:${today}`, { date: today, cards: slim }, 60 * 24 * 3600);
+}
+
+function attachDeltas(cards, snapshot) {
+  if (!snapshot || !snapshot.cards) return { cards, since: null, daysAgo: null };
+  const idx = {};
+  for (const old of snapshot.cards) idx[old.id] = old;
+  const enriched = cards.map(c => {
+    const old = idx[c.id];
+    const out = { ...c };
+    if (!old) return out;
+    for (const g of ['raw', 'psa9', 'psa10']) {
+      const cur = c[g];
+      const prv = old[g];
+      if (cur != null && prv != null && prv > 0) {
+        const diff = cur - prv;
+        out[g + 'Change'] = diff;
+        out[g + 'Pct']    = Math.round((diff / prv) * 10000) / 100; // 2 decimals
+      }
+    }
+    return out;
+  });
+  return { cards: enriched, since: snapshot.date, daysAgo: snapshot.daysAgo };
 }
 
 async function fetchPokemonMasterCSV(token) {
@@ -220,7 +321,29 @@ export default async function handler(req, res) {
       const rowsToUse = filtered.length ? filtered : rows.filter(r => String(r['console-name'] || '').toLowerCase().includes(target));
       const cards = rowsToUse.map(mapCardRow).filter(c => c.name);
       cards.sort((a, b) => (b.psa10 ?? -1) - (a.psa10 ?? -1));
-      const payload = { console: consoleName, count: cards.length, cards };
+
+      // Price-change tracking via Vercel KV (graceful no-op if unconfigured)
+      let changeSince = null;
+      let changeDaysAgo = null;
+      if (kvConfigured()) {
+        const snapshot = await fetchOldestSnapshot(consoleName);
+        const enriched = attachDeltas(cards, snapshot);
+        cards.length = 0;
+        cards.push(...enriched.cards);
+        changeSince = enriched.since;
+        changeDaysAgo = enriched.daysAgo;
+        // Fire-and-forget write of today's snapshot
+        writeSnapshot(consoleName, cards).catch(() => {});
+      }
+
+      const payload = {
+        console: consoleName,
+        count: cards.length,
+        cards,
+        changeSince,
+        changeDaysAgo,
+        changeAvailable: kvConfigured(),
+      };
       setCached(cacheKey, payload);
       res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=7200');
       return res.status(200).json(payload);
