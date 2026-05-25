@@ -94,6 +94,7 @@ function mapCardRow(r) {
     console:     r['console-name'] || '',
     genre:       g,
     isSealed:    /sealed/i.test(g),
+    tcgId:       r['tcg-id'] || '',
     raw:         priceToCents(r['loose-price']),
     psa9:        priceToCents(r['graded-price']),
     psa10:       priceToCents(r['manual-only-price']),

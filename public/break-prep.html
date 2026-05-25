@@ -511,16 +511,24 @@ body {
 }
 .pkm-card-row {
   display: grid;
-  grid-template-columns: 56px 32px 1fr auto;
+  grid-template-columns: 64px 32px 1fr auto;
   gap: 14px;
   align-items: center;
-  padding: 10px 0;
+  padding: 12px 0;
   border-top: 1px solid var(--line);
 }
 .pkm-card-row:first-of-type { border-top: 0; }
 .pkm-card-row img.splash {
   width: 52px; height: 52px;
   object-fit: contain;
+}
+.pkm-card-row img.pkm-cimg {
+  width: 60px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 5px;
+  background: var(--bg-2);
+  box-shadow: 0 2px 8px -3px color-mix(in oklch, var(--ink), transparent 75%);
 }
 .pkm-card-row .pkm-rank {
   font-size: 13px; font-weight: 800;
@@ -560,8 +568,9 @@ body {
 .pkm-change.down { background: color-mix(in oklch, var(--neg), transparent 80%); color: var(--neg); }
 
 @media (max-width: 720px) {
-  .pkm-card-row { grid-template-columns: 40px 24px 1fr auto; gap: 10px; }
-  .pkm-card-row img.splash { width: 38px; height: 38px; }
+  .pkm-card-row { grid-template-columns: 48px 24px 1fr auto; gap: 10px; }
+  .pkm-card-row img.splash { width: 44px; height: 44px; }
+  .pkm-card-row img.pkm-cimg { width: 46px; height: 64px; }
   .pkm-card-row .pkm-cname { font-size: 13px; }
   .pkm-card-row .pkm-cprice { font-size: 15px; }
 }
@@ -1684,6 +1693,11 @@ function fmtChange(pct) {
   return `<span class="pkm-change ${cls}">${arrow}${display}%</span>`;
 }
 
+function pokemonCardImage(c) {
+  if (!c.tcgId) return '/assets/splash-official.png';
+  return `https://tcgplayer-cdn.tcgplayer.com/product/${c.tcgId}_in_200x200.jpg`;
+}
+
 function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
   const sorted = sortPokemonCards(cards, grade, sort);
   return sorted.map((c, i) => {
@@ -1699,8 +1713,10 @@ function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
     const mainHtml = main != null
       ? `<span class="pkm-cprice">${fmtCents(main)}${fmtChange(pct)}</span>`
       : `<span class="pkm-cprice empty">—</span>`;
+    const imgUrl = pokemonCardImage(c);
+    const imgClass = c.tcgId ? 'pkm-cimg' : 'splash';
     return `<div class="pkm-card-row">
-      <img class="splash" src="/assets/splash-official.png" alt="">
+      <img class="${imgClass}" src="${imgUrl}" alt="${esc(c.name)}" loading="lazy" onerror="this.onerror=null;this.src='/assets/splash-official.png';this.className='splash';">
       <span class="pkm-rank">${i + 1}</span>
       <div>
         <div class="pkm-cname">${esc(c.name)}</div>
