@@ -397,7 +397,50 @@ body {
   padding: 4px 2px;
 }
 
-/* ───── Pokémon fiche (grade toggle + card rows) ───── */
+/* ───── Pokémon fiche (grade toggle + sort + card rows) ───── */
+.pkm-section-head {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pkm-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pkm-sort-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+.pkm-sort-label {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pkm-sort-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 6px 30px 6px 12px;
+  font: inherit; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: var(--bg-3);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23556' stroke-width='2'%3E%3Cpath d='M3 5l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.pkm-sort-select:focus { outline: none; border-color: var(--accent); }
+.pkm-sort-select option:disabled { color: var(--ink-3); }
+
 .pkm-grade-toggle {
   display: inline-flex;
   background: var(--bg-2);
@@ -1506,14 +1549,48 @@ function setPokemonGrade(ficheId, grade) {
   document.querySelectorAll(`#${ficheId} .pkm-grade-toggle button`).forEach(b => {
     b.classList.toggle('active', b.dataset.grade === grade);
   });
-  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(state.cards, grade);
+  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(state.cards, grade, state.sort);
 }
 
-function renderPokemonCardRows(cards, grade) {
-  // Sort by selected grade desc, nulls last
-  const key = grade; // 'raw' | 'psa9' | 'psa10'
-  const sorted = [...cards].sort((a, b) => (b[key] ?? -1) - (a[key] ?? -1));
+function setPokemonSort(ficheId, sort) {
+  const state = PKM_FICHE_STATE[ficheId];
+  if (!state) return;
+  state.sort = sort;
+  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(state.cards, state.grade, sort);
+}
+
+function extractCardNumber(name) {
+  const m = String(name || '').match(/#(\d+)/);
+  return m ? parseInt(m[1], 10) : Number.MAX_SAFE_INTEGER;
+}
+
+function sortPokemonCards(cards, grade, sort) {
+  const arr = [...cards];
+  switch (sort) {
+    case 'price-asc':
+      arr.sort((a, b) => (a[grade] ?? Number.MAX_SAFE_INTEGER) - (b[grade] ?? Number.MAX_SAFE_INTEGER));
+      break;
+    case 'popularity':
+      arr.sort((a, b) => (b.salesVolume ?? 0) - (a.salesVolume ?? 0));
+      break;
+    case 'alphabetical':
+      arr.sort((a, b) => String(a.name || '').localeCompare(String(b.name || '')));
+      break;
+    case 'card-number':
+      arr.sort((a, b) => extractCardNumber(a.name) - extractCardNumber(b.name));
+      break;
+    case 'price-desc':
+    default:
+      arr.sort((a, b) => (b[grade] ?? -1) - (a[grade] ?? -1));
+      break;
+  }
+  return arr;
+}
+
+function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
+  const sorted = sortPokemonCards(cards, grade, sort);
   return sorted.map((c, i) => {
+    const key = grade;
     const main = c[key];
     const others = ['raw', 'psa9', 'psa10'].filter(g => g !== grade);
     const otherLabels = { raw: 'Raw', psa9: 'PSA 9', psa10: 'PSA 10' };
@@ -1537,7 +1614,7 @@ function renderPokemonCardRows(cards, grade) {
 }
 
 function renderPokemonFiche(d, ficheId) {
-  PKM_FICHE_STATE[ficheId] = { cards: d.cards, grade: 'psa10' };
+  PKM_FICHE_STATE[ficheId] = { cards: d.cards, grade: 'psa10', sort: 'price-desc' };
   const title = d.name || d.productKey || 'Set Pokémon';
   const titleParts = title.split(' ');
   const titleHtml = titleParts.length > 1
@@ -1559,12 +1636,25 @@ function renderPokemonFiche(d, ficheId) {
     </div>
     ${d.summary ? `<div class="fiche-summary">${esc(d.summary)}</div>` : ''}
     <div class="fiche-section">
-      <div class="fiche-section-head">
+      <div class="fiche-section-head pkm-section-head">
         <span class="fiche-eyebrow">Classement des cartes</span>
-        <div class="pkm-grade-toggle">
-          <button data-grade="raw"   onclick="setPokemonGrade('${ficheId}','raw')">Raw</button>
-          <button data-grade="psa9"  onclick="setPokemonGrade('${ficheId}','psa9')">PSA 9</button>
-          <button data-grade="psa10" class="active" onclick="setPokemonGrade('${ficheId}','psa10')">PSA 10</button>
+        <div class="pkm-controls">
+          <div class="pkm-grade-toggle">
+            <button data-grade="raw"   onclick="setPokemonGrade('${ficheId}','raw')">Raw</button>
+            <button data-grade="psa9"  onclick="setPokemonGrade('${ficheId}','psa9')">PSA 9</button>
+            <button data-grade="psa10" class="active" onclick="setPokemonGrade('${ficheId}','psa10')">PSA 10</button>
+          </div>
+          <label class="pkm-sort-wrap">
+            <span class="pkm-sort-label">Trier</span>
+            <select class="pkm-sort-select" onchange="setPokemonSort('${ficheId}', this.value)">
+              <option value="price-desc" selected>Prix : élevé → bas</option>
+              <option value="price-asc">Prix : bas → élevé</option>
+              <option value="popularity">Popularité</option>
+              <option value="alphabetical">Alphabétique</option>
+              <option value="card-number">Numéro de carte</option>
+              <option value="biggest-change" disabled>Plus gros changement (à venir)</option>
+            </select>
+          </label>
         </div>
       </div>
       <div id="${ficheId}-cards">${cardsHtml}</div>
