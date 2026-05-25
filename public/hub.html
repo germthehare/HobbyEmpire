@@ -178,6 +178,24 @@ body {
 }
 .toolbar-actions { display: flex; align-items: center; gap: 8px; }
 
+/* Toolbar sub-tabs (Stats / Objectifs) */
+.toolbar-tabs { display: flex; gap: 2px; margin-left: 18px; }
+.toolbar-tab {
+  position: relative;
+  padding: 10px 14px;
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  transition: color .12s;
+}
+.toolbar-tab:hover { color: var(--ink); }
+.toolbar-tab.active { color: var(--ink); }
+.toolbar-tab.active::after {
+  content: '';
+  position: absolute; left: 12px; right: 12px; bottom: -15px;
+  height: 2px; background: var(--accent);
+}
+
 .month-select {
   font-family: inherit;
   font-size: 12px; font-weight: 600;
@@ -726,7 +744,10 @@ body {
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="toolbar-left">
-      <span class="tb-eyebrow">Hub · Stats</span>
+      <div class="toolbar-tabs">
+        <button class="toolbar-tab active" data-tab="stats"      onclick="setHubTab('stats')">Stats</button>
+        <button class="toolbar-tab"        data-tab="objectifs"  onclick="setHubTab('objectifs')">Objectifs</button>
+      </div>
       <span class="holo"></span>
       <span class="tb-sub" id="tb-sub">Chargement…</span>
     </div>
@@ -742,8 +763,20 @@ body {
   <!-- Page content -->
   <div class="page">
 
-    <!-- 0. Objectifs banner — only visible if at least one objectif is set -->
-    <div class="obj-banner" id="obj-banner" style="display:none">
+    <!-- ═════ VUE OBJECTIFS ═════ -->
+    <div id="view-objectifs" style="display:none">
+    <!-- Empty state if no objectifs configured -->
+    <div id="obj-empty" class="obj-banner" style="display:none">
+      <div style="padding:60px 24px;text-align:center">
+        <div style="font-size:42px;opacity:0.4;margin-bottom:14px">🎯</div>
+        <div style="font-size:16px;font-weight:700;color:var(--ink-2);margin-bottom:8px">Aucun objectif configuré</div>
+        <div style="font-size:12.5px;color:var(--ink-3);max-width:380px;margin:0 auto 16px;line-height:1.5">
+          Définis tes cibles mensuelles (compagnie ou par vendeur) dans Settings → Objectifs.
+        </div>
+        <a href="/settings.html#objectifs" class="btn btn-primary btn-sm" style="display:inline-flex">Configurer les objectifs →</a>
+      </div>
+    </div>
+    <div class="obj-banner" id="obj-banner">
       <div class="obj-head">
         <div>
           <div class="card-eyebrow">Objectifs · <span id="obj-month-label">—</span></div>
@@ -775,6 +808,10 @@ body {
       <!-- Vendeurs: mini barres compactes -->
       <div class="obj-vendeurs" id="obj-vendeurs"></div>
     </div>
+    </div><!-- /view-objectifs -->
+
+    <!-- ═════ VUE STATS ═════ -->
+    <div id="view-stats">
 
     <!-- 1. KPI grid -->
     <div class="kpi-grid">
@@ -944,6 +981,8 @@ body {
       </div>
     </div>
 
+    </div><!-- /view-stats -->
+
   </div>
 
   <!-- Bottom cert strip -->
@@ -961,6 +1000,12 @@ body {
 function toggleSidebar() {
   document.querySelector('.sb').classList.toggle('open');
   document.querySelector('.sb-overlay').classList.toggle('open');
+}
+
+function setHubTab(tab) {
+  document.querySelectorAll('.toolbar-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('view-stats').style.display     = tab === 'stats'     ? '' : 'none';
+  document.getElementById('view-objectifs').style.display = tab === 'objectifs' ? '' : 'none';
 }
 
 // ════════════════════ Helpers ════════════════════
@@ -1090,17 +1135,21 @@ function render() {
 
 function renderObjectifs(current, monthLabel) {
   const banner = document.getElementById('obj-banner');
+  const empty  = document.getElementById('obj-empty');
   const settings = getSettings();
-  if (!settings) { banner.style.display = 'none'; return; }
-
-  const objComp = settings.objectifs || {};
-  const objVend = settings.objectifsVendeurs || {};
+  const objComp = settings?.objectifs || {};
+  const objVend = settings?.objectifsVendeurs || {};
   const hasCompObj = (objComp.revenu > 0) || (objComp.benefice > 0);
   const hasVendObj = Object.keys(objVend).some(k => (objVend[k]?.revenu > 0) || (objVend[k]?.breaks > 0));
 
-  if (!hasCompObj && !hasVendObj) { banner.style.display = 'none'; return; }
-
+  if (!hasCompObj && !hasVendObj) {
+    banner.style.display = 'none';
+    empty.style.display = '';
+    return;
+  }
   banner.style.display = '';
+  empty.style.display = 'none';
+
   document.getElementById('obj-month-label').textContent = monthLabel;
 
   // Compagnie totals from selected month
