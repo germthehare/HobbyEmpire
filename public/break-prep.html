@@ -567,6 +567,130 @@ body {
 .pkm-change.up   { background: color-mix(in oklch, var(--pos), transparent 80%); color: var(--pos); }
 .pkm-change.down { background: color-mix(in oklch, var(--neg), transparent 80%); color: var(--neg); }
 
+/* ───── Pokémon view toggle (grid/list icons) ───── */
+.pkm-view-toggle {
+  display: inline-flex;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+.pkm-view-toggle button {
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ink-3);
+  border-radius: 7px;
+  transition: background .12s, color .12s;
+}
+.pkm-view-toggle button.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ───── Pokémon GRID view ───── */
+.pkm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
+  gap: 16px;
+  padding: 14px 0;
+}
+.pkm-tile {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform .12s, border-color .12s, box-shadow .12s;
+}
+.pkm-tile:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: 0 8px 20px -10px color-mix(in oklch, var(--ink), transparent 75%);
+}
+.pkm-tile-rank {
+  position: absolute;
+  top: 8px; left: 8px;
+  z-index: 2;
+  padding: 3px 8px;
+  font-size: 10px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  background: color-mix(in oklch, var(--bg-ink), transparent 5%);
+  color: var(--bg);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+.pkm-tile-img-wrap {
+  aspect-ratio: 5 / 7;
+  background: linear-gradient(135deg, var(--bg-2), var(--bg));
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.pkm-tile-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  padding: 8px;
+}
+.pkm-tile-img-wrap img.fallback {
+  width: 50%; height: 50%;
+  padding: 0;
+}
+.pkm-tile-body {
+  padding: 10px 12px 12px;
+  display: flex; flex-direction: column; gap: 4px;
+  border-top: 1px solid var(--line);
+}
+.pkm-tile-meta {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pkm-tile-name {
+  font-size: 13px; font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.5em;
+}
+.pkm-tile-price-row {
+  display: flex; align-items: center; gap: 6px;
+  margin-top: 4px;
+}
+.pkm-tile-price {
+  font-size: 17px; font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--pos);
+  letter-spacing: -0.01em;
+}
+.pkm-tile-price.empty { color: var(--ink-3); font-size: 14px; }
+.pkm-tile-alts {
+  display: flex; flex-direction: column; gap: 2px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.pkm-tile-alts .alt {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 720px) {
+  .pkm-grid {
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 12px;
+  }
+  .pkm-tile-name { font-size: 12px; }
+  .pkm-tile-price { font-size: 15px; }
+}
+
 @media (max-width: 720px) {
   .pkm-card-row { grid-template-columns: 48px 24px 1fr auto; gap: 10px; }
   .pkm-card-row img.splash { width: 44px; height: 44px; }
@@ -1611,6 +1735,16 @@ function fmtCents(c) {
   return '$' + (c / 100).toLocaleString('en-US', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
 }
 
+function setPokemonView(ficheId, view) {
+  const state = PKM_FICHE_STATE[ficheId];
+  if (!state) return;
+  state.view = view;
+  document.querySelectorAll(`#${ficheId} .pkm-view-toggle button`).forEach(b => {
+    b.classList.toggle('active', b.dataset.view === view);
+  });
+  rerenderPokemonCards(ficheId);
+}
+
 function setPokemonGrade(ficheId, grade) {
   const state = PKM_FICHE_STATE[ficheId];
   if (!state) return;
@@ -1650,7 +1784,14 @@ function rerenderPokemonCards(ficheId) {
   const state = PKM_FICHE_STATE[ficheId];
   if (!state) return;
   const filtered = filterPokemonCards(state.cards, state.cardsOnly);
-  document.getElementById(ficheId + '-cards').innerHTML = renderPokemonCardRows(filtered, state.grade, state.sort);
+  const container = document.getElementById(ficheId + '-cards');
+  if (state.view === 'list') {
+    container.className = '';
+    container.innerHTML = renderPokemonCardRows(filtered, state.grade, state.sort);
+  } else {
+    container.className = 'pkm-grid';
+    container.innerHTML = renderPokemonCardGrid(filtered, state.grade, state.sort);
+  }
 }
 
 function extractCardNumber(name) {
@@ -1698,6 +1839,41 @@ function pokemonCardImage(c) {
   return `https://tcgplayer-cdn.tcgplayer.com/product/${c.tcgId}_in_200x200.jpg`;
 }
 
+function pokemonCardImageLarge(c) {
+  if (!c.tcgId) return '/assets/splash-official.png';
+  return `https://product-images.tcgplayer.com/fit-in/437x437/${c.tcgId}.jpg`;
+}
+
+function renderPokemonCardGrid(cards, grade, sort = 'price-desc') {
+  const sorted = sortPokemonCards(cards, grade, sort);
+  const gradeLabels = { raw: 'Raw', psa9: 'PSA 9', psa10: 'PSA 10' };
+  return sorted.map((c, i) => {
+    const main = c[grade];
+    const pct = c[grade + 'Pct'];
+    const others = ['raw', 'psa9', 'psa10'].filter(g => g !== grade);
+    const altPrices = others.map(g => {
+      const v = c[g];
+      return `<span class="alt">${gradeLabels[g]} ${v != null ? fmtCents(v) : '—'}</span>`;
+    }).join('');
+    const priceHtml = main != null
+      ? `<span class="pkm-tile-price">${fmtCents(main)}</span>${fmtChange(pct)}`
+      : `<span class="pkm-tile-price empty">—</span>`;
+    const imgUrl = pokemonCardImageLarge(c);
+    return `<div class="pkm-tile" title="${esc(c.name)}">
+      <div class="pkm-tile-rank">#${i + 1}</div>
+      <div class="pkm-tile-img-wrap">
+        <img src="${imgUrl}" alt="${esc(c.name)}" loading="lazy" onerror="this.onerror=null;this.src='/assets/splash-official.png';this.classList.add('fallback');">
+      </div>
+      <div class="pkm-tile-body">
+        <div class="pkm-tile-meta">${esc(c.genre || 'Pokémon Card')}</div>
+        <div class="pkm-tile-name">${esc(c.name)}</div>
+        <div class="pkm-tile-price-row">${priceHtml}</div>
+        <div class="pkm-tile-alts">${altPrices}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
 function renderPokemonCardRows(cards, grade, sort = 'price-desc') {
   const sorted = sortPokemonCards(cards, grade, sort);
   return sorted.map((c, i) => {
@@ -1733,6 +1909,7 @@ function renderPokemonFiche(d, ficheId) {
     grade: 'psa10',
     sort: 'price-desc',
     cardsOnly: true,
+    view: 'grid',
     changeAvailable: Boolean(d.changeAvailable && d.changeSince),
     changeDaysAgo: d.changeDaysAgo || null,
   };
@@ -1747,7 +1924,7 @@ function renderPokemonFiche(d, ficheId) {
     : `<span class="hl">${esc(title)}</span>`;
   const hitsLabel = `${visibleCount} carte${visibleCount > 1 ? 's' : ''} listée${visibleCount > 1 ? 's' : ''}`;
   const cardsHtml = filteredInitial.length
-    ? renderPokemonCardRows(filteredInitial, 'psa10')
+    ? renderPokemonCardGrid(filteredInitial, 'psa10')
     : '<div style="padding:16px;color:var(--ink-3);font-size:12px">Aucune carte renvoyée par PriceCharting pour ce set.</div>';
   const sealedLabel = sealedCount > 0
     ? `<span class="pkm-toggle-meta">${sealedCount} scellé${sealedCount > 1 ? 's' : ''} masqué${sealedCount > 1 ? 's' : ''}</span>`
@@ -1788,9 +1965,17 @@ function renderPokemonFiche(d, ficheId) {
               <option value="biggest-change"${hasChanges ? '' : ' disabled'}>Plus gros changement${hasChanges ? ` (${d.changeDaysAgo}j)` : ' (snapshot en cours)'}</option>
             </select>
           </label>
+          <div class="pkm-view-toggle" role="tablist">
+            <button data-view="grid" class="active" onclick="setPokemonView('${ficheId}','grid')" title="Vue grille" aria-label="Grille">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+            </button>
+            <button data-view="list" onclick="setPokemonView('${ficheId}','list')" title="Vue liste" aria-label="Liste">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg>
+            </button>
+          </div>
         </div>
       </div>
-      <div id="${ficheId}-cards">${cardsHtml}</div>
+      <div id="${ficheId}-cards" class="pkm-grid">${cardsHtml}</div>
     </div>
     <div class="fiche-footer">
       <span class="fiche-sources">Source · PriceCharting</span>
