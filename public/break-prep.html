@@ -1791,7 +1791,7 @@ function fmtCents(c) {
   return '$' + (c / 100).toLocaleString('en-US', { minimumFractionDigits: c % 100 ? 2 : 0, maximumFractionDigits: 2 });
 }
 
-const PKM_PAGE_SIZE = 48;
+const PKM_PAGE_SIZE = 100;
 
 function setPokemonView(ficheId, view) {
   const state = PKM_FICHE_STATE[ficheId];
