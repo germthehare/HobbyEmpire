@@ -265,6 +265,142 @@ body {
   color: var(--accent);
 }
 
+/* Objectifs banner */
+.obj-banner {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.obj-banner::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.obj-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px; margin-bottom: 16px;
+}
+.obj-company-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.obj-comp-cell { display: flex; flex-direction: column; gap: 8px; }
+.obj-comp-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px;
+}
+.obj-comp-lbl {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.obj-comp-pct {
+  font-size: 22px; font-weight: 900;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.obj-comp-pct.complete { color: var(--pos); }
+.obj-bar {
+  height: 8px;
+  background: var(--bg-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.obj-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.obj-bar-fill.complete { background: var(--pos); }
+.obj-comp-sub {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Vendeurs mini rows */
+.obj-vendeurs { display: grid; gap: 10px; }
+.obj-vendeur-row {
+  display: grid;
+  grid-template-columns: 130px 1fr 90px;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.obj-vendeur-row:last-child { border-bottom: 0; }
+.obj-v-head {
+  display: flex; align-items: center; gap: 9px;
+}
+.obj-v-avatar {
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  background: var(--bg-ink);
+  color: oklch(94% 0.008 80);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.obj-v-name { font-size: 12.5px; font-weight: 700; }
+.obj-v-bars { display: flex; flex-direction: column; gap: 4px; }
+.obj-v-bar-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 50px;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.obj-v-bar {
+  height: 5px;
+  background: var(--bg-2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.obj-v-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.obj-v-bar-fill.complete { background: var(--pos); }
+.obj-v-pct {
+  text-align: right;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.obj-v-pct.complete { color: var(--pos); }
+
+.obj-empty {
+  padding: 10px 0;
+  text-align: center;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+@media (max-width: 700px) {
+  .obj-company-grid { grid-template-columns: 1fr; gap: 14px; }
+  .obj-vendeur-row { grid-template-columns: 100px 1fr 50px; gap: 10px; }
+  .obj-v-bar-row { grid-template-columns: 30px 1fr 40px; gap: 6px; font-size: 9px; }
+}
+
 /* KPI grid */
 .kpi-grid {
   display: grid;
@@ -606,6 +742,40 @@ body {
   <!-- Page content -->
   <div class="page">
 
+    <!-- 0. Objectifs banner — only visible if at least one objectif is set -->
+    <div class="obj-banner" id="obj-banner" style="display:none">
+      <div class="obj-head">
+        <div>
+          <div class="card-eyebrow">Objectifs · <span id="obj-month-label">—</span></div>
+          <div class="card-title"><span class="first">P</span>rogression du mois</div>
+        </div>
+        <a class="card-link" href="/settings.html#objectifs">Modifier →</a>
+      </div>
+
+      <!-- Compagnie: 2 grosses barres -->
+      <div class="obj-company-grid">
+        <div class="obj-comp-cell" id="obj-comp-revenu">
+          <div class="obj-comp-head">
+            <span class="obj-comp-lbl">Revenu compagnie</span>
+            <span class="obj-comp-pct" id="obj-comp-revenu-pct">—</span>
+          </div>
+          <div class="obj-bar"><div class="obj-bar-fill" id="obj-comp-revenu-fill"></div></div>
+          <div class="obj-comp-sub" id="obj-comp-revenu-sub">—</div>
+        </div>
+        <div class="obj-comp-cell" id="obj-comp-benefice">
+          <div class="obj-comp-head">
+            <span class="obj-comp-lbl">Bénéfice compagnie</span>
+            <span class="obj-comp-pct" id="obj-comp-benefice-pct">—</span>
+          </div>
+          <div class="obj-bar"><div class="obj-bar-fill" id="obj-comp-benefice-fill"></div></div>
+          <div class="obj-comp-sub" id="obj-comp-benefice-sub">—</div>
+        </div>
+      </div>
+
+      <!-- Vendeurs: mini barres compactes -->
+      <div class="obj-vendeurs" id="obj-vendeurs"></div>
+    </div>
+
     <!-- 1. KPI grid -->
     <div class="kpi-grid">
       <div class="kpi-card primary">
@@ -883,6 +1053,16 @@ function previousMonthBreaks() {
   return allBreaks.filter(b => +b.annee === py && +b.mois === pm);
 }
 
+// ════════════════════ Settings (localStorage objectifs) ════════════════════
+const SETTINGS_KEY = 'he_settings';
+function getSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+
 // ════════════════════ Render ════════════════════
 function render() {
   const current = selectedMonthBreaks();
@@ -891,6 +1071,7 @@ function render() {
   const monthLabel = k ? `${MOIS_FR[+k.split('-')[1]]} ${k.split('-')[0]}` : 'Tous les mois';
   document.getElementById('tb-sub').textContent = `${monthLabel} · ${current.length} break${current.length !== 1 ? 's' : ''}`;
 
+  renderObjectifs(current, monthLabel);
   renderKPIs(current, previous);
   renderChart(current);
   renderHoraire(current);
@@ -905,6 +1086,106 @@ function render() {
   const marge = rev > 0 ? (ben/rev*100) : 0;
   document.getElementById('bottom-revenu').textContent = `Revenu · ${fmt(rev)}`;
   document.getElementById('bottom-marge').textContent  = `Marge · ${pct(marge)}`;
+}
+
+function renderObjectifs(current, monthLabel) {
+  const banner = document.getElementById('obj-banner');
+  const settings = getSettings();
+  if (!settings) { banner.style.display = 'none'; return; }
+
+  const objComp = settings.objectifs || {};
+  const objVend = settings.objectifsVendeurs || {};
+  const hasCompObj = (objComp.revenu > 0) || (objComp.benefice > 0);
+  const hasVendObj = Object.keys(objVend).some(k => (objVend[k]?.revenu > 0) || (objVend[k]?.breaks > 0));
+
+  if (!hasCompObj && !hasVendObj) { banner.style.display = 'none'; return; }
+
+  banner.style.display = '';
+  document.getElementById('obj-month-label').textContent = monthLabel;
+
+  // Compagnie totals from selected month
+  const totalRev = current.reduce((s, b) => s + (+b.revenuReel || 0), 0);
+  const totalBen = current.reduce((s, b) => s + (+b.beneficeNet || 0), 0);
+
+  // Render compagnie bars
+  renderObjBar('obj-comp-revenu',   totalRev, objComp.revenu);
+  renderObjBar('obj-comp-benefice', totalBen, objComp.benefice);
+
+  // Vendeurs (only those with at least one objectif set)
+  const vendeursWithObj = Object.keys(objVend).filter(name =>
+    (objVend[name]?.revenu > 0) || (objVend[name]?.breaks > 0)
+  );
+
+  const wrap = document.getElementById('obj-vendeurs');
+  if (!vendeursWithObj.length) {
+    wrap.innerHTML = '<div class="obj-empty">Aucune cible individuelle — configure dans Settings → Objectifs par vendeur</div>';
+    return;
+  }
+
+  const rows = vendeursWithObj.map(name => {
+    const o = objVend[name] || {};
+    const vBreaks = current.filter(b => b.vendeur === name);
+    const vRev = vBreaks.reduce((s, b) => s + (+b.revenuReel || 0), 0);
+    const vBen = vBreaks.reduce((s, b) => s + (+b.beneficeNet || 0), 0);
+    const vN   = vBreaks.length;
+
+    const bars = [];
+    if (o.revenu > 0)  bars.push(miniBarRow('Revenu',  vRev, o.revenu, 'currency'));
+    if (o.breaks > 0)  bars.push(miniBarRow('Breaks',  vN,   o.breaks, 'count'));
+    // overall pct = revenu progress if available, else breaks
+    const overallPct = o.revenu > 0 ? Math.min(100, (vRev / o.revenu) * 100)
+                     : o.breaks > 0 ? Math.min(100, (vN / o.breaks) * 100)
+                     : 0;
+    const pctCls = overallPct >= 100 ? 'complete' : '';
+    const initial = (name.charAt(0) || '?').toUpperCase();
+
+    return `<div class="obj-vendeur-row">
+      <div class="obj-v-head">
+        <span class="obj-v-avatar">${esc(initial)}</span>
+        <span class="obj-v-name">${esc(name)}</span>
+      </div>
+      <div class="obj-v-bars">${bars.join('')}</div>
+      <span class="obj-v-pct ${pctCls}">${Math.round(overallPct)}%</span>
+    </div>`;
+  });
+
+  wrap.innerHTML = rows.join('');
+}
+
+function miniBarRow(label, actual, target, type) {
+  const pct = target > 0 ? Math.min(100, (actual / target) * 100) : 0;
+  const isComplete = pct >= 100;
+  const fmtA = type === 'currency' ? '$' + Math.round(actual).toLocaleString('fr-CA') : actual;
+  const fmtT = type === 'currency' ? '$' + Math.round(target).toLocaleString('fr-CA') : target;
+  return `<div class="obj-v-bar-row">
+    <span>${label}</span>
+    <span class="obj-v-bar"><span class="obj-v-bar-fill${isComplete ? ' complete' : ''}" style="width:${pct.toFixed(1)}%"></span></span>
+    <span style="text-align:right;color:var(--ink);">${fmtA}</span>
+  </div>`;
+}
+
+function renderObjBar(prefix, actual, target) {
+  const cell    = document.getElementById('obj-comp-' + prefix.split('-').pop());
+  const pctEl   = document.getElementById(prefix + '-pct');
+  const fillEl  = document.getElementById(prefix + '-fill');
+  const subEl   = document.getElementById(prefix + '-sub');
+
+  if (!target || target <= 0) {
+    pctEl.textContent = '—';
+    fillEl.style.width = '0%';
+    fillEl.classList.remove('complete');
+    pctEl.classList.remove('complete');
+    subEl.textContent = 'Aucune cible définie';
+    return;
+  }
+  const pct = (actual / target) * 100;
+  const isComplete = pct >= 100;
+  pctEl.textContent = Math.round(pct) + '%';
+  fillEl.style.width = Math.min(100, pct) + '%';
+  fillEl.classList.toggle('complete', isComplete);
+  pctEl.classList.toggle('complete', isComplete);
+  const fmt = (n) => '$' + Math.round(n).toLocaleString('fr-CA');
+  subEl.textContent = `${fmt(actual)} / ${fmt(target)}` + (isComplete ? ' · ✓ Atteint' : ` · ${fmt(target - actual)} restant`);
 }
 
 function deltaPct(current, previous) {
