@@ -971,12 +971,40 @@ let activeTickInterval = null;
 /* ── Auto-ducking de la playlist YouTube pendant un stinger ── */
 const DUCK_VOL = 20;        // % volume pendant le stinger
 const FULL_VOL = 100;       // volume restauré après
-const DUCK_TAIL_MS = 350;   // délai après fin du stinger avant un-duck
-let duckTimer = null;
+const DUCK_TAIL_MS = 350;   // délai après fin du dernier stinger avant un-duck
 let duckActive = false;
+let unduckTimer = null;
+const duckingFor = new Set(); // stinger idx qui forcent le duck
+
+function applyDuckState() {
+  if (duckingFor.size > 0 && !duckActive) {
+    if (sendYTCommand('setVolume', [DUCK_VOL])) duckActive = true;
+  } else if (duckingFor.size === 0 && duckActive) {
+    sendYTCommand('setVolume', [FULL_VOL]);
+    duckActive = false;
+  }
+}
+
+function startDuckFor(idx) {
+  if (unduckTimer) { clearTimeout(unduckTimer); unduckTimer = null; }
+  duckingFor.add(idx);
+  applyDuckState();
+}
+
+function endDuckFor(idx) {
+  duckingFor.delete(idx);
+  if (duckingFor.size === 0) {
+    if (unduckTimer) clearTimeout(unduckTimer);
+    unduckTimer = setTimeout(() => {
+      unduckTimer = null;
+      if (duckingFor.size === 0) applyDuckState();
+    }, DUCK_TAIL_MS);
+  }
+}
 
 function unduckNow() {
-  if (duckTimer) { clearTimeout(duckTimer); duckTimer = null; }
+  duckingFor.clear();
+  if (unduckTimer) { clearTimeout(unduckTimer); unduckTimer = null; }
   if (duckActive) {
     sendYTCommand('setVolume', [FULL_VOL]);
     duckActive = false;
@@ -990,17 +1018,6 @@ function sendYTCommand(func, args) {
   const msg = JSON.stringify({ event: 'command', func, args: args || [] });
   iframe.contentWindow.postMessage(msg, 'https://www.youtube.com');
   return true;
-}
-
-function duckPlaylist(durationMs) {
-  if (!sendYTCommand('setVolume', [DUCK_VOL])) return;
-  duckActive = true;
-  if (duckTimer) clearTimeout(duckTimer);
-  duckTimer = setTimeout(() => {
-    sendYTCommand('setVolume', [FULL_VOL]);
-    duckActive = false;
-    duckTimer = null;
-  }, Math.max(300, durationMs) + DUCK_TAIL_MS);
 }
 
 function fmtMs(ms) {
@@ -1084,12 +1101,10 @@ function stopStinger(idx, natural = false) {
     audio.currentTime = 0;
   }
   activePlaybacks.delete(idx);
+  endDuckFor(idx);
   const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
   if (btn) btn.classList.remove('playing');
-  if (activePlaybacks.size === 0) {
-    stopActiveTicker();
-    if (!natural) unduckNow();
-  }
+  if (activePlaybacks.size === 0) stopActiveTicker();
   renderActiveStrip();
 }
 
@@ -1104,12 +1119,11 @@ function togglePauseStinger(idx) {
   if (p.paused) {
     audio.play().catch(() => {});
     p.paused = false;
-    const remaining = Math.max(300, p.totalMs - audio.currentTime * 1000);
-    duckPlaylist(remaining);
+    startDuckFor(idx);
   } else {
     audio.pause();
     p.paused = true;
-    unduckNow();
+    endDuckFor(idx);
   }
   renderActiveStrip();
 }
@@ -1122,7 +1136,7 @@ function restartStinger(idx) {
   audio.play().catch(() => {});
   p.paused = false;
   p.startedAt = performance.now();
-  duckPlaylist(p.totalMs);
+  startDuckFor(idx);
   renderActiveStrip();
 }
 
@@ -1174,7 +1188,7 @@ function playStinger(idx) {
   activePlaybacks.set(idx, { startedAt: performance.now(), totalMs, name: s.name, ico: s.ico });
   startActiveTicker();
   renderActiveStrip();
-  duckPlaylist(totalMs);
+  startDuckFor(idx);
 
   const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
   if (btn) btn.classList.add('playing');
