@@ -722,11 +722,18 @@ function normalizeEmbedUrl(url) {
   if (sp) return `https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator`;
   // YouTube playlist
   const ytPl = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-  if (ytPl) return `https://www.youtube.com/embed/videoseries?list=${ytPl[1]}`;
+  if (ytPl) return `https://www.youtube.com/embed/videoseries?list=${ytPl[1]}&enablejsapi=1`;
   // YouTube single
   const ytV = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
-  if (ytV) return `https://www.youtube.com/embed/${ytV[1]}`;
+  if (ytV) return `https://www.youtube.com/embed/${ytV[1]}?enablejsapi=1`;
   return url;
+}
+
+// Force enablejsapi=1 on any YouTube embed URL (covers legacy saved playlists)
+function ensureYtJsApi(embedUrl) {
+  if (!/youtube\.com\/embed/.test(embedUrl)) return embedUrl;
+  if (/[?&]enablejsapi=1/.test(embedUrl)) return embedUrl;
+  return embedUrl + (embedUrl.includes('?') ? '&' : '?') + 'enablejsapi=1';
 }
 
 function toggleAddForm(force) {
@@ -837,7 +844,7 @@ function render() {
   embedBadge.textContent = active.source;
   embedBadge.className = `embed-source-badge ${active.source}`;
   embedBadge.style.display = '';
-  embed.innerHTML = `<iframe class="embed-frame" src="${esc(active.embedUrl)}" allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+  embed.innerHTML = `<iframe class="embed-frame" src="${esc(ensureYtJsApi(active.embedUrl))}" allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 }
 
 render();
@@ -861,6 +868,33 @@ let currentStingerCat = 'all';
 
 // Audio file cache for instant playback
 const audioCache = {};
+
+/* ── Auto-ducking de la playlist YouTube pendant un stinger ── */
+const DUCK_VOL = 20;        // % volume pendant le stinger
+const FULL_VOL = 100;       // volume restauré après
+const DUCK_TAIL_MS = 350;   // délai après fin du stinger avant un-duck
+let duckTimer = null;
+let duckActive = false;
+
+function sendYTCommand(func, args) {
+  const iframe = document.querySelector('iframe.embed-frame');
+  if (!iframe || !iframe.contentWindow) return false;
+  if (!/youtube\.com\/embed/.test(iframe.src)) return false;
+  const msg = JSON.stringify({ event: 'command', func, args: args || [] });
+  iframe.contentWindow.postMessage(msg, 'https://www.youtube.com');
+  return true;
+}
+
+function duckPlaylist(durationMs) {
+  if (!sendYTCommand('setVolume', [DUCK_VOL])) return;
+  duckActive = true;
+  if (duckTimer) clearTimeout(duckTimer);
+  duckTimer = setTimeout(() => {
+    sendYTCommand('setVolume', [FULL_VOL]);
+    duckActive = false;
+    duckTimer = null;
+  }, Math.max(300, durationMs) + DUCK_TAIL_MS);
+}
 
 
 function renderSoundboardTabs() {
@@ -911,6 +945,8 @@ function playStinger(idx) {
   audio.currentTime = 0;
   audio.play().catch(() => {});
   const duration = (audio.duration && !isNaN(audio.duration)) ? audio.duration * 1000 : 1500;
+
+  duckPlaylist(duration);
 
   const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
   if (btn) {
