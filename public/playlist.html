@@ -378,6 +378,85 @@ body {
 .pl-empty .ico { font-size: 36px; opacity: 0.4; margin-bottom: 10px; }
 .pl-empty .ttl { font-size: 14px; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; }
 
+/* ════════════════════ Soundboard ════════════════════ */
+.sb-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.sb-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.sb-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 14px; margin-bottom: 16px;
+}
+.sb-head .eyebrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+.sb-head .title {
+  font-size: 22px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 1;
+}
+.sb-head .title .first { color: var(--accent); }
+.sb-keyhint {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.sb-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+.stinger {
+  position: relative;
+  background: var(--bg-3);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 12px 14px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px;
+  transition: transform .08s, border-color .15s, box-shadow .15s, background .15s;
+  text-align: center;
+  user-select: none;
+}
+.stinger:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -10px color-mix(in oklch, var(--accent), transparent 60%);
+}
+.stinger:active { transform: translateY(0); }
+.stinger.playing {
+  background: color-mix(in oklch, var(--accent), transparent 88%);
+  border-color: var(--accent);
+}
+.stinger-ico { font-size: 32px; line-height: 1; }
+.stinger-name {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.stinger.playing .stinger-name { color: var(--accent); }
+.stinger-key {
+  position: absolute; top: 6px; right: 8px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
 /* Add form */
 .add-form {
   display: none;
@@ -450,9 +529,13 @@ body {
   .embed-frame { height: 280px; }
   .add-form.open { grid-template-columns: 1fr; }
   .pl-grid { grid-template-columns: 1fr; }
+  .sb-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 640px) {
   .cert-splash { display: none; }
+  .sb-grid { grid-template-columns: repeat(2, 1fr); }
+  .stinger-ico { font-size: 28px; }
+  .stinger { padding: 14px 8px 12px; }
 }
 </style>
 </head>
@@ -549,6 +632,18 @@ body {
       </div>
     </div>
     <div class="pl-grid" id="pl-grid"></div>
+
+    <!-- Soundboard -->
+    <div class="sb-card">
+      <div class="sb-head">
+        <div>
+          <div class="eyebrow"><span class="holo"></span>Stingers · effets sonores</div>
+          <div class="title"><span class="first">S</span>oundboard live</div>
+        </div>
+        <span class="sb-keyhint">Touches 1-8 = raccourcis</span>
+      </div>
+      <div class="sb-grid" id="sb-grid"></div>
+    </div>
 
   </div>
 
@@ -715,6 +810,192 @@ function render() {
 }
 
 render();
+
+/* ════════════════════ Soundboard (Web Audio API) ════════════════════ */
+const STINGERS = [
+  { ico: '🥁', name: 'Drumroll',   key: '1', sound: 'drumroll' },
+  { ico: '🎉', name: 'Cheer',      key: '2', sound: 'cheer' },
+  { ico: '💥', name: 'BOOM',       key: '3', sound: 'boom' },
+  { ico: '🎺', name: 'Fanfare',    key: '4', sound: 'fanfare' },
+  { ico: '🔔', name: 'Bell',       key: '5', sound: 'bell' },
+  { ico: '📢', name: 'Air horn',   key: '6', sound: 'airhorn' },
+  { ico: '👏', name: 'Applause',   key: '7', sound: 'applause' },
+  { ico: '💎', name: 'Diamond',    key: '8', sound: 'diamond' },
+];
+
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+const SOUNDS = {
+  drumroll: () => {
+    const ctx = getAudioCtx();
+    const buffer = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t = i / ctx.sampleRate;
+      const env = Math.exp(-t * 1.5);
+      data[i] = (Math.random() * 2 - 1) * env * (1 + Math.sin(t * 80) * 0.5);
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.4;
+    src.connect(gain).connect(ctx.destination);
+    src.start();
+    return 1500;
+  },
+  cheer: () => {
+    const ctx = getAudioCtx();
+    const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t = i / ctx.sampleRate;
+      const env = Math.min(t * 4, 1) * Math.exp(-t * 0.6);
+      data[i] = (Math.random() * 2 - 1) * env * 0.5;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 800;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.7;
+    src.connect(filter).connect(gain).connect(ctx.destination);
+    src.start();
+    return 2000;
+  },
+  boom: () => {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(120, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.8);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.6, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 1);
+    return 900;
+  },
+  fanfare: () => {
+    const ctx = getAudioCtx();
+    const notes = [261.63, 329.63, 392.00, 523.25];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime + i * 0.12;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.25, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.4);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.45);
+    });
+    return 700;
+  },
+  bell: () => {
+    const ctx = getAudioCtx();
+    [880, 1318.5].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.3 / (i + 1), ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 1.8);
+    });
+    return 1800;
+  },
+  airhorn: () => {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(350, ctx.currentTime);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.25, ctx.currentTime + 0.7);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.85);
+    osc.frequency.linearRampToValueAtTime(380, ctx.currentTime + 0.4);
+    osc.frequency.linearRampToValueAtTime(330, ctx.currentTime + 0.7);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.9);
+    return 900;
+  },
+  applause: () => {
+    const ctx = getAudioCtx();
+    const buffer = ctx.createBuffer(1, ctx.sampleRate * 2.5, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const t = i / ctx.sampleRate;
+      const env = Math.min(t * 6, 1) * Math.exp(-t * 0.5);
+      data[i] = ((Math.random() * 2 - 1) * 0.6 + Math.sin(t * 200) * 0.1) * env;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.5;
+    src.connect(gain).connect(ctx.destination);
+    src.start();
+    return 2500;
+  },
+  diamond: () => {
+    const ctx = getAudioCtx();
+    [1568, 1976, 2349, 2637].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const gain = ctx.createGain();
+      const t0 = ctx.currentTime + i * 0.08;
+      gain.gain.setValueAtTime(0.15, t0);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 1.2);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 1.3);
+    });
+    return 1500;
+  },
+};
+
+function renderSoundboard() {
+  document.getElementById('sb-grid').innerHTML = STINGERS.map((s, i) => `
+    <button class="stinger" data-idx="${i}" onclick="playStinger(${i})" aria-label="${esc(s.name)}">
+      <span class="stinger-key">${esc(s.key || (i + 1))}</span>
+      <span class="stinger-ico">${esc(s.ico)}</span>
+      <span class="stinger-name">${esc(s.name)}</span>
+    </button>`).join('');
+}
+
+function playStinger(idx) {
+  const s = STINGERS[idx];
+  if (!s) return;
+  const fn = SOUNDS[s.sound];
+  if (!fn) return;
+  const duration = fn();
+  const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
+  if (btn) {
+    btn.classList.add('playing');
+    setTimeout(() => btn.classList.remove('playing'), Math.min(duration, 2000));
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= 8) playStinger(n - 1);
+});
+
+renderSoundboard();
 </script>
 </body>
 </html>
