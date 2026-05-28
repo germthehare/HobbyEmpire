@@ -640,7 +640,7 @@ body {
           <div class="eyebrow"><span class="holo"></span>Stingers · effets sonores</div>
           <div class="title"><span class="first">S</span>oundboard live</div>
         </div>
-        <span class="sb-keyhint">Touches 1-8 = raccourcis</span>
+        <span class="sb-keyhint">Touches 1-9 = raccourcis</span>
       </div>
       <div class="sb-grid" id="sb-grid"></div>
     </div>
@@ -821,7 +821,11 @@ const STINGERS = [
   { ico: '📢', name: 'Air horn',   key: '6', sound: 'airhorn' },
   { ico: '👏', name: 'Applause',   key: '7', sound: 'applause' },
   { ico: '💎', name: 'Diamond',    key: '8', sound: 'diamond' },
+  { ico: '📣', name: 'Fah!',       key: '9', file: '/sounds/fah.mp3' },
 ];
+
+// Audio file cache for instant playback
+const audioCache = {};
 
 let audioCtx = null;
 function getAudioCtx() {
@@ -979,20 +983,36 @@ function renderSoundboard() {
 function playStinger(idx) {
   const s = STINGERS[idx];
   if (!s) return;
-  const fn = SOUNDS[s.sound];
-  if (!fn) return;
-  const duration = fn();
+  let duration = 1500;
+
+  if (s.file) {
+    // File-based: use cached Audio element
+    let audio = audioCache[s.file];
+    if (!audio) {
+      audio = new Audio(s.file);
+      audio.preload = 'auto';
+      audioCache[s.file] = audio;
+    }
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+    duration = (audio.duration && !isNaN(audio.duration)) ? audio.duration * 1000 : 1500;
+  } else if (s.sound && SOUNDS[s.sound]) {
+    duration = SOUNDS[s.sound]();
+  } else {
+    return;
+  }
+
   const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
   if (btn) {
     btn.classList.add('playing');
-    setTimeout(() => btn.classList.remove('playing'), Math.min(duration, 2000));
+    setTimeout(() => btn.classList.remove('playing'), Math.min(duration, 2500));
   }
 }
 
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   const n = parseInt(e.key, 10);
-  if (n >= 1 && n <= 8) playStinger(n - 1);
+  if (n >= 1 && n <= STINGERS.length) playStinger(n - 1);
 });
 
 renderSoundboard();
