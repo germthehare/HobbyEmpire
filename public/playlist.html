@@ -838,13 +838,29 @@ let detachedRef = null;
 function isDetached() { return localStorage.getItem(DETACH_KEY) === '1'; }
 function setDetached(v) { v ? localStorage.setItem(DETACH_KEY, '1') : localStorage.removeItem(DETACH_KEY); }
 
+// BroadcastChannel pour piloter la popup détachée (ducking, ping)
+const playerChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('he-player') : null;
+if (playerChannel) {
+  playerChannel.onmessage = (ev) => {
+    const m = ev.data;
+    if (!m) return;
+    if (m.type === 'detached-closing') {
+      // La popup se ferme : on rétablit l'état inline
+      setDetached(false);
+      detachedRef = null;
+      render();
+    }
+  };
+}
+
 function detachPlayer() {
   const all = loadAll();
   const activeId = localStorage.getItem(ACTIVE_KEY);
   const active = all.find(p => p.id === activeId);
   if (!active) return;
-  // Open the original URL (full Spotify/YouTube page) in a popup window
-  detachedRef = window.open(active.url, 'hobbyempire-player', 'popup=yes,width=440,height=680');
+  // Ouvre notre propre page popup (même origin) qui héberge l'iframe — ducking pilotable via BroadcastChannel
+  const url = `/player-detached.html?id=${encodeURIComponent(active.id)}`;
+  detachedRef = window.open(url, 'hobbyempire-player', 'popup=yes,width=440,height=680');
   if (!detachedRef) {
     alert('Le navigateur a bloqué la fenêtre — autorise les popups pour hobbyempire.org puis réessaie.');
     return;
@@ -1014,7 +1030,7 @@ function render() {
     embed.innerHTML = `<div class="embed-detached">
       <div class="ico">↗</div>
       <div class="ttl">Lecture détachée</div>
-      <div class="sub">La playlist joue dans une fenêtre séparée — tu peux naviguer sur le site, la musique continue. Le ducking auto des stingers ne s'applique pas en mode détaché.</div>
+      <div class="sub">La playlist joue dans une fenêtre séparée — tu peux naviguer sur le site, la musique continue. Le ducking auto des stingers reste actif via la fenêtre détachée (YouTube uniquement).</div>
       <div class="actions">
         <button onclick="reattachPlayer()">↺ Rattacher ici</button>
       </div>
@@ -1068,12 +1084,10 @@ let unduckTimer = null;
 const duckingFor = new Set(); // stinger idx qui forcent le duck
 
 function applyDuckState() {
-  if (duckingFor.size > 0 && !duckActive) {
-    if (sendYTCommand('setVolume', [DUCK_VOL])) duckActive = true;
-  } else if (duckingFor.size === 0 && duckActive) {
-    sendYTCommand('setVolume', [FULL_VOL]);
-    duckActive = false;
-  }
+  const target = duckingFor.size > 0 ? DUCK_VOL : FULL_VOL;
+  sendYTCommand('setVolume', [target]);
+  if (playerChannel) playerChannel.postMessage({ type: 'duck', vol: target });
+  duckActive = target < FULL_VOL;
 }
 
 function startDuckFor(idx) {
@@ -1096,10 +1110,9 @@ function endDuckFor(idx) {
 function unduckNow() {
   duckingFor.clear();
   if (unduckTimer) { clearTimeout(unduckTimer); unduckTimer = null; }
-  if (duckActive) {
-    sendYTCommand('setVolume', [FULL_VOL]);
-    duckActive = false;
-  }
+  sendYTCommand('setVolume', [FULL_VOL]);
+  if (playerChannel) playerChannel.postMessage({ type: 'duck', vol: FULL_VOL });
+  duckActive = false;
 }
 
 function sendYTCommand(func, args) {

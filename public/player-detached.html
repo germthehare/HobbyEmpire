@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Speloosh — Player</title>
+<link rel="icon" href="/images/speloosh-splash.png">
+<style>
+  *,*::before,*::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100vh; background: oklch(16% 0.018 260); font-family: system-ui, -apple-system, sans-serif; }
+  body { display: flex; flex-direction: column; color: oklch(94% 0.008 80); }
+
+  .head {
+    padding: 9px 14px;
+    background: oklch(20% 0.018 260);
+    border-bottom: 1px solid oklch(28% 0.018 260);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .head-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .brand {
+    font-size: 9px; font-weight: 800;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: oklch(72% 0.13 200);
+    flex-shrink: 0;
+  }
+  .name {
+    font-size: 13px; font-weight: 700;
+    color: oklch(94% 0.008 80);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .duck {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 9px; font-weight: 800;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: oklch(50% 0.012 260);
+    transition: color .15s;
+    flex-shrink: 0;
+  }
+  .duck .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: currentColor;
+  }
+  .duck.on {
+    color: oklch(72% 0.13 200);
+  }
+  .duck.on .dot {
+    animation: pulse 1.1s infinite ease-in-out;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  iframe { flex: 1; border: 0; width: 100%; min-height: 0; }
+
+  .empty {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px; padding: 24px; text-align: center;
+  }
+  .empty .ico { font-size: 42px; opacity: 0.4; }
+  .empty .ttl { font-size: 14px; font-weight: 700; }
+  .empty .sub { font-size: 11px; color: oklch(60% 0.012 260); max-width: 320px; line-height: 1.5; }
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="head-left">
+      <span class="brand">Speloosh ·</span>
+      <span class="name" id="name">Chargement…</span>
+    </div>
+    <div class="duck" id="duck"><span class="dot"></span>Duck</div>
+  </div>
+  <div id="container"></div>
+
+<script>
+const PL_KEY = 'playlist_saved_v2';
+const ACTIVE_KEY = 'playlist_active_v2';
+const params = new URLSearchParams(location.search);
+const requestedId = params.get('id');
+
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function ensureYtJsApi(url) {
+  if (!/youtube\.com\/embed/.test(url)) return url;
+  if (/[?&]enablejsapi=1/.test(url)) return url;
+  return url + (url.includes('?') ? '&' : '?') + 'enablejsapi=1';
+}
+
+function loadActive() {
+  let all = [];
+  try { all = JSON.parse(localStorage.getItem(PL_KEY) || '[]'); } catch (e) {}
+  const id = requestedId || localStorage.getItem(ACTIVE_KEY);
+  return all.find(p => p.id === id) || null;
+}
+
+function renderEmpty() {
+  document.getElementById('container').outerHTML = `
+    <div id="container" class="empty">
+      <div class="ico">🎧</div>
+      <div class="ttl">Aucune playlist active</div>
+      <div class="sub">Retourne sur la page Playlist et sélectionne une playlist avant de détacher.</div>
+    </div>`;
+  document.getElementById('name').textContent = 'Aucune playlist';
+}
+
+const active = loadActive();
+if (!active) {
+  renderEmpty();
+} else {
+  document.getElementById('name').textContent = active.name;
+  document.title = 'Speloosh — ' + active.name;
+  document.getElementById('container').outerHTML = `<iframe id="frame" src="${esc(ensureYtJsApi(active.embedUrl))}" allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+}
+
+function sendYTCommand(func, args) {
+  const iframe = document.getElementById('frame');
+  if (!iframe || !iframe.contentWindow) return false;
+  if (!/youtube\.com\/embed/.test(iframe.src)) return false;
+  iframe.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args: args || [] }), 'https://www.youtube.com');
+  return true;
+}
+
+// Communication avec le site principal
+const bc = ('BroadcastChannel' in window) ? new BroadcastChannel('he-player') : null;
+let pendingVolume = null;
+
+if (bc) {
+  bc.onmessage = (ev) => {
+    const m = ev.data;
+    if (!m) return;
+    if (m.type === 'duck') {
+      const ok = sendYTCommand('setVolume', [m.vol]);
+      if (!ok) pendingVolume = m.vol;
+      const duckEl = document.getElementById('duck');
+      if (duckEl) duckEl.classList.toggle('on', m.vol < 100);
+    }
+    if (m.type === 'ping') {
+      bc.postMessage({ type: 'pong' });
+    }
+  };
+  // Signal au main site qu'on est prêt
+  bc.postMessage({ type: 'detached-ready' });
+  window.addEventListener('beforeunload', () => {
+    try { bc.postMessage({ type: 'detached-closing' }); } catch (e) {}
+  });
+}
+
+// Si un duck command est arrivé avant que l'iframe soit chargé, on le réapplique au load
+const frame = document.getElementById('frame');
+if (frame) {
+  frame.addEventListener('load', () => {
+    if (pendingVolume !== null) {
+      sendYTCommand('setVolume', [pendingVolume]);
+      pendingVolume = null;
+    }
+  });
+}
+</script>
+</body>
+</html>
