@@ -416,6 +416,88 @@ body {
   display: flex; gap: 4px; flex-wrap: wrap;
   margin-bottom: 14px;
 }
+
+/* ── Strip "En cours de lecture" ── */
+.sb-active {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: color-mix(in oklch, var(--accent), transparent 92%);
+  border: 1.5px solid var(--accent);
+  border-radius: 12px;
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--accent), transparent 86%);
+}
+.sb-active.on { display: flex; }
+.sb-active-head {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent-ink);
+}
+.sb-active-head .live-dot {
+  display: inline-block;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent);
+  margin-right: 6px;
+  vertical-align: middle;
+  animation: live-pulse 1.2s infinite ease-in-out;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+.ap-row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.ap-ico { font-size: 22px; line-height: 1; text-align: center; }
+.ap-mid { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ap-top {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+}
+.ap-name {
+  font-size: 14px; font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ap-time {
+  font-size: 11px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+.ap-time .el { color: var(--accent-ink); font-weight: 800; }
+.ap-bar {
+  height: 6px;
+  background: color-mix(in oklch, var(--accent), transparent 78%);
+  border-radius: 3px; overflow: hidden;
+}
+.ap-fill {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width .1s linear;
+  box-shadow: 0 0 8px color-mix(in oklch, var(--accent), transparent 50%);
+}
+.ap-stop {
+  width: 38px; height: 38px;
+  border-radius: 9px;
+  background: var(--neg);
+  color: white;
+  font-size: 12px; font-weight: 900;
+  border: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: filter .12s, transform .08s;
+}
+.ap-stop:hover { filter: brightness(1.15); }
+.ap-stop:active { transform: scale(0.94); }
 .sb-cat-tab {
   padding: 7px 13px;
   font-size: 10px; font-weight: 700;
@@ -672,6 +754,7 @@ body {
         </div>
         <span class="sb-keyhint">Raccourcis clavier 1-9</span>
       </div>
+      <div class="sb-active" id="sb-active"></div>
       <div class="sb-cat-tabs" id="sb-cat-tabs"></div>
       <div class="sb-grid" id="sb-grid"></div>
     </div>
@@ -866,8 +949,11 @@ const STINGERS = [
 
 let currentStingerCat = 'all';
 
-// Audio file cache for instant playback
-const audioCache = {};
+// Audio instances cache (one per stinger idx, lazy-instantiated, reused for replay)
+const stingerAudios = {};
+// Active playbacks: idx → { startedAt, totalMs, name, ico }
+const activePlaybacks = new Map();
+let activeTickInterval = null;
 
 /* ── Auto-ducking de la playlist YouTube pendant un stinger ── */
 const DUCK_VOL = 20;        // % volume pendant le stinger
@@ -875,6 +961,14 @@ const FULL_VOL = 100;       // volume restauré après
 const DUCK_TAIL_MS = 350;   // délai après fin du stinger avant un-duck
 let duckTimer = null;
 let duckActive = false;
+
+function unduckNow() {
+  if (duckTimer) { clearTimeout(duckTimer); duckTimer = null; }
+  if (duckActive) {
+    sendYTCommand('setVolume', [FULL_VOL]);
+    duckActive = false;
+  }
+}
 
 function sendYTCommand(func, args) {
   const iframe = document.querySelector('iframe.embed-frame');
@@ -894,6 +988,96 @@ function duckPlaylist(durationMs) {
     duckActive = false;
     duckTimer = null;
   }, Math.max(300, durationMs) + DUCK_TAIL_MS);
+}
+
+function fmtMs(ms) {
+  const s = Math.max(0, Math.floor(ms / 1000));
+  return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+}
+
+function getStingerAudio(idx) {
+  if (stingerAudios[idx]) return stingerAudios[idx];
+  const s = STINGERS[idx];
+  const audio = new Audio(s.file);
+  audio.preload = 'auto';
+  audio.addEventListener('ended', () => stopStinger(idx, true));
+  stingerAudios[idx] = audio;
+  return audio;
+}
+
+function startActiveTicker() {
+  if (activeTickInterval) return;
+  activeTickInterval = setInterval(updateActiveStrip, 100);
+}
+function stopActiveTicker() {
+  if (activeTickInterval) { clearInterval(activeTickInterval); activeTickInterval = null; }
+}
+
+function renderActiveStrip() {
+  const el = document.getElementById('sb-active');
+  if (!el) return;
+  if (activePlaybacks.size === 0) {
+    el.classList.remove('on');
+    el.innerHTML = '';
+    return;
+  }
+  el.classList.add('on');
+  const rows = Array.from(activePlaybacks.entries()).map(([idx, p]) => `
+    <div class="ap-row" data-idx="${idx}">
+      <span class="ap-ico">${esc(p.ico)}</span>
+      <div class="ap-mid">
+        <div class="ap-top">
+          <span class="ap-name">${esc(p.name)}</span>
+          <span class="ap-time"><span class="el">0:00</span> / <span class="tot">${fmtMs(p.totalMs)}</span></span>
+        </div>
+        <div class="ap-bar"><div class="ap-fill"></div></div>
+      </div>
+      <button class="ap-stop" onclick="stopStinger(${idx})" aria-label="Arrêter ${esc(p.name)}" title="Arrêter">■</button>
+    </div>`).join('');
+  el.innerHTML = `
+    <div class="sb-active-head">
+      <span><span class="live-dot"></span>En cours · ${activePlaybacks.size}</span>
+      <span>Espace = tout arrêter</span>
+    </div>
+    ${rows}`;
+}
+
+function updateActiveStrip() {
+  document.querySelectorAll('#sb-active .ap-row').forEach(row => {
+    const idx = parseInt(row.dataset.idx, 10);
+    const p = activePlaybacks.get(idx);
+    const audio = stingerAudios[idx];
+    if (!p || !audio) return;
+    if (audio.duration && !isNaN(audio.duration)) p.totalMs = audio.duration * 1000;
+    const elapsed = audio.currentTime * 1000;
+    const pct = p.totalMs > 0 ? Math.min(100, (elapsed / p.totalMs) * 100) : 0;
+    const elEl = row.querySelector('.ap-time .el');
+    const totEl = row.querySelector('.ap-time .tot');
+    const barEl = row.querySelector('.ap-fill');
+    if (elEl) elEl.textContent = fmtMs(elapsed);
+    if (totEl) totEl.textContent = fmtMs(p.totalMs);
+    if (barEl) barEl.style.width = pct.toFixed(1) + '%';
+  });
+}
+
+function stopStinger(idx, natural = false) {
+  const audio = stingerAudios[idx];
+  if (audio && !natural) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+  activePlaybacks.delete(idx);
+  const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
+  if (btn) btn.classList.remove('playing');
+  if (activePlaybacks.size === 0) {
+    stopActiveTicker();
+    if (!natural) unduckNow();
+  }
+  renderActiveStrip();
+}
+
+function stopAllStingers() {
+  Array.from(activePlaybacks.keys()).forEach(idx => stopStinger(idx, false));
 }
 
 
@@ -936,27 +1120,27 @@ function renderSoundboard() {
 function playStinger(idx) {
   const s = STINGERS[idx];
   if (!s || !s.file) return;
-  let audio = audioCache[s.file];
-  if (!audio) {
-    audio = new Audio(s.file);
-    audio.preload = 'auto';
-    audioCache[s.file] = audio;
-  }
+  const audio = getStingerAudio(idx);
   audio.currentTime = 0;
   audio.play().catch(() => {});
-  const duration = (audio.duration && !isNaN(audio.duration)) ? audio.duration * 1000 : 1500;
+  const totalMs = (audio.duration && !isNaN(audio.duration)) ? audio.duration * 1000 : 1500;
 
-  duckPlaylist(duration);
+  activePlaybacks.set(idx, { startedAt: performance.now(), totalMs, name: s.name, ico: s.ico });
+  startActiveTicker();
+  renderActiveStrip();
+  duckPlaylist(totalMs);
 
   const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
-  if (btn) {
-    btn.classList.add('playing');
-    setTimeout(() => btn.classList.remove('playing'), Math.min(duration, 2500));
-  }
+  if (btn) btn.classList.add('playing');
 }
 
 document.addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.code === 'Space' && activePlaybacks.size > 0) {
+    e.preventDefault();
+    stopAllStingers();
+    return;
+  }
   const n = parseInt(e.key, 10);
   if (n >= 1 && n <= STINGERS.length) playStinger(n - 1);
 });
