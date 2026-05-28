@@ -412,6 +412,36 @@ body {
   letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink-3);
 }
+.sb-cat-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.sb-cat-tab {
+  padding: 7px 13px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.sb-cat-tab:hover { color: var(--ink); }
+.sb-cat-tab.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.sb-cat-tab .ct {
+  margin-left: 6px;
+  font-size: 9px;
+  opacity: 0.65;
+}
+.sb-empty {
+  grid-column: 1 / -1;
+  padding: 30px 20px;
+  text-align: center;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  font-style: italic;
+}
 .sb-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -642,6 +672,7 @@ body {
         </div>
         <span class="sb-keyhint">Raccourcis clavier 1-9</span>
       </div>
+      <div class="sb-cat-tabs" id="sb-cat-tabs"></div>
       <div class="sb-grid" id="sb-grid"></div>
     </div>
 
@@ -812,16 +843,54 @@ function render() {
 render();
 
 /* ════════════════════ Soundboard (Web Audio API) ════════════════════ */
-const STINGERS = [
-  { ico: '📣', name: 'Fah!', key: '1', file: '/sounds/fah.mp3' },
+const STINGER_CATEGORIES = [
+  { id: 'all',       label: 'Tous' },
+  { id: 'meme',      label: 'Meme' },
+  { id: 'breaktime', label: 'Break Time' },
+  { id: 'opening',   label: 'Opening' },
+  { id: 'closing',   label: 'Closing' },
+  { id: 'effet',     label: 'Effet sonore' },
 ];
+
+const STINGERS = [
+  { ico: '📣', name: 'Fah!', key: '1', file: '/sounds/fah.mp3', category: 'meme' },
+];
+
+let currentStingerCat = 'all';
 
 // Audio file cache for instant playback
 const audioCache = {};
 
 
+function renderSoundboardTabs() {
+  // Count per category
+  const counts = { all: STINGERS.length };
+  STINGER_CATEGORIES.forEach(c => { if (c.id !== 'all') counts[c.id] = 0; });
+  STINGERS.forEach(s => { if (counts[s.category] !== undefined) counts[s.category]++; });
+
+  document.getElementById('sb-cat-tabs').innerHTML = STINGER_CATEGORIES.map(c => `
+    <button class="sb-cat-tab${currentStingerCat === c.id ? ' active' : ''}" data-cat="${esc(c.id)}" onclick="setStingerCat('${esc(c.id)}')">
+      ${esc(c.label)}<span class="ct">${counts[c.id] || 0}</span>
+    </button>`).join('');
+}
+
+function setStingerCat(cat) {
+  currentStingerCat = cat;
+  renderSoundboardTabs();
+  renderSoundboard();
+}
+
 function renderSoundboard() {
-  document.getElementById('sb-grid').innerHTML = STINGERS.map((s, i) => `
+  const filtered = currentStingerCat === 'all'
+    ? STINGERS.map((s, i) => ({ s, i }))
+    : STINGERS.map((s, i) => ({ s, i })).filter(x => x.s.category === currentStingerCat);
+
+  const grid = document.getElementById('sb-grid');
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="sb-empty">Aucun stinger dans cette catégorie</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(({ s, i }) => `
     <button class="stinger" data-idx="${i}" onclick="playStinger(${i})" aria-label="${esc(s.name)}">
       <span class="stinger-key">${esc(s.key || (i + 1))}</span>
       <span class="stinger-ico">${esc(s.ico)}</span>
@@ -855,6 +924,7 @@ document.addEventListener('keydown', (e) => {
   if (n >= 1 && n <= STINGERS.length) playStinger(n - 1);
 });
 
+renderSoundboardTabs();
 renderSoundboard();
 </script>
 </body>
