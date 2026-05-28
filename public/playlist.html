@@ -640,7 +640,7 @@ body {
           <div class="eyebrow"><span class="holo"></span>Stingers · effets sonores</div>
           <div class="title"><span class="first">S</span>oundboard live</div>
         </div>
-        <span class="sb-keyhint">Touches 1-9 = raccourcis</span>
+        <span class="sb-keyhint">Raccourcis clavier 1-9</span>
       </div>
       <div class="sb-grid" id="sb-grid"></div>
     </div>
@@ -813,163 +813,12 @@ render();
 
 /* ════════════════════ Soundboard (Web Audio API) ════════════════════ */
 const STINGERS = [
-  { ico: '🥁', name: 'Drumroll',   key: '1', sound: 'drumroll' },
-  { ico: '🎉', name: 'Cheer',      key: '2', sound: 'cheer' },
-  { ico: '💥', name: 'BOOM',       key: '3', sound: 'boom' },
-  { ico: '🎺', name: 'Fanfare',    key: '4', sound: 'fanfare' },
-  { ico: '🔔', name: 'Bell',       key: '5', sound: 'bell' },
-  { ico: '📢', name: 'Air horn',   key: '6', sound: 'airhorn' },
-  { ico: '👏', name: 'Applause',   key: '7', sound: 'applause' },
-  { ico: '💎', name: 'Diamond',    key: '8', sound: 'diamond' },
-  { ico: '📣', name: 'Fah!',       key: '9', file: '/sounds/fah.mp3' },
+  { ico: '📣', name: 'Fah!', key: '1', file: '/sounds/fah.mp3' },
 ];
 
 // Audio file cache for instant playback
 const audioCache = {};
 
-let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-
-const SOUNDS = {
-  drumroll: () => {
-    const ctx = getAudioCtx();
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) {
-      const t = i / ctx.sampleRate;
-      const env = Math.exp(-t * 1.5);
-      data[i] = (Math.random() * 2 - 1) * env * (1 + Math.sin(t * 80) * 0.5);
-    }
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.4;
-    src.connect(gain).connect(ctx.destination);
-    src.start();
-    return 1500;
-  },
-  cheer: () => {
-    const ctx = getAudioCtx();
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) {
-      const t = i / ctx.sampleRate;
-      const env = Math.min(t * 4, 1) * Math.exp(-t * 0.6);
-      data[i] = (Math.random() * 2 - 1) * env * 0.5;
-    }
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 800;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.7;
-    src.connect(filter).connect(gain).connect(ctx.destination);
-    src.start();
-    return 2000;
-  },
-  boom: () => {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(120, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.8);
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.6, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 1);
-    return 900;
-  },
-  fanfare: () => {
-    const ctx = getAudioCtx();
-    const notes = [261.63, 329.63, 392.00, 523.25];
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'triangle';
-      osc.frequency.value = freq;
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime + i * 0.12;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.25, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.4);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.45);
-    });
-    return 700;
-  },
-  bell: () => {
-    const ctx = getAudioCtx();
-    [880, 1318.5].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.3 / (i + 1), ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 1.8);
-    });
-    return 1800;
-  },
-  airhorn: () => {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(350, ctx.currentTime);
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.05);
-    gain.gain.setValueAtTime(0.25, ctx.currentTime + 0.7);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.85);
-    osc.frequency.linearRampToValueAtTime(380, ctx.currentTime + 0.4);
-    osc.frequency.linearRampToValueAtTime(330, ctx.currentTime + 0.7);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.9);
-    return 900;
-  },
-  applause: () => {
-    const ctx = getAudioCtx();
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * 2.5, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) {
-      const t = i / ctx.sampleRate;
-      const env = Math.min(t * 6, 1) * Math.exp(-t * 0.5);
-      data[i] = ((Math.random() * 2 - 1) * 0.6 + Math.sin(t * 200) * 0.1) * env;
-    }
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.5;
-    src.connect(gain).connect(ctx.destination);
-    src.start();
-    return 2500;
-  },
-  diamond: () => {
-    const ctx = getAudioCtx();
-    [1568, 1976, 2349, 2637].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime + i * 0.08;
-      gain.gain.setValueAtTime(0.15, t0);
-      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 1.2);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 1.3);
-    });
-    return 1500;
-  },
-};
 
 function renderSoundboard() {
   document.getElementById('sb-grid').innerHTML = STINGERS.map((s, i) => `
@@ -982,25 +831,16 @@ function renderSoundboard() {
 
 function playStinger(idx) {
   const s = STINGERS[idx];
-  if (!s) return;
-  let duration = 1500;
-
-  if (s.file) {
-    // File-based: use cached Audio element
-    let audio = audioCache[s.file];
-    if (!audio) {
-      audio = new Audio(s.file);
-      audio.preload = 'auto';
-      audioCache[s.file] = audio;
-    }
-    audio.currentTime = 0;
-    audio.play().catch(() => {});
-    duration = (audio.duration && !isNaN(audio.duration)) ? audio.duration * 1000 : 1500;
-  } else if (s.sound && SOUNDS[s.sound]) {
-    duration = SOUNDS[s.sound]();
-  } else {
-    return;
+  if (!s || !s.file) return;
+  let audio = audioCache[s.file];
+  if (!audio) {
+    audio = new Audio(s.file);
+    audio.preload = 'auto';
+    audioCache[s.file] = audio;
   }
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+  const duration = (audio.duration && !isNaN(audio.duration)) ? audio.duration * 1000 : 1500;
 
   const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
   if (btn) {
