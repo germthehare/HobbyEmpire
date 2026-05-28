@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Speloosh</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="/speloosh-shell.css">
+<script src="/auth-guard.js" data-role="admin"></script>
+<script src="/lang-toggle.js"></script>
+<script src="/speloosh-shell.js"></script>
+<style>
+  .he-court {
+    --gold:  var(--accent);
+    --dark:  var(--bg);
+    --dark2: var(--bg-3);
+    --dark3: var(--bg-2);
+    --text:  var(--ink);
+    --text3: var(--ink-3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--dark); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: var(--dark2); border-bottom: 1px solid var(--line); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 2px; }
+  .logo { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -0.01em; line-height: 1; }
+  .logo-sub { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-3); margin-top: 2px; }
+  .header-nav { display: flex; gap: 4px; }
+  .nav-link { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .nav-link:hover { color: var(--ink); background: var(--bg-2); }
+  .nav-link.active { color: var(--ink); background: var(--bg-2); }
+
+  /* LAYOUT */
+  .page-head { padding: 32px 24px 24px; max-width: 900px; margin: 0 auto; }
+  .page-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.02em; color: var(--ink); }
+  .page-sub { font-size: 13px; color: var(--ink-3); margin-top: 8px; }
+  .main { padding: 0 24px 60px; max-width: 900px; margin: 0 auto; }
+
+  /* SECTIONS */
+  .section { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-md); margin-bottom: 20px; overflow: hidden; }
+  .section-head { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .section-head-text { flex: 1; min-width: 0; }
+  .section-label { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
+  .section-desc { font-size: 12px; color: var(--ink-3); margin-top: 3px; }
+  .section-body { padding: 20px; }
+
+  /* SHARED INPUTS */
+  .add-btn { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 16px; color: var(--ink-3); font-size: 11px; font-weight: 600; font-family: var(--font-mono); letter-spacing: 0.1em; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .add-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .add-input { flex: 1; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 9px 12px; color: var(--ink); font-size: 13px; font-family: var(--font-body); outline: none; transition: border-color 0.12s; }
+  .add-input:focus { border-color: var(--accent); }
+  .add-input::placeholder { color: var(--mute); }
+
+  /* ── MEMBRES ─────────────────────────────────────────────── */
+  .membres-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+
+  .membre-card { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; transition: border-color 0.15s; }
+  .membre-card:hover { border-color: var(--line-strong); }
+
+  .membre-card-head { display: flex; align-items: flex-start; gap: 12px; padding: 16px 16px 14px; }
+  .membre-avatar { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .membre-head-info { flex: 1; min-width: 0; }
+  .membre-display-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+  .membre-full-name { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+  .membre-badges { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .badge-vendeur { background: color-mix(in oklch, var(--accent), transparent 85%); color: var(--accent); }
+  .badge-helper  { background: color-mix(in oklch, var(--pos), transparent 85%); color: var(--pos); }
+
+  .membre-card-body { padding: 0 16px 14px; display: flex; flex-direction: column; gap: 5px; }
+  .membre-info-row { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-3); }
+  .info-icon { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.5; }
+
+  .membre-card-footer { padding: 10px 16px; border-top: 1px solid var(--line); display: flex; gap: 8px; }
+  .membre-btn { flex: 1; padding: 7px 10px; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border-radius: var(--r-sm); border: 1px solid var(--line); background: transparent; color: var(--ink-3); cursor: pointer; transition: all 0.15s; text-align: center; text-decoration: none; display: block; }
+  .membre-btn:hover { background: var(--dark); color: var(--ink); }
+  .membre-btn-del:hover { border-color: var(--neg); color: var(--neg); background: color-mix(in oklch, var(--neg), transparent 92%); }
+
+  /* ADD FORM */
+  .add-form-wrap { border-bottom: 1px solid var(--line); background: color-mix(in oklch, var(--accent), transparent 97%); overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+  .add-form-wrap.open { max-height: 700px; }
+  .add-form { padding: 20px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 440px) { .form-grid { grid-template-columns: 1fr; } }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .form-input { background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 9px 12px; color: var(--ink); font-size: 13px; font-family: var(--font-body); outline: none; transition: border-color 0.12s; width: 100%; }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--mute); }
+  .form-textarea { resize: vertical; min-height: 60px; }
+  .form-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; margin-top: 12px; }
+
+  .role-toggle { display: flex; background: var(--dark2); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+  .role-btn { padding: 9px 18px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); background: transparent; border: none; cursor: pointer; transition: all 0.15s; }
+  .role-btn.active { background: var(--accent); color: var(--accent-ink); }
+
+  .form-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+  .btn-cancel { background: transparent; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 16px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--ink-3); cursor: pointer; transition: all 0.12s; }
+  .btn-cancel:hover { border-color: var(--line-strong); color: var(--ink); }
+  .btn-submit { background: var(--accent); border: 1px solid transparent; border-radius: var(--r-sm); padding: 9px 22px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-ink); cursor: pointer; transition: opacity 0.12s; }
+  .btn-submit:hover { opacity: 0.88; }
+
+  /* SALAIRES */
+  .salaire-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .salaire-row { display: flex; flex-direction: column; gap: 6px; }
+  .salaire-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .salaire-wrap { position: relative; }
+  .salaire-symbol { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-size: 13px; pointer-events: none; }
+  .salaire-input { width: 100%; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px 10px 24px; color: var(--ink); font-size: 14px; font-family: var(--font-mono); outline: none; transition: border-color 0.12s; }
+  .salaire-input:focus { border-color: var(--accent); }
+  .salaire-hint { font-size: 10px; color: var(--mute); font-family: var(--font-mono); }
+  .empty-msg { color: var(--ink-3); font-size: 13px; font-style: italic; }
+
+  /* DEVISE & TAXES */
+  .devise-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+  .devise-toggle { display: flex; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; }
+  .devise-btn { padding: 10px 24px; font-family: var(--font-mono); font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-3); background: transparent; border: none; cursor: pointer; transition: all 0.15s; }
+  .devise-btn.active { background: var(--accent); color: var(--accent-ink); }
+  .tax-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .tax-row { display: flex; flex-direction: column; gap: 6px; }
+  .tax-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .tax-wrap { position: relative; }
+  .tax-symbol { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-size: 13px; pointer-events: none; font-family: var(--font-mono); }
+  .tax-input { width: 100%; background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 28px 10px 12px; color: var(--ink); font-size: 14px; font-family: var(--font-mono); outline: none; transition: border-color 0.12s; }
+  .tax-input:focus { border-color: var(--accent); }
+  .tax-hint { font-size: 10px; color: var(--mute); font-family: var(--font-mono); }
+  .tax-total { background: var(--dark3); border: 1px solid var(--accent); border-radius: var(--r-sm); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+  .tax-total-lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+  .tax-total-val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: var(--accent); }
+
+  /* OBJECTIFS GLOBAUX */
+  .objectif-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 480px) { .objectif-grid { grid-template-columns: 1fr; } }
+  .objectif-card { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 18px; }
+  .objectif-card-lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; }
+  .objectif-input-wrap { position: relative; }
+  .objectif-symbol { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-size: 15px; pointer-events: none; font-family: var(--font-mono); }
+  .objectif-input { width: 100%; background: var(--dark); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 12px 12px 26px; color: var(--ink); font-size: 22px; font-family: var(--font-display); font-weight: 800; letter-spacing: -0.01em; outline: none; transition: border-color 0.12s; }
+  .objectif-input:focus { border-color: var(--accent); }
+  .objectif-hint { font-size: 11px; color: var(--mute); margin-top: 8px; font-family: var(--font-mono); letter-spacing: 0.04em; }
+
+  /* OBJECTIFS PAR VENDEUR */
+  .vendeur-obj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .vendeur-obj-card { background: var(--dark3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 16px; }
+  .vendeur-obj-name { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .vo-avatar { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .obj-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+  .obj-field:last-child { margin-bottom: 0; }
+  .obj-field-lbl { font-family: var(--font-mono); font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+  .obj-field-wrap { position: relative; }
+  .obj-symbol { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--ink-3); font-size: 12px; pointer-events: none; font-family: var(--font-mono); }
+  .obj-symbol.r { left: auto; right: 10px; }
+  .obj-input { width: 100%; background: var(--dark); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 10px 8px 24px; color: var(--ink); font-size: 13px; font-family: var(--font-mono); outline: none; transition: border-color 0.12s; }
+  .obj-input.plain { padding-left: 10px; }
+  .obj-input.right { padding-left: 10px; padding-right: 26px; }
+  .obj-input:focus { border-color: var(--accent); }
+
+  /* PLATEFORMES */
+  .platform-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .preset-btn { background: var(--dark3); border: 1px solid var(--line); border-radius: 20px; padding: 6px 14px; font-size: 12px; font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.06em; color: var(--ink-3); cursor: pointer; transition: all 0.15s; }
+  .preset-btn:hover:not([disabled]) { border-color: var(--accent); color: var(--accent); }
+  .preset-btn[disabled] { opacity: 0.45; cursor: default; }
+  .chip-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 36px; margin-bottom: 12px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; background: var(--dark3); border: 1px solid var(--line); border-radius: 20px; padding: 5px 12px 5px 13px; font-size: 13px; color: var(--ink); }
+  .chip-remove { background: none; border: none; color: var(--ink-3); cursor: pointer; padding: 0; display: flex; align-items: center; transition: color 0.12s; }
+  .chip-remove:hover { color: var(--neg); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--dark2); border: 1px solid var(--pos); border-radius: var(--r-sm); padding: 12px 20px; color: var(--pos); font-size: 12px; font-family: var(--font-mono); letter-spacing: 0.08em; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; z-index: 999; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .footer { text-align: center; padding: 24px 16px; font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); border-top: 1px solid var(--line); margin-top: 20px; }
+</style>
+</head>
+<body class="he-root he-court"
+  data-sp-breadcrumb="■ SPELOOSH › SYSTÈME › SETTINGS"
+  data-sp-cert="SPLSH·26·05·SET007"
+  data-sp-meta="CONFIG · SYSTEM · ADMIN">
+
+<div class="header">
+  <a class="logo-wrap" href="/">
+    <span class="logo-dot"></span>
+    <div>
+      <div class="logo">Speloosh</div>
+      <div class="logo-sub">Settings</div>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a class="nav-link" href="/">Home</a>
+    <a class="nav-link" href="/break-builder.html">Break Tracker</a>
+    <a class="nav-link" href="/hub.html">Hub</a>
+    <a class="nav-link" href="/break-prep.html">Break Prep</a>
+    <a class="nav-link" href="/releases.html">Sorties</a>
+    <a class="nav-link" href="/planner.html">Planificateur</a>
+    <a class="nav-link" href="/team.html">Équipe</a>
+    <a class="nav-link active" href="/settings.html">Settings</a>
+  </nav>
+</div>
+
+<div class="page-head">
+  <h1 class="page-title">Settings</h1>
+  <p class="page-sub">Gérez votre équipe, devise, taxes, objectifs et plateformes — tout se sauvegarde automatiquement.</p>
+</div>
+
+<div class="main">
+
+  <!-- ── MEMBRES ─────────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-head-text">
+        <div class="section-label">Membres</div>
+        <div class="section-desc">Profils complets — le rôle détermine les dropdowns du Break Tracker.</div>
+      </div>
+      <button class="add-btn" id="btn-toggle-form" onclick="toggleAddForm()">+ Ajouter un membre</button>
+    </div>
+
+    <!-- Formulaire d'ajout (slide-down) -->
+    <div class="add-form-wrap" id="add-form-wrap">
+      <div class="add-form">
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-lbl">Prénom *</label>
+            <input class="form-input" id="fm-prenom" placeholder="ex : Charles" />
+          </div>
+          <div class="form-field">
+            <label class="form-lbl">Nom de famille</label>
+            <input class="form-input" id="fm-nom" placeholder="ex : Tremblay" />
+          </div>
+          <div class="form-field">
+            <label class="form-lbl">Surnom / Alias</label>
+            <input class="form-input" id="fm-surnom" placeholder="ex : Chuck  (identifiant)" />
+          </div>
+          <div class="form-field">
+            <label class="form-lbl">Date de naissance</label>
+            <input class="form-input" id="fm-dob" type="date" />
+          </div>
+          <div class="form-field">
+            <label class="form-lbl">Téléphone</label>
+            <input class="form-input" id="fm-tel" placeholder="ex : 514-555-0123" type="tel" />
+          </div>
+          <div class="form-field">
+            <label class="form-lbl">Email</label>
+            <input class="form-input" id="fm-email" type="email" placeholder="ex : chuck@exemple.com" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <div class="form-lbl" style="margin-bottom:8px">Rôle</div>
+            <div class="role-toggle" id="role-toggle">
+              <button class="role-btn active" data-role="vendeur" onclick="selectRole('vendeur')">Vendeur</button>
+              <button class="role-btn"        data-role="helper"  onclick="selectRole('helper')">Helper</button>
+              <button class="role-btn"        data-role="both"    onclick="selectRole('both')">Les deux</button>
+            </div>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <div class="form-lbl" style="margin-bottom:6px">Notes</div>
+            <textarea class="form-input form-textarea" id="fm-notes" placeholder="Informations supplémentaires..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-cancel" onclick="toggleAddForm()">Annuler</button>
+          <button class="btn-submit" onclick="submitAddMembre()">Ajouter le membre</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grille des membres -->
+    <div class="section-body">
+      <div class="membres-grid" id="membres-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── SALAIRES PAR DÉFAUT ────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-head-text">
+        <div class="section-label">Salaires par défaut</div>
+        <div class="section-desc">Taux horaire ($/heure) — se remplit automatiquement dans le Break Tracker.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="salaire-grid" id="salaire-grid">
+        <span class="empty-msg">Ajoutez des vendeurs pour configurer leurs salaires.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DEVISE & TAXES ─────────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-head-text">
+        <div class="section-label">Devise &amp; Taxes</div>
+        <div class="section-desc">Affecte tous les montants affichés dans le Hub et les rapports.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="devise-row">
+        <span class="form-lbl">Devise</span>
+        <div class="devise-toggle">
+          <button class="devise-btn" id="btn-cad" onclick="setDevise('CAD')">CAD $</button>
+          <button class="devise-btn" id="btn-usd" onclick="setDevise('USD')">USD $</button>
+        </div>
+      </div>
+      <div class="tax-grid">
+        <div class="tax-row">
+          <div class="tax-lbl">TPS / GST</div>
+          <div class="tax-wrap">
+            <input class="tax-input" id="tax-tps" type="number" min="0" max="30" step="0.01" placeholder="5" oninput="saveTaxes()" />
+            <span class="tax-symbol">%</span>
+          </div>
+          <div class="tax-hint">Taxe fédérale (défaut : 5 %)</div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-lbl">TVQ / PST</div>
+          <div class="tax-wrap">
+            <input class="tax-input" id="tax-tvq" type="number" min="0" max="30" step="0.01" placeholder="9.975" oninput="saveTaxes()" />
+            <span class="tax-symbol">%</span>
+          </div>
+          <div class="tax-hint">Taxe provinciale (Qc : 9,975 %)</div>
+        </div>
+        <div class="tax-row">
+          <div class="tax-lbl">Autre taxe</div>
+          <div class="tax-wrap">
+            <input class="tax-input" id="tax-autre" type="number" min="0" max="30" step="0.01" placeholder="0" oninput="saveTaxes()" />
+            <span class="tax-symbol">%</span>
+          </div>
+          <div class="tax-hint">Ex : taxe de vente locale</div>
+        </div>
+      </div>
+      <div class="tax-total">
+        <span class="tax-total-lbl">Taux combiné total</span>
+        <span class="tax-total-val" id="tax-total-display">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OBJECTIFS MENSUELS ─────────────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-head-text">
+        <div class="section-label">Objectifs mensuels</div>
+        <div class="section-desc">Barres de progression dans le Hub pour chaque période filtrée.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="objectif-grid">
+        <div class="objectif-card">
+          <div class="objectif-card-lbl">Revenu mensuel cible</div>
+          <div class="objectif-input-wrap">
+            <span class="objectif-symbol">$</span>
+            <input class="objectif-input" id="obj-revenu" type="number" min="0" step="1000" placeholder="50000" oninput="saveObjectif()" />
+          </div>
+          <div class="objectif-hint">Ex : 50 000 → objectif $50K / mois</div>
+        </div>
+        <div class="objectif-card">
+          <div class="objectif-card-lbl">Bénéfice mensuel cible</div>
+          <div class="objectif-input-wrap">
+            <span class="objectif-symbol">$</span>
+            <input class="objectif-input" id="obj-benefice" type="number" min="0" step="500" placeholder="8000" oninput="saveObjectif()" />
+          </div>
+          <div class="objectif-hint">Ex : 8 000 → objectif $8K bénéfice / mois</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OBJECTIFS PAR VENDEUR ─────────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-head-text">
+        <div class="section-label">Objectifs par vendeur</div>
+        <div class="section-desc">Cibles individuelles — visibles sur la fiche de chaque membre.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="vendeur-obj-grid" id="vendeur-obj-grid">
+        <span class="empty-msg">Ajoutez des vendeurs dans la section Membres.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PLATEFORMES DE DIFFUSION ──────────────────────────────── -->
+  <div class="section">
+    <div class="section-head">
+      <div class="section-head-text">
+        <div class="section-label">Plateformes de diffusion</div>
+        <div class="section-desc">Où vous diffusez vos lives — disponible dans le Planificateur.</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="platform-presets" id="platform-presets"></div>
+      <div class="chip-list" id="chips-plateformes"></div>
+      <div style="display:flex;gap:8px">
+        <input class="add-input" id="input-plateforme" type="text" placeholder="Autre plateforme..." maxlength="40"
+          onkeydown="if(event.key==='Enter') addPlateforme()" />
+        <button class="add-btn" onclick="addPlateforme()">+ Ajouter</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Speloosh &mdash; Settings &copy; 2026</div>
+<div class="toast" id="toast">✓ Paramètres sauvegardés</div>
+
+<script>
+// ── Constantes ────────────────────────────────────────────────────────────────
+const SETTINGS_KEY = 'he_settings';
+const AVATAR_COLORS = ['#E05A2B','#2B7BE0','#2BE07A','#C4A020','#9B2BE0','#2BE0C1','#E02B6E','#7BE02B'];
+const PLATFORM_PRESETS = [
+  { name:'Facebook Live', icon:'📘' },
+  { name:'YouTube',       icon:'▶️' },
+  { name:'TikTok',        icon:'🎵' },
+  { name:'Instagram Live',icon:'📷' },
+  { name:'Whatnot',       icon:'🃏' },
+  { name:'Fanatics Live', icon:'⚡' },
+];
+
+const DEFAULTS = {
+  vendeurs:          ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  helpers:           ['Charles','Chuck','Germain','Jeremi','Manu','Phobe','Sacha'],
+  salaires:          {},
+  objectifs:         { revenu: 0, benefice: 0 },
+  devise:            'CAD',
+  taxes:             { tps: 5, tvq: 9.975, autre: 0 },
+  objectifsVendeurs: {},
+  plateformes:       [],
+  membres:           {},
+};
+
+// ── Storage ───────────────────────────────────────────────────────────────────
+function getSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(DEFAULTS));
+    const p = JSON.parse(raw);
+    return {
+      vendeurs:          p.vendeurs          || [...DEFAULTS.vendeurs],
+      helpers:           p.helpers           || [...DEFAULTS.helpers],
+      salaires:          p.salaires          || {},
+      objectifs:         { ...DEFAULTS.objectifs,  ...(p.objectifs  || {}) },
+      devise:            p.devise            || 'CAD',
+      taxes:             { ...DEFAULTS.taxes,       ...(p.taxes      || {}) },
+      objectifsVendeurs: p.objectifsVendeurs || {},
+      plateformes:       p.plateformes       || [],
+      membres:           p.membres           || {},
+    };
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULTS)); }
+}
+
+function saveSettings(s) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  showToast();
+}
+
+let toastTimer;
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+let settings = getSettings();
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function avatarColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffffffff;
+  return AVATAR_COLORS[Math.abs(h) % AVATAR_COLORS.length];
+}
+
+function avatarInitials(m, key) {
+  const p = (m.prenom || key || '').charAt(0).toUpperCase();
+  const n = (m.nom || '').charAt(0).toUpperCase();
+  return n ? p + n : (m.prenom || key || '?').slice(0, 2).toUpperCase();
+}
+
+function getAllKeys() {
+  return [...new Set([...settings.vendeurs, ...settings.helpers])];
+}
+
+function getRole(key) {
+  const v = settings.vendeurs.includes(key);
+  const h = settings.helpers.includes(key);
+  if (v && h) return 'both';
+  if (v) return 'vendeur';
+  if (h) return 'helper';
+  return 'none';
+}
+
+function getMembre(key) {
+  return { prenom: key, nom: '', surnom: '', dateNaissance: '', telephone: '', email: '', notes: '', ...(settings.membres[key] || {}) };
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function computeAge(dob) {
+  if (!dob) return null;
+  const d = new Date(dob), now = new Date();
+  return Math.floor((now - d) / (365.25 * 24 * 3600 * 1000));
+}
+
+// ── Render All ────────────────────────────────────────────────────────────────
+function renderAll() {
+  renderMembres();
+  renderSalaires();
+  renderDevise();
+  renderTaxes();
+  renderObjectifs();
+  renderObjectifsVendeurs();
+  renderPlateformes();
+}
+
+// ── MEMBRES ───────────────────────────────────────────────────────────────────
+let addFormRole = 'vendeur';
+let addFormOpen = false;
+
+function toggleAddForm() {
+  addFormOpen = !addFormOpen;
+  const wrap = document.getElementById('add-form-wrap');
+  const btn  = document.getElementById('btn-toggle-form');
+  wrap.classList.toggle('open', addFormOpen);
+  btn.textContent = addFormOpen ? '× Fermer' : '+ Ajouter un membre';
+  if (addFormOpen) {
+    // Reset
+    ['fm-prenom','fm-nom','fm-surnom','fm-dob','fm-tel','fm-email','fm-notes']
+      .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    selectRole('vendeur');
+    setTimeout(() => document.getElementById('fm-prenom').focus(), 350);
+  }
+}
+
+function selectRole(role) {
+  addFormRole = role;
+  document.querySelectorAll('#role-toggle .role-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.role === role));
+}
+
+function submitAddMembre() {
+  const prenom = document.getElementById('fm-prenom').value.trim();
+  if (!prenom) { document.getElementById('fm-prenom').focus(); return; }
+
+  const nom    = document.getElementById('fm-nom').value.trim();
+  const surnom = document.getElementById('fm-surnom').value.trim();
+  const dob    = document.getElementById('fm-dob').value;
+  const tel    = document.getElementById('fm-tel').value.trim();
+  const email  = document.getElementById('fm-email').value.trim();
+  const notes  = document.getElementById('fm-notes').value.trim();
+
+  const key = surnom || prenom;  // surnom = identifiant unique
+
+  if (getAllKeys().includes(key)) {
+    alert(`Un membre avec l'identifiant "${key}" existe déjà.`);
+    return;
+  }
+
+  settings.membres[key] = { prenom, nom, surnom, dateNaissance: dob, telephone: tel, email, notes };
+
+  if (addFormRole === 'vendeur' || addFormRole === 'both') settings.vendeurs.push(key);
+  if (addFormRole === 'helper'  || addFormRole === 'both') settings.helpers.push(key);
+
+  saveSettings(settings);
+  renderAll();
+  if (addFormOpen) toggleAddForm();
+}
+
+function removeMembre(key) {
+  if (!confirm(`Supprimer "${key}" de l'équipe ? Cette action est irréversible.`)) return;
+  settings.vendeurs = settings.vendeurs.filter(n => n !== key);
+  settings.helpers  = settings.helpers.filter(n => n !== key);
+  delete settings.membres[key];
+  delete settings.salaires[key];
+  delete settings.objectifsVendeurs[key];
+  saveSettings(settings);
+  renderAll();
+}
+
+function renderMembres() {
+  const keys = getAllKeys();
+  const grid = document.getElementById('membres-grid');
+  if (!keys.length) {
+    grid.innerHTML = '<span class="empty-msg">Aucun membre. Cliquez sur « + Ajouter un membre » pour commencer.</span>';
+    return;
+  }
+
+  grid.innerHTML = keys.map(key => {
+    const m    = getMembre(key);
+    const role = getRole(key);
+    const color = avatarColor(key);
+    const initials = avatarInitials(m, key);
+    const displayName = [m.prenom, m.nom].filter(Boolean).join(' ') || key;
+    const age = computeAge(m.dateNaissance);
+    const dobFmt = m.dateNaissance
+      ? new Date(m.dateNaissance + 'T00:00:00').toLocaleDateString('fr-CA', { day:'numeric', month:'long', year:'numeric' })
+      : '';
+
+    const badges = (role === 'both')
+      ? '<span class="badge badge-vendeur">Vendeur</span><span class="badge badge-helper">Helper</span>'
+      : (role === 'vendeur')
+        ? '<span class="badge badge-vendeur">Vendeur</span>'
+        : '<span class="badge badge-helper">Helper</span>';
+
+    const surnomLine = m.surnom && m.surnom !== m.prenom
+      ? `<div class="membre-full-name">"${escHtml(m.surnom)}"</div>` : '';
+
+    return `
+<div class="membre-card">
+  <div class="membre-card-head">
+    <div class="membre-avatar" style="background:${color}">${initials}</div>
+    <div class="membre-head-info">
+      <div class="membre-display-name">${escHtml(displayName)}</div>
+      ${surnomLine}
+      <div class="membre-badges">${badges}</div>
+    </div>
+    <button class="chip-remove" onclick="removeMembre('${escHtml(key)}')" title="Supprimer ce membre" style="margin-left:auto;padding:4px">
+      <svg width="14" height="14" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="membre-card-body">
+    ${age !== null ? `
+    <div class="membre-info-row">
+      <svg class="info-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm1 9H7V6h2v4zm0-5H7V3h2v2z"/></svg>
+      ${age} ans${dobFmt ? ` · ${dobFmt}` : ''}
+    </div>` : ''}
+    ${m.telephone ? `
+    <div class="membre-info-row">
+      <svg class="info-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M3.654 1.328a.678.678 0 00-1.015-.063L1.605 2.3c-.483.484-.661 1.169-.45 1.77a17.568 17.568 0 004.168 6.608 17.569 17.569 0 006.608 4.168c.601.211 1.286.033 1.77-.45l1.034-1.034a.678.678 0 00-.063-1.015l-2.307-1.794a.678.678 0 00-.58-.122l-2.19.547a1.745 1.745 0 01-1.657-.459L5.482 8.062a1.745 1.745 0 01-.46-1.657l.548-2.19a.678.678 0 00-.122-.58L3.654 1.328z"/></svg>
+      ${escHtml(m.telephone)}
+    </div>` : ''}
+    ${m.email ? `
+    <div class="membre-info-row">
+      <svg class="info-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M0 4a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H2a2 2 0 01-2-2V4zm2-1a1 1 0 00-1 1v.217l7 4.2 7-4.2V4a1 1 0 00-1-1H2zm13 2.383l-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583l-1.272-.763-5.694 3.44A1 1 0 002 13h12a1 1 0 00.966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/></svg>
+      ${escHtml(m.email)}
+    </div>` : ''}
+    ${m.notes ? `
+    <div class="membre-info-row" style="align-items:flex-start">
+      <svg class="info-icon" viewBox="0 0 16 16" fill="currentColor" style="margin-top:1px"><path d="M2 2a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V2zm2 .5a.5.5 0 01.5-.5h7a.5.5 0 010 1h-7a.5.5 0 01-.5-.5zM4.5 5a.5.5 0 000 1h7a.5.5 0 000-1h-7zm0 2.5a.5.5 0 000 1h7a.5.5 0 000-1h-7zm0 2.5a.5.5 0 000 1h4a.5.5 0 000-1h-4z"/></svg>
+      <span style="line-height:1.4">${escHtml(m.notes)}</span>
+    </div>` : ''}
+    ${age === null && !m.telephone && !m.email && !m.notes
+      ? '<div class="membre-info-row" style="font-style:italic;color:var(--mute)">Aucune info de contact — cliquez sur Modifier le profil</div>'
+      : ''}
+  </div>
+  <div class="membre-card-footer">
+    <a class="membre-btn" href="/team.html?m=${encodeURIComponent(key)}">Voir stats &amp; profil →</a>
+  </div>
+</div>`;
+  }).join('');
+}
+
+// ── SALAIRES ──────────────────────────────────────────────────────────────────
+function renderSalaires() {
+  const v = settings.vendeurs;
+  const grid = document.getElementById('salaire-grid');
+  if (!v.length) { grid.innerHTML = '<span class="empty-msg">Ajoutez des vendeurs dans la section Membres pour configurer leurs salaires.</span>'; return; }
+  grid.innerHTML = v.map(name => `
+    <div class="salaire-row">
+      <div class="salaire-lbl">${escHtml(name)}</div>
+      <div class="salaire-wrap">
+        <span class="salaire-symbol">$</span>
+        <input class="salaire-input" type="number" min="0" step="0.5"
+          value="${settings.salaires[name] || ''}" placeholder="0.00"
+          oninput="saveSalaire('${escHtml(name)}', this.value)" />
+      </div>
+      <div class="salaire-hint">par heure</div>
+    </div>`).join('');
+}
+
+function saveSalaire(name, val) {
+  settings.salaires[name] = parseFloat(val) || 0;
+  saveSettings(settings);
+}
+
+// ── DEVISE & TAXES ────────────────────────────────────────────────────────────
+function renderDevise() {
+  document.getElementById('btn-cad').classList.toggle('active', settings.devise === 'CAD');
+  document.getElementById('btn-usd').classList.toggle('active', settings.devise === 'USD');
+}
+
+function setDevise(d) {
+  settings.devise = d;
+  renderDevise();
+  saveSettings(settings);
+}
+
+function renderTaxes() {
+  document.getElementById('tax-tps').value   = settings.taxes.tps   || '';
+  document.getElementById('tax-tvq').value   = settings.taxes.tvq   || '';
+  document.getElementById('tax-autre').value = settings.taxes.autre  || '';
+  updateTaxTotal();
+}
+
+function saveTaxes() {
+  settings.taxes.tps   = parseFloat(document.getElementById('tax-tps').value)   || 0;
+  settings.taxes.tvq   = parseFloat(document.getElementById('tax-tvq').value)   || 0;
+  settings.taxes.autre = parseFloat(document.getElementById('tax-autre').value) || 0;
+  updateTaxTotal();
+  saveSettings(settings);
+}
+
+function updateTaxTotal() {
+  const t = (settings.taxes.tps || 0) + (settings.taxes.tvq || 0) + (settings.taxes.autre || 0);
+  document.getElementById('tax-total-display').textContent = t > 0 ? t.toFixed(3).replace(/\.?0+$/,'') + ' %' : '—';
+}
+
+// ── OBJECTIFS GLOBAUX ─────────────────────────────────────────────────────────
+function renderObjectifs() {
+  document.getElementById('obj-revenu').value   = settings.objectifs.revenu   || '';
+  document.getElementById('obj-benefice').value = settings.objectifs.benefice || '';
+}
+
+function saveObjectif() {
+  settings.objectifs.revenu   = parseFloat(document.getElementById('obj-revenu').value)   || 0;
+  settings.objectifs.benefice = parseFloat(document.getElementById('obj-benefice').value) || 0;
+  saveSettings(settings);
+}
+
+// ── OBJECTIFS PAR VENDEUR ─────────────────────────────────────────────────────
+function renderObjectifsVendeurs() {
+  const v = settings.vendeurs;
+  const grid = document.getElementById('vendeur-obj-grid');
+  if (!v.length) { grid.innerHTML = '<span class="empty-msg">Ajoutez des vendeurs dans la section Membres.</span>'; return; }
+  grid.innerHTML = v.map(name => {
+    const obj = settings.objectifsVendeurs[name] || { revenu:0, breaks:0, marge:0 };
+    const color = avatarColor(name);
+    return `
+    <div class="vendeur-obj-card">
+      <div class="vendeur-obj-name">
+        <div class="vo-avatar" style="background:${color}">${name.slice(0,2).toUpperCase()}</div>
+        ${escHtml(name)}
+      </div>
+      <div class="obj-field">
+        <div class="obj-field-lbl">Revenu mensuel $</div>
+        <div class="obj-field-wrap">
+          <span class="obj-symbol">$</span>
+          <input class="obj-input" type="number" min="0" step="500"
+            value="${obj.revenu || ''}" placeholder="0"
+            oninput="saveObjVendeur('${escHtml(name)}','revenu',this.value)" />
+        </div>
+      </div>
+      <div class="obj-field">
+        <div class="obj-field-lbl">Breaks / mois</div>
+        <div class="obj-field-wrap">
+          <input class="obj-input plain" type="number" min="0" step="1"
+            value="${obj.breaks || ''}" placeholder="0"
+            oninput="saveObjVendeur('${escHtml(name)}','breaks',this.value)" />
+        </div>
+      </div>
+      <div class="obj-field">
+        <div class="obj-field-lbl">Marge cible</div>
+        <div class="obj-field-wrap">
+          <input class="obj-input right" type="number" min="0" max="100" step="1"
+            value="${obj.marge || ''}" placeholder="0"
+            oninput="saveObjVendeur('${escHtml(name)}','marge',this.value)" />
+          <span class="obj-symbol r">%</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function saveObjVendeur(name, field, val) {
+  if (!settings.objectifsVendeurs[name]) settings.objectifsVendeurs[name] = { revenu:0, breaks:0, marge:0 };
+  settings.objectifsVendeurs[name][field] = parseFloat(val) || 0;
+  saveSettings(settings);
+}
+
+// ── PLATEFORMES ───────────────────────────────────────────────────────────────
+function renderPlateformes() {
+  const chips = document.getElementById('chips-plateformes');
+  chips.innerHTML = settings.plateformes.map((name, i) => `
+    <span class="chip">${escHtml(name)}
+      <button class="chip-remove" onclick="removePlateforme(${i})" title="Retirer">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </span>`).join('')
+    || '<span style="color:var(--mute);font-size:12px">Aucune plateforme configurée</span>';
+
+  document.getElementById('platform-presets').innerHTML = PLATFORM_PRESETS.map(p => {
+    const used = settings.plateformes.includes(p.name);
+    return `<button class="preset-btn" onclick="addPlateformePreset('${p.name}')" ${used ? 'disabled' : ''}>
+      ${p.icon} ${p.name}
+    </button>`;
+  }).join('');
+}
+
+function addPlateformePreset(name) {
+  if (settings.plateformes.includes(name)) return;
+  settings.plateformes.push(name);
+  renderPlateformes();
+  saveSettings(settings);
+}
+
+function addPlateforme() {
+  const input = document.getElementById('input-plateforme');
+  const name = input.value.trim();
+  if (!name || settings.plateformes.includes(name)) { input.value = ''; return; }
+  settings.plateformes.push(name);
+  input.value = '';
+  renderPlateformes();
+  saveSettings(settings);
+}
+
+function removePlateforme(idx) {
+  settings.plateformes.splice(idx, 1);
+  renderPlateformes();
+  saveSettings(settings);
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+if (!localStorage.getItem(SETTINGS_KEY)) {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+renderAll();
+</script>
+</body>
+</html>
