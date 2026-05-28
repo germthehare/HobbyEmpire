@@ -485,19 +485,29 @@ body {
   transition: width .1s linear;
   box-shadow: 0 0 8px color-mix(in oklch, var(--accent), transparent 50%);
 }
-.ap-stop {
+.ap-controls { display: flex; gap: 6px; }
+.ap-btn {
   width: 38px; height: 38px;
   border-radius: 9px;
-  background: var(--neg);
-  color: white;
-  font-size: 12px; font-weight: 900;
-  border: none;
+  font-size: 13px; font-weight: 900;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: filter .12s, transform .08s;
+  transition: filter .12s, transform .08s, border-color .12s, background .12s;
+  background: var(--bg-3);
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  line-height: 1;
 }
-.ap-stop:hover { filter: brightness(1.15); }
-.ap-stop:active { transform: scale(0.94); }
+.ap-btn:hover { border-color: var(--accent); color: var(--accent-ink); }
+.ap-btn:active { transform: scale(0.94); }
+.ap-btn.ap-stop {
+  background: var(--neg);
+  color: white;
+  border-color: var(--neg);
+}
+.ap-btn.ap-stop:hover { filter: brightness(1.12); border-color: var(--neg); color: white; }
+.ap-row.paused .ap-fill { opacity: 0.4; }
+.ap-row.paused .ap-name { color: var(--ink-3); }
 .sb-cat-tab {
   padding: 7px 13px;
   font-size: 10px; font-weight: 700;
@@ -1023,7 +1033,7 @@ function renderActiveStrip() {
   }
   el.classList.add('on');
   const rows = Array.from(activePlaybacks.entries()).map(([idx, p]) => `
-    <div class="ap-row" data-idx="${idx}">
+    <div class="ap-row${p.paused ? ' paused' : ''}" data-idx="${idx}">
       <span class="ap-ico">${esc(p.ico)}</span>
       <div class="ap-mid">
         <div class="ap-top">
@@ -1032,7 +1042,11 @@ function renderActiveStrip() {
         </div>
         <div class="ap-bar"><div class="ap-fill"></div></div>
       </div>
-      <button class="ap-stop" onclick="stopStinger(${idx})" aria-label="Arrêter ${esc(p.name)}" title="Arrêter">■</button>
+      <div class="ap-controls">
+        <button class="ap-btn" onclick="togglePauseStinger(${idx})" aria-label="${p.paused ? 'Reprendre' : 'Pause'}" title="${p.paused ? 'Reprendre' : 'Pause'}">${p.paused ? '▶' : '⏸'}</button>
+        <button class="ap-btn" onclick="restartStinger(${idx})" aria-label="Recommencer" title="Recommencer">↺</button>
+        <button class="ap-btn ap-stop" onclick="stopStinger(${idx})" aria-label="Arrêter ${esc(p.name)}" title="Arrêter">■</button>
+      </div>
     </div>`).join('');
   el.innerHTML = `
     <div class="sb-active-head">
@@ -1078,6 +1092,35 @@ function stopStinger(idx, natural = false) {
 
 function stopAllStingers() {
   Array.from(activePlaybacks.keys()).forEach(idx => stopStinger(idx, false));
+}
+
+function togglePauseStinger(idx) {
+  const p = activePlaybacks.get(idx);
+  const audio = stingerAudios[idx];
+  if (!p || !audio) return;
+  if (p.paused) {
+    audio.play().catch(() => {});
+    p.paused = false;
+    const remaining = Math.max(300, p.totalMs - audio.currentTime * 1000);
+    duckPlaylist(remaining);
+  } else {
+    audio.pause();
+    p.paused = true;
+    unduckNow();
+  }
+  renderActiveStrip();
+}
+
+function restartStinger(idx) {
+  const p = activePlaybacks.get(idx);
+  const audio = stingerAudios[idx];
+  if (!p || !audio) return;
+  audio.currentTime = 0;
+  audio.play().catch(() => {});
+  p.paused = false;
+  p.startedAt = performance.now();
+  duckPlaylist(p.totalMs);
+  renderActiveStrip();
 }
 
 
