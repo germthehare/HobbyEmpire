@@ -257,6 +257,46 @@ body {
 .embed-empty .ttl { font-size: 15px; font-weight: 700; color: var(--ink-2); }
 .embed-empty .sub { font-size: 12px; max-width: 340px; text-align: center; line-height: 1.5; }
 
+.embed-detach {
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 6px 11px;
+  background: var(--bg-2);
+  color: var(--ink-2);
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color .12s, color .12s, background .12s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.embed-detach:hover { border-color: var(--accent); color: var(--accent-ink); }
+.embed-detach[hidden] { display: none; }
+
+.embed-detached {
+  width: 100%;
+  height: 320px;
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--accent), transparent 92%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px; text-align: center; padding: 24px;
+}
+.embed-detached .ico { font-size: 42px; }
+.embed-detached .ttl { font-size: 15px; font-weight: 800; color: var(--accent-ink); letter-spacing: -0.005em; }
+.embed-detached .sub { font-size: 12px; color: var(--ink-3); max-width: 380px; line-height: 1.5; }
+.embed-detached .actions { display: flex; gap: 8px; }
+.embed-detached button {
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 9px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1.5px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.embed-detached button.secondary { background: transparent; color: var(--accent-ink); }
+
 /* ════════════════════ Playlists grid ════════════════════ */
 .grid-head {
   display: flex; align-items: flex-end; justify-content: space-between;
@@ -720,6 +760,7 @@ body {
           <span class="embed-source-badge" id="embed-source-badge" style="display:none"></span>
           <span class="embed-now" id="embed-now">Aucune playlist sélectionnée</span>
         </div>
+        <button class="embed-detach" id="embed-detach" hidden onclick="detachPlayer()" title="Ouvrir dans une fenêtre séparée — la lecture continue quand tu navigues">↗ Détacher</button>
       </div>
       <div id="embed-area">
         <div class="embed-empty">
@@ -791,6 +832,35 @@ const esc = (s) => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;'
 
 const PL_KEY = 'playlist_saved_v2';
 const ACTIVE_KEY = 'playlist_active_v2';
+const DETACH_KEY = 'playlist_detached_v2';
+
+let detachedRef = null;
+function isDetached() { return localStorage.getItem(DETACH_KEY) === '1'; }
+function setDetached(v) { v ? localStorage.setItem(DETACH_KEY, '1') : localStorage.removeItem(DETACH_KEY); }
+
+function detachPlayer() {
+  const all = loadAll();
+  const activeId = localStorage.getItem(ACTIVE_KEY);
+  const active = all.find(p => p.id === activeId);
+  if (!active) return;
+  // Open the original URL (full Spotify/YouTube page) in a popup window
+  detachedRef = window.open(active.url, 'hobbyempire-player', 'popup=yes,width=440,height=680');
+  if (!detachedRef) {
+    alert('Le navigateur a bloqué la fenêtre — autorise les popups pour hobbyempire.org puis réessaie.');
+    return;
+  }
+  setDetached(true);
+  render();
+}
+
+function reattachPlayer() {
+  setDetached(false);
+  if (detachedRef && !detachedRef.closed) {
+    try { detachedRef.close(); } catch (e) {}
+  }
+  detachedRef = null;
+  render();
+}
 
 function loadAll() {
   try { return JSON.parse(localStorage.getItem(PL_KEY) || '[]'); }
@@ -923,6 +993,7 @@ function render() {
 
   // Render embed
   const active = all.find(p => p.id === activeId);
+  const detachBtn = document.getElementById('embed-detach');
   if (!active) {
     embed.innerHTML = `<div class="embed-empty">
       <div class="ico">🎧</div>
@@ -931,12 +1002,28 @@ function render() {
     </div>`;
     embedNow.textContent = 'Aucune playlist sélectionnée';
     embedBadge.style.display = 'none';
+    if (detachBtn) detachBtn.hidden = true;
     return;
   }
   embedNow.textContent = active.name;
   embedBadge.textContent = active.source;
   embedBadge.className = `embed-source-badge ${active.source}`;
   embedBadge.style.display = '';
+
+  if (isDetached()) {
+    embed.innerHTML = `<div class="embed-detached">
+      <div class="ico">↗</div>
+      <div class="ttl">Lecture détachée</div>
+      <div class="sub">La playlist joue dans une fenêtre séparée — tu peux naviguer sur le site, la musique continue. Le ducking auto des stingers ne s'applique pas en mode détaché.</div>
+      <div class="actions">
+        <button onclick="reattachPlayer()">↺ Rattacher ici</button>
+      </div>
+    </div>`;
+    if (detachBtn) detachBtn.hidden = true;
+    return;
+  }
+
+  if (detachBtn) detachBtn.hidden = false;
   embed.innerHTML = `<iframe class="embed-frame" src="${esc(ensureYtJsApi(active.embedUrl))}" allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 }
 
