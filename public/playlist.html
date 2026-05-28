@@ -54,7 +54,7 @@ body {
   display: flex;
 }
 
-/* ════════════════════ Sidebar (same as other v2 pages) ════════════════════ */
+/* Sidebar */
 .sb {
   width: 232px; min-width: 232px; height: 100vh;
   position: sticky; top: 0;
@@ -100,7 +100,7 @@ body {
 .sb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--pos); animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: 0.3; } }
 
-/* ════════════════════ Main ════════════════════ */
+/* Main */
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 100vh; }
 
 /* Cert strips */
@@ -151,7 +151,7 @@ body {
   color: oklch(42% 0.01 75);
 }
 
-/* ════════════════════ Toolbar ════════════════════ */
+/* Toolbar */
 .toolbar {
   background: var(--bg-3);
   border-bottom: 1px solid var(--line);
@@ -190,87 +190,221 @@ body {
 .page {
   padding: 28px 36px 48px;
   display: flex; flex-direction: column;
-  gap: 22px;
+  gap: 20px;
 }
 
-/* Section card */
-.card {
+/* Embed area — full width */
+.embed-card {
   background: var(--bg-3);
   border: 1px solid var(--line);
   border-radius: 14px;
-  padding: 22px 24px;
+  padding: 16px 16px;
   position: relative;
   overflow: hidden;
 }
-.card.accent::before {
+.embed-card::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0;
   height: 2px; background: var(--accent);
 }
-.card-head {
-  display: flex; align-items: flex-start; justify-content: space-between;
-  gap: 14px; margin-bottom: 16px;
+.embed-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; margin-bottom: 12px;
+  padding: 0 4px;
 }
-.card-eyebrow {
+.embed-title-row {
+  display: flex; align-items: center; gap: 10px;
+  min-width: 0;
+}
+.embed-source-badge {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.embed-source-badge.spotify {
+  background: color-mix(in oklch, oklch(60% 0.15 145), transparent 85%);
+  color: oklch(60% 0.15 145);
+}
+.embed-source-badge.youtube {
+  background: color-mix(in oklch, var(--neg), transparent 85%);
+  color: var(--neg);
+}
+.embed-now {
+  font-size: 14px; font-weight: 700;
+  letter-spacing: -0.005em;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.embed-frame {
+  width: 100%;
+  height: 380px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--bg-2);
+}
+.embed-empty {
+  width: 100%;
+  height: 320px;
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 10px;
+  background: var(--bg-2);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px;
+  color: var(--ink-3);
+}
+.embed-empty .ico { font-size: 42px; opacity: 0.4; }
+.embed-empty .ttl { font-size: 15px; font-weight: 700; color: var(--ink-2); }
+.embed-empty .sub { font-size: 12px; max-width: 340px; text-align: center; line-height: 1.5; }
+
+/* ════════════════════ Playlists grid ════════════════════ */
+.grid-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 4px;
+}
+.grid-title-block .eyebrow {
   display: inline-flex; align-items: center; gap: 9px;
   font-size: 10px; font-weight: 700;
   letter-spacing: 0.18em; text-transform: uppercase;
   color: var(--ink-3);
   margin-bottom: 4px;
 }
-.card-title {
-  font-size: 22px; font-weight: 700;
-  letter-spacing: -0.018em; line-height: 1;
+.grid-title {
+  font-size: 22px; font-weight: 900;
+  letter-spacing: -0.025em; line-height: 1;
 }
-.card-title .first { color: var(--accent); }
+.grid-title .first { color: var(--accent); }
 
-/* ════════════════════ 1. BACKGROUND (Spotify embed) ════════════════════ */
-.bg-embed-wrap {
+.pl-grid {
   display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
 }
-.bg-embed-frame {
-  width: 100%;
-  height: 380px;
-  border: 0;
+.pl-card {
+  background: var(--bg-3);
+  border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--bg-2);
+  padding: 14px 16px 14px;
+  cursor: pointer;
+  transition: border-color .15s, transform .08s, box-shadow .15s;
+  position: relative;
+  display: flex; flex-direction: column;
+  gap: 8px;
 }
-.bg-embed-empty {
-  width: 100%;
-  height: 380px;
-  border: 1.5px dashed var(--line-strong);
-  border-radius: 12px;
+.pl-card:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -10px rgba(20,15,10,.16);
+}
+.pl-card.active {
+  border-color: var(--accent);
+  background: color-mix(in oklch, var(--accent), transparent 94%);
+}
+.pl-card.active::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.pl-card-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 8px;
+}
+.pl-source {
+  font-size: 8.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
   background: var(--bg-2);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 10px;
+  border: 1px solid var(--line);
   color: var(--ink-3);
 }
-.bg-embed-empty .ico { font-size: 38px; opacity: 0.4; }
-.bg-embed-empty .ttl { font-size: 14px; font-weight: 700; color: var(--ink-2); }
-.bg-embed-empty .sub { font-size: 11.5px; max-width: 280px; text-align: center; line-height: 1.5; }
+.pl-source.spotify { color: oklch(60% 0.15 145); border-color: color-mix(in oklch, oklch(60% 0.15 145), transparent 70%); background: color-mix(in oklch, oklch(60% 0.15 145), transparent 90%); }
+.pl-source.youtube { color: var(--neg); border-color: color-mix(in oklch, var(--neg), transparent 70%); background: color-mix(in oklch, var(--neg), transparent 90%); }
 
-.bg-side {
-  display: flex; flex-direction: column;
-  gap: 10px;
+.pl-name {
+  font-size: 15px; font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+  color: var(--ink);
 }
-.bg-field {
+.pl-tag {
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pl-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.pl-play {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+}
+.pl-card.active .pl-play::before {
+  content: '✓ '; color: var(--accent);
+}
+.pl-card-actions {
+  display: flex; gap: 4px;
+  opacity: 0;
+  transition: opacity .12s;
+}
+.pl-card:hover .pl-card-actions { opacity: 1; }
+.pl-card-actions button {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  color: var(--ink-3);
+  transition: background .12s, color .12s;
+}
+.pl-card-actions button:hover { background: var(--bg-2); color: var(--ink); }
+.pl-card-actions button.del:hover { background: color-mix(in oklch, var(--neg), transparent 85%); color: var(--neg); }
+
+.pl-empty {
+  grid-column: 1 / -1;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  background: var(--bg-3);
+  border: 1.5px dashed var(--line);
+  border-radius: 12px;
+}
+.pl-empty .ico { font-size: 36px; opacity: 0.4; margin-bottom: 10px; }
+.pl-empty .ttl { font-size: 14px; font-weight: 700; color: var(--ink-2); margin-bottom: 6px; }
+
+/* Add form */
+.add-form {
+  display: none;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 8px;
+}
+.add-form.open { display: grid; grid-template-columns: 1fr 2fr auto auto; gap: 10px; align-items: end; }
+.field {
   background: var(--bg-3);
   border: 1.5px solid transparent;
-  border-radius: 12px;
-  padding: 11px 14px 10px;
+  border-radius: 10px;
+  padding: 9px 12px 8px;
   transition: border-color .15s;
 }
-.bg-field:focus-within { border-color: var(--accent); }
-.bg-field-lbl {
+.field:focus-within { border-color: var(--accent); }
+.field-lbl {
   display: block;
   font-size: 9.5px; font-weight: 700;
   letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--ink-3);
   margin-bottom: 4px;
 }
-.bg-field:focus-within .bg-field-lbl { color: var(--accent); }
-.bg-field input {
+.field:focus-within .field-lbl { color: var(--accent); }
+.field input {
   font-family: inherit;
   width: 100%; padding: 0;
   background: transparent;
@@ -278,190 +412,8 @@ body {
   font-size: 13px; font-weight: 600;
   color: var(--ink);
 }
-.bg-preset-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-}
-.bg-preset {
-  padding: 8px 10px;
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 0.10em; text-transform: uppercase;
-  color: var(--ink-3);
-  transition: background .12s, color .12s, border-color .12s;
-}
-.bg-preset:hover { background: var(--bg-2); color: var(--ink); }
-.bg-preset.active {
-  background: var(--ink); color: var(--bg);
-  border-color: var(--ink);
-}
-.bg-preset .emo { margin-right: 4px; }
+.field input::placeholder { color: var(--mute); font-weight: 500; }
 
-/* ════════════════════ 2. SOUNDBOARD ════════════════════ */
-.sb-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-.stinger {
-  position: relative;
-  background: var(--bg-3);
-  border: 1.5px solid var(--line);
-  border-radius: 12px;
-  padding: 18px 12px 14px;
-  display: flex; flex-direction: column; align-items: center;
-  gap: 8px;
-  transition: transform .08s, border-color .15s, box-shadow .15s;
-  text-align: center;
-  user-select: none;
-}
-.stinger:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 22px -10px color-mix(in oklch, var(--accent), transparent 60%); }
-.stinger:active { transform: translateY(0); }
-.stinger.playing {
-  background: color-mix(in oklch, var(--accent), transparent 88%);
-  border-color: var(--accent);
-}
-.stinger-ico {
-  font-size: 32px;
-  line-height: 1;
-}
-.stinger-name {
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 0.10em; text-transform: uppercase;
-  color: var(--ink-2);
-}
-.stinger.playing .stinger-name { color: var(--accent); }
-.stinger-key {
-  position: absolute; top: 6px; right: 8px;
-  font-size: 9px; font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--mute);
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  padding: 1px 5px;
-  border-radius: 3px;
-}
-.stinger-hint {
-  font-size: 9.5px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-3);
-  margin-top: 2px;
-}
-
-/* ════════════════════ 3. TRACKS ════════════════════ */
-.tracks-tabs {
-  display: flex; gap: 4px; flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-.tracks-tab {
-  padding: 8px 14px;
-  font-size: 10.5px; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--ink-3);
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  transition: background .12s, color .12s, border-color .12s;
-}
-.tracks-tab:hover { color: var(--ink); }
-.tracks-tab.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.tracks-tab .ct {
-  margin-left: 6px;
-  font-size: 9px; opacity: 0.65;
-}
-
-.tracks-list {
-  display: flex; flex-direction: column;
-  gap: 4px;
-}
-.track-row {
-  display: grid;
-  grid-template-columns: 32px 1fr auto auto;
-  gap: 12px;
-  align-items: center;
-  padding: 10px 14px;
-  background: var(--bg-3);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  transition: border-color .12s, background .12s;
-}
-.track-row:hover { border-color: var(--line-strong); }
-.track-play {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: var(--bg);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 12px;
-  transition: filter .12s, background .12s;
-}
-.track-play:hover { filter: brightness(1.15); }
-.track-info { min-width: 0; }
-.track-title {
-  font-size: 13.5px; font-weight: 700;
-  letter-spacing: -0.005em;
-  color: var(--ink);
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.track-artist {
-  font-size: 11px; font-weight: 600;
-  color: var(--ink-3);
-  letter-spacing: 0.02em;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-.track-source {
-  font-size: 9px; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--mute);
-  padding: 3px 7px;
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  white-space: nowrap;
-}
-.track-source.spotify { color: oklch(60% 0.15 145); }
-.track-source.youtube { color: var(--neg); }
-.track-del {
-  width: 26px; height: 26px;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  color: var(--ink-3);
-  font-size: 14px;
-  opacity: 0;
-  transition: opacity .12s, background .12s, color .12s;
-}
-.track-row:hover .track-del { opacity: 0.6; }
-.track-del:hover { background: color-mix(in oklch, var(--neg), transparent 88%); color: var(--neg); opacity: 1; }
-
-.tracks-empty {
-  padding: 36px 20px;
-  text-align: center;
-  color: var(--ink-3);
-  font-size: 12px;
-}
-.tracks-empty .ico { font-size: 32px; opacity: 0.4; margin-bottom: 10px; }
-
-/* Add track form */
-.add-track-form {
-  display: none;
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 14px 16px;
-  margin-bottom: 12px;
-}
-.add-track-form.open { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; }
-.add-track-form .bg-field { background: var(--bg-3); }
-.add-track-form .actions { display: flex; gap: 6px; }
-
-@media (max-width: 1100px) {
-  .bg-embed-wrap { grid-template-columns: 1fr; }
-  .bg-embed-frame, .bg-embed-empty { height: 320px; }
-  .sb-grid { grid-template-columns: repeat(3, 1fr); }
-}
 @media (max-width: 900px) {
   body { display: block; }
   .sb {
@@ -495,15 +447,12 @@ body {
   .cert-splash { height: 36px; margin: -6px 0; }
   .cert-right { display: none; }
   .cert-bc { gap: 8px; font-size: 9px; letter-spacing: .12em; }
-  .sb-grid { grid-template-columns: repeat(2, 1fr); }
-  .add-track-form.open { grid-template-columns: 1fr; }
-  .track-row { grid-template-columns: 32px 1fr auto; }
-  .track-source { display: none; }
+  .embed-frame { height: 280px; }
+  .add-form.open { grid-template-columns: 1fr; }
+  .pl-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 640px) {
   .cert-splash { display: none; }
-  .stinger-ico { font-size: 28px; }
-  .stinger { padding: 14px 8px 12px; }
 }
 </style>
 </head>
@@ -551,125 +500,62 @@ body {
     <div class="tb-left">
       <span class="tb-eyebrow">Playlist · Stream</span>
       <span class="holo"></span>
-      <span class="tb-sub" id="tb-sub">Préparation audio</span>
+      <span class="tb-sub" id="tb-sub">— playlists enregistrées</span>
     </div>
+    <button class="btn btn-primary btn-sm" onclick="toggleAddForm()">+ Ajouter une playlist</button>
   </div>
 
   <!-- Page content -->
   <div class="page">
 
-    <!-- ═════ 1. BACKGROUND MUSIC ═════ -->
-    <div class="card accent">
-      <div class="card-head">
-        <div>
-          <div class="card-eyebrow"><span class="holo"></span>Musique de fond</div>
-          <div class="card-title"><span class="first">A</span>mbiance du stream</div>
+    <!-- Embed player -->
+    <div class="embed-card">
+      <div class="embed-head">
+        <div class="embed-title-row">
+          <span class="embed-source-badge" id="embed-source-badge" style="display:none"></span>
+          <span class="embed-now" id="embed-now">Aucune playlist sélectionnée</span>
         </div>
       </div>
-
-      <div class="bg-embed-wrap">
-        <!-- Embed area -->
-        <div id="bg-embed-area">
-          <div class="bg-embed-empty" id="bg-embed-empty">
-            <div class="ico">🎧</div>
-            <div class="ttl">Aucun embed configuré</div>
-            <div class="sub">Colle une URL Spotify ou YouTube playlist à droite — ou choisis un preset.</div>
-          </div>
-        </div>
-
-        <!-- Side controls -->
-        <div class="bg-side">
-          <div class="bg-field">
-            <span class="bg-field-lbl">URL Spotify ou YouTube</span>
-            <input id="bg-url-input" type="url" placeholder="https://open.spotify.com/playlist/…">
-          </div>
-          <button class="btn btn-primary" onclick="saveBgEmbed()">Charger le player</button>
-          <button class="btn btn-ghost btn-sm" onclick="clearBgEmbed()">Effacer</button>
-
-          <div style="margin-top:14px">
-            <div class="bg-field-lbl" style="margin-bottom:8px">Presets rapides</div>
-            <div class="bg-preset-grid" id="bg-presets">
-              <button class="bg-preset" data-name="lofi" onclick="loadPreset('lofi')">
-                <span class="emo">🎵</span>Lo-fi chill
-              </button>
-              <button class="bg-preset" data-name="hype" onclick="loadPreset('hype')">
-                <span class="emo">🔥</span>Hype trap
-              </button>
-              <button class="bg-preset" data-name="jazz" onclick="loadPreset('jazz')">
-                <span class="emo">🎷</span>Jazz lounge
-              </button>
-              <button class="bg-preset" data-name="game" onclick="loadPreset('game')">
-                <span class="emo">🎮</span>Gaming
-              </button>
-            </div>
-          </div>
+      <div id="embed-area">
+        <div class="embed-empty">
+          <div class="ico">🎧</div>
+          <div class="ttl">Aucune playlist active</div>
+          <div class="sub">Clique sur une playlist dans la liste — ou ajoute-en une nouvelle pour commencer.</div>
         </div>
       </div>
     </div>
 
-    <!-- ═════ 2. SOUNDBOARD ═════ -->
-    <div class="card accent">
-      <div class="card-head">
-        <div>
-          <div class="card-eyebrow"><span class="holo"></span>Stingers · effets sonores</div>
-          <div class="card-title"><span class="first">S</span>oundboard live</div>
-        </div>
-        <span style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)">
-          Touches 1-9 = raccourcis
-        </span>
-      </div>
-
-      <div class="sb-grid" id="sb-grid">
-        <!-- Generated by JS -->
+    <!-- Add form -->
+    <div class="add-form" id="add-form">
+      <label class="field">
+        <span class="field-lbl">Nom</span>
+        <input id="pl-name" type="text" placeholder="Ex: Hype break night">
+      </label>
+      <label class="field">
+        <span class="field-lbl">URL Spotify ou YouTube</span>
+        <input id="pl-url" type="url" placeholder="https://open.spotify.com/playlist/…">
+      </label>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="toggleAddForm(false)">Annuler</button>
+        <button class="btn btn-primary btn-sm" onclick="savePlaylist()">Ajouter</button>
       </div>
     </div>
 
-    <!-- ═════ 3. TRACKS CURÉS ═════ -->
-    <div class="card accent">
-      <div class="card-head">
-        <div>
-          <div class="card-eyebrow"><span class="holo"></span>Liste personnalisée</div>
-          <div class="card-title"><span class="first">T</span>racks par moment</div>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="toggleAddTrack()">+ Ajouter un track</button>
+    <!-- Playlists grid -->
+    <div class="grid-head">
+      <div class="grid-title-block">
+        <div class="eyebrow"><span class="holo"></span>Mes playlists</div>
+        <div class="grid-title"><span class="first">P</span>laylists enregistrées</div>
       </div>
-
-      <!-- Add form -->
-      <div class="add-track-form" id="add-track-form">
-        <div class="bg-field">
-          <span class="bg-field-lbl">Titre · Artiste</span>
-          <input id="track-title" type="text" placeholder="Ex: Watermelon Sugar · Harry Styles">
-        </div>
-        <div class="bg-field">
-          <span class="bg-field-lbl">URL (Spotify, YouTube, etc.)</span>
-          <input id="track-url" type="url" placeholder="https://…">
-        </div>
-        <div class="actions">
-          <button class="btn btn-ghost btn-sm" onclick="toggleAddTrack(false)">Annuler</button>
-          <button class="btn btn-primary btn-sm" onclick="saveTrack()">Ajouter</button>
-        </div>
-      </div>
-
-      <!-- Category tabs -->
-      <div class="tracks-tabs" id="tracks-tabs">
-        <button class="tracks-tab active" data-cat="all">Tous<span class="ct" id="ct-all">0</span></button>
-        <button class="tracks-tab" data-cat="intro">Intro<span class="ct" id="ct-intro">0</span></button>
-        <button class="tracks-tab" data-cat="chill">Chill<span class="ct" id="ct-chill">0</span></button>
-        <button class="tracks-tab" data-cat="hype">Hype<span class="ct" id="ct-hype">0</span></button>
-        <button class="tracks-tab" data-cat="hit">Big hit<span class="ct" id="ct-hit">0</span></button>
-        <button class="tracks-tab" data-cat="outro">Outro<span class="ct" id="ct-outro">0</span></button>
-      </div>
-
-      <div class="tracks-list" id="tracks-list"></div>
     </div>
+    <div class="pl-grid" id="pl-grid"></div>
 
   </div>
 
   <!-- Bottom cert strip -->
   <div class="cert cert-bot">
     <div class="cert-meta">
-      <span class="cert-pill">Stream Audio</span>
-      <span class="cert-pill">Speloosh DJ</span>
+      <span class="cert-pill" id="bot-count">— playlists</span>
     </div>
     <span class="cert-id">SPELOOSH © 2026</span>
   </div>
@@ -684,294 +570,15 @@ function toggleSidebar() {
 
 const esc = (s) => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-/* ════════════════════ 1. Background embed ════════════════════ */
-const BG_KEY = 'playlist_bg_url_v1';
+const PL_KEY = 'playlist_saved_v2';
+const ACTIVE_KEY = 'playlist_active_v2';
 
-const PRESETS = {
-  lofi: 'https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0ExPn?utm_source=generator',
-  hype: 'https://open.spotify.com/embed/playlist/37i9dQZF1DX0XUsuxWHRQd?utm_source=generator',
-  jazz: 'https://open.spotify.com/embed/playlist/37i9dQZF1DX7YCknf2jT6s?utm_source=generator',
-  game: 'https://open.spotify.com/embed/playlist/37i9dQZF1DWTyiBJ6yEqeu?utm_source=generator',
-};
-
-function normalizeEmbedUrl(url) {
-  url = url.trim();
-  if (!url) return '';
-  // Spotify playlist URL → embed URL
-  const spMatch = url.match(/open\.spotify\.com\/(playlist|album|track)\/([a-zA-Z0-9]+)/);
-  if (spMatch) {
-    return `https://open.spotify.com/embed/${spMatch[1]}/${spMatch[2]}?utm_source=generator`;
-  }
-  // Already an embed URL
-  if (url.includes('/embed/')) return url;
-  // YouTube playlist URL
-  const ytMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-  if (ytMatch) {
-    return `https://www.youtube.com/embed/videoseries?list=${ytMatch[1]}`;
-  }
-  // YouTube single video
-  const ytVid = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
-  if (ytVid) {
-    return `https://www.youtube.com/embed/${ytVid[1]}`;
-  }
-  return url;
+function loadAll() {
+  try { return JSON.parse(localStorage.getItem(PL_KEY) || '[]'); }
+  catch (e) { return []; }
 }
-
-function renderBgEmbed() {
-  const url = localStorage.getItem(BG_KEY) || '';
-  const area = document.getElementById('bg-embed-area');
-  if (!url) {
-    area.innerHTML = `<div class="bg-embed-empty">
-      <div class="ico">🎧</div>
-      <div class="ttl">Aucun embed configuré</div>
-      <div class="sub">Colle une URL Spotify ou YouTube playlist à droite — ou choisis un preset.</div>
-    </div>`;
-    return;
-  }
-  area.innerHTML = `<iframe class="bg-embed-frame" src="${esc(url)}" allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-  // Set the URL input
-  document.getElementById('bg-url-input').value = url;
-  // Highlight active preset
-  document.querySelectorAll('.bg-preset').forEach(btn => {
-    btn.classList.toggle('active', PRESETS[btn.dataset.name] === url);
-  });
-}
-
-function saveBgEmbed() {
-  const input = document.getElementById('bg-url-input').value.trim();
-  if (!input) return;
-  const embedUrl = normalizeEmbedUrl(input);
-  localStorage.setItem(BG_KEY, embedUrl);
-  renderBgEmbed();
-}
-
-function clearBgEmbed() {
-  localStorage.removeItem(BG_KEY);
-  document.getElementById('bg-url-input').value = '';
-  renderBgEmbed();
-}
-
-function loadPreset(name) {
-  if (!PRESETS[name]) return;
-  localStorage.setItem(BG_KEY, PRESETS[name]);
-  renderBgEmbed();
-}
-
-/* ════════════════════ 2. Soundboard ════════════════════ */
-const STINGER_KEY = 'playlist_stingers_v1';
-
-const DEFAULT_STINGERS = [
-  { ico: '🥁', name: 'Drumroll',   key: '1', sound: 'drumroll' },
-  { ico: '🎉', name: 'Cheer',      key: '2', sound: 'cheer' },
-  { ico: '💥', name: 'BOOM',       key: '3', sound: 'boom' },
-  { ico: '🎺', name: 'Fanfare',    key: '4', sound: 'fanfare' },
-  { ico: '🔔', name: 'Bell',       key: '5', sound: 'bell' },
-  { ico: '📢', name: 'Air horn',   key: '6', sound: 'airhorn' },
-  { ico: '👏', name: 'Applause',   key: '7', sound: 'applause' },
-  { ico: '💎', name: 'Diamond',    key: '8', sound: 'diamond' },
-];
-
-let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-
-// Sound synthesis with Web Audio API
-const SOUNDS = {
-  drumroll: () => {
-    const ctx = getAudioCtx();
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) {
-      // Decreasing snare hit pattern with rolls
-      const t = i / ctx.sampleRate;
-      const env = Math.exp(-t * 1.5);
-      data[i] = (Math.random() * 2 - 1) * env * (1 + Math.sin(t * 80) * 0.5);
-    }
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.4;
-    src.connect(gain).connect(ctx.destination);
-    src.start();
-    return 1500;
-  },
-  cheer: () => {
-    const ctx = getAudioCtx();
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) {
-      const t = i / ctx.sampleRate;
-      const env = Math.min(t * 4, 1) * Math.exp(-t * 0.6);
-      data[i] = (Math.random() * 2 - 1) * env * 0.5;
-    }
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    // Lowpass filter for warmer crowd feel
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 800;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.7;
-    src.connect(filter).connect(gain).connect(ctx.destination);
-    src.start();
-    return 2000;
-  },
-  boom: () => {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(120, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.8);
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.6, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.9);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 1);
-    return 900;
-  },
-  fanfare: () => {
-    const ctx = getAudioCtx();
-    const notes = [261.63, 329.63, 392.00, 523.25]; // C E G C (major chord arpeggio)
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'triangle';
-      osc.frequency.value = freq;
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime + i * 0.12;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.25, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.4);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 0.45);
-    });
-    return 700;
-  },
-  bell: () => {
-    const ctx = getAudioCtx();
-    [880, 1318.5].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.3 / (i + 1), ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.8);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 1.8);
-    });
-    return 1800;
-  },
-  airhorn: () => {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(350, ctx.currentTime);
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.05);
-    gain.gain.setValueAtTime(0.25, ctx.currentTime + 0.7);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.85);
-    // Slight pitch warble
-    osc.frequency.linearRampToValueAtTime(380, ctx.currentTime + 0.4);
-    osc.frequency.linearRampToValueAtTime(330, ctx.currentTime + 0.7);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.9);
-    return 900;
-  },
-  applause: () => {
-    const ctx = getAudioCtx();
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * 2.5, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < data.length; i++) {
-      const t = i / ctx.sampleRate;
-      const env = Math.min(t * 6, 1) * Math.exp(-t * 0.5);
-      // Random claps + noise
-      data[i] = ((Math.random() * 2 - 1) * 0.6 + Math.sin(t * 200) * 0.1) * env;
-    }
-    const src = ctx.createBufferSource();
-    src.buffer = buffer;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.5;
-    src.connect(gain).connect(ctx.destination);
-    src.start();
-    return 2500;
-  },
-  diamond: () => {
-    const ctx = getAudioCtx();
-    // Sparkly chimes
-    [1568, 1976, 2349, 2637].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const gain = ctx.createGain();
-      const t0 = ctx.currentTime + i * 0.08;
-      gain.gain.setValueAtTime(0.15, t0);
-      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 1.2);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(t0);
-      osc.stop(t0 + 1.3);
-    });
-    return 1500;
-  },
-};
-
-function loadStingers() {
-  try {
-    const raw = localStorage.getItem(STINGER_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return [...DEFAULT_STINGERS];
-}
-
-function renderSoundboard() {
-  const stingers = loadStingers();
-  const grid = document.getElementById('sb-grid');
-  grid.innerHTML = stingers.map((s, i) => `
-    <button class="stinger" data-idx="${i}" onclick="playStinger(${i})" aria-label="${esc(s.name)}">
-      <span class="stinger-key">${esc(s.key || (i + 1))}</span>
-      <span class="stinger-ico">${esc(s.ico)}</span>
-      <span class="stinger-name">${esc(s.name)}</span>
-    </button>`).join('');
-}
-
-function playStinger(idx) {
-  const stingers = loadStingers();
-  const s = stingers[idx];
-  if (!s) return;
-  const fn = SOUNDS[s.sound];
-  if (!fn) return;
-  const duration = fn();
-  const btn = document.querySelector(`.stinger[data-idx="${idx}"]`);
-  if (btn) {
-    btn.classList.add('playing');
-    setTimeout(() => btn.classList.remove('playing'), Math.min(duration, 2000));
-  }
-}
-
-// Keyboard shortcuts 1-9
-document.addEventListener('keydown', (e) => {
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-  const n = parseInt(e.key, 10);
-  if (n >= 1 && n <= 9) playStinger(n - 1);
-});
-
-/* ════════════════════ 3. Tracks ════════════════════ */
-const TRACKS_KEY = 'playlist_tracks_v1';
-let currentCat = 'all';
-
-function loadTracks() {
-  try {
-    return JSON.parse(localStorage.getItem(TRACKS_KEY) || '[]');
-  } catch (e) { return []; }
-}
-function saveTracksList(arr) {
-  localStorage.setItem(TRACKS_KEY, JSON.stringify(arr));
+function saveAll(arr) {
+  localStorage.setItem(PL_KEY, JSON.stringify(arr));
 }
 
 function getSourceType(url) {
@@ -980,94 +587,134 @@ function getSourceType(url) {
   return 'lien';
 }
 
-function toggleAddTrack(force) {
-  const form = document.getElementById('add-track-form');
+function normalizeEmbedUrl(url) {
+  url = (url || '').trim();
+  if (!url) return '';
+  if (url.includes('/embed/')) return url;
+  // Spotify
+  const sp = url.match(/open\.spotify\.com\/(playlist|album|track)\/([a-zA-Z0-9]+)/);
+  if (sp) return `https://open.spotify.com/embed/${sp[1]}/${sp[2]}?utm_source=generator`;
+  // YouTube playlist
+  const ytPl = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+  if (ytPl) return `https://www.youtube.com/embed/videoseries?list=${ytPl[1]}`;
+  // YouTube single
+  const ytV = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/);
+  if (ytV) return `https://www.youtube.com/embed/${ytV[1]}`;
+  return url;
+}
+
+function toggleAddForm(force) {
+  const form = document.getElementById('add-form');
   const open = force !== undefined ? Boolean(force) : !form.classList.contains('open');
   form.classList.toggle('open', open);
-  if (open) setTimeout(() => document.getElementById('track-title').focus(), 50);
+  if (open) setTimeout(() => document.getElementById('pl-name').focus(), 50);
 }
 
-function saveTrack() {
-  const titleRaw = document.getElementById('track-title').value.trim();
-  const url      = document.getElementById('track-url').value.trim();
-  if (!titleRaw || !url) return;
-  let title = titleRaw, artist = '';
-  if (titleRaw.includes(' · ')) {
-    [title, artist] = titleRaw.split(' · ').map(s => s.trim());
-  } else if (titleRaw.includes(' - ')) {
-    [title, artist] = titleRaw.split(' - ').map(s => s.trim());
-  }
-  const tracks = loadTracks();
-  tracks.unshift({
+function savePlaylist() {
+  const name = document.getElementById('pl-name').value.trim();
+  const url  = document.getElementById('pl-url').value.trim();
+  if (!name || !url) return;
+  const all = loadAll();
+  all.unshift({
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
-    title,
-    artist,
+    name,
     url,
-    category: currentCat === 'all' ? 'chill' : currentCat,
+    embedUrl: normalizeEmbedUrl(url),
+    source: getSourceType(url),
     addedAt: Date.now(),
   });
-  saveTracksList(tracks);
-  document.getElementById('track-title').value = '';
-  document.getElementById('track-url').value = '';
-  toggleAddTrack(false);
-  renderTracks();
+  saveAll(all);
+  document.getElementById('pl-name').value = '';
+  document.getElementById('pl-url').value = '';
+  toggleAddForm(false);
+  render();
 }
 
-function deleteTrack(id) {
-  if (!confirm('Supprimer ce track ?')) return;
-  saveTracksList(loadTracks().filter(t => t.id !== id));
-  renderTracks();
+function deletePlaylist(id) {
+  if (!confirm('Supprimer cette playlist ?')) return;
+  saveAll(loadAll().filter(p => p.id !== id));
+  const active = localStorage.getItem(ACTIVE_KEY);
+  if (active === id) localStorage.removeItem(ACTIVE_KEY);
+  render();
 }
 
-function renderTracks() {
-  const tracks = loadTracks();
-  const list = document.getElementById('tracks-list');
+function openExternal(id, ev) {
+  ev.stopPropagation();
+  const p = loadAll().find(x => x.id === id);
+  if (p) window.open(p.url, '_blank', 'noopener');
+}
 
-  // Update counts on tabs
-  const counts = { all: tracks.length, intro: 0, chill: 0, hype: 0, hit: 0, outro: 0 };
-  tracks.forEach(t => { if (counts[t.category] !== undefined) counts[t.category]++; });
-  Object.keys(counts).forEach(c => {
-    const el = document.getElementById('ct-' + c);
-    if (el) el.textContent = counts[c];
-  });
+function selectPlaylist(id) {
+  localStorage.setItem(ACTIVE_KEY, id);
+  render();
+}
 
-  const filtered = currentCat === 'all' ? tracks : tracks.filter(t => t.category === currentCat);
+function render() {
+  const all = loadAll();
+  const activeId = localStorage.getItem(ACTIVE_KEY);
+  const grid = document.getElementById('pl-grid');
+  const embed = document.getElementById('embed-area');
+  const embedNow = document.getElementById('embed-now');
+  const embedBadge = document.getElementById('embed-source-badge');
+  const tbSub = document.getElementById('tb-sub');
+  const botCount = document.getElementById('bot-count');
 
-  if (!filtered.length) {
-    list.innerHTML = `<div class="tracks-empty">
-      <div class="ico">🎼</div>
-      Aucun track ${currentCat !== 'all' ? `dans "${currentCat}"` : 'enregistré'} — clique "+ Ajouter un track" pour commencer.
+  tbSub.textContent = `${all.length} playlist${all.length !== 1 ? 's' : ''} enregistrée${all.length !== 1 ? 's' : ''}`;
+  botCount.textContent = `${all.length} playlist${all.length !== 1 ? 's' : ''}`;
+
+  // Empty state
+  if (!all.length) {
+    grid.innerHTML = `<div class="pl-empty">
+      <div class="ico">🎵</div>
+      <div class="ttl">Aucune playlist enregistrée</div>
+      <div>Clique "+ Ajouter une playlist" en haut pour commencer.</div>
     </div>`;
+    embed.innerHTML = `<div class="embed-empty">
+      <div class="ico">🎧</div>
+      <div class="ttl">Aucune playlist active</div>
+      <div class="sub">Ajoute une playlist Spotify ou YouTube pour commencer.</div>
+    </div>`;
+    embedNow.textContent = 'Aucune playlist sélectionnée';
+    embedBadge.style.display = 'none';
     return;
   }
 
-  list.innerHTML = filtered.map(t => {
-    const source = getSourceType(t.url);
-    return `<div class="track-row">
-      <a class="track-play" href="${esc(t.url)}" target="_blank" rel="noopener" title="Ouvrir">▶</a>
-      <div class="track-info">
-        <div class="track-title">${esc(t.title)}</div>
-        ${t.artist ? `<div class="track-artist">${esc(t.artist)}</div>` : ''}
+  // Render cards
+  grid.innerHTML = all.map(p => `
+    <div class="pl-card ${p.id === activeId ? 'active' : ''}" onclick="selectPlaylist('${p.id}')">
+      <div class="pl-card-head">
+        <span class="pl-source ${esc(p.source)}">${esc(p.source)}</span>
       </div>
-      <span class="track-source ${source}">${esc(source)}</span>
-      <button class="track-del" onclick="deleteTrack('${t.id}')" title="Supprimer">×</button>
+      <div class="pl-name">${esc(p.name)}</div>
+      <div class="pl-card-foot">
+        <span class="pl-play">${p.id === activeId ? 'En lecture' : 'Sélectionner'}</span>
+        <div class="pl-card-actions">
+          <button onclick="openExternal('${p.id}', event)" title="Ouvrir l'app">↗</button>
+          <button class="del" onclick="event.stopPropagation();deletePlaylist('${p.id}')" title="Supprimer">×</button>
+        </div>
+      </div>
+    </div>`).join('');
+
+  // Render embed
+  const active = all.find(p => p.id === activeId);
+  if (!active) {
+    embed.innerHTML = `<div class="embed-empty">
+      <div class="ico">🎧</div>
+      <div class="ttl">Aucune playlist active</div>
+      <div class="sub">Clique sur une playlist ci-dessous pour la charger.</div>
     </div>`;
-  }).join('');
+    embedNow.textContent = 'Aucune playlist sélectionnée';
+    embedBadge.style.display = 'none';
+    return;
+  }
+  embedNow.textContent = active.name;
+  embedBadge.textContent = active.source;
+  embedBadge.className = `embed-source-badge ${active.source}`;
+  embedBadge.style.display = '';
+  embed.innerHTML = `<iframe class="embed-frame" src="${esc(active.embedUrl)}" allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
 }
 
-// Tab switching
-document.querySelectorAll('.tracks-tab').forEach(t => {
-  t.addEventListener('click', () => {
-    currentCat = t.dataset.cat;
-    document.querySelectorAll('.tracks-tab').forEach(x => x.classList.toggle('active', x === t));
-    renderTracks();
-  });
-});
-
-/* ════════════════════ Boot ════════════════════ */
-renderBgEmbed();
-renderSoundboard();
-renderTracks();
+render();
 </script>
 </body>
 </html>
