@@ -19,7 +19,7 @@ Outils : tracking des breaks (revenu/coûts/marge), prep IA avant le live, looku
 
 ## ⭐ Design system v2 (en place sur 6 pages sur 8)
 
-**Pages v2** : `index.html`, `break-builder.html`, `hub.html`, `break-prep.html`, `planner.html`, `releases.html`
+**Pages v2** : `index.html`, `break-builder.html`, `hub.html`, `break-prep.html`, `planner.html`, `releases.html`, `playlist.html`
 **Pages legacy** (encore tokens dark/Playfair) : `settings.html`, `team.html`
 
 ### Tokens v2 — embedded INLINE dans chaque page (pas dans tokens.css partagé)
@@ -98,6 +98,23 @@ Outils : tracking des breaks (revenu/coûts/marge), prep IA avant le live, looku
 - Filtres 4 rows pills (1ère lettre aqua)
 - Month blocks avec titres "Juin 2026" (M en aqua)
 - Grid 6 colonnes release cards
+
+### playlist.html (NOUVELLE PAGE — 28 mai)
+- **Section 1 : Playlists enregistrées**
+  - Embed iframe Spotify/YouTube en haut
+  - Grid de cards (nom + badge source Spotify/YouTube)
+  - Click card = charge dans embed (état "En lecture")
+  - + Ajouter une playlist (form nom + URL avec normalisation auto Spotify/YouTube)
+  - localStorage `playlist_saved_v2` + `playlist_active_v2`
+- **Section 2 : Soundboard live**
+  - 6 catégories : Tous / Meme / Break Time / Opening / Closing / Effet sonore
+  - Grid 4 cols boutons stingers
+  - Raccourcis clavier 1-9
+  - Audio cache (`new Audio()` instancié une fois, replay instant)
+  - Stingers actuels :
+    - 📣 Fah! (`meme`, `/sounds/fah.mp3`)
+    - 🎵 Beat drop (`closing`, `/sounds/beat-drop.mp3`)
+  - **Ajouter un stinger** : drop MP3 dans `public/sounds/`, ajouter entrée `{ico, name, key, file, category}` dans `STINGERS` array
 
 ---
 
