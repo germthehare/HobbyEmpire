@@ -451,6 +451,32 @@ body {
 .drawer-tab-panel { display: none; }
 .drawer-tab-panel.active { display: flex; flex-direction: column; gap: 12px; }
 
+/* Sélecteur de période (onglet Cibles) */
+.periode-bar {
+  display: inline-flex; gap: 4px;
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 3px;
+  align-self: flex-start;
+}
+.periode-pill {
+  padding: 7px 14px;
+  border-radius: 4px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+}
+.periode-pill:hover:not(.active) { color: var(--ink); }
+.periode-pill.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
 .drawer-actions {
   display: flex; justify-content: space-between; align-items: center;
   gap: 8px;
@@ -1461,10 +1487,23 @@ function saveSalaire(key, val) {
 }
 function saveObjVendeur(key, field, val) {
   if (!settings.objectifsVendeurs[key]) {
-    settings.objectifsVendeurs[key] = { revenu: 0, breaks: 0, marge: 0, benefice: 0 };
+    settings.objectifsVendeurs[key] = { revenu: 0, breaks: 0, marge: 0, benefice: 0, periode: 'mois' };
   }
+  if (!settings.objectifsVendeurs[key].periode) settings.objectifsVendeurs[key].periode = 'mois';
   settings.objectifsVendeurs[key][field] = parseFloat(val) || 0;
   saveSettings(settings, true);
+  flashSavedHint(key);
+}
+
+function setObjVendeurPeriode(key, periode) {
+  if (!['semaine','mois','trimestre','annee'].includes(periode)) return;
+  if (!settings.objectifsVendeurs[key]) {
+    settings.objectifsVendeurs[key] = { revenu: 0, breaks: 0, marge: 0, benefice: 0, periode };
+  } else {
+    settings.objectifsVendeurs[key].periode = periode;
+  }
+  saveSettings(settings, true);
+  renderMembres();
   flashSavedHint(key);
 }
 let hintTimers = {};
@@ -1501,7 +1540,11 @@ function renderMembres() {
     const isOpen = openMembre === key;
     const isVendeur = role === 'vendeur' || role === 'both';
     const sal = settings.salaires[key] || '';
-    const obj = settings.objectifsVendeurs[key] || { revenu: 0, breaks: 0, marge: 0, benefice: 0 };
+    const obj = settings.objectifsVendeurs[key] || { revenu: 0, breaks: 0, marge: 0, benefice: 0, periode: 'mois' };
+    const periode = obj.periode || 'mois';
+    const periodeLabel = { semaine: 'hebdo', mois: 'mensuel', trimestre: 'trimestriel', annee: 'annuel' };
+    const periodeLabelF = { semaine: 'hebdo', mois: 'mensuelle', trimestre: 'trimestrielle', annee: 'annuelle' };
+    const periodeShort = { semaine: 'sem', mois: 'mois', trimestre: 'trim', annee: 'an' };
 
     const drawerHtml = isOpen ? `
       <div class="membre-drawer">
@@ -1563,25 +1606,32 @@ function renderMembres() {
 
         <div class="drawer-tab-panel ${openTab === 'cibles' ? 'active' : ''}">
           ${isVendeur ? `
+            <div class="periode-bar" role="tablist" aria-label="Période des cibles">
+              ${['semaine','mois','trimestre','annee'].map(p => `
+                <button type="button" class="periode-pill ${periode === p ? 'active' : ''}"
+                  onclick="setObjVendeurPeriode('${esc(key)}','${p}')">
+                  ${p === 'semaine' ? 'Semaine' : p === 'mois' ? 'Mois' : p === 'trimestre' ? 'Trimestre' : 'Année'}
+                </button>`).join('')}
+            </div>
             <div class="grid-2">
               <label class="tile with-prefix">
-                <span class="tile-lbl">Revenu mensuel</span>
+                <span class="tile-lbl">Revenu ${periodeLabel[periode]}</span>
                 <input type="number" min="0" step="500" value="${obj.revenu || ''}" placeholder="0"
                   oninput="saveObjVendeur('${esc(key)}','revenu',this.value)">
               </label>
               <label class="tile with-prefix">
-                <span class="tile-lbl">Bénéfice mensuel</span>
+                <span class="tile-lbl">Bénéfice ${periodeLabel[periode]}</span>
                 <input type="number" min="0" step="100" value="${obj.benefice || ''}" placeholder="0"
                   oninput="saveObjVendeur('${esc(key)}','benefice',this.value)">
               </label>
               <label class="tile with-symbol">
-                <span class="tile-lbl">Breaks / mois</span>
+                <span class="tile-lbl">Breaks / ${periodeShort[periode]}</span>
                 <input type="number" min="0" step="1" value="${obj.breaks || ''}" placeholder="0"
                   oninput="saveObjVendeur('${esc(key)}','breaks',this.value)">
                 <span class="symbol">br</span>
               </label>
               <label class="tile with-symbol">
-                <span class="tile-lbl">Marge cible</span>
+                <span class="tile-lbl">Marge cible ${periodeLabelF[periode]}</span>
                 <input type="number" min="0" max="100" step="1" value="${obj.marge || ''}" placeholder="0"
                   oninput="saveObjVendeur('${esc(key)}','marge',this.value)">
                 <span class="symbol">%</span>
