@@ -508,6 +508,17 @@ body {
   border-radius: 4px;
   flex-shrink: 0;
 }
+.pc-periode {
+  font-size: 8.5px; font-weight: 800;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent);
+  background: color-mix(in oklch, var(--accent), transparent 88%);
+  border: 1px solid color-mix(in oklch, var(--accent), transparent 70%);
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: help;
+  flex-shrink: 0;
+}
 .pc-status {
   display: inline-flex; align-items: center; gap: 4px;
   font-size: 9px; font-weight: 700;
@@ -1155,7 +1166,8 @@ body {
           </div>
         </div>
         <div class="obj-editor-section" id="edit-vendeurs-section">
-          <div class="obj-editor-title">Vendeurs · cibles mensuelles</div>
+          <div class="obj-editor-title">Vendeurs · cibles individuelles</div>
+          <div style="font-size:11px;color:var(--ink-3);margin-bottom:8px;letter-spacing:-0.003em">Édite les valeurs telles que tu les as définies (la période — semaine, mois, trimestre, année — se règle dans <strong>Settings → Équipe → onglet Cibles</strong>).</div>
           <div id="edit-vendeurs-list"></div>
         </div>
         <div class="obj-editor-actions">
@@ -1530,6 +1542,15 @@ function render() {
   document.getElementById('bottom-marge').textContent  = `Marge · ${pct(marge)}`;
 }
 
+// Conversion d'une cible vers son équivalent mensuel (le Hub raisonne en mois)
+const PERIODE_TO_MONTHLY = { semaine: 52/12, mois: 1, trimestre: 1/3, annee: 1/12 };
+function targetToMonthly(target, periode) {
+  if (!target) return 0;
+  return target * (PERIODE_TO_MONTHLY[periode || 'mois'] || 1);
+}
+const PERIODE_SUFFIX = { semaine: '/sem', mois: '/mois', trimestre: '/trim', annee: '/an' };
+const PERIODE_LABEL  = { semaine: 'Hebdo', mois: 'Mensuel', trimestre: 'Trimestriel', annee: 'Annuel' };
+
 function renderObjectifs(current, monthLabel) {
   const banner = document.getElementById('obj-banner');
   const empty  = document.getElementById('obj-empty');
@@ -1573,18 +1594,21 @@ function renderObjectifs(current, monthLabel) {
   }
   lbSection.style.display = '';
 
-  // Build cards with computed progress
+  // Build cards with computed progress (convertit les cibles vers leur équivalent mensuel)
   const cards = vendeursWithObj.map(name => {
     const o = objVend[name] || {};
+    const periode = o.periode || 'mois';
+    const monthlyRev = targetToMonthly(o.revenu, periode);
+    const monthlyBreaks = targetToMonthly(o.breaks, periode);
     const vBreaks = current.filter(b => b.vendeur === name);
     const vRev = vBreaks.reduce((s, b) => s + (+b.revenuReel || 0), 0);
     const vN   = vBreaks.length;
-    const pctRev = o.revenu > 0 ? (vRev / o.revenu) * 100 : null;
-    const pctBrk = o.breaks > 0 ? (vN   / o.breaks) * 100 : null;
+    const pctRev = monthlyRev > 0 ? (vRev / monthlyRev) * 100 : null;
+    const pctBrk = monthlyBreaks > 0 ? (vN   / monthlyBreaks) * 100 : null;
     const overallPct = pctRev !== null ? pctRev : (pctBrk !== null ? pctBrk : 0);
     const isDone = overallPct >= 100;
     const isStart = overallPct <= 0;
-    return { name, o, vRev, vN, overallPct, isDone, isStart };
+    return { name, o, periode, monthlyRev, monthlyBreaks, vRev, vN, overallPct, isDone, isStart };
   });
   cards.sort((a, b) => b.overallPct - a.overallPct);
 
@@ -1614,33 +1638,35 @@ function renderPlayerCard(c, rank) {
       ? 'À démarrer'
       : `${pctRound}% en cours`;
 
-  // Primary metric: revenu if set, else breaks
+  // Primary metric: revenu if set, else breaks — utilise les équivalents mensuels
+  const mRev = c.monthlyRev;
+  const mBrk = c.monthlyBreaks;
   let valueStr = '—', targetStr = '0', targetRaw = 0, actualRaw = 0;
-  if (c.o.revenu > 0) {
+  if (mRev > 0) {
     actualRaw = c.vRev;
-    targetRaw = c.o.revenu;
+    targetRaw = mRev;
     valueStr = '$' + Math.round(c.vRev).toLocaleString('fr-CA');
-    targetStr = '$' + Math.round(c.o.revenu).toLocaleString('fr-CA');
-  } else if (c.o.breaks > 0) {
+    targetStr = '$' + Math.round(mRev).toLocaleString('fr-CA');
+  } else if (mBrk > 0) {
     actualRaw = c.vN;
-    targetRaw = c.o.breaks;
+    targetRaw = mBrk;
     valueStr = `${c.vN} break${c.vN !== 1 ? 's' : ''}`;
-    targetStr = `${c.o.breaks} breaks`;
+    targetStr = `${Math.round(mBrk * 10) / 10} breaks`;
   }
 
   // Cap fill at 100% for visual (overshoot is shown via badge)
   const fillPct = Math.min(100, c.overallPct).toFixed(1);
 
   // Target label compact (e.g. $50K)
-  const targetCap = c.o.revenu > 0
-    ? '$' + (c.o.revenu >= 1000 ? (c.o.revenu / 1000).toFixed(c.o.revenu >= 10000 ? 0 : 1) + 'K' : c.o.revenu)
-    : (c.o.breaks > 0 ? c.o.breaks : '');
+  const targetCap = mRev > 0
+    ? '$' + (mRev >= 1000 ? (mRev / 1000).toFixed(mRev >= 10000 ? 0 : 1) + 'K' : Math.round(mRev))
+    : (mBrk > 0 ? Math.round(mBrk * 10) / 10 : '');
 
   // Show remaining text inside the empty track if in-progress with <70%
   const showRemaining = !c.isDone && !c.isStart && c.overallPct < 70;
-  const remainingStr = c.o.revenu > 0
-    ? '$' + Math.round(c.o.revenu - c.vRev).toLocaleString('fr-CA') + ' restants'
-    : (c.o.breaks > 0 ? (c.o.breaks - c.vN) + ' restants' : '');
+  const remainingStr = mRev > 0
+    ? '$' + Math.round(mRev - c.vRev).toLocaleString('fr-CA') + ' restants'
+    : (mBrk > 0 ? (Math.round((mBrk - c.vN) * 10) / 10) + ' restants' : '');
 
   // Show glow at leading edge unless 100%+ (where bar fills whole)
   const showGlow = (c.isDone || (!c.isStart && c.overallPct < 100));
@@ -1650,17 +1676,27 @@ function renderPlayerCard(c, rank) {
     ? `<span class="pc-overshoot">×${(c.overallPct / 100).toFixed(1)}</span>`
     : '';
 
+  // Chip période (si différent de 'mois') — affiche la base de la cible
+  const periodeBaseLabel = c.periode !== 'mois'
+    ? (mRev > 0
+        ? `Base ${PERIODE_LABEL[c.periode].toLowerCase()} · $${Math.round(c.o.revenu).toLocaleString('fr-CA')}${PERIODE_SUFFIX[c.periode]}`
+        : `Base ${PERIODE_LABEL[c.periode].toLowerCase()} · ${c.o.breaks} breaks${PERIODE_SUFFIX[c.periode]}`)
+    : '';
+  const periodeChip = c.periode !== 'mois'
+    ? `<span class="pc-periode" title="${esc(periodeBaseLabel)}">${esc(PERIODE_LABEL[c.periode])}</span>`
+    : '';
+
   // Context line below
   let contextRight = '';
   if (c.isDone) {
-    const over = c.o.revenu > 0 ? c.vRev - c.o.revenu : c.vN - c.o.breaks;
-    const fmt = c.o.revenu > 0 ? '$' + Math.round(over).toLocaleString('fr-CA') : over;
+    const over = mRev > 0 ? c.vRev - mRev : c.vN - mBrk;
+    const fmt = mRev > 0 ? '$' + Math.round(over).toLocaleString('fr-CA') : (Math.round(over * 10) / 10);
     contextRight = `<span class="delta-pos">+${fmt} au-dessus</span>`;
   } else if (c.isStart) {
     contextRight = `<span class="delta-mute">—</span>`;
   } else {
-    const left = c.o.revenu > 0 ? c.o.revenu - c.vRev : c.o.breaks - c.vN;
-    const fmt = c.o.revenu > 0 ? '$' + Math.round(left).toLocaleString('fr-CA') : left;
+    const left = mRev > 0 ? mRev - c.vRev : mBrk - c.vN;
+    const fmt = mRev > 0 ? '$' + Math.round(left).toLocaleString('fr-CA') : (Math.round(left * 10) / 10);
     contextRight = `<span class="delta-active">${fmt} restants</span>`;
   }
 
@@ -1668,6 +1704,7 @@ function renderPlayerCard(c, rank) {
     <div class="pc-head">
       <span class="pc-avatar">${esc(initial)}</span>
       <span class="pc-name"><span class="first">${esc(first)}</span>${esc(rest)}</span>
+      ${periodeChip}
       <span class="pc-rank">#${rank}</span>
       <span class="pc-status ${statusCls}">${statusLbl}</span>
     </div>
