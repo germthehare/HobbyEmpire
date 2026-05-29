@@ -1,0 +1,12 @@
+{
+  "name": "hobby-empire",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Speloosh — plateforme SaaS pour breakers de cartes sportives",
+  "dependencies": {
+    "@vercel/postgres": "^0.10.0",
+    "bcryptjs": "^2.4.3",
+    "resend": "^4.0.0"
+  }
+}
