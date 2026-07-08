@@ -235,6 +235,7 @@ function getSettings() {
     }
     const p = JSON.parse(raw);
     return {
+      ...p, // préserve les clés gérées par Settings/Hub (devise, taxes, objectifsVendeurs, plateformes…)
       vendeurs: p.vendeurs?.length ? p.vendeurs : [...TEAM_DEFAULTS.vendeurs],
       helpers:  p.helpers?.length  ? p.helpers  : [...TEAM_DEFAULTS.helpers],
       salaires: p.salaires  || {},
@@ -244,7 +245,10 @@ function getSettings() {
   } catch(e) { return JSON.parse(JSON.stringify(TEAM_DEFAULTS)); }
 }
 function saveSettings(s) {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  // Merge non-destructif : ne jamais effacer les clés écrites par Settings/Hub
+  let cur = {};
+  try { cur = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch(e) {}
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ ...cur, ...s }));
   showToast();
 }
 

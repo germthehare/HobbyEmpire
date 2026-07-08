@@ -61,6 +61,8 @@
   }
 
   function buildSidebar() {
+    const user = localStorage.getItem('he_user') || 'Admin';
+    const initials = user.slice(0, 2).toUpperCase();
     return `<aside class="sp-sidebar" id="sp-sidebar" aria-label="Navigation principale">
   <div class="sp-brand">
     <a href="/" class="sp-brand-link">
@@ -78,11 +80,12 @@
   ${buildNavSections()}
   <div class="sp-spacer"></div>
   <div class="sp-user-card">
-    <div class="sp-user-avatar" aria-hidden="true">AD</div>
+    <div class="sp-user-avatar" aria-hidden="true">${esc(initials)}</div>
     <div class="sp-user-info">
-      <div class="sp-user-name">Admin</div>
+      <div class="sp-user-name">${esc(user)}</div>
       <div class="sp-user-status"><span class="sp-live-dot" aria-hidden="true"></span>En ligne</div>
     </div>
+    <button class="sp-logout-btn" type="button" title="Déconnexion" aria-label="Déconnexion" onclick="if(window.logout)logout()">⏻</button>
   </div>
 </aside>`;
   }

@@ -2335,7 +2335,8 @@ sdmRender();
   const esc = s => String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const dayOf   = iso => iso ? String(parseInt(iso.slice(8,10),10)).padStart(2,'0') : '—';
   const monthOf = iso => iso ? MONTHS_FR[parseInt(iso.slice(5,7),10)-1] : 'TBD';
-  const todayISO = new Date().toISOString().slice(0,10);
+  const _n = new Date(); // date LOCALE, pas UTC (toISOString décalait d'un jour le soir)
+  const todayISO = _n.getFullYear() + '-' + String(_n.getMonth()+1).padStart(2,'0') + '-' + String(_n.getDate()).padStart(2,'0');
 
   const daysBetween = iso => {
     if (!iso) return null;

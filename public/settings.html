@@ -1509,12 +1509,10 @@ function setObjVendeurPeriode(key, periode) {
 let hintTimers = {};
 function flashSavedHint(key) {
   clearTimeout(hintTimers[key]);
-  const el = document.getElementById('hint-' + key);
-  if (el) {
-    el.textContent = '✓ Sauvegardé';
-    el.style.opacity = '1';
-    hintTimers[key] = setTimeout(() => { if (el) el.style.opacity = '0'; }, 1200);
-  }
+  // data-hint au lieu d'un ID : le span existe dans les 3 panneaux du drawer (Profil/Paye/Cibles)
+  const els = document.querySelectorAll('.hint-saved[data-hint="' + CSS.escape(key) + '"]');
+  els.forEach(el => { el.textContent = '✓ Sauvegardé'; el.style.opacity = '1'; });
+  if (els.length) hintTimers[key] = setTimeout(() => els.forEach(el => el.style.opacity = '0'), 1200);
 }
 
 function renderMembres() {
@@ -1574,7 +1572,7 @@ function renderMembres() {
           <div class="drawer-actions">
             <button class="btn btn-danger btn-sm" onclick="removeMembre('${esc(key)}')">Supprimer</button>
             <div style="display:flex;gap:8px;align-items:center">
-              <span id="hint-${esc(key)}" style="font-size:10px;color:var(--pos);letter-spacing:0.14em;text-transform:uppercase;opacity:0;transition:opacity .2s"></span>
+              <span class="hint-saved" data-hint="${esc(key)}" style="font-size:10px;color:var(--pos);letter-spacing:0.14em;text-transform:uppercase;opacity:0;transition:opacity .2s"></span>
               <a class="btn btn-ghost btn-sm" href="/team.html?m=${encodeURIComponent(key)}">Voir profil →</a>
               <button class="btn btn-primary btn-sm" onclick="saveMembreProfil('${esc(key)}')">Enregistrer</button>
             </div>
@@ -1600,7 +1598,7 @@ function renderMembres() {
             <div class="empty-msg">Ce membre est helper uniquement — pas de salaire vendeur configuré.</div>
           `}
           <div class="drawer-actions" style="justify-content:flex-end">
-            <span id="hint-${esc(key)}" style="font-size:10px;color:var(--pos);letter-spacing:0.14em;text-transform:uppercase;opacity:0;transition:opacity .2s"></span>
+            <span class="hint-saved" data-hint="${esc(key)}" style="font-size:10px;color:var(--pos);letter-spacing:0.14em;text-transform:uppercase;opacity:0;transition:opacity .2s"></span>
           </div>
         </div>
 
@@ -1641,7 +1639,7 @@ function renderMembres() {
             <div class="empty-msg">Ce membre est helper uniquement — cibles vendeur non applicables.</div>
           `}
           <div class="drawer-actions" style="justify-content:flex-end">
-            <span id="hint-${esc(key)}" style="font-size:10px;color:var(--pos);letter-spacing:0.14em;text-transform:uppercase;opacity:0;transition:opacity .2s"></span>
+            <span class="hint-saved" data-hint="${esc(key)}" style="font-size:10px;color:var(--pos);letter-spacing:0.14em;text-transform:uppercase;opacity:0;transition:opacity .2s"></span>
           </div>
         </div>
       </div>

@@ -672,7 +672,7 @@ body {
     </div>
     <div class="toolbar-actions" id="toolbar-actions-new">
       <button class="btn btn-ghost btn-sm" onclick="saveDraft()">Sauvegarder en brouillon</button>
-      <button class="btn btn-ghost btn-sm" id="cancel-btn" onclick="cancelEdit()">Annuler</button>
+      <button class="btn btn-ghost btn-sm" id="cancel-btn" onclick="cancelEdit()" style="display:none">Annuler</button>
     </div>
     <div class="toolbar-actions" id="toolbar-actions-history" style="display:none">
       <button class="btn btn-ghost btn-sm" onclick="exportCSV()">↓ CSV</button>
@@ -933,8 +933,10 @@ function setTab(tab) {
 }
 
 // ════════════════════ Init ════════════════════
+// Date ISO LOCALE (toISOString() = UTC → mettait la date de demain après 20h au Québec)
+function localISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 populateDropdowns();
-document.getElementById('date').value = new Date().toISOString().split('T')[0];
+document.getElementById('date').value = localISO(new Date());
 
 // Pre-fill from Planner URL params
 (function prefillFromURL() {
@@ -1105,7 +1107,7 @@ function resetForm() {
   document.getElementById('categorie').value  = '';
   document.getElementById('sport').value      = '';
   document.getElementById('type-break').value = '';
-  document.getElementById('date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('date').value = localISO(new Date());
   document.getElementById('submit-label').textContent = 'Enregistrer le break';
   document.getElementById('cancel-btn').style.display = 'none';
   document.getElementById('edit-banner').classList.remove('show');

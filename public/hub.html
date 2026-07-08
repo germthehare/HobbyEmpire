@@ -1418,6 +1418,8 @@ function setHubTab(tab) {
 }
 
 // ════════════════════ Helpers ════════════════════
+// Date ISO LOCALE (toISOString() = UTC → décalait d'un jour le soir au Québec)
+function localISO(d) { return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 const MOIS_FR = ['','Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const JOURS_ORDER = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const JOURS_LBL   = { Monday:'Lun', Tuesday:'Mar', Wednesday:'Mer', Thursday:'Jeu', Friday:'Ven', Saturday:'Sam', Sunday:'Dim' };
@@ -1983,7 +1985,7 @@ function renderChartSemaine(current, sortedDates) {
   const byDay = JOURS_ORDER.map((j, i) => {
     const d = new Date(monday);
     d.setDate(monday.getDate() + i);
-    const iso = d.toISOString().slice(0, 10);
+    const iso = localISO(d);
     const dayBreaks = current.filter(b => b.date === iso);
     const rev = dayBreaks.reduce((s,b) => s + (+b.revenuReel||0), 0);
     return { day: j, iso, rev };
@@ -1991,7 +1993,7 @@ function renderChartSemaine(current, sortedDates) {
 
   const max = Math.max(...byDay.map(d => d.rev), 1);
   const maxRev = Math.max(...byDay.map(d => d.rev));
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localISO(new Date());
   const todayIdx = byDay.findIndex(d => d.iso === today);
 
   wrap.style.gridTemplateColumns = 'repeat(7, 1fr)';
@@ -2040,8 +2042,8 @@ function renderChartMois(current, sortedDates) {
   }
 
   const byWeek = weeks.map((w, i) => {
-    const startISO = w.start.toISOString().slice(0,10);
-    const endISO   = w.end.toISOString().slice(0,10);
+    const startISO = localISO(w.start);
+    const endISO   = localISO(w.end);
     const rev = current
       .filter(b => b.date >= startISO && b.date <= endISO)
       .reduce((s,b) => s + (+b.revenuReel||0), 0);
